@@ -1,4 +1,4 @@
-# version:1.2.3 loader:pf
+# version:1.2.4 loader:pf
 # $Id$
 #
 # channel.dsm - Channel related module for DarkStar/EPIC4
@@ -409,11 +409,11 @@ alias leave
 			leave $after(, $0) $1-;
 		}
 		(#*) (&*) (0) (-*) (!*) (+*)
-			{ //leave $*; }
+			{ //part $*; }
 		() (\\*)
-			{ //leave * $1-; }
+			{ //part * $1-; }
 		(*)
-			{ //leave #$*; }
+			{ //part #$*; }
 	};
 };
 

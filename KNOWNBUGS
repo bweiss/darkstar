@@ -26,3 +26,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
   beginning of all STATUS_FORMAT* sets.
 * Do not write the value of REVERSE_STATUS_LINE when saving themes.
 * Change the SEND_PUBLIC format in the epic4 theme to show the target.
+* Fix the /LEAVE alias for EPIC5 (It now uses //PART).
