@@ -6,7 +6,7 @@
  * SAVE.DSC - Save /CONFIG and /FSET settings for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/25/01 (bmw)
+ * Last modified: 12/20/01 (bmw)
  */
 
 /*
@@ -92,17 +92,22 @@ alias save (args)
 }
 
 
-alias save_settings (savedir, module, void)
+alias save_settings (save_dir, module, void)
 {
-	if (!savedir || !module)
+	if (!save_dir || !module)
 	{
 		xecho -b save_settings(): Not enough arguments.
 		return 0
 	}
 
-	^local savefile $savedir/$module\.sav
-	@ unlink($savefile)
-	@ :fd = open($savefile W)
+	^local save_file $save_dir/$module\.sav
+	^local formats_file $save_dir/formats.sav
+
+	@ unlink($save_file)
+	@ unlink($formats_file)
+
+	@ :fd = open($save_file W)
+	@ :fd2 = open($formats_file W)
 		
 	if (fd != -1)
 	{
@@ -120,10 +125,20 @@ alias save_settings (savedir, module, void)
 			}
 		}
 			
+		if (CONFIG[VERBOSE_SAVE])
+		{
+			xecho -b Settings for [$module] saved to [$save_file]
+		}
+	}{
+		xecho -b Error opening save file [$save_file]
+		return 0
+	}
+
+	if (fd2 != -1)
+	{
 		eval for var in \(\$$aliasctl(assign match FSET.$module)\)
 		{
 			@ :value = aliasctl(assign get FORMAT.$var)
-			
 			if (value != [])
 			{
 				@ write($fd assign FORMAT.$var $value)
@@ -131,17 +146,18 @@ alias save_settings (savedir, module, void)
 				@ write($fd assign -FORMAT.$var)
 			}
 		}
-			
+
 		if (CONFIG[VERBOSE_SAVE])
 		{
-			xecho -b Settings for [$module] saved to [$savefile]
+			xecho -b Format settings saved to [$formats_file]
 		}
 	}{
-		xecho -b Error opening savefile [$savefile]
+		xecho -b Error opening formats file [$formats_file]
 		return 0
 	}
 
 	@ close($fd)
+	@ close($fd2)
 	return 1
 }
 

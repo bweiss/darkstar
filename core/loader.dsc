@@ -6,11 +6,13 @@
  * LOADER.DSC - Module loader for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/2/01 (bmw)
+ * Last modified: 12/20/01 (bmw)
  */
+
 
 alias listmods modlist
 alias modules modlist
+
 
 alias loadmod (module, void)
 {
@@ -281,8 +283,9 @@ alias loader.unload_module (module)
 {
 	if (numitems(loaded_modules))
 	{
-		@ :itm = finditem(loaded_modules $module)
-		if (itm > -1)
+		@ :item = finditem(loaded_modules $module)
+
+		if (item > -1)
 		{
 			/* Execute cleanup queue for module */
 			queue -do cleanup.$module
@@ -317,7 +320,7 @@ alias loader.unload_module (module)
 			^assign -FSET.$module
 			
 			/* Remove from loaded_modules array */
-			@ delitem(loaded_modules $itm)
+			@ delitem(loaded_modules $item)
 
 			return 1
 		}
@@ -345,8 +348,8 @@ alias loader.which_mods (action, args)
 				{
 					for cnt from $startmod to $endmod
 					{
-						@ :itm = cnt - 1
-						@ :module = getitem($array $itm)
+						@ :item = cnt - 1
+						@ :module = getitem($array $item)
 
 						@ push(modlist $module)
 					}
@@ -356,8 +359,8 @@ alias loader.which_mods (action, args)
 			}{
 				if (modnum <= numitems($array))
 				{
-					@ :itm = modnum - 1
-					@ :module = getitem($array $itm)
+					@ :item = modnum - 1
+					@ :module = getitem($array $item)
 
 					@ push(modlist $module)
 				}{
@@ -383,20 +386,20 @@ alias loader.which_mods (action, args)
  */
 if (CONFIG[AUTO_LOAD_MODULES])
 {
-	^local dont_suppress_motd
-
-	/* Keep /lusers quiet while we list available modules */
+	/*
+	 * Keep things quiet while we list available modules.
+	 */
 	for hook in (250 251 252 254 255 265 266)
 	{
 		^on ^$hook ^"*"
 	}
 
-	if (SUPPRESS_SERVER_MOTD == [OFF])
-	{
-		^set SUPPRESS_SERVER_MOTD ON
-		^assign dont_suppress_motd 1
-	}
+	^stack push set SUPPRESS_SERVER_MOTD
+	^set SUPPRESS_SERVER_MOTD ON
 
+	/*
+	 * Prompt user or go ahead and load everything on the auto-load list.
+	 */
 	if (CONFIG[AUTO_LOAD_PROMPT])
 	{
 		modlist
@@ -471,15 +474,15 @@ if (CONFIG[AUTO_LOAD_MODULES])
 		theme $CONFIG.DEFAULT_THEME
 	}
 	
+	/*
+	 * Cleanup after ourselves.
+	 */
 	wait -cmd for hook in (250 251 252 254 255 265 266)
 	{
 		^on ^$hook -"*"
 	}
 
-	if (dont_suppress_motd)
-	{
-		^set SUPPRESS_SERVER_MOTD OFF
-	}
+	^stack pop set SUPPRESS_SERVER_MOTD
 }	
 
 
