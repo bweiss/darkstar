@@ -6,16 +6,22 @@ Original author: shade <shade@chemlab.org>
    Advanced nick completion for the input prompt.
 
 Config Variables:
-   NICK_COMPLETION         - Boolean. Turns nick completion on/off.
-   NICK_COMPLETION_CHAR    - When the first word (that isn't a command) being
-                             entered at the input prompt is this character,
-                             a completion based on the nicks in the current
-                             channel will be attempted.
+   NICK_COMPLETION           - Boolean. Turns nick completion on/off.
+   NICK_COMPLETION_CHAR      - When the first word (that isn't a command)
+                               being entered at the input prompt is this
+                               character, a completion based on the nicks
+                               in the current channel will be attempted.
+   NICK_COMPLETION_THRESHOLD - This is the maximum number of matches that
+                               will trigger nick completion. You can adjust
+                               this to change the accuracy of the completion.
+                               If set to a low number like "1" completion
+                               will only be activated if there is just a
+                               single match.
 
 Format Variables:
-   NICK_COMPLETION         - Formatting for nick completion. This does NOT
-                             get passed through $cparse(), so cparse color
-                             codes will not work.
+   NICK_COMPLETION           - Formatting for nick completion. This does
+                               NOT get passed through $cparse(), so cparse
+                               color codes will not work.
 
 History:
    This was taken from my BitchX/EPIC4 script called playdough.

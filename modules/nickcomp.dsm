@@ -1,17 +1,16 @@
-#version 1.0.2
+#version 1.0.3
 /* $Id$ */
 /*
  * nickcomp.dsm - Nick completion module for DarkStar/EPIC4
  *
  * Written by shade <shade@chemlab.org>
- * Modified for DarkStar by Brian Weiss <brian@epicsol.org>
+ * Modified and maintained for DarkStar by Brian Weiss <brian@epicsol.org>
  *
  * This script uses serial number 0 for all /on hooks.
  *
- * Most of this was taken from the nick completion module that shade wrote
- * for my BitchX/EPIC4 script called playdough. He deserves most of the
- * credit, but I am the one maintaining it. Please send bug reports to me,
- * not shade. -Brian
+ * Most of this was taken from the nick completion module that shade
+ * wrote for my BitchX/EPIC4 script called playdough and has been placed
+ * in the public domain.
  */
 
 /****** CLEANUP QUEUE ******/
@@ -26,6 +25,7 @@ queue cleanup.nickcomp
 
 config.add -b NICK_COMPLETION 1
 config.add    NICK_COMPLETION_CHAR :
+config.add    NICK_COMPLETION_THRESHOLD 2
 
 format.add NICK_COMPLETION $1: $2-
 
@@ -34,8 +34,12 @@ format.add NICK_COMPLETION $1: $2-
 
 alias nickcomp.getnick
 {
-	for patt in (%$0% ?$0? %$0 ?$0 $0% $0? $0) {
+	for patt in (%$0% ?$0? %$0 ?$0 $0% $0? $0)
+	{
 		@:findnick = pattern($patt $onchannel($C))
+		if (#findnick > CONFIG.NICK_COMPLETION_THRESHOLD) {
+			return
+		}
 		@ function_return = findnick ? word(0 $findnick) : function_return
 	}
 }
