@@ -1,7 +1,7 @@
 #
 # $Id$ */
-# set.dsc - Modular set routines for DarkStar/EPIC4
-# Copyright (c) 2002-2004 Brian Weiss (except where noted)
+# set.dsc - Modular SET routines for DarkStar/EPIC4
+# Copyright (c) 2002-2005 Brian Weiss
 # See the 'COPYRIGHT' file for more information.
 #
 
@@ -83,8 +83,9 @@ alias _addsetvar (type, ...)
 };
 
 #
-# This handles the display and modification of both config
-# and format variables.
+# This attempts to mimic the builtin SET command. It allows the user
+# to display and modify variables created with the addconfig/addformat
+# aliases.
 #
 alias _set (type, variable, value)
 {
@@ -100,11 +101,11 @@ alias _set (type, variable, value)
 
 	if (!variable)
 	{
-		if (FORMAT.SET_HEADER) {xecho -s $fparse(SET_HEADER $#getdsets())};
+		if (FORMAT.SET_HEADER) {xecho -s $fparse(SET_HEADER ${type == [CONFIG] ? #getdsets() : #getfsets()})};
 		for realvar in ($aliasctl(assign match $struct\.)) {
-			_setcat $type\.$after(1 . $realvar);
+			_showset $type\.$after(1 . $realvar);
 		};
-		if (FORMAT.SET_FOOTER) {xecho -s $fparse(SET_FOOTER $#getdsets())};
+		if (FORMAT.SET_FOOTER) {xecho -s $fparse(SET_FOOTER ${type == [CONFIG] ? #getdsets() : #getfsets()})};
 	}{
 		@ :var     = strip(- $variable);
 		@ :bingo   = aliasctl(assign get $struct\.$var) ? 1 : 0;
@@ -113,12 +114,12 @@ alias _set (type, variable, value)
 
 		if (#matches > 1 && !bingo)
 		{
-			if (FORMAT.SET_HEADER)    {xecho -s $fparse(SET_HEADER $#getdsets($var*) $var)};
+			if (FORMAT.SET_HEADER)    {xecho -s $fparse(SET_HEADER ${type == [CONFIG] ? #getdsets($var*) : #getfsets($var*)})};
 			if (FORMAT.SET_AMBIGUOUS) {xecho -s $fparse(SET_AMBIGUOUS $toupper($var))};
 			for tmp in ($matches) {
-				_setcat $type\.$after(1 . $tmp);
+				_showset $type\.$after(1 . $tmp);
 			};
-			if (FORMAT.SET_FOOTER)    {xecho -s $fparse(SET_FOOTER $#getdsets($var*) $var)};
+			if (FORMAT.SET_FOOTER)    {xecho -s $fparse(SET_FOOTER ${type == [CONFIG] ? #getdsets($var*) : #getfsets($var*)})};
 		}
 		else if (bingo || #matches == 1)
 		{
@@ -136,7 +137,7 @@ alias _set (type, variable, value)
 			else if (value == [])
 			{
 				if (FORMAT.SET_HEADER) {xecho -s $fparse(SET_HEADER 1 $var)};
-				_setcat $realvar;
+				_showset $realvar;
 				if (FORMAT.SET_FOOTER) {xecho -s $fparse(SET_FOOTER 1 $var)};
 			}
 			else
@@ -166,20 +167,20 @@ alias _set (type, variable, value)
 };
 
 #
-# This is a modified version of shade's setcat. It handles the actual
-# displaying of config/format variables and their values. It should
-# be called by the _set alias.
+# This handles the displaying of config/format variables and their values.
+# It should be called by the _set alias.
 #
-alias _setcat (realvar, void)
+alias _showset (realvar, void)
 {
 	@ :var = after(1 . $realvar);
 
 	switch ($realvar)
 	{
-		(CONFIG.*) {^local struct _DSET}
-		(FORMAT.*) {^local struct _FSET}
+		(CONFIG.*) {^local struct _DSET};
+		(FORMAT.*) {^local struct _FSET};
 	};
 
+	# The '$' prefix here is intentional; it forces double expansion.
 	if ($realvar == [])
 	{
 		if (FORMAT.SET_NOVALUE) {

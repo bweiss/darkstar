@@ -16,3 +16,6 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Make $tabkey.method.chan() attempt completion with #/& prefix if first
   attempt fails.
 * Fix a small mistake in the TOPIC_CHANGE format in the bitchx theme. rb daed.
+* Fix _set so that it sends the correct args to the *_HEADER/*_FOOTER formats
+  according to type.
+* Fix /TOPICS so that it numbers the list of topics correctly.

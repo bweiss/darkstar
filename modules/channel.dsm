@@ -1,4 +1,4 @@
-# version:1.2.2 loader:pf
+# version:1.2.3 loader:pf
 # $Id$
 #
 # channel.dsm - Channel related module for DarkStar/EPIC4
@@ -742,10 +742,12 @@ alias topics (chan default "$C", void)
 	if (numitems($array))
 	{
 		xecho -b Stored topics for $chan (most recent first):;
+		@ :cnt = 1;
 		for ii in ($jot($numitems($array) 1))
 		{
 			@ :topic = getitem($array ${ii-1});
-			echo $[3]ii $topic;
+			echo $[3]cnt $topic;
+			@ :cnt++;
 		};
 	}{
 		xecho -b No topics stored for $chan;
