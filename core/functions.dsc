@@ -184,6 +184,14 @@ alias is_on (nick, void)
 	wait for ison $nick
 }
 
+alias loadedmods (void)
+{
+	for ii from 1 to $numitems(_loaded_modules)
+	{
+		@ push(function_return $getitem(_loaded_modules ${ii-1}))
+	}
+}
+
 /*
  * $modinfo(<module> [a|f|v])
  * Easy interface to the module information.
@@ -210,6 +218,14 @@ alias modinfo (module, flag)
 			}
 		}
 		@ function_return = retval
+	}
+}
+
+alias mods (void)
+{
+	for ii from 1 to $numitems(_modules)
+	{
+		@ push(function_return $getitem(_modules ${ii-1}))
 	}
 }
 

@@ -12,19 +12,12 @@ FOR 0.3 RELEASE:
 
   * Implement /THEME -save
 
-  * Rewrite all the query stuff to keep track of queries by server.
-
 
 AFTER 0.3 RELEASE:
 
   * Write a log management module. It should provide basic log management,   
     such as setting up automatic logging for various things (channels, nicks,
     windows, etc.) as well as log rotation features.
-
-  * [dcc.dsm] Add more DCC related formats.
-
-  * [dcc.dsm] Figure out a good way to suppress the huge warning message
-    that is displayed when resuming DCC transfers.
 
   * [misc.dsm] Add a server ping command (/SPING).
 

@@ -88,10 +88,21 @@ addconfig -b UNBIND_ON_PART 0
 /****** INIT ******/
 
 /*
- * Add shortcut aliases for all existing windows.
+ * Add shortcut aliases for all existing windows and check for queries.
  */
-for wref in ($winrefs()) {
-	^alias $wref window refnum_or_swap $wref
+for wref in ($winrefs())
+{
+	^alias $wref (void)
+	{
+		window refnum_or_swap $wref
+	}
+
+	if (:nick = windowctl(GET $wref QUERY_NICK))
+	{
+		@ :array = [window.queries.$winserv($wref)]
+		@ :uhost = uh($nick)
+		@ setitem($array $numitems($array) $wref $nick $uhost)
+	}
 }
 
 
@@ -136,35 +147,45 @@ alias wub (...)                      { window unbind; }
 
 /****** INTERNAL ALIASES ******/
 
-alias window.get_query_by_uhost (serv, uhost, void)
+alias window.auto_query_update (serv, nick, uhost, void)
 {
-	if (!uhost || uhost == [<UNKNOWN>@<UNKNOWN>]) {
+	if (!uhost || uhost == [<UNKNOWN>@<UNKNOWN>]) \
 		return
-	}
 
-	foreach WINDOW.QUERY win
+	if (CONFIG.AUTO_QUERY_UPDATE)
 	{
-		if (winserv($win) == serv)
+		@ :item = matchitem(window.queries.$serv % % $uhost)
+		if (item > -1)
 		{
-			@ :tmp = word(1 $WINDOW.QUERY[$win])
-			if (tmp == [<UNKNOWN>@<UNKNOWN>]) {
-				continue
-			}
-			if (tmp == uhost) {
-				@ :ret = win
-				@ push(ret $WINDOW.QUERY[$win])
+			@ :tmp = getitem(window.queries.$serv $item)
+			@ :querywin = word(0 $tmp)
+			@ :old_nick = word(1 $tmp)
+
+			if (querywin && nick != old_nick)
+			{
+				xecho -b -w 0 Changing query in window $querywin from $old_nick to $nick
+				window $querywin query $nick
 			}
 		}
 	}
+}
 
-	@ function_return = ret
+alias window.auto_query_window (serv, nick, void)
+{
+	if (!nick) \
+		return
+
+	if (CONFIG.AUTO_QUERY_WINDOW && querywin($nick $servername($serv)) == -1)
+	{
+		xecho -b -w 0 Creating new window for query with $nick
+		^window new server $serv query $nick $CONFIG.AUTO_QUERY_WINDOW_ARGS
+	}
 }
 
 alias window.last.scroll (direction, void)
 {
-	if (!direction) {
+	if (!direction) \
 		return
-	}
 
 	window last
 	parsekey scroll_$direction
@@ -237,59 +258,42 @@ on #-raw_irc 426 "% NICK *"
 
 on #-raw_irc 426 '% PRIVMSG $servernick() *'
 {
-	@ :nick = before(1 ! $0)
+	@ :nick  = before(1 ! $0)
 	@ :uhost = after(1 ! $0)
 
-	if (CONFIG.AUTO_QUERY_UPDATE)
-	{
-		@ :tmp = window.get_query_by_uhost($lastserver() $uhost)
-		@ :querywin = word(0 $tmp)
-		@ :old_nick = word(1 $tmp)
-
-		if (querywin && nick != old_nick)
-		{
-			xecho -b -w 0 Changing query in window $querywin from $old_nick to $nick
-			window $querywin query $nick
-		}
-	}
-
-	if (CONFIG.AUTO_QUERY_WINDOW && querywin($nick $lastserver()) == -1)
-	{
-		xecho -b -w 0 Creating new window for query with $nick
-		^window new server $lastserver() query $nick $CONFIG.AUTO_QUERY_WINDOW_ARGS
-	}
+	window.auto_query_update $servernum() $nick $uhost
+	window.auto_query_window $servernum() $nick
 }
 
 on #-send_msg 426 "*"
 {
-	if (CONFIG.AUTO_QUERY_UPDATE)
-	{
-		@ :tmp = window.get_query_by_uhost($lastserver() $userhost($0))
-		@ :querywin = word(0 $tmp)
-		@ :old_nick = word(1 $tmp)
-
-		if (querywin && [$0] != old_nick)
-		{
-			xecho -b -w 0 Changing query in window $querywin from $old_nick to $0
-			window $querywin query $0
-		}
-	}
+	window.auto_query_update $severnum() $0 $uh($0)
+	window.auto_query_window $servernum() $0
 }
 
 /*
- * Keep track of active queries.
+ * Keep track of active queries for each server in arrays
+ * named "window.queries.<server>" with the data stored in the
+ * the form "<winref> <nick> <userhost>".
  */
 on #-window_command 426 "*"
 {
 	if ([$0] == [$1])
 	{
 		@ :query_nick = windowctl(GET $0 QUERY_NICK)
+		@ :array = [window.queries.$winserv($0)]
+
+		if ((:item = matchitem($array $0 *)) > -1) {
+			@ delitem($array $item)
+		}
+
 		if (query_nick)
 		{
 			@ :uhost = userhost($query_nick)
-			^assign WINDOW.QUERY.$0 $query_nick $uhost
-		}{
-			^assign -WINDOW.QUERY.$0
+			if ((:item = matchitem($array % $query_nick %)) > -1) {
+				@ delitem($array $item)
+			}
+			@ setitem($array $numitems($array) $0 $query_nick $uhost)				
 		}
 	}
 }
@@ -306,7 +310,17 @@ on #-window_create 426 "*"
 on #-window_kill 426 "*"
 {
 	^alias -$0
-	^assign -WINDOW.QUERY.$0
+
+	/*
+	 * We can't find out what server a killed window was connected to,
+	 * so we have to check all the query arrays for this window.
+	 */
+	for array in ($getarrays(window.queries.*))
+	{
+		if ((:item = matchitem($array $0 *)) > -1) {
+			@ delitem($array $item)
+		}
+	}
 }
 
 on #-window_kill 426 "% msgs"
