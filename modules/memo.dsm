@@ -1,5 +1,5 @@
-#version 0.1
-/* $Id: */
+#version 0.2
+/* $Id$ */
 /*
  * memo.dsm - Note taking module for DarkStar/EPIC4
  * Copyright (c) 2003 Brian Weiss
@@ -22,8 +22,8 @@ config.add MEMO_FILE memos.txt
 
 alias memo {
 	@ :mfile = [$DS.USER_DIR/$CONFIG.MEMO_FILE]
-	switch ($tolower($0)) {
-		() {
+	switch ($0) {
+		() (-L) (-LIST) {
 			switch ($memo.list($mfile)) {
 				(0) () {#}
 				(1) { echo Error: memo.list: Not enough arguments; }
@@ -33,13 +33,22 @@ alias memo {
 			}
 		}
 		(-D) (-DEL) (-DELETE) {
-			switch ($memo.delete($mfile $1-)) {
-				(0) () {#}
-				(1) { echo Error: memo.delete: Not enough arguments; }
-				(2) { xecho -b No memos found in $mfile; }
-				(3) { echo Error: memo.delete: Memo does not exist; }
-				(4) { echo Error: memo.delete: Unable to write memo file; }
-				(*) { echo Error: memo.delete: Unknown; }
+			if ([$1] == [ALL]) {
+				^local askdel $'Delete all memos? (y/N) '
+				if (askdel == [y]) {
+					@ delarray(memo.memos)
+					@ unlink($file)
+					xecho -b All memos erased
+				}
+			} else {
+				switch ($memo.delete($mfile $1-)) {
+					(0) () {#}
+					(1) { echo Error: memo.delete: Not enough arguments; }
+					(2) { xecho -b No memos found in $mfile; }
+					(3) { echo Error: memo.delete: Memo does not exist; }
+					(4) { echo Error: memo.delete: Unable to write memo file; }
+					(*) { echo Error: memo.delete: Unknown; }
+				}
 			}
 		}
 		(*) {
@@ -71,38 +80,28 @@ alias memo.add (file, text) {
 }
 
 alias memo.delete (file, memos) {
-	if (!file || !memos) {
+	if (!memos) {
 		return 1
 	}
-	if (word(0 $memos) == [ALL]) {
-		^local askdel $'Delete all memos? (y/N) '
-		if (askdel == [y]) {
-			@ delarray(memo.memos)
-			@ unlink($file)
-			xecho -b All memos erased
-			return 0
-		}
-	} else {
-		for memo in ($reverse($numsort($memos))) {
-			if (isnumber(b10 $memo)) {
-				@ :item = memo - 1
-				if (!memo.read($file)) {
-					if (item > -1 && item < numitems(memo.memos)) {
-						@ delitem(memo.memos $item)
-						if (!memo.write($file)) {
-							xecho -b Memo #${item + 1} deleted successfully
-						} else {
-							/* Unable to write memo file */
-							return 3
-						}
+	for memo in ($revw($numsort($memos))) {
+		if (isnumber(b10 $memo)) {
+			@ :item = memo - 1
+			if (!memo.read($file)) {
+				if (item > -1 && item < numitems(memo.memos)) {
+					@ delitem(memo.memos $item)
+					if (!memo.write($file)) {
+						xecho -b Memo #${item + 1} deleted successfully
 					} else {
-						/* Memo does not exist */
-						return 2
+						/* Unable to write memo file */
+						return 3
 					}
 				} else {
-					/* Unable to read memo file */
-					return 1
+					/* Memo does not exist */
+					return 2
 				}
+			} else {
+				/* Unable to read memo file */
+				return 1
 			}
 		}
 	}
@@ -158,6 +157,7 @@ alias memo.read (file, void) {
 		}
 	}
 	@ close($fd)
+	return 0
 }
 
 alias memo.write (file, void) {
