@@ -13,6 +13,9 @@ assign FORMAT.SEND_CTCP $G Requesting a CTCP $3 from $2: $4-
 assign FORMAT.SEND_DCC_CHAT [$Z] %W.%ndcc%W[%n$1%W]%n $2-
 assign FORMAT.SEND_MSG [$Z] %W.%nmsg%W[%n$1%W]%n $2-
 assign FORMAT.SEND_NOTICE [$Z] %W.%nnotice%c[%n$1%c]%n $2-
+assign FORMAT.WHO %c$[10]1%n $[9]2 $[3]3 %W$7%n${([$6]=~[*$after(. $servername())*]) ? [%R$[14]after(1 . $6)%n] : [%c$[14]after(1 . $6)%n]} $[-10]4%W@%n$5
+assign FORMAT.WHO_FOOTER $G $1-
+assign -FORMAT.WHO_HEADER
 assign FORMAT.WHOIS_AWAY %c[**]%n away       %c:%n $1 - $2-
 assign FORMAT.WHOIS_CHANNELS %c[**]%n channels   %c:%n $3-
 assign -FORMAT.WHOIS_FOOTER

@@ -35,10 +35,5 @@ set STATUS_USER ircII-EPIC4 -- Type /help for help
 set STATUS_VOICE +
 set STATUS_WINDOW ^^^^^^^^
 
-for refnum in ($winrefs())
-{
-	^window $refnum double off
-}
-
 
 /* EOF */

@@ -23,7 +23,8 @@ assign FORMAT.SEND_PUBLIC <$2> $3-
 assign FORMAT.SEND_PUBLIC_OTHER <$1:$2> $3-
 assign FORMAT.TOPIC $G Topic for $2: $3-
 assign FORMAT.TOPIC_CHANGE $G $1 has changed the topic on channel $2 to $3-
-assign FORMAT.TOPIC_SETBY $G The topic was set by $3 on $strftime($4 %%c)
+assign FORMAT.TOPIC_SETBY $G The topic was set by $3 on $strftime($4 %%a %%b %%d %%T %%Z %%Y)
+assign FORMAT.TOPIC_UNSET $G $1 has unset the topic on channel $2
 
 
 /* EOF */

@@ -1,4 +1,6 @@
-# Module: names
+/* $Id$ */
+
+/* Module: names */
 
 assign -FORMAT.NAMES_FOOTER
 assign FORMAT.NAMES_HEADER $G Users on $1: \(total/$2 - ops/$3 normal/$4\)

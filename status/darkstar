@@ -31,18 +31,5 @@ set STATUS_USER ${numonchannel() ? [36[-1t36/-1$numonchannel() o36/-1$#cho
 set STATUS_VOICE 36+-1
 set STATUS_WINDOW 56*-1
 
-/*
- * Turn on the double status for all windows except those exempted by
- * the single_status array.
- */
-for refnum in ($winrefs())
-{
-	@ :name = winnam($refnum)
-	unless (matchitem(single_status $name) > -1)
-	{
-		^window $refnum double on
-	}
-}
-
 
 /* EOF */

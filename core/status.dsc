@@ -108,6 +108,24 @@ alias status.change (sbar, void)
 		if (fexist($file) == 1)
 		{
 			load $file
+
+			/* Turn on/off the double status bar according to
+			   $STATUS.DOUBLE. Any windows in the single_status
+			   array are exempt from being double. */
+			for refnum in ($winrefs())
+			{
+				@ :name = winnam($refnum)
+				if (STATUS[DOUBLE])
+				{
+					unless (matchitem(single_status $name) > -1)
+					{
+						^window $refnum double on
+					}
+				}{
+					^window $refnum double off
+				}
+			}
+
 			parsekey refresh_screen
 			^assign DS.SBAR $after(-1 / $file)
 			return 0

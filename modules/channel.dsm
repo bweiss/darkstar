@@ -1,4 +1,4 @@
-#version 0.3
+#version 0.3.1
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for Darkstar/EPIC4
@@ -60,7 +60,8 @@ format.add SEND_PUBLIC <$2> $3-
 format.add SEND_PUBLIC_OTHER <$1:$2> $3-
 format.add TOPIC $G Topic for $2: $3-
 format.add TOPIC_CHANGE $G $1 has changed the topic on channel $2 to $3-
-format.add TOPIC_SETBY $G The topic was set by $3 on $strftime($4 %%c)
+format.add TOPIC_SETBY $G The topic was set by $3 on $strftime($4 %%a %%b %%d %%T %%Z %%Y)
+format.add TOPIC_UNSET $G $1 has unset the topic on channel $2
 
 
 alias alldop alldeop
@@ -741,9 +742,17 @@ on ^send_public "*"
 
 on ^topic "*"
 {
-	if (FORMAT[TOPIC_CHANGE])
+	if (![$2])
 	{
-		echo $fparse(TOPIC_CHANGE $*)
+		if (FORMAT[TOPIC_UNSET])
+		{
+			echo $fparse(TOPIC_UNSET $*)
+		}
+	}{
+		if (FORMAT[TOPIC_CHANGE])
+		{
+			echo $fparse(TOPIC_CHANGE $*)
+		}
 	}
 
 	@ :topic_itm = matchitem(topics $1*)
@@ -754,7 +763,7 @@ on ^topic "*"
 		{
 			@ delitem(oldtopics $oldtopic_itm)
 		}
-		
+
 		@ setitem(oldtopics $numitems(oldtopics) $getitem(topics $topic_itm))
 		@ delitem(topics $topic_itm)
 	}

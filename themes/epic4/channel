@@ -24,6 +24,7 @@ assign FORMAT.SEND_PUBLIC_OTHER $2> $3-
 assign FORMAT.TOPIC $G Topic for $2: $3-
 assign FORMAT.TOPIC_CHANGE $G $1 has changed the topic on channel $2 to $3-
 assign FORMAT.TOPIC_SETBY $G The topic was set by $3 $4 sec ago
+assign FORMAT.TOPIC_UNSET $G $1 has changed the topic on channel $2 to
 
 
 /* EOF */

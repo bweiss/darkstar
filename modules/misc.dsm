@@ -1,4 +1,4 @@
-#version 0.1.1
+#version 0.2
 /* $Id$ */
 /*
  * misc.dsm - The 'miscellaneous stuff' module for Darkstar/EPIC4
@@ -12,12 +12,12 @@
 
 queue cleanup.misc
 {
-	for alias in (chat colors dns disco m nslookup pingme q umode ver whois wi wii ww)
+	for alias in (chat dns disco m nslookup pingme q umode ver whois wi wii ww)
 	{
 		^alias -$alias
 	}
 
-	for hook in (301 $jot(310 314) $jot(317 320) ctcp ctcp_reply dcc_chat msg notice send_dcc_chat send_msg send_notice)
+	for hook in (301 $jot(310 315) $jot(317 320) ctcp ctcp_reply dcc_chat msg notice send_dcc_chat send_msg send_notice)
 	{
 		^on $hook -"*"
 	}
@@ -49,6 +49,8 @@ format.add SEND_DCC_CHAT [$Z] %W.%ndcc%W[%n$1%W]%n $2-
 format.add SEND_MSG [$Z] %W.%nmsg%W[%n$1%W]%n $2-
 format.add SEND_NOTICE [$Z] %W.%nnotice%c[%n$1%c]%n $2-
 format.add WHO %c$[10]1%n $[9]2 $[3]3 %W$7%n${([$6]=~[*$after(. $servername())*]) ? [%R$[14]after(1 . $6)%n] : [%c$[14]after(1 . $6)%n]} $[-10]4%W@%n$5
+format.add WHO_FOOTER $G $1-
+format.add WHO_HEADER
 format.add WHOIS_AWAY %c[**]%n away       %c:%n $1 - $2-
 format.add WHOIS_CHANNELS %c[**]%n channels   %c:%n $3-
 format.add WHOIS_FOOTER
@@ -74,13 +76,6 @@ alias chat (nick, void)
 	}
 
 	//dcc chat $nick
-}
-
-alias colors (void)
-{
-	xecho -b Ctrl-C color codes:
-	echo 0zero 1one 2two 3three 4four 5five 6six 7seven 8eight 9nine 10ten
-      echo 11eleven 12twelve 13thirteen 14fourteen 15fifteen 16sixteen
 }
 
 alias disco disconnect
@@ -162,28 +157,6 @@ alias wii (nick default "$servernick()", void)
 alias ww whowas
 
 
-/*
- * WHOIS/WHOWAS related hooks.
- */
-on #-timer 424 "*"
-{
-	^local delete
-
-	for cnt from 0 to ${numitems(away_users) - 1}
-	{
-		@ :ts = word(1 $getitem(away_users $cnt))
-		if ((time() - ts) > CONFIG[SHOW_AWAY_ONCE_TIMEOUT])
-		{
-			@ push(delete $cnt)
-		}
-	}
-
-	for item in ($reverse($delete))
-	{
-		@ delitem(away_users $item)
-	}
-}
-
 on ^301 "*"
 {
 	if (FORMAT[WHOIS_AWAY])
@@ -249,6 +222,15 @@ on ^314 "*"
 	{
 		echo $fparse(WHOWAS_NAME $*)
 	}
+}
+
+on ^315 "*"
+{
+	if (FORMAT[WHO_FOOTER])
+	{
+		echo $fparse(WHO_FOOTER $*)
+	}
+	^assign -MISC.WHO_HEADER_DONE
 }
 
 on ^317 "*"
@@ -399,9 +381,38 @@ on ^send_notice "*"
 	}
 }
 
+/*
+ * This is for SHOW_AWAY_ONCE.
+ */
+on #-timer 424 "*"
+{
+	^local delete
+	for cnt from 0 to ${numitems(away_users) - 1}
+	{
+		@ :ts = word(1 $getitem(away_users $cnt))
+		if ((time() - ts) > CONFIG[SHOW_AWAY_ONCE_TIMEOUT])
+		{
+			@ push(delete $cnt)
+		}
+	}
+	for item in ($reverse($delete))
+	{
+		@ delitem(away_users $item)
+	}
+}
+
 on ^who "* % % % % *"
 {
-	echo $fparse(WHO $*)
+	if (!MISC[WHO_HEADER_DONE] && FORMAT[WHO_HEADER])
+	{
+		echo $fparse(WHO_HEADER)
+	}
+	/* This is removed by the 315 numeric (WHO_FOOTER) */
+	^assign MISC.WHO_HEADER_DONE 1
+	if (FORMAT[WHO])
+	{
+		echo $fparse(WHO $*)
+	}
 }
 
 

@@ -2,8 +2,8 @@
 /*
  * Created by Brian Weiss <brian@epicsol.org> - 2002
  * This is a simple but informative status bar with no high ASCII
- * characters. This is basically a cross between the two previously
- * existing statbars, darkstar and epic4.
+ * characters and no color. This is basically a cross between the two
+ * previously existing statbars, darkstar and epic4.
  */
 
 assign STATUS.DOUBLE 1
@@ -37,19 +37,6 @@ set STATUS_UMODE \(+%#\)
 set STATUS_USER ${numonchannel() ? [[t/$numonchannel() o/$#chops() n/$#nochops()]  ] : []}
 set STATUS_VOICE +
 set STATUS_WINDOW -
-
-/*
- * Turn on the double status for all windows except those exempted by
- * the single_status array.
- */
-for refnum in ($winrefs())
-{
-	@ :name = winnam($refnum)
-	unless (matchitem(single_status $name) > -1)
-	{
-		^window $refnum double on
-	}
-}
 
 
 /* EOF */

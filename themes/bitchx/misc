@@ -1,0 +1,36 @@
+/* $Id$ */
+
+/* Module: misc */
+
+assign FORMAT.ACTION_USER %Kð %W$1%n $3-
+assign FORMAT.CTCP %K>%n>%W> %G$1 %grequested $3- from $2
+assign FORMAT.CTCP_REPLY $G CTCP %W$3%n reply from $1: $4-
+assign FORMAT.DCC_CHAT %K[%G$1%K\(%gdcc%K\)]%n $2-
+assign FORMAT.MSG %K[%M$1%K\(%m$2%K\)]%n $3-
+assign FORMAT.NOTICE %K-%M$1%K\(%m$2%K\)-%n $3-
+assign FORMAT.SEND_ACTION_USER %Kð%n -> %W$servernick()%n/%c$1%n $2-
+assign FORMAT.SEND_CTCP %K[%rctcp%K\(%R$2%K\)]%n $3
+assign FORMAT.SEND_DCC_CHAT [$Z] %K[%rdcc%K\(%R$1%K\)]%n $2-
+assign FORMAT.SEND_MSG %K[%rmsg%K\(%R$1%K\)]%n $2-
+assign FORMAT.SEND_NOTICE %K[%rnotice%K\(%R$1%K\)]%n $2-
+assign FORMAT.WHO %Y$[10]1 %W$[10]2 %c$[3]3 %n$4%R@%n$5 \($8-\)
+assign -FORMAT.WHO_FOOTER
+assign -FORMAT.WHO_HEADER
+assign FORMAT.WHOIS_AWAY %K| %Wa%nway     : $1 - $2-
+assign FORMAT.WHOIS_CHANNELS %g| %Wc%nhannels : $3-
+assign -FORMAT.WHOIS_FOOTER
+assign FORMAT.WHOIS_HEADER %GÚÄÄÄÄÄ---%gÄ%G--%gÄÄ%G-%gÄÄÄÄÄÄ---%KÄ%g--%KÄÄ%g-%KÄÄÄÄÄÄÄÄÄ--- --  -
+assign -FORMAT.WHOIS_IDENTIFIED
+#assign FORMAT.WHOIS_IDENTIFIED %c[**]%n identified %c:%n $2-
+assign FORMAT.WHOIS_IDLE %K: %Wi%ndle     : $tdiff($3) \(signon: $strftime($4 %%a %%b %%d %%T %%Y)\)
+assign FORMAT.WHOIS_NAME %G³ %Wi%nrcname  : $6-
+assign FORMAT.WHOIS_NICK %G| %W$2 %K\(%n$3@$4%K\)%n
+assign FORMAT.WHOIS_OPER %K| %Wo%nperator : $2  \(is %WNOT%n an IRC warrior\)
+assign FORMAT.WHOIS_SERVER %K³ %Ws%nerver   : $3 \($4-\)
+assign -FORMAT.WHOIS_SIGNON
+assign FORMAT.WHOWAS_NAME %G³ %Wi%nrcname  : $6-
+assign FORMAT.WHOWAS_NICK %G| %W$2%n was %K\(%n$3@$4%K\)%n
+assign FORMAT.UMODE $G Mode Change %K[%W$3-%K]%n for user %c$2
+
+
+/* EOF */

@@ -62,11 +62,11 @@ for array in ($getarrays())
  * Important global variables
  */
 assign DS.VERSION 0.2.1
-assign DS.INTERNAL_VERSION 20020407
+assign DS.INTERNAL_VERSION 20020409
 
 /* This will be incremented every time a change takes place to the core
    scripts (anything that requires /reload to update). */
-assign DS.COMMIT_ID 25
+assign DS.COMMIT_ID 26
 
 
 /*
@@ -157,12 +157,18 @@ format.add SET $G Current value of $1 is $2-
 format.add SET_NOVALUE $G No value for $1 has been set
 
 
-eval ^load $DS.SAVE_DIR/core.sav
+if (fexist($DS.SAVE_DIR/core.sav) != -1)
+{
+	^load $DS.SAVE_DIR/core.sav
+}
 
 eval load $DS.HOME/core/themes.dsc
 eval load $DS.HOME/core/loader.dsc
 
-eval ^load $DS.RC
+if (fexist($DS.RC) != -1)
+{
+	eval ^load $DS.RC
+}
 
 
 if (fexist($DS.HOME/darkstar.irc) == -1)

@@ -1,0 +1,18 @@
+/* $Id$ */
+/*
+ * BitchX theme for Darkstar/EPIC4
+ * Author: Brian Weiss <brian@epicsol.org>
+ *
+ * This attempts to mimic BX where possible. It is not perfect, but it
+ * comes pretty close.
+ */
+
+status -q bitchx
+
+set BANNER 7ù16í7ù-1
+
+assign FORMAT.SET %g$padleft(30 . $1)%n $2-
+assign FORMAT.SET_NOVALUE %g$padleft(30 . $1) has no value
+
+
+/* EOF */

@@ -1,0 +1,30 @@
+/* $Id$ */
+
+/* Module: channel */
+
+assign FORMAT.ACTION_CHANNEL %Kð %Y$1/$2%n $3-
+assign FORMAT.ACTION_CHANNEL_OTHER %K*%n >%c$1$%n $2-
+assign FORMAT.BANS $[2]1 $[10]3 $[8]before(1 ! $5) $[-7]{time() - [$6]}  $4
+assign -FORMAT.BANS_FOOTER
+assign FORMAT.BANS_HEADER #  Channel    SetBy        Sec  Ban
+assign FORMAT.CHANNEL_SIGNOFF $G SignOff %W$2%n: $1 %K\(%n$3-%K\)%n
+assign FORMAT.CHANNEL_SYNC $G %WBitchX%n: Join to $1 synched in $2 secs!!
+assign FORMAT.CHANNEL_TS $G Channel $2 was created at $strftime($3 %%a %%b %%d %%T %%Y)
+assign FORMAT.JOIN $G %C$1 %K[%c$3%K]%n has joined $2
+assign FORMAT.LEAVE $G $1 %K[%n$3%K]%n has left $2 %K[%n$4-%K]%n
+assign FORMAT.MODE $G mode%K/%c$2 %K[%W$3-%K]%n by %W$1%n
+assign FORMAT.PUBLIC %B<%n$1%B>%n $3-
+assign FORMAT.PUBLIC_AR %B<%Y$1%B>%n $3-
+assign FORMAT.PUBLIC_OTHER %b<%n$1%K:%n$2%b>%n $3-
+assign FORMAT.PUBLIC_OTHER_AR %b<%Y$1%K:%n$2%b>%n $3-
+assign FORMAT.SEND_ACTION_CHANNEL %Kð %W$servernick()%n $2-
+assign FORMAT.SEND_ACTION_CHANNEL_OTHER %Kð%n -> %W$servernick()%n/%c$1%n $2-
+assign FORMAT.SEND_PUBLIC %M<%n$2%M>%n $3-
+assign FORMAT.SEND_PUBLIC_OTHER %m<%n$1%K:%n$2%m>%n $3-
+assign FORMAT.TOPIC $G Topic %K\(%c$2%K\):%n $3-
+assign FORMAT.TOPIC_CHANGE $G Topic %K\(%c$2%K\):%n changed by %c$1%K:%n $3-
+assign FORMAT.TOPIC_SETBY $G Topic %K\(%c$2%K\):%n set by %c$3%n at %c$strftime($4 %%a %%b %%d %%T %%Y)%n
+assign FORMAT.TOPIC_UNSET $G Topic %K\(%c$2%K\):%n unset by %c$1%n
+
+
+/* EOF */

@@ -1,12 +1,29 @@
 Darkstar ChangeLog
 
 
+20020409
+
+ * [misc.dsm 0.2] New format variables: WHO_FOOTER and WHO_HEADER.
+   The /COLORS alias was also removed.
+
+ * Turning window double on/off is now handled by status.change() in
+   status.dsc instead of in the status files themselves. All that is
+   required is that the status file set STATUS.DOUBLE to true or false.
+   Windows in the single_status array are still exempt from being double.
+
+ * New theme: bitchx
+
+20020408
+
+ * [channel.dsm 0.3.1] New format variable: TOPIC_UNSET
+
 20020407
 
  * We weren't cleaning up our file descriptors in /LESS thus causing the
    client to eventually give an error message like "Unable to open file,
    too many files open", and not open the file. This also affects the
    away module since /READLOG uses /LESS to display the log. Major oops.
+   (discovered by myke)
 
 20020405
 
