@@ -13,11 +13,7 @@
  *  See the 'COPYRIGHT' file for licensing information.
  */
 
-/*
- * Warn user if client doesn't meet specifications
- */
-if (!epic() || V < 20020819)
-{
+if (!epic() || V < 20020819) {
 	echo
 	echo WARNING!
 	echo
@@ -37,7 +33,6 @@ if (!epic() || V < 20020819)
 	echo http://darkstar.epicsol.org/
 	echo http://www.got.net/~brian/epic4/
 	echo
-
 	^local pause $'Press any key to continue or "q" to quit.'
 	if (pause == [q]) {
 		echo Bye!
@@ -45,7 +40,6 @@ if (!epic() || V < 20020819)
 		//quit
 	}
 }
-
 
 /*
  * Make sure we're clean
@@ -56,22 +50,19 @@ for array in ($getarrays()) {
 	@ delarray($array)
 }
 
-
 /*
  * Important global variables
  */
 @ DS.VERSION = [0.2.8]
-@ DS.INTERNAL_VERSION = [20021002]
+@ DS.INTERNAL_VERSION = [20021006]
 
 /*
  * This will be incremented every time a change takes place in
  * the core scripts (this file and any .dsc files in core/).
  */
-@ DS.CORE_ID = 75
-
+@ DS.CORE_ID = 76
 
 eval xecho -b Loading DarkStar $DS.VERSION
-
 
 /*
  * Find out where everything is and store it in the DS structure.
@@ -104,12 +95,10 @@ if (getenv(DARKSTAR_RC)) {
 @ DS.THEME_DIR = [$DS.HOME/themes $DS.USER_DIR/themes]
 @ DS.SAVE_DIR = [$DS.USER_DIR/save]
 
-
 /*
- * Check for a user directory and create it if necessary.
+ * Check for a "user directory" and create it if necessary.
  */
-if (fexist($DS.USER_DIR) == -1)
-{
+if (fexist($DS.USER_DIR) == -1) {
 	xecho -b Creating user directory: $DS.USER_DIR
 	@ mkdir($DS.USER_DIR)
 	@ mkdir($DS.USER_DIR/modules)
@@ -125,7 +114,7 @@ if (fexist($DS.USER_DIR) == -1)
 	echo Welcome to the DarkStar/EPIC4 script pack!
 	echo Copyright (c) 2002 Brian Weiss <brian@epicsol.org>
 	echo See the 'COPYRIGHT' file for details.
-	echo http://darkstar.epicsol.org/
+	echo Official Website: http://darkstar.epicsol.org/
 	echo
 	echo If you have not looked at the README yet, you should do so now.
 	echo
@@ -134,15 +123,14 @@ if (fexist($DS.USER_DIR) == -1)
 	echo enter will load all the modules on the default auto-load list.
 	echo
 	echo After the modules have loaded, it is probably a good idea to have
-	echo a look around in the help browser (/dhelp).
+	echo a look around in the help browser (/DHELP).
 	echo
 	echo That's it! I hope you enjoy these scripts, a lot of effort has
 	echo gone into them. Please feel free to contact me if you have any
 	echo questions or comments. This message will not be displayed again.
 	echo
-	^local pause $'Press any key to continue.'
+	^local pause $'Press any key to continue. '
 }
-
 
 /* 
  * Important /SET's
@@ -156,12 +144,10 @@ set FLOATING_POINT_MATH ON
 set HIGH_BIT_ESCAPE 0
 set INDENT ON
 
-
 /*
  * Enable the new math parser.
  */
 xdebug +NEW_MATH
-
 
 /*
  * Change window name and level for the first window, if necessary.
@@ -169,7 +155,6 @@ xdebug +NEW_MATH
 if (winnam(1) == [ircII]) {
 	^window ircII name - level none
 }
-
 
 /*
  * Load the core scripts.
@@ -210,7 +195,6 @@ eval load $DS.HOME/core/loader.dsc
 if (fexist($DS.RC) != -1) {
 	^load $DS.RC
 }
-
 
 if (fexist($DS.HOME/darkstar.irc) == -1) {
 	echo WARNING! We were unable to detect our location.

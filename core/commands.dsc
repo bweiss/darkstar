@@ -9,9 +9,8 @@
  * Displays miscellaneous information about the operating system,
  * client, and DarkStar (including modules).
  */
-alias dinfo (void)
-{
-	@:divider = repeat(${word(0 $geom()) - 8} -)
+alias dinfo (void) {
+	@ :divider = repeat(${word(0 $geom()) - 8} -)
 	echo $G $divider
 
 	/* Display information about the operating system */
@@ -35,65 +34,47 @@ alias dinfo (void)
 	/* Display module information */
 	foreach MODINFO module {
 		for var in ($aliasctl(assign match MODINFO.$module\.)) {
-			@:modname = tolower($module)
+			@ :modname = tolower($module)
 			eval ^local iline \$$var
 			eval xecho -b [\$[12]modname] $iline
 		}
-		@:pig_in_a_pen = 1
+		@ :pig_in_a_pen = 1
 	}
 	if (pig_in_a_pen) {
 		echo $G $divider
 	}
 }
 
-
-#
-# A file pager.  A demonstration of how to do something useful in ircII.
-# This cheesy rip-off was written by hop in 1996.
-# My apologies in advance to archon.
-# Modified on Jan 25, 1999 as an example of how to use arglists.
-# Modified on Oct 17, 2001 by Brian Weiss for use with DarkStar/EPIC4
-#
-
 alias more less
-alias less (file, void)
-{
-	@:winnum = winnum()
-	if (file) {
+alias less (files) {
+	if (!files) {
+		xecho -b Usage: /LESS <file> ...
+		return
+	}
+	for file in ($files) {
 		if (fexist($file) == 1) {
-			_less $open($file R) ${winsize() - 1} $winnum
-		} else {
-			xecho -b -w $winnum $file\: no such file.
-		}
-	} else {
-		xecho -b -w $winnum Usage: /LESS <filename>
-	}
-}
-
-alias _less (fd, count, winnum default 0, void)
-{
-	@:line = 0
-
-	while (!eof($fd) && (line++ < count)) {
-		@:ugh = read($fd)
-		if (!eof($fd)) {
-			xecho -w $winnum $ugh
-		}
-	}
-
-	if (!eof($fd)) {
-		@ LESS.FD = fd
-		@ LESS.NL = count
-		@ LESS.W  = winnum
-		input_char "Enter q to quit, or anything else to continue " {
-			if ([$0] != [q]) {
-				_less $LESS.FD $LESS.NL $LESS.W
+			@ :fd = open($file R)
+			if (fd != -1) {
+				@ :maxlines = winsize() - 1
+				while (!eof($fd)) {
+					@ :line = 0
+					while (line++ < maxlines) {
+						@ :foo = read($fd)
+						unless (eof($fd) && foo == []) {
+							echo $foo
+						}
+					}
+					if (!eof($fd)) {
+						^local pause $'Hit q to quit, or anything else to continue. '
+						if (tolower($pause) == [q]) { return; }
+					}
+				}
+				@ close($fd)
+			} else {
+				echo Error: Could not open $file for reading
 			}
-		}
-	} else {
-		@ close($fd)
-		for var in ($aliasctl(assign match LESS.)) {
-			^assign -$var
+		} else {
+			echo $file\: File not found
 		}
 	}
 }
@@ -101,8 +82,7 @@ alias _less (fd, count, winnum default 0, void)
 /*
  * Removes assign structures.
  */
-alias purge (arg, void)
-{
+alias purge (arg, void) {
 	foreach $arg _purge {
 		purge $arg\[$_purge]
 	}
@@ -112,8 +92,7 @@ alias purge (arg, void)
 /*
  * Removes alias structures.
  */
-alias purgealias (arg, void)
-{
+alias purgealias (arg, void) {
 	foreach -$arg _purge {
 		purgealias $arg\[$_purge]
 	}
@@ -123,8 +102,7 @@ alias purgealias (arg, void)
 /*
  * Reloads everything including the core scripts.
  */
-alias reload (void)
-{
+alias reload (void) {
 	@ :home = DS.HOME
 	timer -del all
 	for cnt from 0 to ${numitems(loaded_modules) - 1} {
@@ -133,19 +111,11 @@ alias reload (void)
 	^load $home/darkstar.irc
 }
 
-/*
- * Show your client version string.
- */
-alias sv (whom default "$C", void)
-{
+alias sv (whom default "$C", void) {
 	msg $whom ircII $J $uname() - $CLIENT_INFORMATION
 }
 
-/*
- * Display client uptime.
- */
-alias uptime (void)
-{
+alias uptime (void) {
 	xecho -b ircII $J $uname() - $CLIENT_INFORMATION
 	xecho -b Client Uptime: $tdiff(${time() - F})
 }

@@ -1,11 +1,8 @@
 Synopsis:
-   less <filename>
-   more <filename>
+   less <file> ...
+   more <file> ...
 
 Description:
-   A basic file pager.
-
-History:
-   This was written by Jeremy Nelson and originated in the less script
-   that is distributed with EPIC.
+   A basic file pager. Displays the contents of each <file> to the
+   current window.
 
