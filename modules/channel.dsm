@@ -478,7 +478,7 @@ alias wall2 (text)
 {
 	if (text)
 	{
-		^notice $tr(/#/#@/$C) [wall/$C] $text
+		^notice $sar(g/#/#@/$C) [wall/$C] $text
 		xecho -l walls -- * > [wall/$C] $text
 	}{
 		xecho -b Usage: /wall2 <text>

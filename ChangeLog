@@ -3,6 +3,11 @@ Darkstar ChangeLog
 
 [10/17/01]
 
+ * [nickcomp.dsm] Now using $sar() instead of $tr() to strip "-1" out of
+   text being sent to the channel. We also now look for "^C-1" and replace
+   it with "^C" instead of just stripping all occurrences of "-1". Doing
+   so is bad for obvious reasons.
+
  * [channel.dsm] Added the join/leave aliases from 2.8script. These may be
    removed later depending on upcoming changes to the internal /join command.
 
