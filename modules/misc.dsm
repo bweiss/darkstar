@@ -1,4 +1,4 @@
-#version 0.7.3
+#version 0.7.4
 /* $Id$ */
 /*
  * misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
@@ -74,24 +74,6 @@ format.add WHOIS_SIGNON $G SIGNON     %c:%n $strftime($4 %%a %%b %%d %%T %%Z %%Y
 format.add WHOWAS_NAME $G IRCNAME    %c:%n $6-
 format.add WHOWAS_NICK $G $2 %c\(%n$3%c@%n$4%c\)%n
 format.add UMODE $G Mode change \"$3-\" for user $2 by $1
-
-
-/****** INIT ******/
-
-/*
- * Force loading of our saved settings now. At the moment this is just
- * here for IGNORE_CTCP_FINGER.
- */
-module.load_saved_settings
-
-/*
- * Add the raw_irc hook needed to ignore CTCP FINGER requests.
- */
-if (CONFIG.IGNORE_CTCP_FINGER) {
-	^on ^raw_irc "% PRIVMSG % :AFINGERA" {
-		xecho -b CTCP FINGER request received from $before(1 ! $0), ignoring...
-	}
-}
 
 
 /****** USER ALIASES ******/
@@ -418,6 +400,16 @@ on ^notice "*"
 	}
 }
 
+on ?raw_irc "% PRIVMSG % :FINGER"
+{
+	if (CONFIG.IGNORE_CTCP_FINGER) {
+		xecho -b CTCP FINGER request received from $before(1 ! $0), ignoring...
+		return 1
+	} else {
+		return 0
+	}
+}
+
 on ^send_action "*"
 {
 	if (FORMAT.SEND_ACTION_USER) {
@@ -478,20 +470,6 @@ on ^who "* % % % % *"
 
 	if (FORMAT.WHO) {
 		echo $fparse(WHO $*)
-	}
-}
-
-/*
- * Add or remove the raw_irc hook for IGNORE_CTCP_FINGER.
- */
-on #-hook 426 "CONFIG IGNORE_CTCP_FINGER *"
-{
-	if (CONFIG.IGNORE_CTCP_FINGER) {
-		^on ^raw_irc "% PRIVMSG % :FINGER" {
-			xecho -b CTCP FINGER request received from $before(1 ! $0), ignoring...
-		}
-	} else {
-		^on raw_irc -"% PRIVMSG % :FINGER"
 	}
 }
 
