@@ -124,6 +124,15 @@ set INDENT ON
 
 
 /*
+ * Change window name and level for the first window, if necessary.
+ */
+if (winnam(1) == [ircII])
+{
+        ^window ircII name - level none
+}
+
+
+/*
  * Grab the default settings for the core scripts
  */
 do

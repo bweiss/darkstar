@@ -10,7 +10,7 @@ format BANS_FOOTER $G Total bans on $3: $2
 format BANS_HEADER #   SetBy         When               Ban
 format CHANNEL_SIGNOFF $G SignOff $1: $2 \($3-%n\) [$tolower($Z)]
 format CHANNEL_SYNC $G Channel $1 synced in $2 seconds
-format CHANNEL_TS $G Channel $2 created $strftime($3 %+) [$3]
+format CHANNEL_TS $G Channel $2 created $strftime($3 %a %Ef %T %Z %Y) [$3]
 format JOIN $G $1 \($2\) has joined $3 at $Z
 format LEAVE $G $1 \($2\) has left $3 at $Z
 format MODE $G Mode change \"$3-\" on channel $2 by $1

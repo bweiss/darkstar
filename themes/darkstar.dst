@@ -1,10 +1,12 @@
 /*
  * Default theme for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
- * Last modified: 10/15/01 (bmw)
+ * Last modified: 12/17/01 (bmw)
  */
 
 status -q darkstar
+
+set BANNER ***
 
 /* Module: channel */
 fset BANS $[3]1 $[12]5  $strftime($6 %x@%X)  $4

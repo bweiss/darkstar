@@ -15,11 +15,6 @@ set NO_FAIL_DISCONNECT ON
 set SCROLLBACK 1024
 
 
-if (winnam() == [ircII])
-{
-	^window ircII name - level none
-}
-
 /* Debugging stuff */
 
 #eval switch ($getenv(TERM))

@@ -1,10 +1,22 @@
 Darkstar ChangeLog
 
 
+12/17/01
+
+ * Apparently Linux systems don't understand $strftime(%+) so all occurrences
+   of "%+" have been replaced with "%a %Ef %T %Z %Y".
+
+ * Both themes now change BANNER to "***".
+
 12/12/01
 
  * Fixed a bug in channel.dsm related to auto-response. Publics containing
    AUTO_RESPONSE_STR would not be displayed at all when AUTO_RESPONSE was OFF.
+
+12/9/01
+
+ * darkstar.irc will now remove the name of window #1 as well as set the level
+   to "none". As such, this was removed from sample.dsrc.
 
 
 !! RELEASE: 0.0.13 (12/3/01) !!
