@@ -216,17 +216,27 @@ alias loader.load_module (module, void)
 							^assign DSET.BOOL.$variable 1
 						}
 
-						@ push(DSET.MODULES.$module $variable)
-						^assign DSET.CONFIG.$variable 1
-						^assign CONFIG.$variable $value
+						if (aliasctl(assign get DSET.CONFIG.$variable))
+						{
+							xecho -b loader.load_module(): Duplicate config variable: $variable
+						}{
+							@ push(DSET.MODULES.$module $variable)
+							^assign DSET.CONFIG.$variable 1
+							^assign CONFIG.$variable $value
+						}
 					}
 
 					(fset)
 					(format)
 					{
-						@ push(FSET.MODULES.$module $variable)
-						^assign FSET.FORMAT.$variable 1
-						^assign FORMAT.$variable $value
+						if (aliasctl(assign get FSET.FORMAT.$variable))
+						{
+							xecho -b loader.load_module(): Duplicate format variable: $variable
+						}{
+							@ push(FSET.MODULES.$module $variable)
+							^assign FSET.FORMAT.$variable 1
+							^assign FORMAT.$variable $value
+						}
 					}
 				}
 			}

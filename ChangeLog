@@ -3,6 +3,14 @@ Darkstar ChangeLog
 
 12/28/01
 
+ * The module loader now checks for duplicate config and format variables.
+
+ * [tabkey.dsm] /loadmod, /reloadmod, and /unloadmod now have completion for
+   all arguments, not just the first.
+
+ * The darkstar status bar should now properly display nicks and channels
+   containing \'s.
+
  * Forgot to escape some parentheses in the darkstar status bar.
 
  * Config variables were not being properly removed when modules were
