@@ -10,24 +10,24 @@ The entire file can be found at http://darkstar.epicsol.org/UPDATES
 	belonging to it. This could be very useful for themes.
 
 *** News 2003/11/04 -- oper.dsm 0.4 - Take the oper challenge!
-	The oper module now has support for opering up with the CHALLENGE
-	command instead of /OPER. This is a feature that is present on
-	ratbox servers (hybrid too?). There are two new config variables
-	used to control this: AUTO_CHALLENGE and CHALLENGE_RSA_RESPOND.
-	The latter is the path to the rsa_respond binary required to
-	generate the challenge response. See ds:oper(3) for details.
+	I have added support for opering with the challenge-response feature
+	present in ratbox servers and some hybrid7 servers. There are two
+	new config variables used to control this: AUTO_CHALLENGE and
+	CHALLENGE_RSA_RESPOND. The latter is the path to the rsa_respond
+	binary required to generate the response. See ds:oper(3) for details.
 
-	Note: In order to use /CHALLENGE, you must first add an entry to
-	the challenge list for the server you wish to oper on. This can
-	be done using the -add option with /CHALLENGE.
+	Note[1]: In order to use /CHALLENGE or AUTO_CHALLENGE, you must
+	first add an entry to the challenge-response list for the server
+	you wish to oper on. This can be accomplished using the -add option
+	with /CHALLENGE.
 
 	Note[2]: Currently this does not support the use of key files that
-	are password protected, defeating most of the security gained
-	through the use of CHALLENGE over /OPER. Still, the AUTO_CHALLENGE
-	feature makes this very convenient for people who run local test
-	servers or small networks that don't require a lot of security.
-	I do hope to support the use of passwords in the near future so
-	watch this file for updates.
+	are password protected, thus defeating most of the security gained
+	through the use of challenge-response authentication. At the moment
+	this is mostly suitable for use by people who run local test servers
+	or small networks that don't require a lot of security. I do hope to
+	support the use of passwords in the near future so watch this file
+	for updates.
 
 *** News 2003/11/02 -- Goodbye seen.dsm
 	It has been brought to my attention that the seen module, which

@@ -59,10 +59,21 @@ module.load_saved_settings
 /****** USER ALIASES ******/
 
 /*
- * /CHALLENGE -add <server> <nick> <key>
- * /CHALLENGE -del <server>
- * /CHALLENGE -list
- * /CHALLENGE [nick]
+ * Support for ratbox ircd's challenge-response opering (also present in
+ * some hybrid servers).
+ *
+ * WARNING - This does not yet support the use of password protected keys.
+ * Not having a password protected key defeats much of the security gained
+ * through the use of challenge-response authentication. This means that
+ * this is currently only sutiable for use by people running either local
+ * test servers or servers on small networks that don't require a lot of
+ * security. Use at your own risk.
+ *
+ * Usage:
+ *  /CHALLENGE -add <server> <nick> <key>
+ *  /CHALLENGE -del <server>
+ *  /CHALLENGE -list
+ *  /CHALLENGE [nick]
  */
 alias challenge (...)
 {
@@ -86,13 +97,13 @@ alias challenge (...)
 				if (ask == [y])
 				{
 					@ setitem(oper.challenge $item $servname $nick $key)
-					xecho -b Challenge added for $servname
+					xecho -b Entry for $servname added to challenge-response list
 					oper.write_clist
 				}
 			}{
 				@ setitem(oper.challenge $numitems(oper.challenge) $servname $nick $key)
-				xecho -b Challenge added for $servname
-				oper.write_clist
+				xecho -b Entry for $servname added to challenge-response list
+				oper.write_cr_list
 			}
 
 		}
@@ -103,10 +114,10 @@ alias challenge (...)
 			if ((:item = matchitem(oper.challenge $servname *)) > -1)
 			{
 				@ delitem(oper.challenge $item)
-				xecho -b Deleted $servname from challenge list
-				oper.write_clist
+				xecho -b Deleted entry for $servname from challenge-response list
+				oper.write_cr_list
 			}{
-				xecho -b Server $servname is not on the challenge list
+				xecho -b No entry for $servname found in challenge-response list
 			}
 		}
 
@@ -114,7 +125,7 @@ alias challenge (...)
 		{
 			if (numitems(oper.challenge))
 			{
-				xecho -b Challenge list:
+				xecho -b Challenge-response list:
 				echo Server                     Nick         Key
 				for cnt from 1 to $numitems(oper.challenge)
 				{
@@ -125,7 +136,7 @@ alias challenge (...)
 					echo $[26]serv $[12]nick $key
 				}
 			}{
-				xecho -b There are no entries in the challenge list
+				xecho -b There are no entries in the challenge-response list
 			}
 		}
 
@@ -135,7 +146,7 @@ alias challenge (...)
 
 			if (fexist($CONFIG.CHALLENGE_RSA_RESPOND) == -1)
 			{
-				xecho -b -s Invalid rsa_respond path. Aborting challenge.
+				xecho -b Invalid rsa_respond path. Aborting challenge.
 				return
 			}
 
@@ -144,23 +155,26 @@ alias challenge (...)
 				stack push on 386
 				^on ^386 "*"
 				{
+					xecho -b Received hex string from $0, Generating response...
 					@ :item = matchitem(oper.challenge $0 *)
 					@ :tmp = getitem(oper.challenge $item)
 					@ :key = word(2 $tmp)
 					@ :resp = pipe($CONFIG.CHALLENGE_RSA_RESPOND $key $1)
 					if (resp) {
+						xecho -b Sending challenge response to $0...
 						quote challenge +$resp
 					} else {
-						xecho -b -s No response returned. Challenge for $servername() failed.
+						xecho -b Error generating response. Challenge for $0 failed.
 					}
 					stack pop on 386
 				}
 
+				xecho -b Initiating challenge-response with $servername()...
 				quote challenge $nick
 			}{
-				xecho -b -s No entry for $servername() in the challenge list
+				xecho -b -s No entry for $servername() in the challenge-response list
 				xecho -b -s You can add entries with: /CHALLENGE -add <server> <nick> <key>
-				xecho -b -s For a manual challenge/response use /QUOTE CHALLENGE
+				xecho -b -s For manual challenge-response authentication use /QUOTE CHALLENGE
 			}
 		}
 	}
@@ -309,7 +323,7 @@ alias oper.operview.destroy (void)
 	}
 }
 
-alias oper.read_clist (file default "$DS.USER_DIR/challenge.sav", void)
+alias oper.read_cr_list (file default "$DS.USER_DIR/challenge.sav", void)
 {
 	if (fexist($file) == 1)
 	{
@@ -325,13 +339,13 @@ alias oper.read_clist (file default "$DS.USER_DIR/challenge.sav", void)
 	}
 }
 
-alias oper.write_clist (file default "$DS.USER_DIR/challenge.sav", void)
+alias oper.write_cr_list (file default "$DS.USER_DIR/challenge.sav", void)
 {
 	@ unlink($file)
 
 	if ((:fd = open($file W)) == -1)
 	{
-		echo Error: oper.write_clist: Unable to write to $file
+		echo Error: oper.write_cr_list: Unable to write to $file
 		return
 	}
 
@@ -361,7 +375,6 @@ on #-connect 427 "*"
 		if (item > -1)
 		{
 			@ :nick = word(1 $getitem(oper.challenge $item))
-			xecho -b Sending challenge for $nick to $servname
 			xeval -s $servernum() -- challenge $nick
 		}
 	}
@@ -449,7 +462,6 @@ on #-timer 427 "*"
 				if (!pass(oO $usermode($serv)))
 				{
 					@ :nick = word(1 $getitem(oper.challenge $item))
-					xecho -b Sending challenge for $nick to $servername($serv)
 					xeval -s $serv -- challenge $nick
 				}
 			}
@@ -492,7 +504,7 @@ if (CONFIG.OPERVIEW) {
 	oper.operview.create
 }
 
-oper.read_clist
+oper.read_cr_list
 
 
 /* EOF */

@@ -1,17 +1,14 @@
 FOR 0.3 RELEASE:
 
-  * Write a $numlines() function that will return the number of lines
-    that a given string will occupy after final display. This must take
-    into account the effects of /SET [CONTINUED_LINE|INDENT].
-
-  * Using the above mentioned $numlines() function, rewrite /LESS so that
-    it correctly handles linewrapped output.
-
   * Move all aliases and assigns in the core scripts to the DS or CORE
     /ASSIGN structures, or a structure prepended with '_', and make sure
     that the module loader does not allow any modules to use names that may
     interfere with the core scripts. This includes the words: ds, core,
     config, format, module, and anything beginning with '_'.
+
+  * Move all the standard formats (whois, joins/parts, msgs, notices, etc.)
+    out of modules and into the core. I think it would make life easier for
+    everyone if these were just part of the core.
 
   * Move certain key bindings (most importantly, pgup/pgdn) out of
     window.dsm and into the core.
@@ -29,6 +26,13 @@ FOR 0.3 RELEASE:
 
   * $STATUS.DOUBLE and the single_status array are part of a miserable hack
     that needs to go away. Find some other way to do this.
+
+  * Write a $numlines() function that will return the number of lines
+    that a given string will occupy after final display. This must take
+    into account the effects of /SET [CONTINUED_LINE|INDENT].
+
+  * Using the above mentioned $numlines() function, rewrite /LESS so that
+    it correctly handles linewrapped output.
 
   * Add timestamping functionality to the core. This includes a TIMESTAMP
     config variable, a format variable of the same name, and a $ts() function
@@ -73,6 +77,8 @@ AFTER 0.3 RELEASE:
 
   * [channel.dsm] The REMEMBER_TOPICS feature should also store the nick
     of the person that set the topic as well as the timestamp for it.   
+
+  * Write a userlist module.
 
 
 OTHER NOTES/IDEAS:
