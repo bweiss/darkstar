@@ -2,6 +2,18 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://darkstar.epicsol.org/UPDATES
 
 
+*** News 2004/07/29 -- formats.dsm 0.3 - Auto-response renamed: Highlight
+	The auto-response feature that highlights publics when they contain
+	certain words has been renamed to "highlight". This means that all
+	related config and format variables have also been renamed. In most
+	cases this just means that "AUTO_RESPONSE" becomes "HIGHLIGHT" with
+	the exception of the AUTO_RESPONSE_STR config variable being renamed
+	to HIGHLIGHT_LIST. All highlight related format variables are now
+	suffixed with "_HL" instead of "_AR". There are also two new config
+	variables for exempting specific channels and nicks from triggering
+	a highlight. They are called HIGHLIGHT_IGNORE_CHANNELS and
+	HIGHLIGHT_IGNORE_NICKS.
+
 *** News 2004/06/01 -- Timestamp support! $ts()
 	I have finally added a $ts() function for use in themes to
 	provide timestamping that can be toggled via /DSET. The related

@@ -67,5 +67,9 @@ OTHER NOTES/IDEAS:
     REMEMBER_TOPICS and auto-query could use it instead of each having to
     handle caching things themselves.
 
+  * Placing a '^O' at the beginning of the STATUS_FORMAT* /SETs can accomplish
+    the same thing as /SET REVERSE_STATUS_LINE. This is the preferred method
+    as REVERSE_STATUS_LINE will probably go away in EPIC5.
+
 
 End of file.

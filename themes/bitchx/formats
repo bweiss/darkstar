@@ -49,9 +49,9 @@ assign FORMAT.NAMES_VOICE %K[%M+%B$[10]1%K]
 assign FORMAT.NICKNAME $G %W$1%n is now known as %c$2%n
 assign FORMAT.NOTICE %K-%M$1%K\(%m$2%K\)-%n $3-
 assign FORMAT.PUBLIC %B<%n$1%B>%n $3-
-assign FORMAT.PUBLIC_AR %B<%Y$1%B>%n $3-
+assign FORMAT.PUBLIC_HL %B<%Y$1%B>%n $3-
 assign FORMAT.PUBLIC_OTHER %b<%n$1%K:%n$2%b>%n $3-
-assign FORMAT.PUBLIC_OTHER_AR %b<%Y$1%K:%n$2%b>%n $3-
+assign FORMAT.PUBLIC_OTHER_HL %b<%Y$1%K:%n$2%b>%n $3-
 assign FORMAT.SEND_ACTION_CHANNEL %Kð %W$1%n $3-
 assign FORMAT.SEND_ACTION_CHANNEL_OTHER %Kð%n -> %W$1%n/%c$2%n $3-
 assign FORMAT.SEND_ACTION_USER %Kð%n -> %W$1%n/%c$2%n $3-

@@ -39,3 +39,8 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Add a $ts() function and 2 new config vars: TIMESTAMP and TIMESTAMP_FORMAT.
 * Fix auto-response-notify behavior with wserv windows. A notification will
   only be displayed for windows that are NOT visible.
+* Rename auto-response feature. It is now called "highlight". All config
+  vars are now prefixed with "HIGHLIGHT" instead of "AUTO_RESPONSE" and
+  all format vars are now suffixed with "_HL" instead of "_AR".
+* Add two new config vars for exempting channels/nicks from triggering a
+  highlight: HIGHLIGHT_IGNORE_CHANNELS and HIGHLIGHT_IGNORE_NICKS. rb larne.

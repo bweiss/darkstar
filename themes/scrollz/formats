@@ -50,9 +50,9 @@ assign FORMAT.NAMES_VOICE %M+%m$1
 assign FORMAT.NICKNAME $G %c$1%n is now known as %c$2%n
 assign FORMAT.NOTICE %W-%G$1%W-%n $3-
 assign FORMAT.PUBLIC %c<%n$1%c>%n $3-
-assign FORMAT.PUBLIC_AR %c<%n$1%c>%n $3-
+assign FORMAT.PUBLIC_HL %c<%n$1%c>%n $3-
 assign FORMAT.PUBLIC_OTHER %c<%n$1:%C$2%c>%n $3-
-assign FORMAT.PUBLIC_OTHER_AR %c<%n$1:%C$2%c>%n $3-
+assign FORMAT.PUBLIC_OTHER_HL %c<%n$1:%C$2%c>%n $3-
 assign FORMAT.SEND_ACTION_CHANNEL %W*%n %C$1%n $3-
 assign FORMAT.SEND_ACTION_CHANNEL_OTHER <%C$2%n> %W*%n %C$1%n $3-
 assign FORMAT.SEND_ACTION_USER <%C$2%n> %W*%n %C$1%n $3-

@@ -1,4 +1,4 @@
-# version:0.2.1 loader:pf
+# version:0.3 loader:pf
 # $Id$
 #
 # formats.dsm - Standard formatting hooks and variables for DarkStar/EPIC4
@@ -26,10 +26,12 @@ queue cleanup.formats
 };
 
 
-addconfig -b AUTO_RESPONSE 0;
-addconfig -b AUTO_RESPONSE_BEEP 0;
-addconfig -b AUTO_RESPONSE_NOTIFY 0;
-addconfig    AUTO_RESPONSE_STR;
+addconfig -b HIGHLIGHT 0;
+addconfig -b HIGHLIGHT_BEEP 0;
+addconfig    HIGHLIGHT_IGNORE_CHANNELS;
+addconfig    HIGHLIGHT_IGNORE_NICKS;
+addconfig    HIGHLIGHT_LIST;
+addconfig -b HIGHLIGHT_NOTIFY 0;
 addconfig    NAMES_COL;
 addconfig -b NAMES_SORT_BY_MODE 0;
 addconfig -b SHOW_AWAY_ONCE 1;
@@ -75,9 +77,9 @@ addformat NAMES_VOICE +$$1;
 addformat NICKNAME $$G $$1 is now known as $$2;
 addformat NOTICE -$$1\\\- $$3-;
 addformat PUBLIC <$$1> $$3-;
-addformat PUBLIC_AR <$$1> $$3-;
+addformat PUBLIC_HL <$$1> $$3-;
 addformat PUBLIC_OTHER <$$1:$$2> $$3-;
-addformat PUBLIC_OTHER_AR <$$1:$2> $$3-;
+addformat PUBLIC_OTHER_HL <$$1:$2> $$3-;
 addformat SEND_ACTION_CHANNEL * $$1 $$3-;
 addformat SEND_ACTION_CHANNEL_OTHER * -> $$2: $$1 $$3-;
 addformat SEND_ACTION_USER * -> $$2: $$1 $$3-;
@@ -560,76 +562,78 @@ on ^notice "*"
 		
 on ^public "*"
 {
-	if (CONFIG.AUTO_RESPONSE)
+	if (CONFIG.HIGHLIGHT && !match($1 $CONFIG.HIGHLIGHT_IGNORE_CHANNELS) &&
+	    !match($0 $CONFIG.HIGHLIGHT_IGNORE_NICKS))
 	{
 		if (match(*$servernick()* $2-))
 		{
-			@ :autoresp = 1;
+			@ :highlight = 1;
 		}{
-			for word in ($CONFIG.AUTO_RESPONSE_STR)
+			for word in ($CONFIG.HIGHLIGHT_LIST)
 			{
 				if (match(*$word* $2-)) {
-					@ :autoresp = 1;
+					@ :highlight = 1;
 					break;
 				};
 			};
 		};
 
-		if (autoresp)
+		if (highlight)
 		{
-			formats.echo PUBLIC_AR $*;
-			if (CONFIG.AUTO_RESPONSE_BEEP)
+			formats.echo PUBLIC_HL $*;
+			if (CONFIG.HIGHLIGHT_BEEP)
 			{
 				^stack push set BEEP;
 				^set BEEP ON;
 				beep;
 				^stack pop set BEEP;
 			};
-			if (CONFIG.AUTO_RESPONSE_NOTIFY && winvisible($winchan($1)) < 1) {
-				xecho -b -c Auto-response triggered in window #$winchan($1) by $0 \($1\);
+			if (CONFIG.HIGHLIGHT_NOTIFY && winvisible($winchan($1)) < 1) {
+				xecho -b -c Highlight triggered in window #$winchan($1) by $0 \($1\);
 			};
 		};
 	};
 
-	if (!autoresp) {
+	if (!highlight) {
 		formats.echo PUBLIC $*;
 	};
 };
 
 on ^public_other "*"
 {
-	if (CONFIG.AUTO_RESPONSE)
+	if (CONFIG.HIGHLIGHT && !match($1 $CONFIG.HIGHLIGHT_IGNORE_CHANNELS) &&
+	    !match($0 $CONFIG.HIGHLIGHT_IGNORE_NICKS))
 	{
 		if (match(*$servernick()* $2-))
 		{
-			@ :autoresp = 1;
+			@ :highlight = 1;
 		}{
-			for word in ($CONFIG.AUTO_RESPONSE_STR)
+			for word in ($CONFIG.HIGHLIGHT_LIST)
 			{
 				if (match(*$word* $2-)) {
-					@ :autoresp = 1;
+					@ :highlight = 1;
 					break;
 				};
 			};
 		};
 
-		if (autoresp)
+		if (highlight)
 		{
-			formats.echo PUBLIC_OTHER_AR $*;
-			if (CONFIG.AUTO_RESPONSE_BEEP)
+			formats.echo PUBLIC_OTHER_HL $*;
+			if (CONFIG.HIGHLIGHT_BEEP)
 			{
 				^stack push set BEEP;
 				^set BEEP ON;
 				beep;
 				^stack pop set BEEP;
 			};
-			if (CONFIG.AUTO_RESPONSE_NOTIFY && winvisible($winchan($1)) < 1) {
-				xecho -b -c Auto-response triggered in window #$winchan($1) by $0 \($1\);
+			if (CONFIG.HIGHLIGHT_NOTIFY && winvisible($winchan($1)) < 1) {
+				xecho -b -c Highlight triggered in window #$winchan($1) by $0 \($1\);
 			};
 		};
 	};
 
-	if (!autoresp) {
+	if (!highlight) {
 		formats.echo PUBLIC_OTHER $*;
 	};
 };
