@@ -1,9 +1,7 @@
-#version 0.7.2
+#version 0.7.3
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key module for DarkStar/EPIC4
- *
- * Written by Brian Weiss
  * Copyright (c) 2002 Brian Weiss
  * See the 'COPYRIGHT' file for more information.
  *
@@ -399,6 +397,33 @@ alias tabkey.proc.generic (list)
 	}
 }
 
+/*
+ * This attempts to turn the last word on the input prompt into a
+ * hostmask suitable for use with commands like /ignore and /ban.
+ * Currently, it uses a mask type of 3 (see mask(6) in the EPIC help
+ * files) but I may make this configurable at some later date.
+ */
+alias tabkey.proc.mask (void)
+{
+	@:lastc = mid(${strlen($L) - 1} 1 $L)
+	unless (lastc == [ ]) {
+		@:lastw = twiddle($word(${#L - 1} $L))
+		/* Try getting their userhost from cache first. */
+		@:uhost = userhost($lastw)
+		/* If that fails, query the server via $uh(). */
+		if (uhost == [<UNKNOWN>@<UNKNOWN>]) {
+			@:uhost = uh($lastw)
+		}
+		/* If both fail, the user is not online and we should give up. */
+		if (uhost == [<UNKNOWN>@<UNKNOWN>]) {
+			return
+		}
+
+		parsekey delete_to_previous_space
+		xtype -l $mask(3 $uhost)${[ ]}
+	}
+}
+
 alias tabkey.proc.msg (void)
 {
 	@:nicks = TABKEY.NICKS[$winserv()]
@@ -580,6 +605,9 @@ tabkey.addrule "/unshift %"         aliasctl    "assign"
 tabkey.addrule "/foreach %"         aliasctl    "assign"
 tabkey.addrule "/foreach -%"        aliasctl    "alias"
 tabkey.addrule "/alias %"           aliasctl    "alias"
+tabkey.addrule "/ban *"             mask
+tabkey.addrule "/ignore %"          mask
+tabkey.addrule "/ignore % *"        generic     "ALL CRAP CTCPS INVITES JOINS MSGS NICKS NONE NOTES NOTICES PARTS PUBLIC TOPICS WALLS WALLOPS"
 
 /*
  * Load the user's custom rule set if one exists.
