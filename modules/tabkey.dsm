@@ -162,7 +162,7 @@ alias tabkey.process_tabkey (void)
 			(msg)     { @ tabkey.msg_routine() }
 			(nick)    { @ tabkey.nick_routine($list) }
 			(*) {
-				xecho -b Illegal completion routine specified [$routine] \(item: $item\)
+				xecho -b Invalid completion routine specified [$routine] \(item: $item\)
 			}
 		}
 	}
