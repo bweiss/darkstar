@@ -11,8 +11,8 @@
 alias loadedmods loadedmodules
 alias loadedmodules (void)
 {
-	echo  #   Module               Version      Size (bytes)
-	echo ----------------------------------------------------
+	echo  #   Module           Version     Size(bytes)
+	echo ----------------------------------------------
 	for cnt from 0 to ${numitems(loaded_modules) - 1}
 	{
 		@ :num = cnt + 1
@@ -20,9 +20,9 @@ alias loadedmodules (void)
 		@ :item = finditem(modules $modname)
 		@ :modver = getitem(module_versions $item)
 		@ :modsize = fsize($getitem(module_files $item))
-		echo  $[3]num $[20]modname [ $[8]modver ] [ $[-8]modsize ]
+		echo  $[3]num $[16]modname [ $[7]modver ] [ $[-7]modsize ]
 	}
-	echo ----------------------------------------------------
+	echo ----------------------------------------------
 	xecho -b Loaded modules: $numitems(loaded_modules)
 }
 
@@ -58,8 +58,8 @@ alias modules modlist
 alias modlist (void)
 {
 	loader.build_modlist
-	echo  #   Module               Version      Size (bytes) Loaded Auto-Load
-	echo ---------------------------------------------------------------------
+	echo  #   Module           Version     Size(bytes) Loaded Auto-Load
+	echo ---------------------------------------------------------------
 	for cnt from 0 to ${numitems(modules) - 1}
 	{
 		@ :num = cnt + 1
@@ -68,9 +68,9 @@ alias modlist (void)
 		@ :version = getitem(module_versions $cnt)
 		@ :auto_load = common($module / $CONFIG.AUTO_LOAD_MODULES) ? [\(*\)] : [\( \)]
 		@ :loaded = finditem(loaded_modules $module) > -1 ? [\(*\)] : [\( \)]
-		echo  $[3]num $[20]module [ $[8]version ] [ $[-8]fsize($file) ]   $loaded     $auto_load
+		echo  $[3]num $[16]module [ $[7]version ] [ $[-7]fsize($file) ]   $loaded     $auto_load
 	}
-	echo ---------------------------------------------------------------------
+	echo ---------------------------------------------------------------
 	xecho -b Available modules: $numitems(modules), Loaded modules: $numitems(loaded_modules)
 }
 
