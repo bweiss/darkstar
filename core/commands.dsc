@@ -29,7 +29,7 @@ alias dinfo (void)
 	/* Display information about DarkStar */
 	xecho -b DarkStar $DS.VERSION \($DS.INTERNAL_VERSION\) [$DS.CORE_ID]
 	xecho -b Available modules: $numitems(_modules), Loaded modules: $numitems(_loaded_modules)
-	xecho -b Current theme: $DS.THEME
+	xecho -b Current theme: $CONFIG.THEME
 	echo $G $divider
 
 	/* Display module information */
