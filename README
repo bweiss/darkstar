@@ -20,25 +20,22 @@ being in the early stages of development.
 
 WHERE TO GET DARKSTAR AND EPIC4
 
-Darkstar and EPIC4 can be obtained from the following places:
+Darkstar and EPIC4 can be found at the following URLs:
 
 http://www.got.net/~brian/
-http://www.neglected.net/~brian/
-http://www.epicsol.org/~brian/
+http://www.epicsol.org/
 
 A snapshot of my current tree is also available via CVS:
 
-	export CVSROOT=:pserver:anoncvs@epicsol.org:/home/cvs/repository
-	cvs login
-	(password is "anoncvs")
-	cvs co darkstar
+  export CVSROOT=:pserver:anoncvs@epicsol.org:/home/cvs/repository
+  cvs login
+  (password is "anoncvs")
+  cvs co darkstar
 
-  Once you have done a checkout you can just do the following to update it.
+Once you have done a checkout you can just do the following to update it.
 
-	cd darkstar/
-	cvs update
-
-Official EPIC Website: http://www.epicsol.org/
+  cd darkstar/
+  cvs update
 
 
 GETTING STARTED
@@ -119,24 +116,31 @@ def/*.def		- These files define what variables are seen by
 modules/*.dsm		- The modules that provide most of the features. All
 			  of these are completely optional and are independent
 			  of each other.
+status/*		- Statbar files.
 themes/*.dst		- Theme files. These change cosmetic aspects of the
 			  script.
 
 
 I would like to briefly thank the following people for contributing in some
 way to this script:
-			Jeremy Nelson		RoboHak
-			Colten Edwards		dialtone
-			Eli Sand		adm
-			Daniel Shatter		myke
-			Tyler Hall (whitefang)  Tilt
-			shade			ww
-			BlackJac
-			defiler	
 
-If you think I forgot your name on this list, just drop me an email.
+	Jeremy Nelson
+	Colten Edwards
+	Eli Sand
+	Daniel Shatter
+	Tyler Hall
+	RoboHak
+	BlackJac
+	defiler	
+	shade
+	dialtone
+	adm
+	myke
+	Tilt
+
+If you think I forgot your name on this list, please drop me an email.
 
   - bmw
 
 
-#EOF
+EOF.
