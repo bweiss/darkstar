@@ -73,37 +73,33 @@ alias bool2word (arg, void)
 	@ function_return = ret;
 };
 
+#
+# Special thanks to |Rain| and CrazyEddy for help optimizing the following
+# channel user functions.
+#
 alias chhops (chan default "$C", void)
 {
-	for nick in ($pattern(\\%* $channel($chan))) {
-		@ push(:tmp $rest(2 $nick));
-	};
-	@ function_return = tmp;
+	@ function_return = strip(%+?. $pattern(\\%* $channel($chan)));
 };
 
 alias nochhops (chan default "$C", void)
 {
-	for nick in ($filter(\\%* $channel($chan))) {
-		@ push(:tmp $rest(2 $nick));
-	};
-	@ function_return = tmp;
+	@ function_return = strip(@+?. $filter(\\%* $channel($chan)));
 };
 
-# This was donated by Ben Winslow.
 alias chvoices (chan default "$C", void)
 {
-	for nick in ($pattern(?+* $channel($chan))) {
-		@ push(:tmp $rest(2 $nick));
-	};
-	@ function_return = tmp;
+	@ function_return = strip(@%+?. $pattern(?+* $channel($chan)));
 };
 
 alias nochvoices (chan default "$C", void)
 {
-	for nick in ($filter(?+* $channel($chan))) {
-		@ push(:tmp $rest(2 $nick));
-	};
-	@ function_return = tmp;
+	@ function_return = strip(@%?. $filter(?+* $channel($chan)));
+};
+
+alias chnormal (chan default "$C", void)
+{
+	@ function_return = strip(?. $pattern("\\[.. \\?. .\\? \\?\\?\\]*" $channel($chan)));
 };
 
 alias country (...)

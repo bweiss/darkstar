@@ -1,14 +1,6 @@
 FOR 0.3 RELEASE:
 
-  * Write a new_users help page for /DHELP
-
-  * Add a function that will return the nicks of all normal users (no ops,
-    no half-ops, no voice) in a specified channel. This is needed because
-    $nochops() returns voiced users along with the normal ones.
-
-  * Update help files and write better module documentation (doc/modules.txt)
-
-  * Add full support for half-ops.
+  * Rewrite doc/modules.txt
 
   * Add some sort of function to return a list of all the channels that you
     and the specified nick are both joined to. Maybe something like

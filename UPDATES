@@ -2,6 +2,12 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://darkstar.epicsol.org/UPDATES
 
 
+*** News 2004/08/13 -- New function: $chnormal()
+	This new function works just like $chops()/$chvoices()/etc. but
+	returns only the users that are NOT +o, +h, or +v. The $nochops()
+	function differs from this in that it returns all non-ops including
+	half-ops and voiced users.
+
 *** News 2004/08/10 -- nickcomp.dsm 1.2 - /DSET NICK_COMPLETION_PATTERNS
 	There is a new config variable, named NICK_COMPLETION_PATTERNS, that
 	will allow users to better configure the behavior of nick completion

@@ -46,3 +46,6 @@ THE CHANGELOG SINCE THE LAST RELEASE:
   highlight: HIGHLIGHT_IGNORE_CHANNELS and HIGHLIGHT_IGNORE_NICKS. rb larne.
 * Add /DSET NICK_COMPLETION_PATTERNS to make nick completion more configurable.
 * Fix /TOPICS. You can't count down with /for x from n to n { ... }, only up.
+* Don't bind pgup/pgdn in window.dsc -- They are bound by default.
+* Add $chnormal().
+* Rewrite and optimize $chhops(), $nochhops(), $chvoices(), and $nochvoices().

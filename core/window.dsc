@@ -9,9 +9,6 @@
 
 addconfig -b DOUBLE_STATUS 0;
 
-bind ^[[5~ scroll_backward;
-bind ^[[6~ scroll_forward;
-
 alias _window_double_all (...)
 {
 	switch ($0)
