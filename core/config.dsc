@@ -64,10 +64,10 @@ alias set_routine (type, variable, value)
 			{
 				if (struct2 == [CONFIG] && aliasctl(assign get DSET.LIT.$var2))
 				{
-					^assign $var $booltonum($value)
+					^assign $var $value
 					xecho -s -b Value of $toupper($var2) set to $value
 				}{
-					^assign $var $value
+					^assign $var $booltonum($value)
 					xecho -s -b Value of $toupper($var2) set to $toupper($numtobool($value))
 				}
 			} \
