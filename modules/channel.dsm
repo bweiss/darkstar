@@ -512,7 +512,7 @@ alias mme
 
 	if (all_servers)
 	{
-		for sref in ($serverrefs()) {
+		for sref in ($myservers(0)) {
 			for chan in ($mychannels($sref)) {
 				xeval -s $sref {describe $chan $text};
 			};
@@ -550,7 +550,7 @@ alias msay
 
 	if (all_servers)
 	{
-		for sref in ($serverrefs()) {
+		for sref in ($myservers(0)) {
 			for chan in ($mychannels($sref)) {
 				xeval -s $sref {msg $chan $text};
 			};

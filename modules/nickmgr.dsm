@@ -177,7 +177,7 @@ alias nickmgr.scan (void)
 
 	nickmgr.clean_ignore_list;
 
-	for serv in ($serverrefs())
+	for serv in ($myservers(0))
 	{
 		if (serv > -1 && isconnected($serv))
 		{

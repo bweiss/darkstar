@@ -40,7 +40,7 @@ addconfig -b SEND_AWAY_NOTICE 1;
 
 # If we're already away when the module is loaded, create a timestamp.
 # This won't be accurate, of course, but it's better than nothing.
-for serv in ($serverrefs())
+for serv in ($myservers(0))
 {
 	if (serv > -1 && isaway($serv)) {
 		@ AWAY.TIME.$serv = time();
@@ -171,7 +171,7 @@ on #-input 421 "*"
 	@ AWAY.LAST_INPUT = time();
 	if (CONFIG.AUTO_UNSET_AWAY)
 	{
-		for server in ($serverrefs())
+		for server in ($myservers(0))
 		{
 			if (isaway($server))
 			{
@@ -250,7 +250,7 @@ on #-timer 421 "*"
 		@ :minutes = CONFIG.AUTO_AWAY_TIME / 60;
 		if (diff >= AWAY.LAST_INPUT)
 		{
-			for server in ($serverrefs())
+			for server in ($myservers(0))
 			{
 				if (!isaway($server))
 				{

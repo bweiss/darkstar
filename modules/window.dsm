@@ -312,7 +312,7 @@ on #-hook 426 "CONFIG MSG_WINDOW *"
 {
 	if (CONFIG.MSG_WINDOW)
 	{
-		for serv in ($serverrefs()) {
+		for serv in ($myservers(0)) {
 			window.msgwin.create $serv;
 		};
 	}{
@@ -540,7 +540,7 @@ if (CONFIG.AUTO_CREATE_WINDOWS)
 
 if (CONFIG.MSG_WINDOW)
 {
-	for serv in ($serverrefs()) {
+	for serv in ($myservers(0)) {
 		window.msgwin.create $serv;
 	};
 };

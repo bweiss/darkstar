@@ -258,14 +258,6 @@ alias pipe
 };
 #hop '97
 
-alias serverrefs (void)
-{
-	for wref in ($winrefs()) {
-		@ push(:refnums $winserv($wref));
-	};
-	@ function_return = uniq($refnums);
-};
-
 alias tld
 {
 	if ([$0])

@@ -757,7 +757,7 @@ for hook in (dcc_chat send_dcc_chat)
 {
 	on #^$hook 420 "*"
 	{
-		for serv in ($serverrefs()) {
+		for serv in ($myservers(0)) {
 			tabkey.msg_handler $serv =$0;
 		};
 	};
@@ -765,14 +765,14 @@ for hook in (dcc_chat send_dcc_chat)
 
 on #^dcc_request 420 "% CHAT *"
 {
-	for serv in ($serverrefs()) {
+	for serv in ($myservers(0)) {
 		tabkey.msg_handler $serv =$0;
 	};
 };
 
 on #^send_ctcp 420 "PRIVMSG % DCC CHAT *"
 {
-	for serv in ($serverrefs()) {
+	for serv in ($myservers(0)) {
 		tabkey.msg_handler $serv =$1;
 	};
 };
