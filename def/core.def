@@ -1,3 +1,4 @@
+config bool AUTO_LOAD_DEPENDENCIES 1
 config      AUTO_LOAD_MODULES away channel keepnick misc names nickcomp tabkey window
 config bool AUTO_LOAD_PROMPT 1
 config      THEME epic4

@@ -3,6 +3,10 @@ Darkstar ChangeLog
 
 1/1/02
 
+ * Added dependency support to the module loader. The list of a module's
+   dependencies will be specified in its .def file. The keyword is "dep" and
+   should be followed by a white-space separated list of modules.
+
  * [window.dsm] Killing the msg window will now set MSG_WINDOW to OFF.
 
 12/29/01

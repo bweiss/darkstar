@@ -6,7 +6,7 @@
  * LOADER.DSC - Module loader for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/29/01 (bmw)
+ * Last modified: 1/1/02 (bmw)
  */
 
 
@@ -126,6 +126,50 @@ alias loader.build_modlist (void)
 	return
 }
 
+alias loader.dependency (module, depmods)
+{
+	if (!module || !depmods)
+	{
+		echo loader.dependency(): Not enough arguments.
+		return
+	}
+
+	for depmod in ($depmods)
+	{
+		if (finditem(loaded_modules $depmod) < 0)
+		{
+			if (finditem(modules $depmod) > -1)
+			{
+				if (CONFIG[AUTO_LOAD_DEPENDENCIES])
+				{
+					xecho -b Module [$module] depends on [$depmod]. Auto-loading...
+					loadmod $depmod
+				}{
+					^local tmp
+
+					while (!tmp)
+					{
+						^assign tmp $"$INPUT_PROMPT Module [$module] depends on [$depmod] - Load it now? [Yn] "
+						if (tmp == [])
+						{
+							^assign tmp Y
+						}
+					}
+
+					switch ($toupper($left(1 $tmp)))
+					{
+						(Y) {loadmod $depmod}
+						(*) {xecho -b Skipping dependency [$depmod]. Module may not work properly.}
+					}
+				}
+			}{
+				xecho -b Warning: Unable to load dependency. Module [$depmod] not found.
+			}
+		}
+	}
+
+	return
+}
 
 alias loader.display_loaded (void)
 {
@@ -205,6 +249,11 @@ alias loader.load_module (module, void)
 
 				switch ($type)
 				{
+					(dep)
+					{
+						@ loader.dependency($module $restw(1 $line))
+					}
+
 					(dset)
 					(config)
 					{
@@ -238,6 +287,8 @@ alias loader.load_module (module, void)
 							^assign FORMAT.$variable $value
 						}
 					}
+
+					(*) { # Do nothing. }
 				}
 			}
 		}
