@@ -1,6 +1,12 @@
 DarkStar ChangeLog
 
 
+2002/06/02
+
+ * The bitchx theme was using $padleft() in the SET and SET_NOVALUE
+   formats. It now uses $pad() instead.
+
+
 !! RELEASE: 0.2.6 (2002/06/01) !!
 
 
