@@ -34,7 +34,7 @@ format.add NICK_COMPLETION $1: $2-
 
 alias nickcomp.getnick
 {
-	for patt in (%$0% ?$0? %$0 ?$0 $0% $0? $0)
+	for patt in ($0 $0% ?$0 ?$0%)
 	{
 		@:findnick = pattern($patt $onchannel($C))
 		if (#findnick > CONFIG.NICK_COMPLETION_THRESHOLD) {
