@@ -10,8 +10,7 @@
 
 /****** CLEANUP QUEUE ******/
 
-queue cleanup.names
-{
+queue cleanup.names {
 	for alias in (names sc scan scann scano scanv) {
 		^alias -$alias
 	}
@@ -56,8 +55,7 @@ alias scanv (chan default "$C", void) {names.main $chan v}
  * This does most of the real work. It is a bit more expensive than
  * I would like it to be but allows for a lot of customization.
  */
-alias names.main (chan default "$C", mode default "*", void)
-{
+alias names.main (chan default "$C", mode default "*", void) {
 	/*
 	 * Compile the list of users that we want to display.
 	 * This is also where any sorting takes place.
@@ -91,18 +89,15 @@ alias names.main (chan default "$C", mode default "*", void)
 			}
 		}
 	}
-
 	if (#users < 1) {
 		xecho -b No $desc found on channel $chan
 		return 0
 	}
-
 	for var in (NAMES_HEADER NAMES_HEADER1 NAMES_HEADER2) {
 		if (FORMAT[$var]) {
 			xecho -- $fparse($var $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
 		}
 	}
-
 	if (CONFIG.NAMES_COL) {
 		/*
 		 * Create a temporary variable to store the names of the
@@ -114,7 +109,6 @@ alias names.main (chan default "$C", mode default "*", void)
 		for cnt from 1 to $CONFIG.NAMES_COL {
 			push tmp nick.$cnt
 		}
-
 		/*
 		 * Break the list of users into multiple lines. This gets
 		 * a little tricky because we want certain things evaluated
@@ -131,7 +125,6 @@ alias names.main (chan default "$C", mode default "*", void)
 				 * happen until the last line of the /FE code block.
 				 */
 				eval push line \\\$names.parse\(\$chan \$nick[$cnt]\)
-
 				/*
 				 * Insert NAMES_MID inbetween each nick, if it exists.
 				 * We check for NAMES_RIGHT because we don't want to
@@ -146,7 +139,7 @@ alias names.main (chan default "$C", mode default "*", void)
 							push line \$FORMAT.NAMES_MID
 						}
 					} else {
-						@:next = cnt + 1
+						@ :next = cnt + 1
 						if (nick[$next]) {
 							push line \$FORMAT.NAMES_MID
 						}

@@ -1,4 +1,4 @@
-#version 0.2
+#version 0.2.1
 /* $Id$ */
 /*
  * dcc.dsm - DCC related module for DarkStar/EPIC4
@@ -10,8 +10,7 @@
 
 /****** CLEANUP QUEUE ******/
 
-queue cleanup.dcc
-{
+queue cleanup.dcc {
 	^alias -chat
 	^on dcc_chat -"*"
 	^on send_dcc_chat -"*"
@@ -29,14 +28,12 @@ format.add SEND_DCC_CHAT => =$1= $2-
 
 /****** USER ALIASES ******/
 
-alias chat (nick, void)
-{
+alias chat (nick, void) {
 	if (!nick) {
 		xecho -b Usage: /chat <nick>
 		return
 	}
-
-	dcc chat $nick
+	//dcc chat $nick
 }
 
 
@@ -45,23 +42,20 @@ alias chat (nick, void)
 /*
  * DCC auto-get.
  */
-on #-dcc_request 450 "% SEND *"
-{
+on #-dcc_request 450 "% SEND *" {
 	if (CONFIG.DCC_AUTOGET) {
 		xecho -b DCC AutoGet: Accepting SEND of $2 from $0
 		dcc get $0 $2
 	}
 }
 
-on ^dcc_chat "*"
-{
+on ^dcc_chat "*" {
 	if (FORMAT.DCC_CHAT) {
 		echo $fparse(DCC_CHAT $*)
 	}
 }
 
-on ^send_dcc_chat "*"
-{
+on ^send_dcc_chat "*" {
 	if (FORMAT.SEND_DCC_CHAT) {
 		echo $fparse(SEND_DCC_CHAT $*)
 	}

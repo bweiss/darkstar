@@ -8,8 +8,7 @@
 
 /****** CLEANUP QUEUE ******/
 
-queue cleanup.debug
-{
+queue cleanup.debug {
 	^bind -symbolic key_f10 NOTHING
 }
 
@@ -21,8 +20,7 @@ bind -symbolic key_f10 PARSE_COMMAND debug.toggle
 	
 /****** INTERNAL ALIASES ******/
 
-alias debug.toggle (void)
-{
+alias debug.toggle (void) {
 	if (DEBUG) {
 		set DEBUG 0
 	} else {

@@ -1,4 +1,4 @@
-#version 0.2.1
+#version 0.2.2
 /* $Id$ */
 /*
  * keepnick.dsm - Keepnick/Getnick module for DarkStar/EPIC4
@@ -10,8 +10,7 @@
 
 /****** CLEANUP QUEUE ******/
 
-queue cleanup.keepnick
-{
+queue cleanup.keepnick {
 	^alias -getnick
 	keepnick.getnick_cleanup
 	^on #timer 423 -"*"
@@ -26,10 +25,8 @@ config.add    KEEPNICK_NICK <your_nick>
 
 /****** USER ALIASES ******/
 
-alias getnick (nick, void)
-{
-	if (nick && nick != servernick())
-	{
+alias getnick (nick, void) {
+	if (nick && nick != servernick()) {
 		switch ($nick) {
 			(-) {
 				if (_GETNICK) {
@@ -39,28 +36,23 @@ alias getnick (nick, void)
 					xecho -b Getnick is not active
 				}
 			}
-
 			(*) {
 				if (_GETNICK) {
 					keepnick.getnick_cleanup
 				}
-
 				xecho -b Getnick attempting to gain nick [$nick]
 				^notify $nick
 				@ _GETNICK = nick
-
-				if (!is_on($_GETNICK))
-				{
+				if (!is_on($_GETNICK)) {
 					xecho -b Changing nick to [$_GETNICK]
 					//nick $_GETNICK
 					keepnick.getnick_cleanup
-				}{
+				} else {
 					^on #-notify_signoff 422 '\$_GETNICK' {
 						xecho -b Changing nick to [$0]
 						//nick $0
 						keepnick.getnick_cleanup
 					}
-
 					^on #-timer 422 "*" {
 						if (CONFIG.KEEPNICK && servernick() == CONFIG.KEEPNICK_NICK) {
 							getnick -
@@ -70,12 +62,11 @@ alias getnick (nick, void)
 							keepnick.getnick_cleanup
 						}
 					}
-
 					^assign MODINFO.KEEPNICK.GETNICK Getnick is active: \$_GETNICK
 				}
 			}
 		}
-	}{
+	} else {
 		if (nick == servernick()) {
 			xecho -b Your current nick is already [$nick]
 		} else {
@@ -88,8 +79,7 @@ alias getnick (nick, void)
 
 /****** INTERNAL ALIASES ******/
 
-alias keepnick.getnick_cleanup (void)
-{
+alias keepnick.getnick_cleanup (void) {
 	^on #notify_signoff 422 -'\$_GETNICK'
 	^on #timer 422 -"*"
 	defer ^notify -$_GETNICK
@@ -100,8 +90,7 @@ alias keepnick.getnick_cleanup (void)
 
 /****** ON HOOKS ******/
 
-on #-timer 423 "*"
-{
+on #-timer 423 "*" {
 	if (S && CONFIG.KEEPNICK && servernick() != [<not registered yet>] && !_GETNICK && servernick() != CONFIG.KEEPNICK_NICK) {
 		xecho -b Oops! We're using the wrong nick! Running getnick...
 		getnick $CONFIG.KEEPNICK_NICK

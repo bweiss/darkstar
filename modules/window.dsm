@@ -10,8 +10,7 @@
 
 /****** CLEANUP QUEUE ******/
 
-queue cleanup.window
-{
+queue cleanup.window {
 	for alias in (swap wb wc wj wk wl wn wp wq wub) {
 		^alias -$alias
 	}
@@ -158,14 +157,14 @@ alias window.msgwin.destroy (void) {
 }
 
 alias window.msgwin.up (void) {
-	@:win = winnum()
+	@ :win = winnum()
 	^window ref msgs
 	parsekey SCROLL_BACKWARD
 	^window ref $win
 }
 
 alias window.msgwin.down (void) {
-	@:win = winnum()
+	@ :win = winnum()
 	^window ref msgs
 	parsekey SCROLL_FORWARD
 	^window ref $win
@@ -269,7 +268,6 @@ on #-msg 426 "*" {
 on #-window_create 426 "*" {
 	/* Add shortcut alias for this window */
 	^alias $0 window swap $0
-
 	if (STATUS.DOUBLE) {
 		^window $0 double on
 	}
@@ -287,7 +285,6 @@ on #-window_kill 426 "msgs" {
 on #-window_kill 426 "*" {
 	/* Remove this window's shortcut alias */
 	^alias -$0
-
 	/* Ensure that the msg window doesn't become hidden or the wrong size */
 	if (CONFIG.MSG_WINDOW && !CONFIG.MSG_WINDOW_HIDDEN) {
 		window previous
