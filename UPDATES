@@ -1,6 +1,10 @@
 DarkStar 0.3
 
 
+*** News 2002/10/03 -- window.dsm 0.7 - Hidden msg window now supported
+	There is a new boolean config variable named MSG_WINDOW_HIDDEN that,
+	when true, will cause the msg window to be hidden instead of split.
+
 *** News 2002/10/02 -- New tabkey module! (based on tabkey.ce)
 	There is a completely new tabkey module based on CrazyEddy's
 	tabkey.ce script that is distributed with EPIC4. This new module

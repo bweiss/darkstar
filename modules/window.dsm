@@ -1,4 +1,4 @@
-#version 0.6.3
+#version 0.7
 /* $Id$ */
 /*
  * window.dsm - Window module for DarkStar/EPIC4
@@ -12,13 +12,12 @@
 
 queue cleanup.window
 {
-	for alias in (swap wb wc wj wk wl wn wp wub) {
+	for alias in (swap wb wc wj wk wl wn wp wq wub) {
 		^alias -$alias
 	}
 	for wref in ($winrefs()) {
 		^alias -$wref
 	}
-
 	^on #hook 426 -"CONFIG MSG_WINDOW *"
 	^on #hook 426 -"CONFIG MSG_WINDOW_LEVEL *"
 	^on #hook 426 -"CONFIG MSG_WINDOW_SIZE *"
@@ -28,7 +27,6 @@ queue cleanup.window
 	^on #window_create 426 -"*"
 	^on #window_kill 426 -"msgs"
 	^on #window_kill 426 -"*"
-
 	for char in ($jot(0 9)) {
 		^bind ^[$char NOTHING
 	}
@@ -42,13 +40,7 @@ queue cleanup.window
 	^bind -symbolic key_f12 NOTHING
 	^bind ^[[7~ NOTHING
 	^bind ^[[8~ NOTHING
-
-	for item in ($getrmatches(single_status msgs)) {
-		@ delitem(single_status $item)
-	}
-	if (winnum(msgs) != -1) {
-		^window msgs kill
-	}
+	window.msgwin.destroy
 }
 
 
@@ -59,18 +51,13 @@ config.add    AUTO_CREATE_WINDOWS 2
 config.add -b AUTO_QUERY 0
 config.add -b BIND_ON_JOIN 0
 config.add -b MSG_WINDOW 0
+config.add -b MSG_WINDOW_HIDDEN 0
 config.add    MSG_WINDOW_LEVEL MSGS,OPNOTES,WALLOPS
 config.add    MSG_WINDOW_SIZE 5
 config.add -b UNBIND_ON_PART 0
 
 
 /****** INIT ******/
-
-/*
- * Add "msgs" to the single_status array to prevent the msg window
- * from having double turned on.
- */
-@ setitem(single_status $numitems(single_status) msgs)
 
 /*
  * Key bindings.
@@ -90,8 +77,8 @@ config.add -b UNBIND_ON_PART 0
 ^bind ^[9 PARSE_COMMAND ^window swap 9
 ^bind ^[0 PARSE_COMMAND ^window swap 10
 ^bind ^[[1~ SCROLL_START
-^bind ^[[2~ PARSE_COMMAND window.msgwin_up
-^bind ^[[3~ PARSE_COMMAND window.msgwin_down
+^bind ^[[2~ PARSE_COMMAND window.msgwin.up
+^bind ^[[3~ PARSE_COMMAND window.msgwin.down
 ^bind ^[[4~ SCROLL_END
 ^bind ^[[5~ SCROLL_BACKWARD
 ^bind ^[[6~ SCROLL_FORWARD
@@ -116,8 +103,7 @@ for wref in ($winrefs()) {
 
 /****** USER ALIASES ******/
 
-alias swap (winnum, void)
-{
+alias swap (winnum, void) {
 	if (winnum) {
 		window swap $winnum
 	} else {
@@ -140,16 +126,44 @@ alias wub (...)                     {window unbind}
 
 /****** INTERNAL ALIASES ******/
 
-alias window.msgwin_up (void)
-{
+alias window.msgwin.create (void) {
+	if (winnum(msgs) == -1) {
+		window new name msgs level $CONFIG.MSG_WINDOW_LEVEL
+		if (CONFIG.MSG_WINDOW_HIDDEN) {
+			if ((:item = matchitem(single_status msgs)) > -1) {
+				@ delitem(single_status $item)
+			}
+			if (STATUS.DOUBLE) {
+				window double on
+			}
+			window hide
+		} else {
+			if (matchitem(single_status msgs) < 0) {
+				@ setitem(single_status $numitems(single_status) msgs)
+			}
+			window double off fixed on size $CONFIG.MSG_WINDOW_SIZE
+			window last
+		}
+	}
+}
+
+alias window.msgwin.destroy (void) {
+	if (winnum(msgs) != -1) {
+		window msgs kill
+	}
+	if ((:item = matchitem(single_status msgs)) > -1) {
+		@ delitem(single_status $item)
+	}
+}
+
+alias window.msgwin.up (void) {
 	@:win = winnum()
 	^window ref msgs
 	parsekey SCROLL_BACKWARD
 	^window ref $win
 }
 
-alias window.msgwin_down (void)
-{
+alias window.msgwin.down (void) {
 	@:win = winnum()
 	^window ref msgs
 	parsekey SCROLL_FORWARD
@@ -162,28 +176,24 @@ alias window.msgwin_down (void)
 /*
  * Kill or create msg window on /DSET MSG_WINDOW
  */
-on #-hook 426 "CONFIG MSG_WINDOW *"
-{
+on #-hook 426 "CONFIG MSG_WINDOW *" {
 	if (CONFIG.MSG_WINDOW) {
-		if (winnum(msgs) == -1) {
-			window new name msgs double off fixed on
-			window level $CONFIG.MSG_WINDOW_LEVEL
-			window size $CONFIG.MSG_WINDOW_SIZE
-			window last
-		}
+		window.msgwin.create
 	} else {
-		if (winnum(msgs) != -1) {
-			window msgs kill
-		}
+		window.msgwin.destroy
 	}
 }
 
-on #-hook 426 "CONFIG MSG_WINDOW_LEVEL *"
-{
-	^local good
-	^local bad
-	@:levels = [ACTIONS CRAP CTCP DCC MSGS NOTES NOTICES OPNOTES PUBLIC SNOTES USERLOG1 USERLOG2 USERLOG3 USERLOG4 WALLOPS WALLS]
-
+on #-hook 426 "CONFIG MSG_WINDOW_HIDDEN *" {
+	if ([$2] != CONFIG.MSG_WINDOW_HIDDEN) {
+		window.msgwin.destroy
+		window.msgwin.create
+	}
+}
+		
+on #-hook 426 "CONFIG MSG_WINDOW_LEVEL *" {
+	@ :bad = :good = []
+	@ :levels = [ACTIONS CRAP CTCP DCC MSGS NOTES NOTICES OPNOTES PUBLIC SNOTES USERLOG1 USERLOG2 USERLOG3 USERLOG4 WALLOPS WALLS]
 	for lvl in ($sar(ig/,/ /$CONFIG.MSG_WINDOW_LEVEL)) {
 		if (findw($lvl $levels) > -1) {
 			push good $lvl
@@ -191,66 +201,58 @@ on #-hook 426 "CONFIG MSG_WINDOW_LEVEL *"
 			push bad $lvl
 		}
 	}
-
 	if (bad) {
 		for lvl in ($bad) {
 			xecho -b Unknown level: $lvl
 		}
 		xecho -b Valid levels: $levels
 		if (good) {
-			@:newlevels = sar(ig/ /,/$good)
+			@ :newlevels = sar(ig/ /,/$good)
 		} else {
-			@:newlevels = *2-
+			@ :newlevels = *2-
 		}
 		^assign CONFIG.MSG_WINDOW_LEVEL $toupper($newlevels)
 		xecho -b Value of MSG_WINDOW_LEVEL set to $CONFIG.MSG_WINDOW_LEVEL
 	} else {
 		^assign CONFIG.MSG_WINDOW_LEVEL $toupper($CONFIG.MSG_WINDOW_LEVEL)
 	}
-
 	if (CONFIG.MSG_WINDOW) {
 		window msgs level $CONFIG.MSG_WINDOW_LEVEL
 	}
 }
 
-on #-hook 426 "CONFIG MSG_WINDOW_SIZE *"
-{
-	@:size = CONFIG.MSG_WINDOW_SIZE
-	@:max_size = word(1 $geom()) - 4
+on #-hook 426 "CONFIG MSG_WINDOW_SIZE *" {
+	@ :size = CONFIG.MSG_WINDOW_SIZE
+	@ :max_size = word(1 $geom()) - 4
 	if (!isnumber($size b10) || size < 1 || size > max_size) {
 		xecho -b Value must be an integer greater than 0 and no larger than $max_size
 		^assign CONFIG.MSG_WINDOW_SIZE $2
 		xecho -b Value of MSG_WINDOW_SIZE set to $CONFIG.MSG_WINDOW_SIZE
 	}
-
-	if (CONFIG.MSG_WINDOW) {
+	if (CONFIG.MSG_WINDOW && !CONFIG.MSG_WINDOW_HIDDEN) {
 		window msgs size $CONFIG.MSG_WINDOW_SIZE
 	}
 }
 
-on #-join 426 '$servernick() *'
-{
+on #-join 426 '$servernick() *' {
 	if (CONFIG.BIND_ON_JOIN) {
 		window bind $1
 	}
 }
 
-on #-leave 426 '$servernick() *'
-{
+on #-leave 426 '$servernick() *' {
 	if (CONFIG.UNBIND_ON_PART) {
 		window unbind $1
 	}
 }
 
-on #-msg 426 "*"
-{
-	if (CONFIG.AUTO_QUERY)
-	{
-		@:item = matchitem(window.autoquery %!$userhost())
+on #-msg 426 "*" {
+	if (CONFIG.AUTO_QUERY) {
+		@ :item = matchitem(window.autoquery %!$userhost())
 		if (item > -1) {
 			if (getitem(window.autoquery $item) != [$0!$userhost()]) {
-				@:oldnick = before(-1 ! $getitem(window.autoquery $item))
-				@:win = querywin($oldnick $lastserver())
+				@ :oldnick = before(-1 ! $getitem(window.autoquery $item))
+				@ :win = querywin($oldnick $lastserver())
 				if (win > -1) {
 					window $win query $0
 				}
@@ -258,9 +260,7 @@ on #-msg 426 "*"
 				xecho -b -w $win Query window for $oldnick changed to $0
 			}
 		}
-
 		@ setitem(window.autoquery $numitems(window.autoquery) $0!$userhost())
-
 		if (querywin($0 $lastserver()) == -1) {
 			window new_hide swap last
 			query $0
@@ -269,9 +269,8 @@ on #-msg 426 "*"
 	}
 }
 
-on #-window_create 426 "*"
-{
-	/* Add a shortcut alias for this window */
+on #-window_create 426 "*" {
+	/* Add shortcut alias for this window */
 	^alias $0 window swap $0
 
 	if (STATUS.DOUBLE) {
@@ -282,20 +281,18 @@ on #-window_create 426 "*"
 /*
  * Turn off MSG_WINDOW if someone manually kills the 'msgs' window.
  */
-on #-window_kill 426 "msgs"
-{
+on #-window_kill 426 "msgs" {
 	if (CONFIG.MSG_WINDOW) {
 		dset MSG_WINDOW OFF
 	}
 }
 
-on #-window_kill 426 "*"
-{
-	/* Remove shortcut alias for this window */
+on #-window_kill 426 "*" {
+	/* Remove this window's shortcut alias */
 	^alias -$0
 
 	/* Ensure that the msg window doesn't become hidden or the wrong size */
-	if (CONFIG.MSG_WINDOW) {
+	if (CONFIG.MSG_WINDOW && !CONFIG.MSG_WINDOW_HIDDEN) {
 		window previous
 		window show msgs
 		window size $CONFIG.MSG_WINDOW_SIZE
@@ -306,31 +303,21 @@ on #-window_kill 426 "*"
 
 /****** STARTUP ******/
 
-/*
- * Create some windows when the module loads.
- */
-if (CONFIG.AUTO_CREATE_WINDOWS)
-{
+if (CONFIG.AUTO_CREATE_WINDOWS) {
 	for cnt from 1 to $CONFIG.AUTO_CREATE_WINDOWS {
-		@:autobind_chan = word($cnt $CONFIG.AUTO_BIND_CHANNELS)
+		@ :chan = word($cnt $CONFIG.AUTO_BIND_CHANNELS)
 		if (winnum($cnt) == -1) {
 			window new
 		}
-		if (autobind_chan) {
-			window bind $autobind_chan
+		if (chan) {
+			window bind $chan
 		}
 		window hide
 	}
 }
 
-if (CONFIG.MSG_WINDOW)
-{
-	if (winnum(msgs) == -1) {
-		window new name msgs double off fixed on
-		window size $CONFIG.MSG_WINDOW_SIZE
-		window level $CONFIG.MSG_WINDOW_LEVEL
-		window last
-	}
+if (CONFIG.MSG_WINDOW) {
+	window.msgwin.create
 }
 
 
