@@ -52,11 +52,14 @@ alias theme (...)
 		@ :theme = [$0];
 	};
 
-	@ :theme = getitems(theme.names -1 $theme);
-
-	if (theme)
-	{
+	if (isnumber(b10 $theme)) {
+		@ :item = theme - 1;
+	} else {
 		@ :item = finditem(theme.names $theme);
+	};
+
+	if (item > -1 && item < numitems(theme.names))
+	{
 		@ :tdir = getitem(theme.dirs $item);
 		for file in ($glob($tdir\/\*)) {
 			if (after(-1 / $before(-1 / $file)) != [CVS]) {
