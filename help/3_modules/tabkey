@@ -1,40 +1,19 @@
 Module: tabkey
-Author: Brian Weiss <brian@epicsol.org>
+Author: CrazyEddy / Brian Weiss <brian@epicsol.org>
 
 Description:
-   Advanced tab key completion that tries to be very extensible and
-   configurable. Includes completion for commands, channels, nicks, files,
-   modules, and config, format, and set variables. Also keeps track of
-   things like private msgs and DCC chats for easy replies.
+   Advanced tab key completion that tries to be very extensible.
+   Includes completion for commands, channels, nicks, files, modules,
+   and config, format, and set variables. Also keeps track of private
+   msgs and DCC chats for easy replies.
 
 Config Variables:
-   TABKEY_NICK_HISTORY      - Number of nicks to remember for msg completion.
+   TABKEY_MAX_NICKHIST      - Number of nicks to remember for msg completion.
    TABKEY_NICKCOMP_SUFFIX   - If completing a nickname, and the nick is the
                               first word on the input prompt, append this
                               to it.
 
-Commands:
-   tabkey addrule <pattern> <procedure> [extra arguments]
-     - Adds a new completion rule that calls <procedure> when completing
-       anything that matches <pattern>. The [extra arguments] are usually
-       optional and are given as the arguments to the procedure being
-       executed. It is important to be aware that the word list is evaluated
-       before being processed by the procedure. It is also very important
-       that both the <pattern> and [extra arguments] are quoted.
-
-   tabkey clear
-     - Clears the msg history. This replaces the old /cleartab alias.
-
-   tabkey listrules
-     - Display a list of all completion rules currently loaded.
-
-   tabkey rmrule <pattern>
-     - Removes a completion rule. As with addrule, the <pattern> argument
-       must be quoted. If "all" is given as a pattern (it does not need to
-       be quoted) then the entire list of completion rules will be cleared.
-
-   tabkey saverules
-     - Writes the current list of completion rules to the file tabkey.rules
-       in your save directory. If this file exists, it will override the
-       default rules.
+History:
+   This module is based on the tabkey.ce script written by CrazyEddy and
+   distributed with EPIC4.
 

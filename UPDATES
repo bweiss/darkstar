@@ -1,6 +1,20 @@
 DarkStar 0.3
 
 
+*** News 2002/10/02 -- New tabkey module! (based on tabkey.ce)
+	There is a completely new tabkey module based on CrazyEddy's
+	tabkey.ce script that is distributed with EPIC4. This new module
+	has a better design and provides quite a few advantages over the
+	old one, though it should behave roughly the same for end users.
+
+	Things that differ from the old module (for users):
+	 - Cursor sensitive. Allows you to complete words anywhere on
+	   the input line.
+	 - Support for /HELP completion.
+	 - Support for /WINDOW completion.
+	 - The TABKEY_NICK_HISTORY config variable has been renamed to
+	   TABKEY_MAX_NICKHIST.
+
 *** News 2002/09/28 -- window.dsm 0.6 - /DSET AUTO_QUERY and /WQ
 	A new boolean config variable named AUTO_QUERY has been added.
 	When true, all incoming msgs will cause a hidden window to be created
