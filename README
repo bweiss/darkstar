@@ -125,7 +125,7 @@ FILES
   COPYRIGHT		- The license file.
   README		- This file.
   TODO			- To-do list.
-  ChangeLog		- The changelog.
+  UPDATES		- Contains information about important changes.
   darkstar.irc		- The startup script. This is the file that you /LOAD
 			  to begin using DarkStar.
   sample.dsrc		- Sample .dsrc file.

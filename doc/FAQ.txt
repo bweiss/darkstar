@@ -10,7 +10,7 @@ Q: What should I do when upgrading to new versions of DarkStar?
 A: This depends heavily on the amount of customization you do. If you have
    your own modules, themes, statbars, etc. then you need to be more
    concerned with changes to what I distribute. In this situation I strongly
-   urge that you review the ChangeLog for details on what's new.
+   urge that you review the UPDATES file for details on what's new.
 
    If you don't write any of your own scripts for DarkStar then you don't
    need to worry so much. One cool thing is that you don't always need to
@@ -23,7 +23,7 @@ A: This depends heavily on the amount of customization you do. If you have
    (darkstar.irc) will be incremented. This number being higher does not
    necessarily mean that a full reload is required in order to make use of
    changes in other things, it just means that something in the core scripts
-   has changed. The only way to know for sure is to check the ChangeLog.
+   has changed. The only way to know for sure is to check the UPDATES file.
    If you don't want to worry about it at all, just always use /reload and
    you'll be fine.
 

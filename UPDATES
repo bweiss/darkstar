@@ -1,0 +1,25 @@
+*** News 2002/06/08 -- New config variable: AUTO_SAVE_ON_UNLOAD
+	The name says it all. It has a boolean value that, when true,
+	will cause a module's settings to be saved before it is unloaded.
+
+*** News 2002/06/08 -- VERBOSE_SAVE and VERBOSE_LOAD renamed
+	The VERBOSE_SAVE and VERBOSE_LOAD config variables that are part
+	of the core scripts have been renamed to SAVE_VERBOSE and
+	LOADMODULE_VERBOSE.
+
+*** News 2002/06/08 -- tabkey.dsm 0.7
+	Changes include a /tabkey alias which provides an interface to
+	modifying completion rules and replaces the /cleartab alias.
+	While adding this, I also solved the annoying issues regarding
+	rule #1 and the "" pattern.
+
+*** News 2002/06/08 -- The ChangeLog is no more
+	I have decided to do away with the ChangeLog, mostly because
+	CVS already does a better job of tracking changes for me, and
+	end users don't need to know the gory details. Instead, I will
+	use this file called UPDATES to let people know about important
+	changes without all the technical details. Yes, this is just
+	like the file of the same name included with EPIC4 :-).
+
+
+#EOF
