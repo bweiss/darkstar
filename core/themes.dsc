@@ -112,7 +112,7 @@ alias themes.display (void) {
  * Change themes on /DSET THEME
  */
 on #-hook 1 "CONFIG THEME *" {
-	if (CONFIG.THEME != [$2]) {
+	if (ascii($CONFIG.THEME) != ascii($2)) {
 		if (themes.change($CONFIG.THEME)) {
 			xecho -b Invalid theme: $CONFIG.THEME
 			^assign CONFIG.THEME $2

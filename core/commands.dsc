@@ -65,7 +65,7 @@ alias less (files) {
 					}
 					if (!eof($fd)) {
 						^local pause $'Hit q to quit, or anything else to continue.'
-						if (tolower($pause) == [q]) { return; }
+						if (pause == [q]) { return; }
 					}
 				}
 				@ close($fd)

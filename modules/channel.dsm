@@ -1,4 +1,4 @@
-#version 0.6.2
+#version 0.6.3
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
@@ -312,7 +312,7 @@ alias lk (reason default "$CONFIG.DEFAULT_KICK_REASON")
 
 	^local ask $"Kick all non-ops from $C? "
 
-	if (toupper($left(1 $ask)) == [Y]) {
+	if (left(1 $ask) == [y]) {
 		for user in ($channel()) {
 			@:nick = mid(2 $strlen($user) $user)
 			if (match(.. $left(2 $user))) {
@@ -459,7 +459,7 @@ alias partall (void)
 {
 	input "Are you sure you want to part all your channels? "
 	{
-		if (toupper($left(1 $0)) == [Y]) {
+		if (left(1 $0) == [y]) {
 			for chan in ($mychannels()) {
 				//part $chan
 			}

@@ -83,7 +83,7 @@ alias config.set_routine (type, variable, value) {
 				^assign -$var
 				xecho -s -b Value of $toupper($var2) set to <EMPTY>
 				/* Hook the changes so modules can act on it. */
-				if (toupper($type) == [DSET]) {
+				if (type == [DSET]) {
 					hook CONFIG $var2 $old_value
 				}
 			} else if (value != []) {
@@ -99,7 +99,7 @@ alias config.set_routine (type, variable, value) {
 					^assign $var $value
 					xecho -s -b Value of $toupper($var2) set to $value
 				}
-				if (toupper($type) == [DSET]) {
+				if (type == [DSET]) {
 					hook CONFIG $var2 $old_value
 				}
 			} else {

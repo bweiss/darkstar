@@ -212,7 +212,7 @@ alias loader.build_modlist (void) {
 		^local dir $twiddle($dir)
 		for file in ($glob($dir\/\*.dsm)) {
 			^local name $before(-1 . $after(-1 / $file))
-			if (tolower($name) == [core]) {
+			if (name == [core]) {
 				echo Error: loader.build_modlist: The name "core" is reserved
 				return
 			}
