@@ -1,4 +1,4 @@
-#version 0.4.2
+#version 0.4.3
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -73,6 +73,8 @@
 #        functions argument list is to be treated as a single argument.
 #
 
+/****** CLEANUP QUEUE ******/
+
 queue cleanup.tabkey {
 	^bind ^I toggle_insert_mode
 	^on #msg 420 -"*"
@@ -83,16 +85,27 @@ queue cleanup.tabkey {
 	^on #send_ctcp 420 -"PRIVMSG % DCC CHAT *"
 }
 
+/****** CONFIG/FORMAT VARIABLES ******/
+
 config.add -b TABKEY_CYCLE_MATCHES 1
 config.add    TABKEY_MAX_MSG_HISTORY 6
 config.add    TABKEY_NICKCOMP_SUFFIX ,
 
+
+/****** INIT ******/
+
 bind ^I parse_command tabkey.main
+
+
+/****** INTERNAL ALIASES *******/
 
 alias tabkey.main (void) {
 	@ :oxd = xdebug(extractw)
 	xdebug extractw
-	/* $indextoword() is broken in EPIC4 versions prior to commit_id 610. */
+	/*
+	 * EPIC4 versions before commit_id 610 require an extra space in the
+	 * call to $indextoword() in order for this to work properly. -bmw
+	 */
 	if (info(i) >= 610) {
 		@ :curword = indextoword($curpos() $L)
 	} else {
@@ -105,6 +118,10 @@ alias tabkey.main (void) {
 		@ wordind = curpos()
 	}
 	@ :word = mid($wordind ${curpos() - wordind} $L)
+	/*
+	 * Attempt to cycle through the list of matches if the tabkey is
+	 * pressed a second time with no change. -bmw
+	 */
 	if (CONFIG.TABKEY_CYCLE_MATCHES && TABKEY.LASTMATCHES != [] && word == TABKEY.LASTWORD) {
 		if (word != [] || (word == [] && L == TABKEY.LASTLINE)) {
 			if (TABKEY.INDEX == numwords($TABKEY.LASTMATCHES)) {
@@ -131,13 +148,17 @@ alias tabkey.main (void) {
 		wait for @ :matches = tabkey.default($word)
 	}
 	@ :prefix = prefix($matches)
-	if (numwords($matches) > 1 && word == prefix) {
+	/*
+	 * EPIC versions before commit_id 613 did not consider a single space
+	 * by itself to be a word, so we need to check for it specifically. -bmw
+	 */
+	if (#matches && matches != [ ] && word == prefix) {
 		echo Completions for \"$word\": $matches
 		@ TABKEY.INDEX = 0
 		@ TABKEY.LASTLINE = L
 		@ TABKEY.LASTMATCHES = matches
 		@ TABKEY.LASTWORD = word
-	} elsif (#matches && strlen($word) <= strlen($prefix)) {
+	} elsif (#matches && matches != [ ] && strlen($word) <= strlen($prefix)) {
 		@ :prefix = 0 > index("$chr($jot(32 1))" $prefix) ? prefix : ["$prefix"]
 		@ :line = mid(0 $wordind $L)
 		parsekey erase_to_beg_of_line
@@ -154,9 +175,11 @@ alias tabkey.cmd (...) {
 	@ :pass #= chr($jot($ascii(09)))
 	@ :args = wordtoindex($cmdind $L)
 	@ :args = mid($args $curpos() $L)
-	/* Make absolutely sure we remove $CMDCHARS from the beginning of the
+	/* 
+	 * Make absolutely sure we remove $CMDCHARS from the beginning of the
 	 * the string. This is needed whenever $CMDCHARS contains one of the
-	 * characters supplied to $pass(). -bmw */
+	 * characters supplied to $pass(). -bmw
+	 */
 	if (mid(0 $strlen($CMDCHARS) $args) == CMDCHARS) {
 		@ :args = rest($strlen($CMDCHARS) $args)
 	}
@@ -221,7 +244,7 @@ alias tabkey.msg_handler (serv, nick, void) {
 /*
  * This prevents tabkey.main from falling back to tabkey.default if
  * the completion routine returns nothing. See aliases below
- * for examples.
+ * for examples. -bmw
  */
 alias tabkey.nofallback (...) {
 	@ function_return = [$*] == [] ? [ ] : [$*]
@@ -630,6 +653,8 @@ alias tabkey.method.variable (type, void) {
 	@ function_return = retval
 }
 
+
+/****** ON HOOKS *******/
 
 /*
  * Add the nicks of users that you're chatting with to the msg history.
