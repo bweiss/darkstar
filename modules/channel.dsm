@@ -1,4 +1,4 @@
-#version 0.5.7
+#version 0.5.8
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
@@ -291,7 +291,7 @@ alias leave
 		}
 		(#*) (&*) (0) (-*) (!*) (+*)
 			{ //leave $* }
-		() (\*)
+		() (\\*)
 			{ //leave * $1- }
 		(*)
 			{ //leave #$* }
