@@ -14,7 +14,9 @@ Author: Brian Weiss <brian@epicsol.org>
    OPER_UMODES            - User modes to set when you become an operator.
    OPERVIEW               - Boolean. Creates a new window called "operview"
                             that will display operator related messages
-                            such as wallops and server notices.
+                            such as wallops and server notices. This feature
+                            is not recommended for use with multiple server
+                            connections in a single client process.
    OPERVIEW_HIDDEN        - Boolean. Determines whether the operview window
                             will be split or hidden.
    OPERVIEW_SIZE          - Size of the operview window when it is not hidden.

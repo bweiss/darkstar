@@ -24,7 +24,9 @@ Author: Brian Weiss <brian@epicsol.org>
                                 when the new window is created.
    MSG_WINDOW                 - Boolean. Creates a new window called "msgs"
                                 in which all incoming private messages will
-                                be displayed.
+                                be displayed. This feature is not recommended
+                                for use with multiple server connections in
+                                a single client process.
    MSG_WINDOW_HIDDEN          - Boolean. Determines whether the msg window
                                 will be hidden or split.
    MSG_WINDOW_LEVEL           - Comma-separated list of window levels for
