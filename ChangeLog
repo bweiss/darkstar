@@ -3,6 +3,15 @@ DarkStar ChangeLog
 
 2002/05/24
 
+ * [names.dsm 0.4] New behavior for the NAMES_COL config variable. If its
+   value is left empty or set to 0 then there will be an infinite number
+   of columns. This solves a problem in the scrollz theme and also allows
+   us to truly mimic EPIC's real default output in the epic4 theme.
+
+   The NAMES_LEFT and NAMES_RIGHT formats are now passed the same arguments
+   as the header/footer formats. This fixes a minor bug in the scrollz theme
+   and allows for greater customization.
+
  * [channel.dsm 0.5] Removed the SHOW_OPVOICE_IN_PUBLICS config variable
    because it is possible to provide that functionality in the PUBLIC*
    format variables. Also added a KICK format variable.

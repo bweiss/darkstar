@@ -1,4 +1,4 @@
-#version 0.3.3
+#version 0.4
 /* $Id$ */
 /*
  * names.dsm - DarkStar/EPIC4 module to display who's on a channel
@@ -77,56 +77,56 @@ alias scanv (chan default "$C", void)
  */
 alias names.main (chan default "$C", mode default "*", void)
 {
-	if (match($chan $mychannels()))
+	/*
+	 * Compile the list of users that we want to display.
+	 * This is also where any sorting takes place.
+	 */
+	^local users
+	switch ($tolower($mode))
 	{
-		/*
-		 * Compile the list of users that we want to display.
-		 * This is also where any sorting takes place.
-		 */
-		^local users
-		switch ($tolower($mode))
-		{
-			(n) {
-				@ :desc = [normal users]
-				@ :users = nochops($chan)
-			}
-			(o) {
-				@ :desc = [channel operators]
-				@ :users = chops($chan)
-			}
-			(v) {
-				^local desc voiced users
-				for nick in ($channel($chan)) {
-					if (mid(1 1 $nick) == [+]) {
-						push users $rest(2 $nick)
-					}
-				}
-			}
-			(*) {
-				@ :desc = [users]
-				if (CONFIG.NAMES_SORT_BY_MODE) {
-					push users $chops($chan)
-					push users $nochops($chan)
-				} else {
-					push users $onchannel($chan)
+		(n) {
+			@ :desc = [normal users]
+			@ :users = nochops($chan)
+		}
+		(o) {
+			@ :desc = [channel operators]
+			@ :users = chops($chan)
+		}
+		(v) {
+			^local desc voiced users
+			for nick in ($channel($chan)) {
+				if (mid(1 1 $nick) == [+]) {
+					push users $rest(2 $nick)
 				}
 			}
 		}
-
-		if (#users < 1) {
-			xecho -b No $desc were found on $chan
-			return 0
-		}
-
-		/*
-		 * Display the header, if any.
-		 */
-		for var in (NAMES_HEADER NAMES_HEADER1 NAMES_HEADER2) {
-			if (FORMAT[$var]) {
-				echo $fparse($var $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
+		(*) {
+			@ :desc = [users]
+			if (CONFIG.NAMES_SORT_BY_MODE) {
+				push users $chops($chan)
+				push users $nochops($chan)
+			} else {
+				push users $onchannel($chan)
 			}
 		}
+	}
 
+	if (#users < 1) {
+		xecho -b No $desc found on channel $chan
+		return 0
+	}
+
+	/*
+	 * Display the header, if any.
+	 */
+	for var in (NAMES_HEADER NAMES_HEADER1 NAMES_HEADER2) {
+		if (FORMAT[$var]) {
+			echo $fparse($var $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
+		}
+	}
+
+	if (CONFIG.NAMES_COL)
+	{
 		/*
 		 * Create a temporary variable to store the names of the
 		 * variables we'll be using in the /fe below. This allows us
@@ -148,7 +148,7 @@ alias names.main (chan default "$C", mode default "*", void)
 			^local line
 
 			if (FORMAT.NAMES_LEFT) {
-				push line \$fparse(NAMES_LEFT)
+				push line \$fparse(NAMES_LEFT $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
 			}
 
 			for (@ :cnt = 1, cnt <= numwords($tmp), @ cnt++)
@@ -182,19 +182,28 @@ alias names.main (chan default "$C", mode default "*", void)
 			}
 
 			if (FORMAT.NAMES_RIGHT) {
-				push line \$fparse(NAMES_RIGHT)
+				push line \$fparse(NAMES_RIGHT $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
 			}
 
 			eval echo $line
 		}
+	}{
+		^local line
+		if (FORMAT.NAMES_LEFT) {
+			push line $fparse(NAMES_LEFT $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
+		}
+		for nick in ($users) {
+			push line $names.parse($chan $nick)
+		}
+		echo $line
+	}
 
-		/*
-		 * Display footer, if any.
-		 */
-		for var in (NAMES_FOOTER NAMES_FOOTER1 NAMES_FOOTER2) {
-			if (FORMAT[$var]) {
-				echo $fparse($var $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
-			}
+	/*
+	 * Display footer, if any.
+	 */
+	for var in (NAMES_FOOTER NAMES_FOOTER1 NAMES_FOOTER2) {
+		if (FORMAT[$var]) {
+			echo $fparse($var $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
 		}
 	}
 }
@@ -239,7 +248,7 @@ on ^366 "*"
  */
 on #-hook 428 "CONFIG NAMES_COL *"
 {
-	if (!isnumber($CONFIG.NAMES_COL b10))
+	if (!isnumber($CONFIG.NAMES_COL b10) && CONFIG.NAMES_COL)
 	{
 		xecho -b Value must be an integer
 		^assign CONFIG.NAMES_COL $2

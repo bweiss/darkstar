@@ -6,7 +6,8 @@ Author: Brian Weiss <brian@epicsol.org>
    supplied by the client.
 
 Config Variables:
-   NAMES_COL           - Determines how many columns to display.
+   NAMES_COL           - Integer. Determines how many columns to display.
+                         An empty or "0" value uses infinite columns.
    NAMES_SORT_BY_MODE  - Boolean. If true, +o users will be displayed
                          before everyone else.
 

@@ -1,6 +1,6 @@
 /* $Id$ */
 
-assign CONFIG.NAMES_COL 100
+assign -CONFIG.NAMES_COL
 
 assign -FORMAT.NAMES_FOOTER
 assign -FORMAT.NAMES_FOOTER1
@@ -8,7 +8,7 @@ assign -FORMAT.NAMES_FOOTER2
 assign -FORMAT.NAMES_HEADER 
 assign -FORMAT.NAMES_HEADER1
 assign -FORMAT.NAMES_HEADER2
-assign FORMAT.NAMES_LEFT $G Users on %C$C%n:
+assign FORMAT.NAMES_LEFT $G Users on %C$1%n:
 assign -FORMAT.NAMES_MID
 assign FORMAT.NAMES_NONOP $1
 assign FORMAT.NAMES_OP %G@%n%c$1%n
