@@ -131,6 +131,7 @@ alias loader.build_modlist (void)
 		for file in ($glob($dir\/\*.dsm))
 		{
 			@ :name = before(-1 . $after(-1 / $file))
+
 			/* Get module version. */
 			@ :fd = open($file R)
 			@ :line = read($fd)
@@ -148,9 +149,13 @@ alias loader.build_modlist (void)
 				@ delitem(module_versions $item)
 			}
 
-			@ setitem(modules $numitems(modules) $name)
-			@ setitem(module_files $numitems(module_files) $file)
-			@ setitem(module_versions $numitems(module_versions) $ver)
+			if (tolower($name) == [core]) {
+				xecho -b Error: loader.build_modlist: The "core" module name is reserved
+			} else {
+				@ setitem(modules $numitems(modules) $name)
+				@ setitem(module_files $numitems(module_files) $file)
+				@ setitem(module_versions $numitems(module_versions) $ver)
+			}
 		}
 	}
 }

@@ -3,6 +3,9 @@ DarkStar ChangeLog
 
 2002/05/18
 
+ * Attemping to name a module "core" will now result in an error,
+   as this name is reserved for the core scripts.
+
  * Some changes to the appearance of the module lists in order to
    improve readability.
 
