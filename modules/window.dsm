@@ -1,4 +1,4 @@
-#version 0.3
+#version 0.3.1
 /* $Id$ */
 /*
  * window.dsm - Window module for Darkstar/EPIC4
@@ -182,11 +182,14 @@ alias wj (chan)
 		return
 	}
 
-	window new_hide swap last channel $chan
+	window new_hide swap last
+	join $chan
+
 	if (CONFIG[AUTO_BIND_ON_WINDOW_JOIN])
 	{
 		window bind $word(0 $chan)
 	}
+
 	if (STATUS[DOUBLE])
 	{
 		window double on
