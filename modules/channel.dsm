@@ -769,11 +769,11 @@ on ^send_public "*"
 {
 	if ([$0] == C) {
 		if (FORMAT.SEND_PUBLIC) {
-			echo $fparse(SEND_PUBLIC $0 $channel.show_ov($servernick() $0) $1-)
+			echo $fparse(SEND_PUBLIC $0 $servernick() $1-)
 		}
 	} else {
 		if (FORMAT.SEND_PUBLIC_OTHER) {
-			echo $fparse(SEND_PUBLIC_OTHER $channel.show_ov($servernick() $0) $*)
+			echo $fparse(SEND_PUBLIC_OTHER $servernick() $*)
 		}
 	}
 }
