@@ -111,21 +111,16 @@ alias tabkey.main (void)
 	# Attempt to cycle through the list of matches if the tabkey is
 	# pressed a second time with no change. -bmw
 	#
-	if (CONFIG.TABKEY_CYCLE_MATCHES && TABKEY.LASTMATCHES != [] && word == TABKEY.LASTWORD)
+	if (CONFIG.TABKEY_CYCLE_MATCHES && #TABKEY.LASTMATCHES && L == TABKEY.LASTLINE)
 	{
-		if (word != [] || (word == [] && L == TABKEY.LASTLINE))
-		{
-			if (TABKEY.INDEX == numwords($TABKEY.LASTMATCHES)) {
-				@ TABKEY.INDEX = 0;
-			};
-			@ :nextword = word($TABKEY.INDEX $TABKEY.LASTMATCHES);
-			parsekey delete_to_previous_space;
-			xtype -l $nextword;
-			@ TABKEY.INDEX++;
-			@ TABKEY.LASTLINE = L;
-			@ TABKEY.LASTWORD = nextword;
-			return;
-		};
+		if (TABKEY.INDEX == #TABKEY.LASTMATCHES)
+			@ TABKEY.INDEX = 0;
+		@ :nextword = word($TABKEY.INDEX $TABKEY.LASTMATCHES);
+		parsekey delete_to_previous_space;
+		xtype -l $nextword;
+		@ TABKEY.INDEX++;
+		@ TABKEY.LASTLINE = L;
+		return;
 	};
 
 	if (word =~ ["*"]) {
@@ -157,7 +152,6 @@ alias tabkey.main (void)
 			@ TABKEY.INDEX = 0;
 			@ TABKEY.LASTLINE = L;
 			@ TABKEY.LASTMATCHES = matches;
-			@ TABKEY.LASTWORD = word;
 		}
 		else if (strlen($word) <= strlen($prefix))
 		{
