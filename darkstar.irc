@@ -60,12 +60,6 @@ set HIGH_BIT_ESCAPE 0
 set INDENT ON
 
 
-if (fexist($DS.RCFILE) == 1)
-{
-	load $DS.RCFILE
-}
-
-
 alias get_core_settings (void)
 {
 	@ :fd = open($DS.DEFAULTS_DIR/core.def R)
@@ -119,10 +113,16 @@ if (fexist($CONFIG.SAVE_DIRECTORY/core.sav) == 1)
 eval load $DS.HOME/core/functions.dsc
 eval load $DS.HOME/core/config.dsc
 eval load $DS.HOME/core/save.dsc
-eval load $DS.HOME/core/statbar.dsc
+eval load $DS.HOME/core/status.dsc
 eval load $DS.HOME/core/loader.dsc
 eval load $DS.HOME/core/help.dsc
 
+
+if (fexist($DS.RCFILE) == 1)
+{
+	load $DS.RCFILE
+}
+      
 
 alias reload (void)
 {

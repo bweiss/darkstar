@@ -52,12 +52,12 @@ alias tabkey.process_tabkey (void)
 				(mode %)
 				(part %)
 				{
-					@ tabkey.chancomp_routine()
+					@ tabkey.channel_routine()
 				}			
 				(dcc send % %)
 				(load %)
 				{
-					@ tabkey.filecomp_routine()
+					@ tabkey.file_routine()
 				}
 				(loadmod %)
 				{
@@ -85,11 +85,11 @@ alias tabkey.process_tabkey (void)
 				}
 				(*)
 				{
-					@ tabkey.nickcomp_routine()
+					@ tabkey.nick_routine()
 				}
 			}
 		}{
-			@ tabkey.nickcomp_routine()
+			@ tabkey.nick_routine()
 		}
 	}{
 		@ tabkey.msg_routine()
@@ -117,7 +117,7 @@ alias tabkey.add_nick (nick, void)
 	return
 }
 
-alias tabkey.chancomp_routine (void)
+alias tabkey.channel_routine (void)
 {
 	@ :lastc = mid(${strlen($L) - 1} 1 $L)
 	
@@ -157,7 +157,7 @@ alias tabkey.chancomp_routine (void)
 	return
 }
 
-alias tabkey.filecomp_routine (void)
+alias tabkey.file_routine (void)
 {
 	@ :lastc = mid(${strlen($L) - 1} 1 $L)
 
@@ -261,7 +261,7 @@ alias tabkey.msg_routine (void)
 	return
 }
 
-alias tabkey.nickcomp_routine (void)
+alias tabkey.nick_routine (void)
 {
 	@ :lastc = mid(${strlen($L) - 1} 1 $L)
 	

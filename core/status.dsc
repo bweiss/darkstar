@@ -29,5 +29,8 @@ alias status (sbar, void)
 	}
 }
 
+/* Set default statbar */
+status darkstar
+
 
 /* bmw '01 */
