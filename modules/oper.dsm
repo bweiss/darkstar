@@ -155,7 +155,7 @@ alias challenge (...)
 				stack push on 386
 				^on ^386 "*"
 				{
-					xecho -b Received hex string from $0, Generating response...
+					xecho -b Received challenge reply from $0. Generating response...
 					@ :item = matchitem(oper.challenge $0 *)
 					@ :tmp = getitem(oper.challenge $item)
 					@ :key = word(2 $tmp)
@@ -169,12 +169,12 @@ alias challenge (...)
 					stack pop on 386
 				}
 
-				xecho -b Initiating challenge-response with $servername()...
+				xecho -b Initiating challenge-response with $servername()
 				quote challenge $nick
 			}{
-				xecho -b -s No entry for $servername() in the challenge-response list
-				xecho -b -s You can add entries with: /CHALLENGE -add <server> <nick> <key>
-				xecho -b -s For manual challenge-response authentication use /QUOTE CHALLENGE
+				xecho -b No entry for $servername() in the challenge-response list
+				xecho -b You can add entries with: /CHALLENGE -add <server> <nick> <key>
+				xecho -b For manual challenge-response authentication use /QUOTE CHALLENGE
 			}
 		}
 	}
