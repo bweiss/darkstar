@@ -11,4 +11,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Display number of voiced users on all statbars that show user totals.
 * Move highlight code into formats.do_highlight alias.
 * Add support for highlighting in actions, public and private.
-
+* Add relay module to the default auto-load list.
