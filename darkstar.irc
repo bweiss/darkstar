@@ -59,14 +59,14 @@ for array in ($getarrays()) {
 /*
  * Important global variables
  */
-@ DS.VERSION = [0.2.7]
-@ DS.INTERNAL_VERSION = [20020907]
+@ DS.VERSION = [0.2.8]
+@ DS.INTERNAL_VERSION = [20020918]
 
 /*
  * This will be incremented every time a change takes place in
  * the core scripts (this file and any .dsc files in core/).
  */
-@ DS.CORE_ID = 68
+@ DS.CORE_ID = 69
 
 
 eval xecho -b Loading DarkStar $DS.VERSION

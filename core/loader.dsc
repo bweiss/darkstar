@@ -237,8 +237,7 @@ alias module.load_saved_settings (void)
  * Data about each module is stored in the three arrays: modules,
  * module_files, and module_versions. The module's version is grabbed
  * from the top line of the file and must be in the form of
- * "#version <versionstr>". If no version is specified, a single '-' will
- * be used.
+ * "#version <versionstr>". If no version is specified, '-' will be used.
  */
 alias loader.build_modlist (void)
 {
@@ -253,7 +252,7 @@ alias loader.build_modlist (void)
 		{
 			@:name = before(-1 . $after(-1 / $file))
 
-			/* Get module version. */
+			/* Get module version */
 			@:fd = open($file R)
 			@:line = read($fd)
 			@ close($fd)
@@ -292,13 +291,13 @@ alias loader.load_module (module, void)
 		return 1
 	}
 
-	/* Remove the extension if necessary. */
+	/* Remove the extension if necessary */
 	if (match(%.% $module)) {
 		@:module = before(-1 . $module)
 	}
 
 	if (finditem(loaded_modules $module) > -1) {
-		/* Module already loaded. */
+		/* Module already loaded */
 		return 2
 	}
 
@@ -309,29 +308,29 @@ alias loader.load_module (module, void)
 		@:save_file = DS.SAVE_DIR ## [/] ## module ## [.sav]
 		@:theme_file = getitem(theme_dirs $finditem(themes $DS.THEME)) ## module
 
-		/* Load the actual module. */
+		/* Load the actual module */
 		load $file
 
-		/* Load the save file. */
+		/* Load the save file */
 		if (fexist($save_file) == 1) {
 			load $save_file
 		}
 
-		/* Load the theme file for this module. */
+		/* Load the theme file for this module */
 		if (fexist($theme_file) == 1) {
 			load $theme_file
 		}
 
-		/* Add module to loaded_modules array. */
+		/* Add module to loaded_modules array */
 		@ setitem(loaded_modules $numitems(loaded_modules) $module)
 
-		/* Hook the event so other modules can act on it. */
+		/* Hook the event so other modules can act on it */
 		hook LOADMOD $module
 
 		return 0
 	}
 
-	/* No such module. */
+	/* No such module */
 	return 3
 }
 
@@ -342,11 +341,11 @@ alias loader.load_module (module, void)
 alias loader.unload_module (module, void)
 {
 	if (!numitems(loaded_modules)) {
-		/* No modules are loaded. */
+		/* No modules are loaded */
 		return 1
 	}
 
-	/* Remove the extension if necessary. */
+	/* Remove the extension if necessary */
 	if (match(%.% $module)) {
 		@:module = before(-1 . $module)
 	}
@@ -354,20 +353,20 @@ alias loader.unload_module (module, void)
 	@:item = finditem(loaded_modules $module)
 	if (item > -1)
 	{
-		/* Execute cleanup queue for module. */
+		/* Execute cleanup queue for module */
 		queue -do cleanup.$module
 
 		/* Get rid of any global aliases/variables obviously
-		   related to this module. */
+		   related to this module */
 		purge $module
 		purgealias $module
 
-		/* Get rid of any arrays obviously related to this module. */
+		/* Get rid of any arrays obviously related to this module */
 		for array in ($pattern($module\.* $getarrays())) {
 			@ delarray($array)
 		}
 
-		/* Remove all config and format variables. */
+		/* Remove all config and format variables */
 		for var in ($DSET.MODULES[$module]) {
 			^assign -CONFIG.$var
 			^assign -DSET.CONFIG.$var
@@ -382,19 +381,19 @@ alias loader.unload_module (module, void)
 		^assign -DSET.MODULES.$module
 		^assign -FSET.MODULES.$module
 			
-		/* Remove any info lines for this module. */
+		/* Remove any info lines for this module */
 		purge MODINFO[$module]
 
-		/* Remove from loaded_modules array. */
+		/* Remove from loaded_modules array */
 		@ delitem(loaded_modules $item)
 
-		/* Hook event so other modules can act on it. */
+		/* Hook event so other modules can act on it */
 		hook UNLOADMOD $module
 
 		return 0
 	}
 
-	/* Module is not loaded. */
+	/* Module is not loaded */
 	return 2
 }
 
@@ -449,7 +448,7 @@ if (CONFIG.AUTO_LOAD_PROMPT)
 {
 	^local modules
 
-	/* Keep things quiet while we list available modules. */
+	/* Keep things quiet while we list available modules */
 	for hook in (250 251 252 254 255 265 266) {
 		^on ^$hook ^"*"
 	}
@@ -469,14 +468,14 @@ if (CONFIG.AUTO_LOAD_PROMPT)
 		(*) {@:modules = loader.which_mods(modules $mods)}
 	}
 	
-	/* Cleanup after ourselves. */
+	/* Cleanup after ourselves */
 	wait -cmd for hook in (250 251 252 254 255 265 266) {
 		^on ^$hook -"*"
 	}
 
 	^stack pop set SUPPRESS_SERVER_MOTD
 
-	/* Load the modules. */
+	/* Load the modules */
 	if (modules) {
 		loadmod $modules
 	}

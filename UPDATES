@@ -1,3 +1,5 @@
+DarkStar 0.3
+
 *** News 2002/09/17 -- oper.dsm 0.1.2 - New format variable: WALLOP
 	All incoming wallops will now be formatted according to the value
 	of the WALLOP format variable.
@@ -73,6 +75,8 @@
 	current topic by placing it on the input line preceded by "/topic".
 	The /tt and /ttopic aliases point to /etopic.
 
+*** News 2002/06/10 -- DarkStar 0.2.7 released
+
 *** News 2002/06/09 -- tabkey.dsm 0.7.2
 	The assign procedure has been renamed aliasctl and now handles
 	completion for both assign variables and aliases. This will cause
@@ -104,4 +108,4 @@
 	like the file of the same name included with EPIC4 :-).
 
 
-#EOF
+End of file.

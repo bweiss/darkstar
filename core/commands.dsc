@@ -6,33 +6,33 @@
  */
 
 /*
- * Displays miscellaneous information about the operating system, client,
- * and DarkStar (including modules).
+ * Displays miscellaneous information about the operating system,
+ * client, and DarkStar (including modules).
  */
 alias dinfo (void)
 {
 	@:divider = repeat(${word(0 $geom()) - 8} -)
 	echo $G $divider
 
-	/* Display information about the operating system. */
+	/* Display information about the operating system */
 	xecho -b $uname(%s %r) \($uname(%m)\)
 	xecho -b $pipe(uptime)
 	echo $G $divider
 
-	/* Display information about the client. */
+	/* Display information about the client */
 	xecho -b ircII $J \($V\) [$info(i)] "$info(r)"
 	xecho -b Uptime: $tdiff2(${time() - F}) - PID: $pid(), PPID: $ppid()
 	xecho -b $info(c)
 	xecho -b Compile-time options: $info(o)
 	echo $G $divider
 
-	/* Display information about DarkStar. */
+	/* Display information about DarkStar */
 	xecho -b DarkStar $DS.VERSION \($DS.INTERNAL_VERSION\) [$DS.CORE_ID]
 	xecho -b Available modules: $numitems(modules), Loaded modules: $numitems(loaded_modules)
 	xecho -b Current theme: $DS.THEME, Current statusbar: $DS.SBAR
 	echo $G $divider
 
-	/* Display module information. */
+	/* Display module information */
 	foreach MODINFO module {
 		for var in ($aliasctl(assign match MODINFO.$module\.)) {
 			@:modname = tolower($module)
