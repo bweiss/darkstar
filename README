@@ -1,35 +1,35 @@
 README file for Darkstar/EPIC4
 Author: Brian Weiss <brian@epicsol.org>
-
-Last modified: 1/13/02
+Last modified: 3/26/2002
 
 
 ABOUT
 
-Darkstar is a modular script pack written for use with EPIC4, specifically,
-version 1.1.2 and up. It is intended mostly for advanced users that wish to
-take the time to customize their client, but should remain quite usable for
-less advanced users. What makes this script pack special is its modularity.
-Included are a set of core scripts which provide everything necessary to
-load/unload modules, configure settings, save settings, change statbars,
-manage themes, and browse the help files. All other features come in the
-form of modules that can be loaded or unloaded at any time. Not only does
-this mean you only load the features you want, but more importantly, it
-allows scripters to add their own features with ease.
+Darkstar is a modular script pack for EPIC4 that consists of two main parts.
 
-Currently, only the basic user commands provided by the core scripts have
-been documented. I do have plans to write more in-depth documentation at a
-later time, but for now, if you are a scripter and are interested in writing
-your own modules, themes, or status bars, please feel free to contact me.
-As for users, the following should get you started.
+1. A set of core scripts which provides a module loader, config manager,
+help browser, some generally useful commands and functions, and a way to
+save settings.
+
+2. Various modules that add most of the features everyone is used to,
+including: an away system, advanced tab key completion, improved window
+management, nick completion, and anything else that makes IRC comfortable.
+These modules are completely independent of each other (though dependencies
+are supported) and can be loaded or unloaded at any time.
+
+As of 0.2.0 the official state of this project is:
+	Core scripts: Beta, but stable. Still subject to change. End user
+		      commands documented.
+	Modules: Beta, but stable. Still subject to change. No documentation.
 
 
 WHERE TO GET DARKSTAR AND EPIC4
 
-Darkstar and EPIC4 can be found at the following URLs:
+Recent versions of both Darkstar and EPIC4 can be found at the
+following URLs:
 
-http://www.got.net/~brian/
-http://www.epicsol.org/
+  http://www.got.net/~brian/epic4/scripts/darkstar/
+  http://www.epicsol.org/
 
 A snapshot of my current tree (as well as EPIC) is also available via CVS:
 

@@ -1,8 +1,9 @@
 * DOCUMENTATION
 
-* status.dsc and themes.dsc are very similar and should probably be combined.
+* Improved dependency support. We should keep track of what depends on what
+  and take the proper actions on load/unload.
 
-* [misc.dsm] Fix /wall
+* misc.dsm: Fix /wall
 
 * Relay module (/relm, /reln, etc)
 
@@ -18,6 +19,6 @@
 
 * tabkey.dsm:
 [17:26] .whitefang[thall@epicsol.org] a<tab>
-[17:27] .whitefang[thall@epicsol.org] it shows the matches, thats finbe.
+[17:27] .whitefang[thall@epicsol.org] it shows the matches, thats fine.
 [17:27] .whitefang[thall@epicsol.org] but if you press it again, it should
-         star cycling through
+         start cycling through

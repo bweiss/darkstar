@@ -173,11 +173,17 @@ alias config.setcat (var, void)
 alias config.add
 {
 	^local variable,value
-	@ :module = LOADER.PENDING_MODULE
+	@ :module = after(-1 / $before(-1 . $word(1 $loadinfo())))
+
+	if (!module)
+	{
+		xecho -b Error: config.add: must be called at load time
+		return
+	}
 
 	if (![$0])
 	{
-		xecho -b config.add: Not enough arguments \(Module: $module\)
+		xecho -b Error: config.add: Not enough arguments \(Module: $module\)
 		return
 	}
 
@@ -193,7 +199,7 @@ alias config.add
 
 	if (DSET[CONFIG][$variable])
 	{
-		xecho -b config.add: Duplicate config variable: $variable \(Module: $module\)
+		xecho -b Error: config.add: Duplicate config variable: $variable \(Module: $module\)
 	}{
 		@ push(DSET.MODULES.$module $variable)
 		^assign DSET.CONFIG.$variable 1
@@ -207,17 +213,23 @@ alias config.add
  */
 alias format.add (variable, value)
 {
-	@ :module = LOADER.PENDING_MODULE
+	@ :module = after(-1 / $before(-1 . $word(1 $loadinfo())))
+
+	if (!module)
+	{
+		xecho -b Error: format.add: This command must be called at load time
+		return
+	}
 
 	if (!variable)
 	{
-		xecho -b format.add: Not enough arguments \(Module: $module\)
+		xecho -b Error: format.add: Not enough arguments \(Module: $module\)
 		return
 	}
 
 	if (FSET[FORMAT][$variable])
 	{
-		xecho -b format.add: Duplicate format variable: $variable \(Module: $module\)
+		xecho -b Error: format.add: Duplicate format variable: $variable \(Module: $module\)
 	}{
 		@ push(FSET.MODULES.$module $variable)
 		^assign FSET.FORMAT.$variable 1

@@ -21,9 +21,11 @@ alias dinfo (void)
 	echo $G $divider
 
 	/* Display information about the client. */
-	xecho -b ircII $J \($V\) [$info(i)] - PID: $pid()  PPID: $ppid()
+	xecho -b ircII $J \($V\) [$info(i)] "$info(r)"
+	xecho -b PID: $pid(), PPID: $ppid()
+	xecho -b Uptime: $tdiff(${time() - F})
 	xecho -b $info(c)
-	xecho -b Client Uptime: $tdiff(${time() - F})
+	xecho -b Compile-time options: $info(o)
 	echo $G $divider
 
 	/* Display information about Darkstar. */

@@ -168,9 +168,9 @@ alias loader.load_module (module, void)
 	}
 
 	/* Remove the extension if necessary. */
-	if (before(-1 . $module))
+	if (match(%.% $module))
 	{
-		@ module = before(-1 . $module)
+		@ :module = before(-1 . $module)
 	}
 
 	if (finditem(loaded_modules $module) > -1)
@@ -188,9 +188,7 @@ alias loader.load_module (module, void)
 		@ :theme_file = getitem(theme_dirs $finditem(themes $DS.THEME)) ## module
 
 		/* Load the actual module. */
-		^assign LOADER.PENDING_MODULE $module
 		load $file
-		^assign -LOADER.PENDING_MODULE
 
 		/* Load the save file. */
 		if (fexist($save_file) == 1)
@@ -230,9 +228,9 @@ alias loader.unload_module (module, void)
 	}
 
 	/* Remove the extension if necessary. */
-	if (before(-1 . $module))
+	if (match(%.% $module))
 	{
-		@ module = before(-1 . $module)
+		@ :module = before(-1 . $module)
 	}
 
 	@ :item = finditem(loaded_modules $module)
@@ -335,17 +333,17 @@ alias loader.which_mods (array, args)
  */
 alias module.dep (depmods)
 {
-	@ :module = LOADER.PENDING_MODULE
+	@ :module = after(-1 / $before(-1 . $word(1 $loadinfo())))
 
 	if (!module)
 	{
-		echo module.dep: This command must be called at module load time
+		echo Error: module.dep: This command must be called at load time
 		return
 	}
 
 	if (!depmods)
 	{
-		echo module.dep: Not enough arguments \(Module: $module\)
+		echo Error: module.dep: Not enough arguments \(Module: $module\)
 		return
 	}
 
@@ -386,7 +384,7 @@ alias module.dep (depmods)
  */
 alias module.load_saved_settings (void)
 {
-	@ :module = LOADER.PENDING_MODULE
+	@ :module = after(-1 / $before(-1 . $word(1 $loadinfo())))
 	if (module)
 	{
 		@ :save_file = DS[SAVE_DIR] ## [/] ## module ## [.sav]

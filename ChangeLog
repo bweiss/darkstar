@@ -1,9 +1,13 @@
 Darkstar ChangeLog
 
 
+3/20/02
+
+ * [window.dsm 0.3.1] The /WJ alias should now work just like /JOIN.
+
 3/14/02
 
- * [window.dsm v0.3] Changes regarding the msg window, including:
+ * [window.dsm 0.3] Changes regarding the msg window, including:
 	- MSG_WINDOW_ARGS has been removed in favor of the following...
 	- New config variables: MSG_WINDOW_LEVEL MSG_WINDOW_SIZE
 	- Added some things to try and keep the msg window in shape when
@@ -17,7 +21,7 @@ Darkstar ChangeLog
    whether or not the current status bar wants to be double. Very helpful for
    anything that creates new windows.
 
- * [window.dsm v0.2] Fixed /WJ so that it does not affect the msg window.
+ * [window.dsm 0.2] Fixed /WJ so that it does not affect the msg window.
    Also added a hack to /WK to keep it from returning you to a full-screen
    msg window after the current window is killed.
 
@@ -30,7 +34,7 @@ Darkstar ChangeLog
 
 3/6/02
 
- * [tabkey.dsm v0.6.1] Added tabkey.rmrule so that other modules can remove
+ * [tabkey.dsm 0.6.1] Added tabkey.rmrule so that other modules can remove
    rules from within their cleanup queues.
 
 3/4/02
@@ -48,22 +52,22 @@ Darkstar ChangeLog
    will be happy to explain them. Currently the away, keepnick, and tabkey
    modules take advantage of this.
 
- * [keepnick.dsm v0.2] Fixed a bug that would cause getnick to be deactivated
+ * [keepnick.dsm 0.2] Fixed a bug that would cause getnick to be deactivated
    when your current nick matched CONFIG.KEEPNICK_NICK but CONFIG.KEEPNICK
    was false. Also added a getnick related module info line.
 
- * [tabkey.dsm v0.6] Added a completion procedure and rule for themes. Also
+ * [tabkey.dsm 0.6] Added a completion procedure and rule for themes. Also
    added a module info line related to completion rules.
 
 3/2/02
 
- * [channel.dsm v0.2.3] CONFIG.CHANNEL_TS didn't include the numerical
+ * [channel.dsm 0.2.3] CONFIG.CHANNEL_TS didn't include the numerical
    representation of the day of the month. Oops. The themes have been updated
    accordingly.
 
 2/28/02
 
- * [away.dsm v1.2] If PUBLIC_AWAY is true, and you are not away, but attempt
+ * [away.dsm 1.2] If PUBLIC_AWAY is true, and you are not away, but attempt
    to unset away, no actions will be sent. We are also now displaying the
    amount of time you were away (formatted by $tdiff()) instead of the date
    of when you set away.
