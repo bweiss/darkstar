@@ -14,7 +14,9 @@ Darkstar ChangeLog
    simple aliases to //AWAY that just reverse the default behavior from being
    local to global (The "-a" option is passed to //AWAY unless the "-l" option
    is passed to the aliases). Everything else is now hooked by the 305 and 306
-   numerics. (requested by whitefang)
+   numerics. This also means that the DEFAULT_AWAY_REASON and
+   DEFAULT_BACK_REASON config variables have been removed. You must now specify
+   a reason manually if you wish to set yourself away. (requested by whitefang)
 
  * Theme support now actually works ;)
 
