@@ -1,4 +1,4 @@
-#version 0.8.1
+#version 0.8.2
 /* $Id$ */
 /*
  * misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
@@ -10,8 +10,7 @@
 
 /****** CLEANUP QUEUE ******/
 
-queue cleanup.misc
-{
+queue cleanup.misc {
 	for alias in (dns disco m nslookup ping q tig umode ver whois wi wii ww) {
 		^alias -$alias
 	}
@@ -82,70 +81,51 @@ format.add UMODE $G Mode change \"$3-\" for user $2 by $1
 
 alias disco disconnect
 
-alias dns (nicks)
-{
-	if (!nicks) {
-		xecho -b Usage: /DNS <nick> ...
-		return
-	}
-
-	for nick in ($nicks) {
-		@:uhost = uh($nick)
-		if (uhost == [<UNKNOWN>@<UNKNOWN>]) {
-			xecho -b User $nick is not online
-		} else {
-			@:addr = after(-1 @ $uhost)
-			@:addr2 = convert($addr)
-			xecho -b $nick!$uhost is ${addr2 ? addr2 : [unknown]}
-		}
-	}
-}
+alias dns nslookup
 
 alias m msg
 
-alias nslookup
-{
+alias nslookup {
 	if (![$*]) {
-		xecho -b Usage: /NSLOOKUP <address> ...
+		xecho -b Usage: /NSLOOKUP <nick|hostname|IP> ...
 		return
 	}
-
-	for addr in ($*) {
-		@:tmp = convert($addr)
-		xecho -b $addr is ${tmp ? tmp : [unknown]}
+	for foo in ($*) {
+		if (match(%.% $foo)) {
+			@ :bar = convert($foo)
+		} else {
+			if ((:uhost = uh($foo)) == [<UNKNOWN>@<UNKNOWN>]) {
+				@ :uhost = []
+				@ :bar = convert($foo)	
+			} else {
+				@ :bar = convert($after(-1 @ $uhost))
+			}
+		}
+		xecho -b $foo${uhost ? [!$uhost] : []} is ${bar ? bar : [unknown]}
 	}
 }
 
-alias ping (target default "$servernick()", void)
-{
+alias ping (target default "$servernick()", void) {
 	//ping $target
 }
 
 alias q query
 
-alias tig (void)
-{
+alias tig (void) {
 	@ delarray(misc.tig)
-
-	/* Grab the ignore list and store it in the misc.tig array */
 	for mask in ($igmask(*)) {
 		@ setitem(misc.tig $numitems(misc.tig) $mask $igtype($mask))
 	}
-
-	/* Display ignore list */
 	xecho -b Ignorance list:
 	for cnt from 0 to ${numitems(misc.tig) - 1} {
-		@:line = getitem(misc.tig $cnt)
-		@:num = cnt + 1
+		@ :line = getitem(misc.tig $cnt)
+		@ :num = cnt + 1
 		echo  $[3]num $[30]word(0 $line) $restw(1 $line)
 	}
-
 	^local tmp $"Which ignore(s) to remove? (1, 2-5, ...) "
-
-	/* Remove any of the ignores that the user specified above */
 	for ignum in ($tmp) {
-		@:start = before(- $ignum)
-		@:end = after(- $ignum)
+		@ :start = before(- $ignum)
+		@ :end = after(- $ignum)
 		if (start < end && start < numitems(misc.tig) && end <= numitems(misc.tig)) {
 			for cnt from $start to $end {
 				//ignore $word(0 $getitem(misc.tig ${cnt - 1})) NONE
@@ -156,20 +136,17 @@ alias tig (void)
 	}
 }
 
-alias umode (mode)
-{
+alias umode (mode) {
 	//mode $servernick() $mode
 }
 
-alias ver (nick default "$servernick()", void)
-{
+alias ver (nick default "$servernick()", void) {
 	ctcp $nick version
 }
 
 alias wi whois
-alias whois (args)
-{
-	@:item = matchitem(misc.away_users $word(0 $args))
+alias whois (args) {
+	@ :item = matchitem(misc.away_users $word(0 $args))
 	if (item > -1) {
 		@ delitem(misc.away_users $item)
 		@ delitem(misc.away_users_ts $item)
@@ -177,8 +154,7 @@ alias whois (args)
 	//whois $args
 }
 
-alias wii (nick default "$servernick()", void)
-{
+alias wii (nick default "$servernick()", void) {
 	whois $nick $nick
 }
 
@@ -187,8 +163,7 @@ alias ww whowas
 
 /****** ON HOOKS ******/
 
-on ^301 "*"
-{
+on ^301 "*" {
 	if (FORMAT.WHOIS_AWAY) {
 		if (CONFIG.SHOW_AWAY_ONCE) {
 			if (matchitem(misc.away_users $0) < 0) {
@@ -206,8 +181,7 @@ on ^301 "*"
  * For DALnet and servers running UnrealIRCd.
  * Shows you that the user has identified with services.
  */
-on ^307 "*"
-{
+on ^307 "*" {
 	if (FORMAT.WHOIS_IDENTIFIED) {
 		echo $fparse(WHOIS_IDENTIFIED $*)
 	}
@@ -215,8 +189,7 @@ on ^307 "*"
 
 on ^310 "*" #
 
-on ^311 "*"
-{
+on ^311 "*" {
 	for var in (WHOIS_HEADER WHOIS_HEADER1 WHOIS_HEADER2) {
 		if (FORMAT[$var]) {
 			echo $fparse($var $*)
@@ -230,22 +203,19 @@ on ^311 "*"
 	}
 }
 
-on ^312 "*"
-{
+on ^312 "*" {
 	if (FORMAT.WHOIS_SERVER) {
 		echo $fparse(WHOIS_SERVER $*)
 	}
 }
 
-on ^313 "*"
-{
+on ^313 "*" {
 	if (FORMAT.WHOIS_OPER) {
 		echo $fparse(WHOIS_OPER $*)
 	}
 }
 
-on ^314 "*"
-{
+on ^314 "*" {
 	for var in (WHOIS_HEADER WHOIS_HEADER1 WHOIS_HEADER2) {
 		if (FORMAT[$var]) {
 			echo $fparse($var $*)
@@ -259,8 +229,7 @@ on ^314 "*"
 	}
 }
 
-on ^315 "*"
-{
+on ^315 "*" {
 	for var in (WHO_FOOTER WHO_FOOTER1 WHO_FOOTER2) {
 		if (FORMAT[$var]) {
 			echo $fparse($var $*)
@@ -269,8 +238,7 @@ on ^315 "*"
 	^assign -MISC.WHO_HEADER_DONE
 }
 
-on ^317 "*"
-{
+on ^317 "*" {
 	if (FORMAT.WHOIS_IDLE) {
 		echo $fparse(WHOIS_IDLE $*)
 	}
@@ -279,8 +247,7 @@ on ^317 "*"
 	}
 }
 
-on ^318 "*"
-{
+on ^318 "*" {
 	for var in (WHOIS_FOOTER WHOIS_FOOTER1 WHOIS_FOOTER2) {
 		if (FORMAT[$var]) {
 			echo $fparse($var $*)
@@ -288,8 +255,7 @@ on ^318 "*"
 	}
 }
 
-on ^319 "*"
-{
+on ^319 "*" {
 	if (FORMAT.WHOIS_CHANNELS_WRAP) {
 		/*
 		 * Okay, here we go... The following attempts to do some
@@ -303,31 +269,28 @@ on ^319 "*"
 		 * the first line, and the WHOIS_CHANNELS_WRAP variable will
 		 * be used to format all proceeding lines.
 		 */
-
-		^local format_var WHOIS_CHANNELS
-		^local channels
-
+		@ :format_var = [WHOIS_CHANNELS]
+		@ :channels = []
 		for chan in ($2-) {
 			if (!channels) {
 				push channels $chan
 			} else if (no_fit && strlen($fparse($format_var $0 $1 $channels)) >= word(0 $geom())) {
 				echo $fparse($format_var $0 $1 $channels)
-				@:channels = chan
-				@:no_fit = []
+				@ :channels = chan
+				@ :no_fit = []
 			} else if (strlen($fparse($format_var $0 $1 $channels $chan)) >= word(0 $geom())) {
 				echo $fparse($format_var $0 $1 $channels)
-				@:channels = chan
-				@:format_var = [WHOIS_CHANNELS_WRAP]
-				@:no_fit = 1
+				@ :channels = chan
+				@ :format_var = [WHOIS_CHANNELS_WRAP]
+				@ :no_fit = 1
 			} else {
 				push channels $chan
 			}
 		}
-
 		if (channels) {
 			echo $fparse($format_var $0 $1 $channels)
 		}
-	}{
+	} else {
 		/*
 		 * Don't do anything special with the list of channels,
 		 * just output everything on a single line.
@@ -341,8 +304,7 @@ on ^319 "*"
 /*
  * OPN
  */
-on ^320 "*"
-{
+on ^320 "*" {
 	if (FORMAT.WHOIS_IDENTIFIED) {
 		echo $fparse(WHOIS_IDENTIFIED $*)
 	}
@@ -351,15 +313,13 @@ on ^320 "*"
 /*
  * UnrealIRCd's WHOISBOT numeric
  */
-on ^335 "*"
-{
+on ^335 "*" {
 	if (FORMAT.WHOIS_BOT) {
 		echo $fparse(WHOIS_BOT $*)
 	}
 }
 
-on ^369 "*"
-{
+on ^369 "*" {
 	for var in (WHOIS_FOOTER WHOIS_FOOTER1 WHOIS_FOOTER2) {
 		if (FORMAT[$var]) {
 			echo $fparse($var $*)
@@ -370,57 +330,49 @@ on ^369 "*"
 /*
  * UnrealIRCd's WHOISHOST
  */
-on ^378 "*"
-{
+on ^378 "*" {
 	if (FORMAT.WHOIS_HOST) {
 		echo $fparse(WHOIS_HOST $*)
 	}
 }
 
-on #^connect 424 "*"
-{
-	pause 2
+on #^connect 424 "*" {
 	//mode $servernick() $CONFIG.DEFAULT_UMODES
 }
 
-on ^action '% $servernick() *'
-{
+on ^action '% $servernick() *' {
 	if (FORMAT.ACTION_USER) {
 		echo $fparse(ACTION_USER $*)
 	}
 }
 
-on ^ctcp "*"
-{
+on ^ctcp "*" {
 	if (FORMAT.CTCP) {
 		echo $fparse(CTCP $*)
 	}
 }
 
-on ^ctcp_reply "*"
-{
+on ^ctcp_reply "*" {
 	if (FORMAT.CTCP_REPLY) {
 		echo $fparse(CTCP_REPLY $*)
 	}
 }
 
-on ^mode '$servernick() $servernick() *'
-{
+on ^mode '$servernick() $servernick() *' {
 	if (FORMAT.UMODE) {
 		echo $fparse(UMODE $*)
 	}
 }
 
-on ^msg "*"
-{
+on ^msg "*" {
 	if (FORMAT.MSG) {
 		if (CONFIG.SHOW_HOST_ONCE) {
 			if (finditem(misc.userhosts $0 $userhost()) < 0) {
-				@:uhost = userhost()
+				@ :uhost = userhost()
 				@ setitem(misc.userhosts $numitems(misc.userhosts) $0 $uhost)
 				@ setitem(misc.userhosts_ts $numitems(misc.userhosts_ts) $time())
 			} else {
-				@:uhost = [*]
+				@ :uhost = [*]
 			}
 			echo $fparse(MSG $0 $uhost $1-)
 		} else {
@@ -429,23 +381,21 @@ on ^msg "*"
 	}
 }
 
-on ^nickname "*"
-{
+on ^nickname "*" {
 	if (FORMAT.NICKNAME) {
 		echo $fparse(NICKNAME $*)
 	}
 }
 
-on ^notice "*"
-{
+on ^notice "*" {
 	if (FORMAT.NOTICE) {
 		if (CONFIG.SHOW_HOST_ONCE) {
 			if (finditem(misc.userhosts $0 $userhost()) < 0) {
-				@:uhost = userhost()
+				@ :uhost = userhost()
 				@ setitem(misc.userhosts $numitems(misc.userhosts) $0 $uhost)
 				@ setitem(misc.userhosts_ts $numitems(misc.userhosts_ts) $time())
 			} else {
-				@:uhost = [*]
+				@ :uhost = [*]
 			}
 			echo $fparse(NOTICE $0 $uhost $1-)
 		} else {
@@ -454,8 +404,7 @@ on ^notice "*"
 	}
 }
 
-on ?raw_irc "% PRIVMSG % :FINGER"
-{
+on ?raw_irc "% PRIVMSG % :FINGER" {
 	if (CONFIG.IGNORE_CTCP_FINGER) {
 		xecho -b CTCP FINGER request received from $before(1 ! $0), ignoring...
 		return 1
@@ -464,29 +413,25 @@ on ?raw_irc "% PRIVMSG % :FINGER"
 	}
 }
 
-on ^send_action "*"
-{
+on ^send_action "*" {
 	if (FORMAT.SEND_ACTION_USER) {
 		echo $fparse(SEND_ACTION_USER $servernick() $*)
 	}
 }
 
-on ^send_ctcp "PRIVMSG *"
-{
+on ^send_ctcp "PRIVMSG *" {
 	if (FORMAT.SEND_CTCP && [$2] != [ACTION]) {
 		echo $fparse(SEND_CTCP $*)
 	}
 }
 
-on ^send_msg "*"
-{
+on ^send_msg "*" {
 	if (FORMAT.SEND_MSG) {
 		echo $fparse(SEND_MSG $*)
 	}
 }
 
-on ^send_notice "*"
-{
+on ^send_notice "*" {
 	if (FORMAT.SEND_NOTICE) {
 		echo $fparse(SEND_NOTICE $*)
 	}
@@ -495,11 +440,10 @@ on ^send_notice "*"
 /*
  * Add a timeout for SHOW_AWAY_ONCE and SHOW_HOST_ONCE.
  */
-on #-timer 424 "*"
-{
+on #-timer 424 "*" {
 	^local delete
 	for cnt from 0 to ${numitems(misc.away_users_ts) - 1} {
-		@:ts = getitem(misc.away_users_ts $cnt)
+		@ :ts = getitem(misc.away_users_ts $cnt)
 		if ((time() - ts) > CONFIG.SHOW_AWAY_ONCE_TIMEOUT) {
 			push delete $cnt
 		}
@@ -511,7 +455,7 @@ on #-timer 424 "*"
 
 	^local delete2
 	for cnt from 0 to ${numitems(misc.userhosts_ts) - 1} {
-		@:ts = getitem(misc.userhosts_ts $cnt)
+		@ :ts = getitem(misc.userhosts_ts $cnt)
 		if ((time() - ts) > CONFIG.SHOW_HOST_ONCE_TIMEOUT) {
 			push delete2 $cnt
 		}
@@ -522,22 +466,19 @@ on #-timer 424 "*"
 	}
 }
 
-on ^who "* % % % % *"
-{
+on ^who "* % % % % *" {
 	if (!MISC.WHO_HEADER_DONE) {
 		for var in (WHO_HEADER WHO_HEADER1 WHO_HEADER2) {
 			if (FORMAT[$var]) {
 				echo $fparse($var $*)
 			}
 		}
-
 		/*
 		 * This prevents the header from being displayed more than once.
 		 * It is removed by the 315 hook (WHO_FOOTER).
 		 */
 		@ MISC.WHO_HEADER_DONE = 1
 	}
-
 	if (FORMAT.WHO) {
 		echo $fparse(WHO $*)
 	}

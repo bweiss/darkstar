@@ -1,4 +1,4 @@
-#version 0.2.3
+#version 0.2.4
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -86,23 +86,6 @@ config.add    TABKEY_NICKCOMP_SUFFIX ,
 
 bind ^I parse_command tabkey.main
 
-alias tabkey.default {
-	bless
-	if (L == []) {
-		@ :ret = tabkey.cmd.msg($*)
-	} else if (curword == 0) {
-		@ :matches = tabkey.method.nick($*)
-		if (#matches == 1) {
-			@ :ret = matches ## CONFIG.TABKEY_NICKCOMP_SUFFIX
-		} else {
-			@ :ret = matches
-		}
-	} else {
-		@ :ret = tabkey.method.nickchan($*)
-	}
-	return $ret
-}
-
 alias tabkey.main {
 	@ :curword = indextoword($curpos() $L )
 	@ :wordind = wordtoindex($curword $L)
@@ -111,7 +94,7 @@ alias tabkey.main {
 		@ wordind = curpos()
 	}
 	@ :word = mid($wordind ${curpos() - wordind} $L)
-	if (CONFIG.TABKEY_CYCLE_MATCHES && word != [] && word == TABKEY.LASTWORD) {
+	if (CONFIG.TABKEY_CYCLE_MATCHES && TABKEY.LASTMATCHES != [] && word == TABKEY.LASTWORD) {
 		if (TABKEY.INDEX == numwords($TABKEY.LASTMATCHES)) {
 			@ TABKEY.INDEX = 0
 		}
@@ -164,7 +147,7 @@ alias tabkey.cmd {
 	@ :args  = mid(0 $curpos() $L)
 	/* Make absolutely sure we remove $CMDCHARS from the beginning of the
 	   the string. This is needed whenever $CMDCHARS contains one of the
-	   characters supplied to the above $pass() call. -bmw */
+	   characters supplied to the above call to $pass(). -bmw */
 	if (mid(0 $strlen($CMDCHARS) $args) == CMDCHARS) {
 		@:args = rest($strlen($CMDCHARS) $args)
 	}
@@ -192,6 +175,24 @@ alias tabkey.cmd {
 	}
 	return $ret
 }
+
+alias tabkey.default {
+	bless
+	if (L == []) {
+		@ :ret = tabkey.cmd.msg($*)
+	} else if (curword == 0) {
+		@ :matches = tabkey.method.nick($*)
+		if (#matches == 1) {
+			@ :ret = matches ## CONFIG.TABKEY_NICKCOMP_SUFFIX
+		} else {
+			@ :ret = matches
+		}
+	} else {
+		@ :ret = tabkey.method.nickchan($*)
+	}
+	return $ret
+}
+
 
 # Context sensitive completion goes here.
 
@@ -280,10 +281,8 @@ alias tabkey.cmd.mode {
 alias tabkey.cmd.m tabkey.cmd.msg
 alias tabkey.cmd.msg {
 	bless
-	if (curword == 1 && left(1 $word) != [=]) {
-		@ :ret = tabkey.method.nickchan($*)
-	} else if (curword == 1) {
-		@ :ret = TABKEY.MSGHIST[$winserv()]
+	if (curword == 1) {
+		@ :ret = sort($uniq($TABKEY.MSGHIST[$winserv()] $tabkey.method.nickchan($*)))
 	} else {
 		@ :cmd = word(0 $L)
 		if (!cmd) {
@@ -316,7 +315,7 @@ alias tabkey.cmd.pop       { return $tabkey.method.variables(assign); }
 alias tabkey.cmd.push      { return $tabkey.method.variables(assign); }
 
 alias tabkey.cmd.q tabkey.cmd.query
-alias tabkey.cmd.query     { return $tabkey.method.nickchan($*); }
+alias tabkey.cmd.query     { return $sort($uniq($TABKEY.MSGHIST[$winserv()] $tabkey.method.nickchan($*))); }
 
 alias tabkey.cmd.reloadmod { return $tabkey.method.arrays(loaded_modules); }
 
@@ -411,9 +410,7 @@ alias tabkey.method.commands {
 	return $ret
 }
 
-alias tabkey.method.chan   { return $pattern("$0*" $mychannels()); }
-
-alias tabkey.method.notify { return $pattern("$0*" $notify(on)); }
+alias tabkey.method.chan { return $pattern("$0*" $mychannels()); }
 
 alias alias.foo alias $*;alias $sar(g/globi/glob/$sar(g/filei/file/$*))
 alias.foo tabkey.method.filei {
@@ -437,8 +434,8 @@ alias tabkey.method.mask {
 }
 
 alias tabkey.method.nick {
-	if (pattern("$0*" $chanusers())) {
-		return $pattern($0* $chanusers());
+	if ((:foo = pattern("$0*" $chanusers()))) {
+		return $foo;
 	} else {
 		@ :chanusers = []
 		fe ($mychannels()) chan {
@@ -455,6 +452,8 @@ alias tabkey.method.nickchan {
 alias tabkey.method.nickchannotify {
 	return $remws(/ $tabkey.method.chan($*) $sort($uniq($tabkey.method.nick($*) $tabkey.method.notify($*))))
 }
+
+alias tabkey.method.notify { return $pattern("$0*" $notify(on)); }
 
 alias tabkey.method.variables (type, void) {
 	bless
