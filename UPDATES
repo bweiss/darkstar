@@ -2,6 +2,11 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://darkstar.epicsol.org/UPDATES
 
 
+*** News 2003/11/10 -- oper.dsm 0.5 - Password support for challenge-response
+	We now support password protected keys for challenge-response opering!
+	Also, failed oper attempts (either with /OPER or /CHALLENGE) will
+	cause the auto-challenge timer to ignore that server for 20 minutes.
+
 *** News 2003/11/07 -- window.dsm 0.9 - Changed key bindings
 	Several changes mostly related to key bindings, including:
 	 * The Insert and Delete keys are now left alone to EPIC's defaults.

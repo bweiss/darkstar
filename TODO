@@ -9,12 +9,28 @@ FOR 0.3 RELEASE:
     variable names.
 
   * Move all the standard formats (whois, joins/parts, msgs, notices, etc.)
-    out of modules and into the core. I think it would make life easier for
-    everyone if these were just part of the core. (I'm still not totally
-    sure about this one.)
+    out of their current modules and into a new module named formats.dsm.
+    This includes all of names.dsm and large portions of misc.dsm and
+    channel.dsm.
 
-  * Merge all the statbar stuff into themes. There isn't enough reason to
-    keep these separate.
+  * Merge all the statbar stuff into the theme system and move the entire
+    theme system out of the core and into a module named themes.dsm.
+
+  * Allow modules to specify a minimum core ID in their headers. This would
+    allow modules that are not compatible with the current version of the
+    core scripts to be rejected or simply left out of the available modules
+    list. There should probably be a /DSET that allows these to be ignored.
+
+  * Improve dependency support for modules. If a module that another module
+    depends on is unloaded we should warn the user and maybe not even allow
+    it to be unloaded. At least not without the user's explicit consent.
+    Perhaps there should be some kind of "force" flag for /UNLOADMOD.
+
+    Should a module's dependencies be specified in the header, like the
+    module version, or should it be left to the existing method (module.dep)?
+    We're already going through the trouble of reading the first line of
+    each module when building the mod list, so this wouldn't be much extra
+    work.
 
   * Add the option to have the module loader automatically purge non-existent
     modules from the auto-load list. This could take the form of either a
@@ -60,8 +76,6 @@ FOR 0.3 RELEASE:
     the module itself allowing all modules to have help pages instead of just
     those that are packaged with the core.
 
-  * [window.dsm] Rename the BIND_ON_JOIN and UNBIND_ON_PART config variables?
-
 
 AFTER 0.3 RELEASE:
 
@@ -89,11 +103,6 @@ AFTER 0.3 RELEASE:
 
 
 OTHER NOTES/IDEAS:
-
-* Improved dependency support. We should keep track of what depends on what
-  and take the proper actions on load/unload.
-     - or -
-  Remove dependency support altogether. Is it needed or is it just bloat?
 
 * Honor the DISPLAY variable in format related /ON hooks?
 

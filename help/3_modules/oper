@@ -3,14 +3,14 @@ Author: Brian Weiss <brian@epicsol.org>
 
 Description:
    IRC Operator stuff including an operview window and support for
-   challenge-response opering (ratbox and some hyb7 servers).
+   challenge-response opering (ratbox and hybrid7 servers).
 
 Config Variables:
    AUTO_CHALLENGE         - Boolean. If true, you will automatically be opered
                             via challenge-response on any servers that have
                             have entries in the challenge-response list.
-   CHALLENGE_RSA_RESPOND  - Path to the rsa_respond binary. This is required
-                            to use challenge-response.
+   CHALLENGE_RSA_RESPOND  - Path to the rsa_respond utility. This is required
+                            to use challenge-response authentication.
    OPER_UMODES            - User modes to set when you become an operator.
    OPERVIEW               - Boolean. Creates a new window called "operview"
                             that will display operator related messages
@@ -29,7 +29,7 @@ Author: Brian Weiss <brian@epicsol.org>
      - Manages the challenge-response list or issues a CHALLENGE command
        to the current server for [nick]. In order for this to work the
        CHALLENGE_RSA_RESPOND config variable must be set to the location
-       of the rsa_respond binary and there must be an entry for the server
+       of the rsa_respond utility and there must be an entry for the server
        in the challenge-response list.
 
    operview [on|off]
