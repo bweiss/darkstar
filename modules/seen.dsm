@@ -152,7 +152,7 @@ alias seen.readdb (void) {
 }
 
 alias seen.updatedb (serv, nick, chan, type, ...) {
-	if (![$*]) {
+	if (![$*] || nick == servernick($serv)) {
 		return
 	}
 	if ((:item = matchitem(seen.db.$serv $nick $chan *)) > -1) {
