@@ -61,7 +61,7 @@ alias tabkey.process_tabkey (void)
 				{
 					@ tabkey.chancomp_routine()
 				}			
-				(dcc % % %)
+				(dcc send % %)
 				(load %)
 				{
 					@ tabkey.filecomp_routine()
@@ -169,7 +169,7 @@ alias tabkey.filecomp_routine (void)
 
 	unless (lastc == [ ])
 	{
-		@ :lastw = word(${#L - 1} $L)
+		@ :lastw = twiddle($word(${#L - 1} $L))
 		@ :findfile = pattern($lastw% $glob($lastw*))
 		
 		if (#findfile == 1)
@@ -184,6 +184,12 @@ alias tabkey.filecomp_routine (void)
 		{
 			parsekey delete_to_previous_space
 			xtype -l $prefix($findfile)
+
+			xecho -b Matches:
+			for file in ($findfile)
+			{
+				echo $file
+			}
 		}
 	}
 	
