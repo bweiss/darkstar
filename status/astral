@@ -8,7 +8,7 @@ assign STATUS.DOUBLE 1
 set INPUT_PROMPT 36Àל-1 
 set REVERSE_STATUS_LINE OFF
 set STATUS_AWAY 36[-1A${AWAY[NEWMSGS] ? [36!-1$AWAY.NEWMSGS] : []}36]-1
-set STATUS_CHANNEL 36-[-1$left(24 $C)${chanmode() != [*] ? [36\(-1+$sar(g/"//$chanmode())36\)-1] : []}36]-1
+set STATUS_CHANNEL 36-[-1$left(24 $C)${chanmode() != [*] ? [36\(-1+$unsplit(" " $chanmode())36\)-1] : []}36]-1
 set STATUS_CHANOP 36@-1
 set STATUS_CLOCK %T
 set STATUS_DOES_EXPANDOS ON
