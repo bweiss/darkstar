@@ -22,8 +22,8 @@ assign FORMAT.PUBLIC %c<%n$1%c>%n $3-
 assign FORMAT.PUBLIC_AR %c<%W$1%c>%n $3-
 assign FORMAT.PUBLIC_OTHER %c<%n$1:%C$2%c>%n $3-
 assign FORMAT.PUBLIC_OTHER_AR %c<%W$1%n:%C$2%c>%n $3-
-assign FORMAT.SEND_ACTION_CHANNEL %W*%n %C$servernick()%n $2-
-assign FORMAT.SEND_ACTION_CHANNEL_OTHER <%C$1%n> %W*%n %C$servernick()%n $2-
+assign FORMAT.SEND_ACTION_CHANNEL %W*%n %C$1%n $3-
+assign FORMAT.SEND_ACTION_CHANNEL_OTHER <%C$2%n> %W*%n %C$1%n $3-
 assign FORMAT.SEND_PUBLIC %c<$2>%n $3-
 assign FORMAT.SEND_PUBLIC_OTHER %c<$1%n:%C$2>%n $3-
 assign FORMAT.TOPIC $G Topic for $2: $3-

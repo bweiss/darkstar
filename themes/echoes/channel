@@ -22,8 +22,8 @@ assign FORMAT.PUBLIC %K<%n$1%K>%n $3-
 assign FORMAT.PUBLIC_AR %K<%C$1%K>%n $3-
 assign FORMAT.PUBLIC_OTHER %K<%n$1%K/%n$2%K>%n $3-
 assign FORMAT.PUBLIC_OTHER_AR %K<%C$1%K/%n$2%K>%n $3-
-assign FORMAT.SEND_ACTION_CHANNEL %K-> %W$servernick()%n $2-
-assign FORMAT.SEND_ACTION_CHANNEL_OTHER %K-> %W$1%K/%W$servernick()%n $2-
+assign FORMAT.SEND_ACTION_CHANNEL %K-> %W$1%n $3-
+assign FORMAT.SEND_ACTION_CHANNEL_OTHER %K-> %W$2%K/%W$1%n $3-
 assign FORMAT.SEND_PUBLIC %K<%W$2%K>%n $3-
 assign FORMAT.SEND_PUBLIC_OTHER %K<%W$1%K/%W$2%K>%n $3-
 assign FORMAT.TOPIC $G topic%K/%W$2%c:%n $3-

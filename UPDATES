@@ -1,3 +1,13 @@
+*** News 2002/08/31 -- channel.dsm 0.5.7 / misc.dsm 0.7.7 - SEND_ACTION*
+	The arguments being passed to the SEND_ACTION* format variables
+	in the misc and channel modules have changed slightly so themes
+	will need to be updated. The sender's nick (you) is now the
+	first argument with the target and text of the action following
+	that. Prior to this only the target and text were sent forcing
+	$servernick() to be used in the actual format variables in order
+	to display the nick of the sender. This is no longer the case and
+	all themes should be modified to reflect this change.
+
 *** News 2002/08/19 -- EPIC4-1.1.7 or higher now required
 	Due mostly to the recent changes to /DEFER and EPIC's key binding
 	system, versions of DarkStar after this date will now require
