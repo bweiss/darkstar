@@ -15,7 +15,7 @@
 
 queue cleanup.seen {
 	^alias -seen
-	for hook in (join leave mode public public_other send_public topic) {
+	for hook in (join leave mode public public_other topic) {
 		^on #$hook 460 -"*"
 	}
 	^on #timer 460 -"??:?0"
@@ -40,18 +40,29 @@ alias seen (...) {
 	}
 	@ :serv = winserv()
 	if (match($0 -p -pub -public)) {
-		seen.do_public $serv $1 ${[$2] ? [$2] : C}
+		@ :nick = [$1]
+		@ :chan = [$2] ? [$2] : C
+		@ :pub = 1
 	} else {
 		@ :nick = [$0]
 		@ :chan = [$1] ? [$1] : C
-		if ((:item = matchitem(seen.db.$serv $nick $chan *)) > -1) {
-			@ :tmp = getitem(seen.db.$serv $item)
-			@ :time = word(2 $tmp)
-			@ :diff = time() - time
-			@ :type = word(3 $tmp)
-			@ :extra = restw(4 $getitem(seen.db.$serv $item))
+	}
+	if (nick == servernick($serv)) {
+		xecho -b That's our nick! Aborting seen lookup...
+		return
+	}
+	if ((:item = matchitem(seen.db.$serv $nick $chan *)) > -1) {
+		@ :tmp = getitem(seen.db.$serv $item)
+		@ :time = word(2 $tmp)
+		@ :diff = time() - time
+		@ :type = word(3 $tmp)
+		@ :extra = restw(4 $tmp)
+		if (pub) {
+			defer msg $chan $nick was last seen in $chan on $strftime($time %a %b %d %T %Z %Y) \($tdiff2($diff)\ ago)
+			defer msg $chan Action: $type $extra
+		} else {
 			echo $G $nick was last seen in $chan on $strftime($time %a %b %d %T %Z %Y) \($tdiff2($diff)\ ago)
-			echo $G Action: $stripcrap(ALL $fparse($type $nick $chan $extra))
+			echo $G Action: $type $extra
 		}
 	}
 }
@@ -99,6 +110,9 @@ alias seen.pubqueue (serv, args) {
 		@ msar(gr/\\\\/\\/\\\"/\"/tmp)
 		@ :nick = word(0 $tmp)
 		@ :chan = word(1 $tmp)
+		if (nick == servernick($serv)) {
+			return
+		}
 		if ((:item = matchitem(seen.db.$serv $nick $chan *)) > -1) {
 			@ :tmp = getitem(seen.db.$serv $item)
 			@ :time = word(2 $tmp)
@@ -106,7 +120,7 @@ alias seen.pubqueue (serv, args) {
 			@ :type = word(3 $tmp)
 			@ :extra = restw(4 $tmp)
 			defer msg $chan $nick was last seen in $chan on $strftime($time %a %b %d %T %Z %Y) \($tdiff2($diff)\ ago)
-			defer msg $chan Action: $stripcrap(ALL $fparse($type $nick $chan $extra))
+			defer msg $chan Action: $type $extra
 		}
 	}
 }
@@ -119,15 +133,17 @@ alias seen.readdb (void) {
 			if (fd != -1) {
 				while (!eof($fd)) {
 					@ :tmp = read($fd)
-					@ :nick = word(0 $tmp)
-					@ :chan = word(1 $tmp)
-					@ :ts = word(2 $tmp)
-					@ :type = word(3 $tmp)
-					@ :extra = restw(4 $tmp)
-					if ((:item = matchitem(seen.db.$serv $nick $chan *)) > -1) {
-						@ setitem(seen.db.$serv $item $nick $chan $ts $type $extra)
-					} else {
-						@ setitem(seen.db.$serv $numitems(seen.db.$serv) $nick $chan $ts $type $extra)
+					if (#tmp > 0) {
+						@ :nick = word(0 $tmp)
+						@ :chan = word(1 $tmp)
+						@ :ts = word(2 $tmp)
+						@ :type = word(3 $tmp)
+						@ :extra = restw(4 $tmp)
+						if ((:item = matchitem(seen.db.$serv $nick $chan *)) > -1) {
+							@ setitem(seen.db.$serv $item $nick $chan $ts $type $extra)
+						} else {
+							@ setitem(seen.db.$serv $numitems(seen.db.$serv) $nick $chan $ts $type $extra)
+						}
 					}
 				}
 			}
@@ -137,7 +153,6 @@ alias seen.readdb (void) {
 
 alias seen.updatedb (serv, nick, chan, type, ...) {
 	if (![$*]) {
-		echo Error: seen.updatedb: Not enough arguments
 		return
 	}
 	if ((:item = matchitem(seen.db.$serv $nick $chan *)) > -1) {
@@ -177,7 +192,6 @@ on #-leave 460 "*"        {seen.updatedb $servernum() $0 $1 LEAVE $2-}
 on #-mode 460 "*"         {seen.updatedb $servernum() $0 $1 MODE $2-}
 on #-public 460 "*"       {seen.updatedb $servernum() $0 $1 PUBLIC $2-}
 on #-public_other 460 "*" {seen.updatedb $servernum() $0 $1 PUBLIC $2-}
-on #-send_public 460 "*"  {seen.updatedb $servernum() $servernick() $0 PUBLIC $1-}
 on #-topic 460 "*"        {seen.updatedb $servernum() $0 $1 TOPIC $2-}
 
 on #-timer 460 "??:?0"    {seen.writedb}
