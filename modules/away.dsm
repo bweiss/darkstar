@@ -47,10 +47,12 @@ alias away (reason default "$CONFIG.DEFAULT_AWAY_REASON")
 		{
 			if (CONFIG[PUBLIC_AWAY_CHANNELS])
 			{
-				/* This desparately needs fixing */
-				for chan in ($common($CONFIG.PUBLIC_AWAY_CHANNELS / $mychannels()))
+				for chan in ($CONFIG.PUBLIC_AWAY_CHANNELS)
 				{
-					describe $chan is away: $reason [Log/${CONFIG[AWAY_LOG] ? [ON] : [OFF]}]
+					if (match($chan $mychannels()))
+					{
+						describe $chan is away: $reason [Log/${CONFIG[AWAY_LOG] ? [ON] : [OFF]}]
+					}
 				}
 			}{
 				for chan in ($mychannels())
@@ -100,9 +102,12 @@ alias back (reason default "$CONFIG.DEFAULT_BACK_REASON")
 		{
 			if (CONFIG[PUBLIC_AWAY_CHANNELS])
 			{
-				for chan in ($common($CONFIG.PUBLIC_AWAY_CHANNELS / $mychannels()))
+				for chan in ($CONFIG.PUBLIC_AWAY_CHANNELS)
 				{
-					describe $chan is back: $reason [Gone since: $strftime($AWAY.TIME %c)]
+					if (match($chan $mychannels()))
+					{
+						describe $chan is back: $reason [Gone since: $strftime($AWAY.TIME %c)]
+					}
 				}
 			}{
 				for chan in ($mychannels())

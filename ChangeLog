@@ -2,6 +2,8 @@ Darkstar ChangeLog
 
 [current]
 
+ - Finally stopped using $common() when checking PUBLIC_AWAY_CHANNELS. This
+   allows for channel names containing "/", a valid character in channel names.
  - New environment variable: DARKSTAR_SAVEDIR. The SAVE_DIRECTORY config
    variable has been removed entirely. Please use the previously mentioned
    environment variable to change the default save directory.
