@@ -149,6 +149,9 @@ alias tabkey.cmd {
 	@ :args = mid(0 $curpos() $L)
 	@ :args = unsplit(. $args)
 	@ :args = pass(._$pass $args)
+	if (mid(0 $strlen($CMDCHARS) $args) == CMDCHARS) {
+		@:args = rest($strlen($CMDCHARS) $args)
+	}
 	if (!curword) {
 		@ ret = tabkey.method.commands($args)
 		repeat $#ret {push ret /$shift(ret)}
