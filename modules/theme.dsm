@@ -186,10 +186,30 @@ on #-hook 428 "LOADMOD *"
 
 /****** STARTUP ******/
 
-defer {
-	^window hold_mode on
-	theme $CONFIG.THEME
-	^window hold_mode off
+defer
+{
+	if (!CONFIG.THEME)
+	{
+		theme.build_list
+		theme.list
+
+		@ :holdslider = windowctl(GET $winnum() HOLD_SLIDER)
+		@ :holdmode   = windowctl(GET $winnum() HOLDING_DISTANCE) > -1 ? [ON] : [OFF]
+		^window hold_slider 0
+		^window hold_mode on
+
+		input "Which theme would you like to use? "
+		{
+			if ([$0]) {
+				theme $0
+			}
+		}
+
+		^window hold_slider $holdslider
+		^window hold_mode $holdmode
+	}{
+		theme $CONFIG.THEME
+	}
 }
 
 

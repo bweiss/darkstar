@@ -13,7 +13,7 @@
  *  See the 'COPYRIGHT' file for licensing information.
  */
 
-if (!epic() || V < 20020819)
+if (!epic() || V < 20031201)
 {
 	echo
 	echo WARNING!
@@ -55,14 +55,14 @@ for array in ($getarrays()) {
 /*
  * Important global variables
  */
-@ DS.VERSION = [0.3pre1]
-@ DS.INTERNAL_VERSION = [20031130]
+@ DS.VERSION = [0.3pre2]
+@ DS.INTERNAL_VERSION = [20031201]
 
 /*
  * This will be incremented every time a change takes place in
  * the core scripts (this file and any *.dsc files in $DS.HOME/core/).
  */
-@ DS.CORE_ID = 98
+@ DS.CORE_ID = 99
 
 eval xecho -b Loading DarkStar $DS.VERSION
 

@@ -9,7 +9,7 @@
 
 addconfig    AUTO_LOAD_MODULES away channel dcc formats misc nickmgr nickcomp tabkey theme window
 addconfig -b SAVE_ON_UNLOAD 0
-addconfig -b LOAD_PROMPT 0
+addconfig -b LOAD_PROMPT 1
 
 addformat MODLIST_FOOTER -------------------------------------------------------
 addformat MODLIST_FOOTER1 $G Available modules: $numitems(modules), Loaded modules: $numitems(loaded_modules)
@@ -69,7 +69,7 @@ alias loadmod (modules)
 	if (!modules)
 	{
 		modlist
-		^local modules $"Modules to load? "
+		^local modules $"Enter modules to load: "
 		if (modules == []) {
 			return
 		}
@@ -134,8 +134,7 @@ alias modlist (void)
 {
 	_build_modlist
 
-	for var in (MODLIST_HEADER MODLIST_HEADER1 MODLIST_HEADER2)
-	{
+	for var in (MODLIST_HEADER MODLIST_HEADER1 MODLIST_HEADER2) {
 		if (FORMAT[$var]) {
 			echo $fparse($var)
 		}
@@ -154,8 +153,7 @@ alias modlist (void)
 		}
 	}
 
-	for var in (MODLIST_FOOTER MODLIST_FOOTER1 MODLIST_FOOTER2)
-	{
+	for var in (MODLIST_FOOTER MODLIST_FOOTER1 MODLIST_FOOTER2) {
 		if (FORMAT[$var]) {
 			echo $fparse($var)
 		}
@@ -164,10 +162,8 @@ alias modlist (void)
 	/*
 	 * Attempt to purge the auto-load list of modules that don't exist.
 	 */
-	for mod in ($CONFIG.AUTO_LOAD_MODULES)
-	{
-		if (finditem(_modules $mod) < 0)
-		{
+	for mod in ($CONFIG.AUTO_LOAD_MODULES) {
+		if (finditem(_modules $mod) < 0) {
 			^local ask $'Remove unknown module "$mod" from the auto-load list? '
 			if (ask == [y]) {
 				@ CONFIG.AUTO_LOAD_MODULES = remw($mod $CONFIG.AUTO_LOAD_MODULES)
@@ -199,7 +195,7 @@ alias unloadmod (modules)
 		for ii from 1 to $numitems(_loaded_modules) {
 			echo $[3]ii $getitem(_loaded_modules ${ii-1})
 		}
-		^local modules $"Modules to unload? "
+		^local modules $"Enter modules to unload: "
 		if (modules == []) {
 			return
 		}
@@ -407,13 +403,17 @@ alias _unload_module (module, void)
 
 /****** STARTUP ******/
 
-defer {
-	modlist
-	^window hold_mode on
-
+defer
+{
 	if (CONFIG.LOAD_PROMPT)
 	{
+		modlist
+
+		@ :holdslider = windowctl(GET $winnum() HOLD_SLIDER)
+		@ :holdmode   = windowctl(GET $winnum() HOLDING_DISTANCE) > -1 ? [ON] : [OFF]
+		^window hold_slider 0
 		^window hold_mode on
+
 		^local ask $"Enter modules to load ('a' for auto-load, '*' for all): "
 		switch ($ask)
 		{
@@ -438,10 +438,13 @@ defer {
 				}
 			}
 		}
-		^window hold_mode off
+
+		^window hold_slider $holdslider
+		^window hold_mode $holdmode
 	}\
 	else if (CONFIG.AUTO_LOAD_MODULES)
 	{
+		xecho -b Loading all modules on the auto-load list...
 		loadmod $CONFIG.AUTO_LOAD_MODULES
 	}
 }

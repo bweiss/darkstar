@@ -95,6 +95,11 @@ alias nickscan (void) { nickmgr.scan; }
 
 /****** INTERNAL ALIASES ******/
 
+alias nickmgr.add_timer (void)
+{
+	timer -ref nickmgr -rep -1 -win -1 $CONFIG.NICKMGR_SCAN_INTERVAL nickmgr.scan
+}
+
 alias nickmgr.clean_ignore_list (void)
 {
 	for array in ($getarrays(nickmgr.ignore.*))
@@ -286,7 +291,7 @@ on #-raw_irc 422 "% QUIT *"
 on #-timer 422 "*"
 {
 	if (!timerctl(REFNUM nickmgr)) {
-		timer -ref nickmgr -rep -1 $CONFIG.NICKMGR_SCAN_INTERVAL nickmgr.scan
+		nickmgr.add_timer
 	}
 
 	foreach NICKMGR.SCAN serv
@@ -303,9 +308,7 @@ on #-timer 422 "*"
 /****** STARTUP ******/
 
 defer nickmgr.scan
-defer {
-	timer -ref nickmgr -rep -1 $CONFIG.NICKMGR_SCAN_INTERVAL nickmgr.scan
-}
+defer nickmgr.add_timer
 
 
 /* EOF */

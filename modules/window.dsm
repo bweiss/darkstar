@@ -63,6 +63,7 @@ addconfig -b UNBIND_ON_PART 0
  */
 
 ^bind ^R next_window
+/* This should probably be changed or moved to some other module. */
 ^bind ^W delete_previous_word
 
 ^bind ^[^I parse_command ^window next
@@ -91,7 +92,7 @@ addconfig -b UNBIND_ON_PART 0
  * Add shortcut aliases for all existing windows.
  */
 for wref in ($winrefs()) {
-	^alias $wref window swap $wref
+	^alias $wref window refnum_or_swap $wref
 }
 
 
@@ -114,7 +115,7 @@ alias wc  (void)                     { window new_hide swap last; }
 alias wj  (...)                      { window new_hide swap last channel "$*"; }
 alias wk  (...)                      { window kill; }
 alias wl  (...)                      { window last; }
-/* Perhaps this should create a new window, instead of doing /window next? */
+/* Perhaps this should be /WINDOW NEW instead of /WINDOW NEXT */
 alias wn  (...)                      { window next; }
 alias wns (...)                      { window new_hide swap last server $*; }
 alias wp  (...)                      { window previous; }
@@ -220,11 +221,11 @@ on #-msg 426 "*"
 }
 
 /*
- * Add/Remove window shortcut aliases.
+ * Dynamic window swap aliases.
  */
 on #-window_create 426 "*"
 {
-	^alias $0 window swap $0
+	^alias $0 window refnum_or_swap $0
 }
 
 on #-window_kill 426 "*"
@@ -242,25 +243,26 @@ on #-window_kill 426 "msgs"
 
 /****** STARTUP ******/
 
-defer {
-	if (CONFIG.AUTO_CREATE_WINDOWS)
+if (fexist($DS.SAVE_DIR/window) == 1) {
+	^load $DS.SAVE_DIR/window
+}
+
+if (CONFIG.AUTO_CREATE_WINDOWS)
+{
+	for ii from 1 to $CONFIG.AUTO_CREATE_WINDOWS
 	{
-		for ii from 1 to $CONFIG.AUTO_CREATE_WINDOWS
-		{
-			@ :chan = word($ii $CONFIG.AUTO_BIND_CHANNELS)
-			if (winnum($ii) == -1) {
-				^window new
-				if (chan) {
-					^window bind $chan
-				}
-				^window hide
-			}
+		@ :chan = word(${ii-1} $CONFIG.AUTO_BIND_CHANNELS)
+		if (winnum($ii) == -1) {
+			^window new_hide
+		}
+		if (chan) {
+			^window $ii bind $chan
 		}
 	}
+}
 
-	if (CONFIG.MSG_WINDOW) {
-		window.msgwin.create
-	}
+if (CONFIG.MSG_WINDOW) {
+	window.msgwin.create
 }
 
 

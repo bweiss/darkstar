@@ -14,10 +14,8 @@ bind ^[[6~ scroll_forward
 
 alias _double_all_windows (void)
 {
-	if (CONFIG.DOUBLE_STATUS != [])
-	{
-		for wref in ($winrefs())
-		{
+	if (CONFIG.DOUBLE_STATUS != []) {
+		for wref in ($winrefs()) {
 			if (!windowctl(GET $wref FIXED)) {
 				^window $wref double $bool2word($CONFIG.DOUBLE_STATUS)
 			}
@@ -33,7 +31,7 @@ on #-hook 2 "CONFIG DOUBLE_STATUS *"
 on #-window_create 2 "*"
 {
 	if (CONFIG.DOUBLE_STATUS != [] && !windowctl(GET $0 FIXED)) {
-		^window double on
+		^window $0 double on
 	}
 }
 
