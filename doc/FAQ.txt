@@ -1,9 +1,22 @@
 DarkStar Frequently Asked Questions
 $Id$
 
-This is a work in progress and is in no particular order. It will be updated
-as questions come up. Eventually, I may organize it, but don't count on it ;)
+This is a work in progress and is in no particular order. It will be
+updated as questions come up. Eventually, I will write a better, more
+organized version. For now, this will have to do.
 
+
+Q: How can I add a timestamp to output?
+
+A: There are currently two ways to add a timestamp to output. The easiest,
+   which adds a timestamp to every line, is to do the following.
+
+   /set output_rewrite [$Z] $1-
+
+   If you want to add a timestamp only to specific output, you should
+   add $Z to any /fset variables that you want to be timestamped.
+
+--
 
 Q: What should I do when upgrading to new versions of DarkStar?
 
