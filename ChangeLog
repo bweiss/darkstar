@@ -1,6 +1,10 @@
 DarkStar ChangeLog
 
 
+2002/06/04
+
+ * [channel.dsm 0.5.4] New format variable: INVITE
+
 2002/06/02
 
  * [tabkey.dsm 0.6.9] The assign procedure should now handle the removal

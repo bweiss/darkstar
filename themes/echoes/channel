@@ -13,6 +13,7 @@ assign FORMAT.CHANNEL_NICK $G nick%K/%W$1%c: %W$2%n is now known as %W$3%n
 assign FORMAT.CHANNEL_SIGNOFF $G quit%K/%W$1%c: %W$2%K[%n$3-%K]%n
 assign -FORMAT.CHANNEL_SYNC
 assign FORMAT.CHANNEL_TS $G Channel $2 created at $strftime($3 %%a %%b %%d %%T %%Y)
+assign FORMAT.INVITE $G invite%K/%W$1%c:%n $2-
 assign FORMAT.JOIN $G join%K/%W$2%c: %W$1%K[%n$before(1 @ $3)%c@%n$after(1 @ $3)%K]%n
 assign FORMAT.KICK $G kick%K/%W$3%c: %W$2%n kicked %W$1%K[%n$4-%K]%n
 assign FORMAT.LEAVE $G part%K/%W$2%c: %W$1%K[%n$before(1 @ $3)%c@%n$after(1 @ $3)%K]%n

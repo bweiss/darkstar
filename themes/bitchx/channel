@@ -13,6 +13,7 @@ assign -FORMAT.CHANNEL_NICK
 assign FORMAT.CHANNEL_SIGNOFF $G SignOff %W$2%n: $1 %K\(%n$3-%K\)%n
 assign FORMAT.CHANNEL_SYNC $G %WBitchX%n: Join to $1 synched in $2 secs!!
 assign FORMAT.CHANNEL_TS $G Channel $2 was created at $strftime($3 %%a %%b %%d %%T %%Y)
+assign FORMAT.INVITE %K>%n>%W> $1 Invites You to $2
 assign FORMAT.JOIN $G %C$1 %K[%c$3%K]%n has joined $2
 assign FORMAT.KICK ${[$1] == servernick() ? [%K>%n>%W> You%n have been] : [$G $1 was]} kicked off $3 by %c$2 %K\(%n$4-%K\)%n
 assign FORMAT.LEAVE $G $1 %K[%n$3%K]%n has left $2 %K[%n$4-%K]%n

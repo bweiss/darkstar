@@ -29,6 +29,7 @@ Author: Brian Weiss <brian@epicsol.org>
    CHANNEL_SIGNOFF              - Signoffs. Works like CHANNEL_NICK.
    CHANNEL_SYNC                 - Channel sync.
    CHANNEL_TS                   - Channel timestamp.
+   INVITE                       - Invitations to join a channel.
    JOIN                         - Channel joins.
    KICK                         - Channel kicks.
    LEAVE                        - Channel parts.
