@@ -1,4 +1,4 @@
-#version 0.5.4
+#version 0.5.5
 /* $Id$ */
 /*
  * window.dsm - Window module for DarkStar/EPIC4
@@ -31,12 +31,10 @@ queue cleanup.window
 	for char in ($jot(0 9)) {
 		^bind ^[$char NOTHING
 	}
-	for char in (n p h c k $jot(0 9)) {
-		^bind ^W$char NOTHING
-	}
 	for keyb in (^[^I ^[[1~ ^[[2~ ^[[3~ ^[[4~ ^[[5~ ^[[6~) {
 		^bind $keyb NOTHING
 	}
+	^bind ^W NEXT_WINDOW
 	^bind ^X SELF_INSERT
 	^bind -symbolic key_f11 NOTHING
 	^bind -symbolic key_f12 NOTHING
@@ -92,21 +90,7 @@ config.add -b UNBIND_ON_PART 0
 ^bind ^[[4~ SCROLL_END
 ^bind ^[[5~ SCROLL_BACKWARD
 ^bind ^[[6~ SCROLL_FORWARD
-^bind ^Wn PARSE_COMMAND ^window next
-^bind ^Wp PARSE_COMMAND ^window previous
-^bind ^Wh PARSE_COMMAND ^window hide
-^bind ^Wc PARSE_COMMAND ^window new double on
-^bind ^Wk PARSE_COMMAND ^window kill
-^bind ^W1 PARSE_COMMAND ^window swap 1
-^bind ^W2 PARSE_COMMAND ^window swap 2
-^bind ^W3 PARSE_COMMAND ^window swap 3
-^bind ^W4 PARSE_COMMAND ^window swap 4
-^bind ^W5 PARSE_COMMAND ^window swap 5
-^bind ^W6 PARSE_COMMAND ^window swap 6
-^bind ^W7 PARSE_COMMAND ^window swap 7
-^bind ^W8 PARSE_COMMAND ^window swap 8
-^bind ^W9 PARSE_COMMAND ^window swap 9
-^bind ^W0 PARSE_COMMAND ^window swap 10
+^bind ^W DELETE_PREVIOUS_WORD
 ^bind -symbolic key_f11 TOGGLE_INSERT_MODE
 ^bind -symbolic key_f12 PARSE_COMMAND if (winnum(msgs) != -1) {window msgs clear}
 ^bind ^[[7~ SCROLL_START
