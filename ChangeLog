@@ -1,6 +1,12 @@
 Darkstar ChangeLog
 
 
+12/12/01
+
+ * Fixed a bug in channel.dsm related to auto-response. Publics containing
+   AUTO_RESPONSE_STR would not be displayed at all when AUTO_RESPONSE was OFF.
+
+
 !! RELEASE: 0.0.13 (12/3/01) !!
 
 
