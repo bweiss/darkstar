@@ -1,158 +1,159 @@
-#version 1.2
-/* $Id$ */
-/*
- * misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
- * Copyright (c) 2002, 2003 Brian Weiss
- * See the 'COPYRIGHT' file for more information.
- *
- * This script uses serial numbers 0 and 424 for /ON hooks.
- */
-
-/****** CLEANUP QUEUE ******/
+# version:1.2 loader:pf
+# $Id$
+#
+# misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
+# Copyright (c) 2002, 2003 Brian Weiss
+# See the 'COPYRIGHT' file for more information.
+#
+# This script uses serial numbers 0 and 424 for /ON hooks.
+#
 
 queue cleanup.misc
 {
-	^bind ^W next_window
+	^bind ^W next_window;
 
 	for alias in (dns disco m nslookup ping tig umode ver whois wi wii ww) {
-		^alias -$alias
-	}
+		^alias -$alias;
+	};
 
-	^on #connect 424 -"*"
-	^on raw_irc -"% PRIVMSG % :FINGER*"
-}
-
-
-/****** CONFIG/FORMAT VARIABLES ******/
-
-addconfig    DEFAULT_UMODES iw
-addconfig -b IGNORE_CTCP_FINGER 1
+	^on #connect 424 -"*";
+	^on raw_irc -"% PRIVMSG % :FINGER*";
+};
 
 
-/****** KEY BINDINGS ******/
+addconfig    DEFAULT_UMODES iw;
+addconfig -b IGNORE_CTCP_FINGER 1;
 
-^bind ^W delete_previous_word
+
+^bind ^W delete_previous_word;
 
 
-/****** USER ALIASES ******/
+alias disco (...)
+{
+	disconnect $*;
+};
 
-alias disco disconnect
+alias dns (...)
+{
+	nslookup $*;
+};
 
-alias dns nslookup
-
-alias m msg
+alias m (...)
+{
+	msg $*;
+};
 
 alias nslookup
 {
-	if (![$*])
-	{
-		xecho -b Usage: /NSLOOKUP <nick|hostname|IP> ...
-		return
-	}
+	if (![$*]) {
+		xecho -b Usage: /NSLOOKUP <nick|hostname|IP> ...;
+		return;
+	};
 
 	for foo in ($*)
 	{
 		if (match(%.% $foo))
 		{
-			@ :bar = convert($foo)
+			@ :bar = convert($foo);
 		}{
-			if ((:uhost = uh($foo)) == [<UNKNOWN>@<UNKNOWN>])
-			{
-				@ :uhost = []
-				@ :bar = convert($foo)	
-			}{
-				@ :bar = convert($after(-1 @ $uhost))
-			}
-		}
-		xecho -b $foo${uhost ? [!$uhost] : []} is ${bar ? bar : [unknown]}
-	}
-}
+			if ((:uhost = uh($foo)) == [<UNKNOWN>@<UNKNOWN>]) {
+				@ :uhost = [];
+				@ :bar = convert($foo);
+			} else {
+				@ :bar = convert($after(-1 @ $uhost));
+			};
+		};
+		xecho -b $foo${uhost ? [!$uhost] : []} is ${bar ? bar : [unknown]};
+	};
+};
 
 alias ping (target default "$servernick()", void)
 {
-	//ping $target
-}
+	//ping $target;
+};
 
 alias tig (void)
 {
-	@ delarray(misc.tig)
+	@ delarray(misc.tig);
 	for mask in ($igmask(*)) {
-		@ setitem(misc.tig $numitems(misc.tig) $mask $igtype($mask))
-	}
+		@ setitem(misc.tig $numitems(misc.tig) $mask $igtype($mask));
+	};
 
-	xecho -b Ignorance list:
-	for cnt from 0 to ${numitems(misc.tig) - 1}
+	xecho -b Ignorance list:;
+	for ii from 1 to $numitems(misc.tig)
 	{
-		@ :line = getitem(misc.tig $cnt)
-		@ :num = cnt + 1
-		echo $[3]num $[30]word(0 $line) $restw(1 $line)
-	}
+		@ :line = getitem(misc.tig ${ii-1})
+		echo $[3]ii $[30]word(0 $line) $restw(1 $line)
+	};
 
-	^local tmp $"Which ignore(s) to remove? (1, 2-5, ...) "
+	^local tmp $"Which ignore(s) to remove? (1, 2-5, ...) ";
 	for ignum in ($tmp)
 	{
-		@ :start = before(- $ignum)
-		@ :end = after(- $ignum)
+		@ :start = before(- $ignum);
+		@ :end = after(- $ignum);
+
 		if (start < end && start < numitems(misc.tig) && end <= numitems(misc.tig))
 		{
 			for cnt from $start to $end {
-				//ignore $word(0 $getitem(misc.tig ${cnt - 1})) NONE
-			}
-		}\
+				//ignore $word(0 $getitem(misc.tig ${cnt - 1})) NONE;
+			};
+		}
 		else if (ignum <= numitems(misc.tig))
 		{
-			//ignore $word(0 $getitem(misc.tig ${ignum - 1})) NONE
-		}
-	}
-}
+			//ignore $word(0 $getitem(misc.tig ${ignum - 1})) NONE;
+		};
+	};
+};
 
 alias umode (mode)
 {
-	//mode $servernick() $mode
-}
+	//mode $servernick() $mode;
+};
 
 alias ver (nick default "$servernick()", void)
 {
-	ctcp $nick version
-}
+	ctcp $nick version;
+};
 
-alias wi whois
+alias wi (...)
+{
+	whois $*;
+};
 
 alias whois (args)
 {
 	if ((:item = matchitem(misc.away_users $word(0 $args))) > -1)
 	{
-		@ delitem(misc.away_users $item)
-		@ delitem(misc.away_users_ts $item)
-	}
-	//whois $args
-}
+		@ delitem(misc.away_users $item);
+		@ delitem(misc.away_users_ts $item);
+	};
+	//whois $args;
+};
 
 alias wii (nick default "$servernick()", void)
 {
-	whois $nick $nick
-}
+	whois $nick $nick;
+};
 
-alias ww whowas
+alias ww (...)
+{
+	whowas $*;
+};
 
-
-/****** ON HOOKS ******/
 
 on #^connect 424 "*"
 {
-	//mode $servernick() $CONFIG.DEFAULT_UMODES
-}
+	//mode $servernick() $CONFIG.DEFAULT_UMODES;
+};
 
 on ?raw_irc "% PRIVMSG % *FINGER*"
 {
 	if (CONFIG.IGNORE_CTCP_FINGER)
 	{
-		xecho -b CTCP FINGER request received from $before(1 ! $0), ignoring...
-		return 1
+		xecho -b CTCP FINGER request received from $before(1 ! $0), ignoring...;
+		return 1;
 	}{
-		return 0
-	}
-}
+		return 0;
+	};
+};
 
-
-/* EOF */

@@ -1,61 +1,50 @@
-#version 1.1
-/* $Id$ */
-/*
- * nickcomp.dsm - Nick completion module for DarkStar/EPIC4
- *
- * Written by shade <shade@chemlab.org>
- * Modified for DarkStar and maintained by Brian Weiss <brian@epicsol.org>
- *
- * This script uses serial number 0 for all /ON hooks.
- *
- * Most of this was taken from the nick completion module that shade
- * wrote for my BitchX/EPIC4 script called playdough and has been placed
- * in the public domain.
- */
-
-/****** CLEANUP QUEUE ******/
+# version:1.1 loader:pf
+# $Id$
+#
+# nickcomp.dsm - Nick completion module for DarkStar/EPIC4
+# Written by shade <shade@chemlab.org>
+# Modified for DarkStar and maintained by Brian Weiss <brian@epicsol.org>
+#
+# This script uses serial number 0 for all /ON hooks.
+#
+# Most of this was taken from the nick completion module that shade
+# wrote for my BitchX/EPIC4 script called playdough and has been placed
+# in the public domain.
+#
 
 queue cleanup.nickcomp
 {
-	^on input -"%: *"
+	^on input -"%: *";
 }
 
 
-/****** CONFIG/FORMAT VARIABLES ******/
+addconfig -b NICK_COMPLETION 1;
+addconfig    NICK_COMPLETION_CHAR :;
+addconfig    NICK_COMPLETION_THRESHOLD 2;
 
-addconfig -b NICK_COMPLETION 1
-addconfig    NICK_COMPLETION_CHAR :
-addconfig    NICK_COMPLETION_THRESHOLD 2
+addformat NICK_COMPLETION $$1: $$2-;
 
-addformat NICK_COMPLETION $1: $2-
-
-
-/****** INTERNAL ALIASES ******/
 
 alias nickcomp.getnick
 {
 	for patt in ($0 $0% ?$0 ?$0%)
 	{
-		@:findnick = pattern($patt $onchannel($C))
-		if (#findnick > CONFIG.NICK_COMPLETION_THRESHOLD) {
-			return
-		}
-		@ function_return = findnick ? word(0 $findnick) : function_return
-	}
-}
+		@:findnick = pattern($patt $onchannel($C));
+		if (#findnick > CONFIG.NICK_COMPLETION_THRESHOLD)
+			return;
+		@ function_return = findnick ? word(0 $findnick) : function_return;
+	};
+};
 
-
-/****** ON HOOKS ******/
 
 on ^input "%: *"
 {
-	if (CONFIG.NICK_COMPLETION) {
-		@:complete = nickcomp.getnick($before($CONFIG.NICK_COMPLETION_CHAR $*))
-		sendline ${complete ? fparse2(NICK_COMPLETION $complete $1-) : [$*]}
-	} else {
-		sendline $*
-	}
-}
+	if (CONFIG.NICK_COMPLETION)
+	{
+		@ :complete = nickcomp.getnick($before($CONFIG.NICK_COMPLETION_CHAR $*));
+		sendline ${complete ? fparse2(NICK_COMPLETION $complete $1-) : [$*]};
+	}{
+		sendline $*;
+	};
+};
 
-
-/* EOF */

@@ -1,29 +1,23 @@
-#version 0.3
-/* $Id$ */
-/*
- * memo.dsm - Note taking module for DarkStar/EPIC4
- * Copyright (c) 2003 Brian Weiss
- * See the 'COPYRIGHT' file for more information.
- */
-
-/****** CLEANUP QUEUE ******/
+# version:0.3 loader:pf
+# $Id$
+#
+# memo.dsm - Note taking module for DarkStar/EPIC4
+# Copyright (c) 2003 Brian Weiss
+# See the 'COPYRIGHT' file for more information.
+#
 
 queue cleanup.memo
 {
-	/* Nothing to clean up :-) */
-}
+	# Nothing to clean up :-)
+};
 
 
-/****** CONFIG/FORMAT VARIABLES ******/
+addconfig MEMO_FILE memos.txt;
 
-addconfig MEMO_FILE memos.txt
-
-
-/****** USER ALIASES ******/
 
 alias memo
 {
-	@ :mfile = [$DS.USER_DIR/$CONFIG.MEMO_FILE]
+	@ :mfile = [$DS.USER_DIR/$CONFIG.MEMO_FILE];
 
 	switch ($0)
 	{
@@ -31,178 +25,165 @@ alias memo
 		{
 			switch ($memo.list($mfile))
 			{
-				(0) () {#}
+				(0) () {;}
 				(1) { echo Error: memo.list: Not enough arguments; }
 				(2) { xecho -b No memos found in $mfile; }
 				(3) { echo Error: memo.list: Unable to read memo file; }
 				(*) { echo Error: memo.list: Unknown; }
-			}
+			};
 		}
 
 		(-D) (-DEL) (-DELETE)
 		{
 			if ([$1] == [ALL])
 			{
-				^local askdel $'Delete all memos? (y/N) '
-				if (askdel == [y])
-				{
-					@ delarray(memo.memos)
-					@ unlink($file)
-					xecho -b All memos erased
-				}
+				^local askdel $'Delete all memos? (y/N) ';
+				if (askdel == [y]) {
+					@ delarray(memo.memos);
+					@ unlink($file);
+					xecho -b All memos erased;
+				};
 			}{
 				switch ($memo.delete($mfile $1-))
 				{
-					(0) () {#}
+					(0) () {;}
 					(1) { echo Error: memo.delete: Not enough arguments; }
 					(2) { xecho -b No memos found in $mfile; }
 					(3) { echo Error: memo.delete: Memo does not exist; }
 					(4) { echo Error: memo.delete: Unable to write memo file; }
 					(*) { echo Error: memo.delete: Unknown; }
-				}
-			}
+				};
+			};
 		}
 
 		(*) {
 			switch ($memo.add($mfile $*))
 			{
-				(0) () {#}
+				(0) () {;}
 				(1) { Error: memo.add: Not enough arguments; }
 				(2) { Error: memo.add: Unable to write memo file; }
 				(*) { Error: memo.add: Unknown; }
-			}
+			};
 		}
-	}
-}
+	};
+};
 
-
-/****** INTERNAL ALIASES ******/
 
 alias memo.add (file, text)
 {
-	if (!file || !text) {
-		return 1
-	}
+	if (!file || !text)
+		return 1;
 
-	@ memo.read($file)
-	@ setitem(memo.memos $numitems(memo.memos) $text)
+	@ memo.read($file);
+	@ setitem(memo.memos $numitems(memo.memos) $text);
 	if (!memo.write($file)) {
-		xecho -b Memo #$numitems(memo.memos) added successfully
+		xecho -b Memo #$numitems(memo.memos) added successfully;
 	} else {
-		/* Unable to write memo file */
-		return 2
-	}
-}
+		# Unable to write memo file.
+		return 2;
+	};
+};
 
 alias memo.delete (file, memos)
 {
-	if (!memos) {
-		return 1
-	}
+	if (!memos)
+		return 1;
 
 	for memo in ($revw($numsort($memos)))
 	{
 		if (isnumber(b10 $memo))
 		{
-			@ :item = memo - 1
+			@ :item = memo - 1;
 			if (!memo.read($file))
 			{
 				if (item > -1 && item < numitems(memo.memos))
 				{
-					@ delitem(memo.memos $item)
+					@ delitem(memo.memos $item);
 					if (!memo.write($file)) {
-						xecho -b Memo #${item + 1} deleted successfully
+						xecho -b Memo #${item + 1} deleted successfully;
 					} else {
-						/* Unable to write memo file */
-						return 3
-					}
+						# Unable to write memo file.
+						return 3;
+					};
 				}{
-					/* Memo does not exist */
-					return 2
-				}
+					# Memo does not exist.
+					return 2;
+				};
 			}{
-				/* Unable to read memo file */
-				return 1
-			}
-		}
-	}
-	return 0
-}
+				# Unable to read memo file.
+				return 1;
+			};
+		};
+	};
+
+	return 0;
+};
 
 alias memo.list (file, void)
 {
-	if (!file) {
-		return 1
-	}
+	if (!file)
+		return 1;
 
-	if (fexist($file) == -1) {
-		return 2
-	}
+	if (fexist($file) == -1)
+		return 2;
 
 	if (!memo.read($file))
 	{
-		@ delarray(_less)
-		for ii from 0 to ${numitems(memo.memos) - 1}
-		{
-			@ :num = ii + 1
-			@ setitem(_less $ii $num\. $getitem(memo.memos $ii-1))
-		}
-		xecho -b Memos:
-		_less.split_array _less
-		_less.output _less
+		@ delarray(_less);
+		@ setitem(_less 0 Memos:);
+		for ii from 1 to $numitems(memo.memos) {
+			@ setitem(_less $ii $ii\. $getitem(memo.memos ${ii-1}));
+		};
+		_less.split_array _less;
+		_less.output _less;
 	}{
-		/* Unable to read memo file */
-		return 3
-	}
-}
+		# Unable to read memo file.
+		return 3;
+	};
+};
 
 alias memo.read (file, void)
 {
-	if (!file) {
-		return 1
-	}
+	if (!file)
+		return 1;
 
-	if (fexist($file) == -1) {
-		return 2
-	}
+	if (fexist($file) == -1)
+		return 2;
 
-	@ :fd = open($file R)
-	if (fd == -1) {
-		return 3
-	}
+	@ :fd = open($file R);
+	if (fd == -1)
+		return 3;
 
-	@ delarray(memo.memos)
+	@ delarray(memo.memos);
 
 	while (!eof($fd))
 	{
-		@ :line = read($fd)
+		@ :line = read($fd);
 		if (line != [] && !eof($fd)) {
-			@ setitem(memo.memos $numitems(memo.memos) $line)
-		}
-	}
+			@ setitem(memo.memos $numitems(memo.memos) $line);
+		};
+	};
 
-	@ close($fd)
-	return 0
-}
+	@ close($fd);
+	return 0;
+};
 
 alias memo.write (file, void)
 {
-	if (!file) {
-		return 1
-	}
+	if (!file)
+		return 1;
 
 	if (numitems(memo.memos))
 	{
-		@ unlink($file)
-		if ((:fd = open($file W)) == -1) {
-			return 2
-		}
+		@ unlink($file);
+		if ((:fd = open($file W)) == -1)
+			return 2;
 		for (@ :cnt = 0, cnt < numitems(memo.memos), @ cnt++) {
-			@ write($fd $getitem(memo.memos $cnt))
-		}
-		@ close($fd)
+			@ write($fd $getitem(memo.memos $cnt));
+		};
+		@ close($fd);
 	}{
-		@ unlink($file)
-	}
-}
+		@ unlink($file);
+	};
+};
 

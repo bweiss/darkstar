@@ -1,35 +1,24 @@
-#version 0.1
-/* $Id$ */
-/*
- * debug.dsm - Debugging module for DarkStar/EPIC4
- * Copyright (c) 2002, 2003 Brian Weiss
- * See the 'COPYRIGHT' file for more information.
- */
-
-/****** CLEANUP QUEUE ******/
+# version:0.2 loader:pf
+# $Id$
+#
+# debug.dsm - Debugging module for DarkStar/EPIC4
+# Copyright (c) 2002, 2003 Brian Weiss
+# See the 'COPYRIGHT' file for more information.
+#
 
 queue cleanup.debug
 {
-	^bind -symbolic key_f10 NOTHING
-}
+	^bind -symbolic key_f10 NOTHING;
+};
 
-
-/****** INIT ******/
-
-bind -symbolic key_f10 PARSE_COMMAND debug.toggle
-
+bind -symbolic key_f10 PARSE_COMMAND debug.toggle;
 	
-/****** INTERNAL ALIASES ******/
-
 alias debug.toggle (void)
 {
 	if (DEBUG) {
-		set DEBUG 0
+		set DEBUG 0;
 	} else {
-		set DEBUG 7
-	}
-}
+		set DEBUG 7;
+	};
+};
 
-
-
-/* EOF */

@@ -1,359 +1,515 @@
-#version 0.10
-/* $Id$ */
-/*
- * window.dsm - Window related module for DarkStar/EPIC4
- * Copyright (c) 2002, 2003 Brian Weiss
- * See the 'COPYRIGHT' file for more information.
- *
- * This script uses serial number 426 for all /ON hooks.
- */
-
-/****** CLEANUP QUEUE ******/
+# version:0.10 loader:pf
+# $Id$
+#
+# window.dsm - Window related module for DarkStar/EPIC4
+# Copyright (c) 2002, 2003 Brian Weiss
+# See the 'COPYRIGHT' file for more information.
+#
+# This script uses serial number 426 for all /ON hooks.
+#
 
 queue cleanup.window
 {
 	for alias in (q query swap wb wc wj wk wl wn wp wq wub) {
-		^alias -$alias
-	}
+		^alias -$alias;
+	};
 	for wref in ($winrefs()) {
-		^alias -$wref
-	}
+		^alias -$wref;
+	};
 
-	^on #hook 426 -"CONFIG MSG_WINDOW *"
-	^on #join 426 -'\$servernick() *'
-	^on #leave 426 -'\$servernick() *'
-	^on #raw_irc 426 -"% NICK *"
-	^on #raw_irc 426 -'% PRIVMSG \$servernick() *'
-	^on #send_msg 426 -"*"
-	^on #window_create 426 -"*"
-	^on #window_kill 426 -"*"
-	^on #window_kill 426 -"% msgs"
+	^on #connect 426 -"*";
+	^on #disconnect 426 -"*";
+	^on #hook 426 -"CONFIG MSG_WINDOW *";
+	^on #hook 426 -"CONFIG MSG_WINDOW_NUMBER *";
+	^on #hook 426 -"CONFIG MSG_WINDOW_SIZE *";
+	^on #join 426 -'\$servernick() *';
+	^on #leave 426 -'\$servernick() *';
+	^on #raw_irc 426 -"% NICK *";
+	^on #raw_irc 426 -'% PRIVMSG \$servernick() *';
+	^on #send_msg 426 -"*";
+	^on #switch_windows 426 -"*";
+	^on #window_beforekill 426 -"*";
+	^on #window_command 426 -"*";
+	^on #window_create 426 -"*";
+	^on #window_kill 426 -"*";
 
-	^bind ^R nothing
+	^bind ^R nothing;
 	for char in ($jot(0 9)) {
-		^bind ^[$char nothing
-	}
+		^bind ^[$char nothing;
+	};
 	for keyb in (^[^I ^[[1~ ^[[4~ ^[^[[5~ ^[^[[6~) {
-		^bind $keyb nothing
-	}
-	^bind -symbolic key_f12 nothing
+		^bind $keyb nothing;
+	};
+	^bind -symbolic key_f12 nothing;
 
-	window.msgwin.destroy
-}
-
-
-/****** CONFIG/FORMAT VARIABLES ******/
-
-addconfig    AUTO_BIND_CHANNELS
-addconfig    AUTO_CREATE_WINDOWS 2
-addconfig -b AUTO_QUERY_UPDATE 1
-addconfig -b AUTO_QUERY_WINDOW 0
-addconfig    AUTO_QUERY_WINDOW_ARGS double off fixed on hide swap last
-addconfig -b BIND_ON_JOIN 0
-addconfig -b JOIN_NEW_WINDOW 0
-addconfig    JOIN_NEW_WINDOW_ARGS hide_others
-addconfig -b MSG_WINDOW 0
-addconfig    MSG_WINDOW_ARGS number 426 double off fixed on skip on swappable off size 5 level msgs last
-addconfig -b PART_KILL_WINDOW 0
-addconfig -b UNBIND_ON_PART 0
+	for serv in ($serverrefs()) {
+		window.msgwin.destroy $serv;
+	};
+};
 
 
-/****** KEY BINDINGS ******/
-
-^bind ^R next_window
-
-^bind ^[^I parse_command ^window next
-^bind ^[1 parse_command ^window swap 1
-^bind ^[2 parse_command ^window swap 2
-^bind ^[3 parse_command ^window swap 3
-^bind ^[4 parse_command ^window swap 4
-^bind ^[5 parse_command ^window swap 5
-^bind ^[6 parse_command ^window swap 6
-^bind ^[7 parse_command ^window swap 7
-^bind ^[8 parse_command ^window swap 8
-^bind ^[9 parse_command ^window swap 9
-^bind ^[0 parse_command ^window swap 10
-
-/* Home/End on some terminals */
-^bind ^[[1~ scroll_start
-^bind ^[[4~ scroll_end
-
-/* Esc + PgUp/PgDn */
-^bind ^[^[[5~ parse_command window.last.scroll backward
-^bind ^[^[[6~ parse_command window.last.scroll forward
-
-^bind -symbolic key_f12 parse_command window last clear last
+addconfig    AUTO_BIND_CHANNELS;
+addconfig    AUTO_CREATE_WINDOWS 2;
+addconfig -b AUTO_QUERY_UPDATE 1;
+addconfig -b AUTO_QUERY_WINDOW 0;
+addconfig    AUTO_QUERY_WINDOW_ARGS double off fixed on hide swap last;
+addconfig -b BIND_ON_JOIN 0;
+addconfig -b JOIN_NEW_WINDOW 0;
+addconfig    JOIN_NEW_WINDOW_ARGS hide_others;
+addconfig -b MSG_WINDOW 0;
+addconfig    MSG_WINDOW_NUMBER 100;
+addconfig    MSG_WINDOW_SIZE 5;
+addconfig -b PART_KILL_WINDOW 0;
+addconfig -b UNBIND_ON_PART 0;
 
 
-/****** INIT ******/
+^bind ^R next_window;
 
-/*
- * Add shortcut aliases for all existing windows and check for queries.
- */
+^bind ^[^I parse_command window next;
+^bind ^[1 parse_command window swap 1;
+^bind ^[2 parse_command window swap 2;
+^bind ^[3 parse_command window swap 3;
+^bind ^[4 parse_command window swap 4;
+^bind ^[5 parse_command window swap 5;
+^bind ^[6 parse_command window swap 6;
+^bind ^[7 parse_command window swap 7;
+^bind ^[8 parse_command window swap 8;
+^bind ^[9 parse_command window swap 9;
+^bind ^[0 parse_command window swap 10;
+
+# Home/End on some terminals.
+^bind ^[[1~ scroll_start;
+^bind ^[[4~ scroll_end;
+
+# Esc + PgUp/PgDn
+^bind ^[^[[5~ parse_command window.last.scroll backward;
+^bind ^[^[[6~ parse_command window.last.scroll forward;
+
+^bind -symbolic key_f12 parse_command window last clear last;
+
+
+#
+# Add shortcut aliases for all existing windows and check for queries.
+#
 for wref in ($winrefs())
 {
-	^alias $wref (void)
-	{
-		window refnum_or_swap $wref
-	}
+	^alias $wref (void) \{window refnum_or_swap $wref\};
 
 	if (:nick = windowctl(GET $wref QUERY_NICK))
 	{
-		@ :array = [window.queries.$winserv($wref)]
-		@ :uhost = uh($nick)
-		@ setitem($array $numitems($array) $wref $nick $uhost)
-	}
-}
+		@ :array = [window.queries.$winserv($wref)];
+		@ :uhost = uh($nick);
+		@ setitem($array $numitems($array) $wref $nick $uhost);
+	};
+};
 
 
-/****** USER ALIASES ******/
+alias q (...)
+{
+	query $*;
+};
 
-alias q query
-
-/*
- * Wrapper alias to ensure that queries are always set using
- * /WINDOW QUERY. This lets us keep track of queries using the
- * window_command hook.
- */
+#
+# Wrapper alias to ensure that queries are always set using
+# /WINDOW QUERY. This lets us keep track of queries using the
+# window_command hook.
+#
 alias query (target, void)
 {
-	window query $target
-}
+	window query $target;
+};
 
 alias swap (winnum, void)
 {
 	if (winnum)
 	{
-		window swap $winnum
+		window swap $winnum;
 	}{
 		input "What window should we swap to? " {
-			window swap $0
-		}
-	}
-}
+			window swap $0;
+		};
+	};
+};
 
-alias wb  (chan default "$C", void)  { window bind $chan; }
-alias wc  (void)                     { window new_hide swap last; }
-alias wj  (...)                      { window new_hide swap last channel "$*"; }
-alias wk  (...)                      { window kill; }
-alias wl  (...)                      { window last; }
-/* Perhaps this should be /WINDOW NEW instead of /WINDOW NEXT */
-alias wn  (...)                      { window next; }
-alias wns (...)                      { window new_hide swap last server $*; }
-alias wp  (...)                      { window previous; }
-alias wq  (...)                      { window new_hide swap last query $nick; }
-alias wub (...)                      { window unbind; }
+alias wb  (chan default "$C", void)  {window bind $chan};
+alias wc  (void)                     {window new_hide swap last};
+alias wj  (...)                      {window new_hide swap last channel "$*"};
+alias wk  (...)                      {window kill};
+alias wl  (...)                      {window last};
+alias wn  (...)                      {window next};
+alias wns (...)                      {window new_hide swap last server $*};
+alias wp  (...)                      {window previous};
+alias wq  (...)                      {window new_hide swap last query $nick};
+alias wub (...)                      {window unbind};
 
-
-/****** INTERNAL ALIASES ******/
 
 alias window.auto_query_update (serv, nick, uhost, void)
 {
-	if (!uhost || uhost == [<UNKNOWN>@<UNKNOWN>]) \
-		return
+	if (!uhost || uhost == [<UNKNOWN>@<UNKNOWN>])
+		return;
 
 	if (CONFIG.AUTO_QUERY_UPDATE)
 	{
-		@ :item = matchitem(window.queries.$serv % % $uhost)
+		@ :item = matchitem(window.queries.$serv % % $uhost);
 		if (item > -1)
 		{
-			@ :tmp = getitem(window.queries.$serv $item)
-			@ :querywin = word(0 $tmp)
-			@ :old_nick = word(1 $tmp)
+			@ :tmp = getitem(window.queries.$serv $item);
+			@ :querywin = word(0 $tmp);
+			@ :old_nick = word(1 $tmp);
 
 			if (querywin && nick != old_nick)
 			{
-				xecho -b -w 0 Changing query in window $querywin from $old_nick to $nick
-				window $querywin query $nick
-			}
-		}
-	}
-}
+				xecho -b -w 0 Changing query in window $querywin from $old_nick to $nick;
+				window $querywin query $nick;
+			};
+		};
+	};
+};
 
 alias window.auto_query_window (serv, nick, void)
 {
-	if (!nick) \
-		return
+	if (!nick)
+		return;
 
 	if (CONFIG.AUTO_QUERY_WINDOW && querywin($nick $servername($serv)) == -1)
 	{
-		xecho -b -w 0 Creating new window for query with $nick
-		^window new server $serv query $nick $CONFIG.AUTO_QUERY_WINDOW_ARGS
-	}
-}
+		xecho -b -w 0 Creating new window for query with $nick;
+		^window new server $serv query $nick $CONFIG.AUTO_QUERY_WINDOW_ARGS;
+	};
+};
 
 alias window.last.scroll (direction, void)
 {
-	if (!direction) \
-		return
+	if (!direction)
+		return;
 
-	window last
-	parsekey scroll_$direction
-	window last
-}
+	window last;
+	parsekey scroll_$direction;
+	window last;
+};
 
-alias window.msgwin.create (void)
+alias window.msgwin.create (serv, void)
 {
-	if (winnum(msgs) == -1) {
-		^window new name msgs $CONFIG.MSG_WINDOW_ARGS
-	}
-}
+	if (serv == [] || serv < 0)
+		return;
 
-alias window.msgwin.destroy (void)
+	if (CONFIG.MSG_WINDOW)
+	{
+		@ :curwin = winnum();
+
+		if (winnum(msgs/serv:$serv) == -1)
+		{
+			^window new name msgs/serv:$serv server $serv level msgs;
+			if (:num = CONFIG.MSG_WINDOW_NUMBER) {
+				while (winnum($num) > -1) {
+					@ :num++;
+				};
+				^window number $num;
+			};
+			if (serv != winserv()) {
+				^window hide;
+				^window $winnum(msgs/serv:$serv) double off fixed on skip on swappable off;
+			} else {
+				^window show $winnum(msgs/serv:$serv);
+				^window double off;
+				if (CONFIG.MSG_WINDOW_SIZE) {^window size $CONFIG.MSG_WINDOW_SIZE};
+				^window refnum $curwin;
+				^window $winnum(msgs/serv:$serv) fixed on skip on swappable off;
+			};
+
+			@ setitem(window.msgwins $numitems(window.msgwins) $winnum(msgs/serv:$serv));
+		};
+	};
+};
+
+alias window.msgwin.destroy (serv, void)
 {
-	if ((:win = winnum(msgs)) != -1) {
-		window $win kill
-	}
-}
+	if (serv == [] || serv == -1)
+		return;
+
+	if ((:win = winnum(msgs/serv:$serv)) != -1) {
+		window $win kill;
+	};
+};
+
+#
+# Kill any msg windows that are no longer needed because there
+# aren't any other windows associated with their server.
+#
+alias window.msgwin.purge (void)
+{
+	for win in ($winrefs())
+	{
+		if (finditem(window.msgwins $win) < 0) {
+			@ push(:servers $winserv($win));
+		};
+	};
+
+	for ii from 1 to $numitems(window.msgwins)
+	{
+		@ :msgwin = getitem(window.msgwins ${ii-1});
+		if (findw($winserv($msgwin) $servers) < 0) {
+			window.msgwin.destroy $winserv($msgwin);
+		};
+	};
+};
+
+#
+# Make sure that only the msg window for the current server is visible.
+#
+alias window.msgwin.show (void)
+{
+	for ii from 1 to $numitems(window.msgwins)
+	{
+		@ :win = getitem(window.msgwins ${ii-1});
+		if (winserv($win) != winserv())
+		{
+			^window $win fixed off skip off swappable on;
+			^window $win hide;
+			^window $win fixed on skip on swappable off;
+		}{
+			if (!winvisible($win))
+			{
+				^window $win fixed off skip off swappable on;
+				^window show $win;
+				if (CONFIG.MSG_WINDOW_SIZE) {^window size $CONFIG.MSG_WINDOW_SIZE};
+				^window last;
+				^window $win fixed on skip on swappable off;
+			};
+		};
+	};
+};
 
 
-/****** ON HOOKS ******/
+on #-connect 426 "*"
+{
+	if (CONFIG.MSG_WINDOW) {
+		defer window.msgwin.create $servernum();
+	};
+};
+
+on #-disconnect 426 "*"
+{
+	if (CONFIG.MSG_WINODW) {
+		defer window.msgwin.purge;
+	};
+};
 
 on #-hook 426 "CONFIG MSG_WINDOW *"
 {
-	if (CONFIG.MSG_WINDOW) {
-		window.msgwin.create
-	} else {
-		window.msgwin.destroy
-	}
-}
+	if (CONFIG.MSG_WINDOW)
+	{
+		for serv in ($serverrefs()) {
+			window.msgwin.create $serv;
+		};
+	}{
+		for serv in ($serverrefs()) {
+			window.msgwin.destroy $serv;
+		};
+	};
+};
 
-on #-join 426 '$servernick() *'
+on #-hook 426 "CONFIG MSG_WINDOW_NUMBER *"
 {
-	@ :curwin = winnum()
+	@ :curval = CONFIG.MSG_WINDOW_NUMBER;
+	@ :oldval = [$2];
+
+	if (curval != [] && (!isnumber(b10 $curval) || curval < 0))
+	{
+		xecho -b Value must be an integer greater than or equal to 0;
+		defer dset MSG_WINDOW_NUMBER $oldval;
+	};
+};
+
+on #-hook 426 "CONFIG MSG_WINDOW_SIZE *"
+{
+	@ :curval = CONFIG.MSG_WINDOW_SIZE;
+	@ :oldval = [$2];
+
+	if (curval != [] && (!isnumber(b10 $curval) || curval < 0))
+	{
+		xecho -b Value must be an integer greater than or equal to 0;
+		defer dset MSG_WINDOW_SIZE $oldval;
+	};
+};
+
+on #-join 426 '\$servernick() *'
+{
+	@ :curwin = winnum();
 	if (CONFIG.JOIN_NEW_WINDOW)
 	{
-		^window new channel $1
+		^window new channel $1;
 		if (CONFIG.BIND_ON_JOIN) {
-			^window bind $1
-		}
-		^window $CONFIG.JOIN_NEW_WINDOW_ARGS
-	}
-}
+			^window bind $1;
+		};
+		^window $CONFIG.JOIN_NEW_WINDOW_ARGS;
+	};
+};
 
-on #-leave 426 '$servernick() *'
+on #-leave 426 '\$servernick() *'
 {
 	if (CONFIG.UNBIND_ON_PART) {
-		window unbind $1
-	}
+		window unbind $1;
+	};
 	if (CONFIG.PART_KILL_WINDOW) {
-		window $winchan($1) kill
-	}
-}
+		window $winchan($1) kill;
+	};
+};
 
 on #-raw_irc 426 "% NICK *"
 {
 	if (CONFIG.AUTO_QUERY_UPDATE)
 	{
-		@ :old_nick = before(1 ! $0)
-		@ :new_nick = after(1 : $2)
-		@ :querywin = querywin($old_nick $lastserver())
+		@ :old_nick = before(1 ! $0);
+		@ :new_nick = after(1 : $2);
+		@ :querywin = querywin($old_nick $lastserver());
 		if (querywin > -1)
 		{
-			xecho -b -w 0 Changing query in window $querywin from $old_nick to $new_nick
-			window $querywin query $new_nick
-		}
-	}
-}
+			xecho -b -w 0 Changing query in window $querywin from $old_nick to $new_nick;
+			window $querywin query $new_nick;
+		};
+	};
+};
 
-on #-raw_irc 426 '% PRIVMSG $servernick() *'
+on #-raw_irc 426 '% PRIVMSG \$servernick() *'
 {
-	/* Ignore CTCPs (they are sent as PRIVMSGs) */
+	# Ignore CTCPs (they are sent as PRIVMSGs)
 	if (index( $3-) == -1)
 	{
-		@ :nick  = before(1 ! $0)
-		@ :uhost = after(1 ! $0)
+		@ :nick  = before(1 ! $0);
+		@ :uhost = after(1 ! $0);
 
-		window.auto_query_update $servernum() $nick $uhost
-		window.auto_query_window $servernum() $nick
-	}
-}
+		window.auto_query_update $servernum() $nick $uhost;
+		window.auto_query_window $servernum() $nick;
+	};
+};
 
 on #-send_msg 426 "*"
 {
-	window.auto_query_update $severnum() $0 $uh($0)
-	window.auto_query_window $servernum() $0
-}
+	window.auto_query_update $severnum() $0 $uh($0);
+	window.auto_query_window $servernum() $0;
+};
 
-/*
- * Keep track of active queries for each server in arrays
- * named "window.queries.<server>" with the data stored in the
- * the form "<winref> <nick> <userhost>".
- */
+on #-switch_windows 426 "*"
+{
+	if (winserv($1) != winserv($3)) {
+		window.msgwin.show;
+	};
+};
+
+on #-window_beforekill 426 "*"
+{
+	#
+	# Move any channels belonging to this window to another window
+	# so that they do not end up in a msgwin.
+	#
+	if (CONFIG.MSG_WINDOW)
+	{
+		@ :chans = winchannels($0);
+		if (chans)
+		{
+			@ :serv = winserv($0);
+			for win in ($winrefs()) {
+				if (win != [$0] && winserv($win) == serv && !match(msgs/serv:* $winnam($win))) {
+					@ push(:windows_this_server $win);
+				};
+			};
+
+			if (windows_this_server) {
+				@ :to_win = word(0 $windows_this_server);
+				for chan in ($chans) {
+					^window $to_win channel "$chan";
+				};
+			};
+		};
+	};
+
+	#
+	# If this window had a query, remove it from the array that tracks
+	# queries for this server.
+	#
+	if ((:item = matchitem(window.queries.$winserv($0) $0 *)) > -1) {
+		@ delitem(window.queries.$winserv($0) $item);
+	};
+};
+
+#
+# Keep track of active queries for each server in arrays
+# named "window.queries.<server>" with the data stored in the
+# the form "<winref> <nick> <userhost>".
+#
 on #-window_command 426 "*"
 {
 	if ([$0] == [$1])
 	{
-		@ :query_nick = windowctl(GET $0 QUERY_NICK)
-		@ :array = [window.queries.$winserv($0)]
+		@ :query_nick = windowctl(GET $0 QUERY_NICK);
+		@ :array = [window.queries.$winserv($0)];
 
 		if ((:item = matchitem($array $0 *)) > -1) {
-			@ delitem($array $item)
-		}
+			@ delitem($array $item);
+		};
 
 		if (query_nick)
 		{
-			@ :uhost = userhost($query_nick)
+			@ :uhost = userhost($query_nick);
 			if ((:item = matchitem($array % $query_nick %)) > -1) {
-				@ delitem($array $item)
-			}
-			@ setitem($array $numitems($array) $0 $query_nick $uhost)				
-		}
-	}
-}
+				@ delitem($array $item);
+			};
+			@ setitem($array $numitems($array) $0 $query_nick $uhost);
+		};
+	};
+
+	# Kill any unneeded msg windows on /WINDOW NOSERV.
+	1cmd 5 window.msgwin.purge;
+};
 
 
-/*
- * Dynamic window swap aliases.
- */
+#
+# Dynamic window swap aliases.
+#
 on #-window_create 426 "*"
 {
-	^alias $0 window refnum_or_swap $0
-}
+	^alias $0 (void) \{window refnum_or_swap $0\};
+	defer window.msgwin.create $winserv($0);
+	defer window.msgwin.show;
+};
 
 on #-window_kill 426 "*"
 {
-	^alias -$0
+	^alias -$0;
 
-	/*
-	 * We can't find out what server a killed window was connected to,
-	 * so we have to check all the query arrays for this window.
-	 */
-	for array in ($getarrays(window.queries.*))
-	{
-		if ((:item = matchitem($array $0 *)) > -1) {
-			@ delitem($array $item)
-		}
-	}
-}
+	window.msgwin.purge;
+	if ((:item = finditem(window.msgwins $0)) > -1) {
+		@ delitem(window.msgwins $item);
+	};
+	if (!numitems(window.msgwins)) {
+		dset MSG_WINDOW OFF;
+	};
+};
 
-on #-window_kill 426 "% msgs"
-{
-	dset MSG_WINDOW OFF
-}
-
-
-/****** STARTUP ******/
 
 if (fexist($DS.SAVE_DIR/window) == 1) {
-	^load $DS.SAVE_DIR/window
-}
+	^load $DS.SAVE_DIR/window;
+};
 
 if (CONFIG.AUTO_CREATE_WINDOWS)
 {
 	for ii from 1 to $CONFIG.AUTO_CREATE_WINDOWS
 	{
-		@ :chan = word(${ii-1} $CONFIG.AUTO_BIND_CHANNELS)
+		@ :chan = word(${ii-1} $CONFIG.AUTO_BIND_CHANNELS);
 		if (winnum($ii) == -1) {
-			^window new_hide
-		}
+			^window new_hide;
+		};
 		if (chan) {
-			^window $ii bind $chan
-		}
-	}
-}
+			^window $ii bind $chan;
+		};
+	};
+};
 
-if (CONFIG.MSG_WINDOW) {
-	window.msgwin.create
-}
+if (CONFIG.MSG_WINDOW)
+{
+	for serv in ($serverrefs()) {
+		window.msgwin.create $serv;
+	};
+};
 

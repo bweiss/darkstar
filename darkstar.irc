@@ -1,222 +1,234 @@
-/*
- *      _               _          _
- *   __| |  __ _  _ __ | | __ ___ | |_   __ _  _ __
- *  / _` | / _` || '__|| |/ // __|| __| / _` || '__|
- * | (_| || (_| || |   |   < \__ \| |_ | (_| || |
- *  \__,_| \__,_||_|   |_|\_\|___/ \__| \__,_||_|
- *
- *  DarkStar - A modular script pack for the EPIC4 IRC client.
- *  Copyright (c) 2002, 2003 Brian Weiss <brian@epicsol.org>
- *
- *  Designed for use with EPIC4-1.2.0 and up.
- *  See the 'README' file for general information.
- *  See the 'COPYRIGHT' file for licensing information.
- */
+#
+#      _               _          _
+#   __| |  __ _  _ __ | | __ ___ | |_   __ _  _ __
+#  / _` | / _` || '__|| |/ // __|| __| / _` || '__|
+# | (_| || (_| || |   |   < \__ \| |_ | (_| || |
+#  \__,_| \__,_||_|   |_|\_\|___/ \__| \__,_||_|
+#
+#  DarkStar - A modular script pack for the EPIC4 IRC client.
+#  Copyright (c) 2002, 2003 Brian Weiss <brian@epicsol.org>
+#
+#  Designed for use with EPIC4-1.2.4 and up.
+#  See the 'README' file for general information.
+#  See the 'COPYRIGHT' file for licensing information.
+#
 
-if (!epic() || V < 20031201)
+#
+# Make sure this file gets loaded with the pre-formatted loader.
+#
+if (word(2 $loadinfo()) != [pf])
 {
-	echo
-	echo WARNING!
-	echo
-	echo This script pack is for use with EPIC4, version 1.2.0 and up.
-	echo Your client, $J, does not meet this requirement.
-	echo Continue at your own risk.
-	echo
-	echo If you would like to obtain EPIC4, you can visit one of the
-	echo following sites.
-	echo
-	echo Official EPIC Homepage:     http://www.epicsol.org/
-	echo Official EPIC FTP site:     ftp://ftp.epicsol.org/
-	echo
-	echo Current versions of DarkStar and EPIC4 can also be found
-	echo at the following URLs.
-	echo
-	echo http://darkstar.epicsol.org/
-	echo http://darkstar.nuthouse.org/
-	echo http://www.got.net/~brian/epic4/
-	echo
-	^local pause $'Press q to quit, or any other key to continue.'
-	if (pause == [q]) {
-		echo Bye!
-		echo
-		//quit
+	load -pf $word(1 $loadinfo());
+	return;
+};
+
+if (!epic() || V < 20031207)
+{
+	echo;
+	echo WARNING!;
+	echo;
+	echo This script pack is for use with EPIC4, version 1.2.4 and up.;
+	echo Your client, $J, does not meet this requirement.;
+	echo Continue at your own risk.;
+	echo;
+	echo If you would like to obtain EPIC4, you can visit one of the;
+	echo following sites.;
+	echo;
+	echo Official EPIC Homepage:     http://www.epicsol.org/;
+	echo Official EPIC FTP site:     ftp://ftp.epicsol.org/;
+	echo;
+	echo Current versions of DarkStar and EPIC4 can also be found;
+	echo at the following URLs.;
+	echo;
+	echo http://darkstar.epicsol.org/;
+	echo http://darkstar.nuthouse.org/;
+	echo http://www.got.net/~brian/epic4/;
+	echo;
+
+	^local pause $'Press \'a\' to abort load, \'q\' to quit, or any other key to continue.';
+
+	if (pause == [a])
+	{
+		echo Aborting load...;
+		return;
 	}
-}
+	else if (pause == [q])
+	{
+		echo Bye!;
+		echo;
+		//quit;
+	};
+};
 
-/*
- * Make sure we're clean
- */
-dump all
-timer -del all
+#
+# Make sure we're clean
+#
+dump all;
+timer -del all;
 for array in ($getarrays()) {
-	@ delarray($array)
-}
+	@ delarray($array);
+};
 
-/*
- * Important global variables
- */
-@ DS.VERSION = [0.3pre3]
-@ DS.INTERNAL_VERSION = [20031203]
+#
+# Important global variables
+#
+@ DS.VERSION = [0.3pre4];
+@ DS.INTERNAL_VERSION = [20031210];
 
-/*
- * This will be incremented every time a change takes place in
- * the core scripts (this file and any *.dsc files in $DS.HOME/core/).
- */
-@ DS.CORE_ID = 109
+#
+# This will be incremented every time a change takes place in
+# the core scripts (this file and any *.dsc files in $DS.HOME/core/).
+#
+@ DS.CORE_ID = 110;
 
-eval xecho -b Loading DarkStar $DS.VERSION
+xecho -b -c Loading DarkStar $DS.VERSION;
 
-/*
- * Find out where everything is and store it in the DS structure.
- */
-@ DS.HOME        = getenv(DARKSTAR_HOME) ? getenv(DARKSTAR_HOME) : before(-1 / $word(1 $loadinfo()))
-@ DS.USER_DIR    = getenv(DARKSTAR_USERDIR) ? getenv(DARKSTAR_USERDIR) : [~/.darkstar]
-@ DS.RC          = getenv(DARKSTAR_RC) ? getenv(DARKSTAR_RC) : [~/.dsrc]
-@ DS.HELP_DIR    = [$DS.HOME/help]
-@ DS.SAVE_DIR    = [$DS.USER_DIR/save]
-@ DS.MODULE_DIRS = [$DS.HOME/modules $DS.USER_DIR/modules]
+#
+# Find out where everything is and store it in the DS structure.
+#
+@ DS.HOME        = getenv(DARKSTAR_HOME) ? getenv(DARKSTAR_HOME) : before(-1 / $word(1 $loadinfo()));
+@ DS.USER_DIR    = getenv(DARKSTAR_USERDIR) ? getenv(DARKSTAR_USERDIR) : [~/.darkstar];
+@ DS.RC          = getenv(DARKSTAR_RC) ? getenv(DARKSTAR_RC) : [~/.dsrc];
+@ DS.HELP_DIR    = [$DS.HOME/help];
+@ DS.SAVE_DIR    = [$DS.USER_DIR/save];
+@ DS.MODULE_DIRS = [$DS.HOME/modules $DS.USER_DIR/modules];
 
-/*
- * Sanity check. This should never happen.
- */
+# Sanity check. This should never happen.
 if (fexist($DS.HOME/darkstar.irc) == -1)
 {
-	echo WARNING! We were unable to detect our location.
-	echo You may need to set the DARKSTAR_HOME environment variable.
-	echo Please have a look at the README file for more information.
-}
+	echo WARNING! We were unable to detect our location.;
+	echo You may need to set the DARKSTAR_HOME environment variable.;
+	echo Please have a look at the README file for more information.;
+};
 
-/*
- * Some important /SETs
- * If you want to change these it should be done in your rc file.
- */
-eval set CLIENT_INFORMATION DarkStar $DS.VERSION
-set CONTROL_C_COLOR ON
-set DISPLAY_PC_CHARACTERS 4
-set FLOATING_POINT_MATH ON 
-set HIGH_BIT_ESCAPE 0
+#
+# Some important /SETs
+# If you want to change these it should be done in your rc file.
+#
+set CLIENT_INFORMATION DarkStar $DS.VERSION;
+set CONTROL_C_COLOR ON;
+set CURRENT_WINDOW_LEVEL ALL;
+set DISPLAY_PC_CHARACTERS 4;
+set FLOATING_POINT_MATH ON;
+set HIGH_BIT_ESCAPE 0;
 
-/*
- * Enable the new math parser.
- */
-xdebug +NEW_MATH
+# Enable the new math parser.
+xdebug +NEW_MATH;
 
-/*
- * Check for a "user directory" and create it if necessary.
- */
+#
+# Check for a "user directory" and create it if necessary.
+#
 if (fexist($DS.USER_DIR) == -1)
 {
-	xecho -b Creating user directory: $DS.USER_DIR
-	@ mkdir($DS.USER_DIR)
+	xecho -b Creating user directory: $DS.USER_DIR;
+	@ mkdir($DS.USER_DIR);
 
-	/*
-	 * This could be a first time user, so we'll display
-	 * some extra information for them.
-	 */
-	echo
-	echo Welcome to the DarkStar/EPIC4 script pack!
-	echo
-	echo Copyright (c) 2002, 2003 Brian Weiss <brian@epicsol.org>
-	echo See the 'COPYRIGHT' file for details.
-	echo Official Website: http://darkstar.epicsol.org/
-	echo
-	echo If you have not looked at the README yet, you should do so now.
-	echo It is also a good idea to have a look through the various help files
-	echo after everything has finished loading. To browse the help for the
-	echo DarkStar core scripts, type /DHELP. To browse the help for a specific
-	echo module, use /MHELP.
-	echo
-	echo That's it! I hope you enjoy these scripts, a lot of effort has
-	echo gone into them, and please feel free to contact me if you have any
-	echo questions or comments.
-	echo
-	echo This message will not be displayed again.
-	echo
-	^local pause $'Press any key to continue.'
-}
+	# This could be a first time user, so we'll display
+	# some extra information for them.
+	echo;
+	echo Welcome to the DarkStar/EPIC4 script pack!;
+	echo;
+	echo Copyright (c) 2002, 2003 Brian Weiss <brian@epicsol.org>;
+	echo See the 'COPYRIGHT' file for details.;
+	echo Official Website: http://darkstar.epicsol.org/;
+	echo;
+	echo If you have not looked at the README yet, you should do so now.;
+	echo It is also a good idea to have a look through the various help files;
+	echo after everything has finished loading. To browse the help for the;
+	echo DarkStar core scripts, type /DHELP. To browse the help for a specific;
+	echo module, use /MHELP.;
+	echo;
+	echo That's it! I hope you enjoy these scripts, a lot of effort has;
+	echo gone into them, and please feel free to contact me if you have any;
+	echo questions or comments.;
+	echo;
+	echo This message will not be displayed again.;
+	echo;
+	^local pause $'Press any key to continue.';
+};
 
 if (fexist($DS.SAVE_DIR) == -1) {
-	@ mkdir($DS.SAVE_DIR)
-}
+	@ mkdir($DS.SAVE_DIR);
+};
 
 if (fexist($DS.USER_DIR/modules) == -1) {
-	@ mkdir($DS.USER_DIR/modules)
-}
+	@ mkdir($DS.USER_DIR/modules);
+};
 
 if (fexist($DS.USER_DIR/themes) == -1) {
-	@ mkdir($DS.USER_DIR/themes)
-}
+	@ mkdir($DS.USER_DIR/themes);
+};
 
-/*
- * Load the core scripts.
- */
+#
+# Load the core scripts.
+#
 for file in (set.dsc globals.dsc functions.dsc commands.dsc help.dsc modules.dsc save.dsc window.dsc) {
-	load $DS.HOME/core/$file
-}
+	load -pf $DS.HOME/core/$file;
+};
 
 if (fexist($DS.SAVE_DIR/core) == 1) {
-	^load $DS.SAVE_DIR/core
-}
+	^load $DS.SAVE_DIR/core;
+};
 
 if (fexist($DS.RC) == 1) {
-	load $DS.RC
-}
+	load $DS.RC;
+};
 
-/*
- * Attempt to load some modules. See core/modules.dsc
- */
+#
+# Attempt to load some modules. See core/modules.dsc
+#
 if (CONFIG.LOAD_PROMPT)
 {
-	@ holdmode   = windowctl(GET $winnum() HOLDING_DISTANCE) > -1 ? [ON] : [OFF]
-	@ holdslider = windowctl(GET $winnum() HOLD_SLIDER)
-	@ ask = mods = []
+	@ holdmode   = windowctl(GET $winnum() HOLDING_DISTANCE) > -1 ? [ON] : [OFF];
+	@ holdslider = windowctl(GET $winnum() HOLD_SLIDER);
+	@ ask = mods = [];
 
-	modlist
+	modlist;
 
-	^window hold_slider 0
-	^window hold_mode on
+	^window hold_slider 0;
+	^window hold_mode on;
 
-	^assign ask $"Enter modules to load ('a' auto-load, '*' all): "
+	^assign ask $"Enter modules to load ('a' auto-load, '*' all): ";
 	switch ($ask)
 	{
 		(a) {
 			if (CONFIG.AUTO_LOAD_MODULES) {
-				loadmod $CONFIG.AUTO_LOAD_MODULES
+				loadmod $CONFIG.AUTO_LOAD_MODULES;
 			} else {
-				xecho -b No modules on the auto-load list
-				xecho -b Type /AUTOLOAD or /DSET AUTO_LOAD_MODULES to add a module
-			}
-		}
+				xecho -b No modules on the auto-load list;
+				xecho -b Type /AUTOLOAD or /DSET AUTO_LOAD_MODULES to add a module;
+			};
+		};
 		(\\*) {
 			for ii from 1 to $numitems(_modules) {
-				@ push(mods $getitem(_modules ${ii-1}))
-			}
-		}
+				@ push(mods $getitem(_modules ${ii-1}));
+			};
+		};
 		(*) {
-			@ mods = getitems(_modules -1 $ask)
+			@ mods = getitems(_modules -1 $ask);
 			if (mods) {
-				loadmod $mods
-			}
-		}
-	}
+				loadmod $mods;
+			};
+		};
+	};
 
-	^window hold_slider $holdslider
-	^window hold_mode $holdmode
+	^window hold_slider $holdslider;
+	^window hold_mode $holdmode;
 
-	@ ask = holdmode = holdslider = mods = []
-}\
+	@ ask = holdmode = holdslider = mods = [];
+}
 else if (CONFIG.AUTO_LOAD_MODULES)
 {
-	xecho -b Loading all modules on the auto-load list...
-	loadmod $CONFIG.AUTO_LOAD_MODULES
-}
+	xecho -b Loading all modules on the auto-load list...;
+	loadmod $CONFIG.AUTO_LOAD_MODULES;
+};
 
-/*
- * If DOUBLE_STATUS is ON, make all windows that are not fixed
- * have a double status bar. See core/window.dsc
- */
+#
+# If DOUBLE_STATUS is ON, make all windows that are not fixed
+# have a double status bar. See core/window.dsc
+#
 if (CONFIG.DOUBLE_STATUS)
 {
-	_window_double_all on
-}
+	_window_double_all on;
+};
 

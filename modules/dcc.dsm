@@ -1,68 +1,54 @@
-#version 0.3
-/* $Id$ */
-/*
- * dcc.dsm - DCC related module for DarkStar/EPIC4
- * Copyright (c) 2002, 2003 Brian Weiss
- * See the 'COPYRIGHT' file for more information.
- *
- * This script uses serial numbers 0 and 450 for /ON hooks.
- */
-
-/****** CLEANUP QUEUE ******/
+# version:0.3 loader:pf
+# $Id$
+#
+# dcc.dsm - DCC related module for DarkStar/EPIC4
+# Copyright (c) 2002, 2003 Brian Weiss
+# See the 'COPYRIGHT' file for more information.
+#
+# This script uses serial numbers 0 and 450 for /ON hooks.
+#
 
 queue cleanup.dcc
 {
-	^alias -chat
-	^alias -dcc
-	^on #dcc_request 450 -"% SEND *"
-}
+	^alias -chat;
+	^alias -dcc;
+	^on #dcc_request 450 -"% SEND *";
+};
 
 
-/****** CONFIG/FORMAT VARIABLES ******/
+addconfig -b DCC_AUTOGET 0;
 
-addconfig -b DCC_AUTOGET 0
-
-
-/****** USER ALIASES ******/
 
 alias chat (nick, void)
 {
-	if (!nick)
-	{
-		xecho -b Usage: /chat <nick>
-		return
-	}
+	if (!nick) {
+		xecho -b Usage: /chat <nick>;
+		return;
+	};
 
-	//dcc chat $nick
-}
+	//dcc chat $nick;
+};
 
-/*
- * Automatically close quoted filenames in a /DCC SEND.
- * This hack was requested by larne, so you can blame him. ;-)
- */
+#
+# Automatically close quoted filenames in a /DCC SEND.
+# This was requested by larne, so you can blame him if it causes problems. ;-)
+#
 alias dcc (...)
 {
 	if ([$0] == [SEND] && left(1 $2) == ["] && right(1 $word(${numwords($2-) - 1} $2-)) != ["]) {
-		//dcc $0 $1 $2-"
+		//dcc $0 $1 $2-";
 	} else {
-		//dcc $*
-	}
-}
+		//dcc $*;
+	};
+};
 
 
-/****** ON HOOKS ******/
-
-/*
- * DCC auto-get.
- */
 on #-dcc_request 450 "% SEND *"
 {
 	if (CONFIG.DCC_AUTOGET)
 	{
-		xecho -b DCC AutoGet: Accepting SEND of $2 from $0
-		dcc get $0 $2
-	}
-}
+		xecho -b DCC AutoGet: Accepting SEND of $2 from $0;
+		dcc get $0 $2;
+	};
+};
 
-
-/* EOF */

@@ -10,8 +10,6 @@ FOR 0.3 RELEASE:
 
   * Add support for a topic bar.
 
-  * Implement /THEME -save
-
 
 AFTER 0.3 RELEASE:
 

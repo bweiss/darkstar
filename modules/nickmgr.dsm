@@ -1,186 +1,181 @@
-#version 0.2
-/* $Id$ */
-/*
- * nickmgr.dsm - Nick management module for DarkStar/EPIC4
- * Copyright (c) 2003 Brian Weiss
- * See the 'COPYRIGHT' file for more information.
- *
- * This script uses serial number 422 for all /ON hooks.
- */
-
-/****** CLEANUP QUEUE ******/
+# version:0.2 loader:pf
+# $Id$
+#
+# nickmgr.dsm - Nick management module for DarkStar/EPIC4
+# Copyright (c) 2003 Brian Weiss
+# See the 'COPYRIGHT' file for more information.
+#
+# This script uses serial number 422 for all /ON hooks.
+#
 
 queue cleanup.nickmgr
 {
-	^alias -nick
-	^alias -nickscan
+	^alias -nick;
+	^alias -nickscan;
 
-	^on #hook 422 -"CONFIG NICKMGR_SCAN_INTERVAL *"
-	^on #join 422 -"*"
-	^on #raw_irc 422 -"% NICK *"
-	^on #raw_irc 422 -"% QUIT *"
-	^on #timer 422 -"*"
+	^on #hook 422 -"CONFIG NICKMGR_SCAN_INTERVAL *";
+	^on #join 422 -"*";
+	^on #raw_irc 422 -"% NICK *";
+	^on #raw_irc 422 -"% QUIT *";
+	^on #timer 422 -"*";
 
-	@ timerctl(DELETE nickmgr)
-}
-
-
-/****** CONFIG/FORMAT VARIABLES ******/
-
-addconfig -b NICKMGR 0
-addconfig -b NICKMGR_AUTO_ADD_NICKS 1
-addconfig -b NICKMGR_IGNORE_NETSPLITS 0
-addconfig    NICKMGR_IGNORE_TIMEOUT 900
-addconfig    NICKMGR_NICKLIST
-addconfig    NICKMGR_SCAN_INTERVAL 60
-addconfig    NICKMGR_SCAN_TIMEOUT 900
+	@ timerctl(DELETE nickmgr);
+};
 
 
-/****** USER ALIASES ******/
+addconfig -b NICKMGR 0;
+addconfig -b NICKMGR_AUTO_ADD_NICKS 1;
+addconfig -b NICKMGR_IGNORE_NETSPLITS 0;
+addconfig    NICKMGR_IGNORE_TIMEOUT 900;
+addconfig    NICKMGR_NICKLIST;
+addconfig    NICKMGR_SCAN_INTERVAL 60;
+addconfig    NICKMGR_SCAN_TIMEOUT 900;
+
 
 alias nick (...)
 {
 	if (CONFIG.NICKMGR && CONFIG.NICKMGR_AUTO_ADD_NICKS && findw($0 $CONFIG.NICKMGR_NICKLIST) == -1)
 	{
-		push CONFIG.NICKMGR_NICKLIST $0
-	}
-	//nick $*
-}
+		push CONFIG.NICKMGR_NICKLIST $0;
+	};
+	//nick $*;
+};
 
-/*
- * nickmgr [[-a|-d] <nick> ...] ...
- *
- * Adds or removes nicks from NICKMGR_NICKLIST. The -a and -d options specify
- * which action to perform (add/delete). If neither option is provided then
- * -a will be assumed.
- */
+#
+# nickmgr [[-a|-d] <nick> ...] ...
+#
+# Adds or removes nicks from NICKMGR_NICKLIST. The -a and -d options specify
+# which action to perform (add/delete). If neither option is provided then
+# -a will be assumed.
+#
 alias nickmgr (args)
 {
-	^local action add
-	^local nicklist $CONFIG.NICKMGR_NICKLIST
+	^local action add;
+	^local nicklist $CONFIG.NICKMGR_NICKLIST;
 
-	if (!args)
-	{
-		dset NICKMGR_NICKLIST
-		return
-	}
+	if (!args) {
+		dset NICKMGR_NICKLIST;
+		return;
+	};
 
 	while (:arg = shift(args))
 	{
 		switch ($arg)
 		{
-			(-a) { @ action = [add]; }
-			(-d) { @ action = [delete]; }
-
+			(-a) {@ action = [add]}
+			(-d) {@ action = [delete]}
 			(*) {
 				if (action == [add]) {
-					@ push(nicklist $arg)
+					@ push(nicklist $arg);
 				} else if (action == [delete]) {
-					@ nicklist = remw($arg $nicklist)
-				}
+					@ nicklist = remw($arg $nicklist);
+				};
 			}
-		}
-	}
+		};
+	};
 
 	if (nicklist != CONFIG.NICKMGR_NICKLIST) {
-		dset NICKMGR_NICKLIST $nicklist
+		dset NICKMGR_NICKLIST $nicklist;
 	} else {
-		dset NICKMGR_NICKLIST
-	}
-}
+		dset NICKMGR_NICKLIST;
+	};
+};
 
-alias nickscan nickmgr.scan
+alias nickscan (...)
+{
+	nickmgr.scan $*;
+};
 
-
-/****** INTERNAL ALIASES ******/
 
 alias nickmgr.add_timer (void)
 {
-	timer -ref nickmgr -rep -1 -win -1 $CONFIG.NICKMGR_SCAN_INTERVAL nickmgr.scan
-}
+	timer -ref nickmgr -rep -1 -win -1 $CONFIG.NICKMGR_SCAN_INTERVAL nickmgr.scan;
+};
 
 alias nickmgr.clean_ignore_list (void)
 {
 	for array in ($getarrays(nickmgr.ignore.*))
 	{
-		for item in ($jot(${numitems($array)-1} 0))
+		for ii from $numitems($array) to 1
 		{
-			@ :ts = word(1 $getitem($array $item))
-			@ :diff = time() - ts
+			@ :ts = word(1 $getitem($array ${ii-1}));
+			@ :diff = time() - ts;
 			if (diff > CONFIG.NICKMGR_IGNORE_TIMEOUT) {
-				@ delitem($array $item)
-			}
-		}
-	}
-}
+				@ delitem($array ${ii-1});
+			};
+		};
+	};
+};
 
 alias nickmgr.hook (nick, serv default "$servernum()", void)
 {
-	if (!nick) \
-		return
+	if (!nick)
+		return;
 
 	if (CONFIG.NICKMGR && nickmgr.wantnick($nick)) {
-		nickmgr.nickchange $nick
-	}
-}
+		nickmgr.nickchange $nick;
+	};
+};
 
-/*
- * Adds a nick to the nick manager's ignore list. This allows
- * signoffs that appear to be netsplits to be ignored, even by
- * the nickmgr.scan alias.
- */
+#
+# Adds a nick to the nick manager's ignore list. This allows
+# signoffs that appear to be netsplits to be ignored, even by
+# the nickmgr.scan alias.
+#
 alias nickmgr.ignore (nick, serv default "$servernum()", void)
 {
-	if (!nick) \
-		return
+	if (!nick)
+		return;
 
-	nickmgr.clean_ignore_list
+	nickmgr.clean_ignore_list;
 
 	if ((:item = matchitem(nickmgr.ignore.$serv $nick *)) > -1) {
-		@ setitem(nickmgr.ignore.$serv $item $nick $time())
+		@ setitem(nickmgr.ignore.$serv $item $nick $time());
 	} else {
-		@ setitem(nickmgr.ignore.$serv $numitems(nickmgr.ignore.$serv) $nick $time())
-	}
-}
+		@ setitem(nickmgr.ignore.$serv $numitems(nickmgr.ignore.$serv) $nick $time());
+	};
+};
 
-/*
- * This is a wrapper to DarkStar's $is_on() function that makes
- * it server specific.
- */
+#
+# This is a wrapper to DarkStar's $is_on() function that makes
+# it server specific.
+#
 alias nickmgr.is_on (nick, serv default "$servernum()", void)
 {
 	xeval -s $serv {
-		@ function_return = is_on($nick)
-	}
-}
+		@ function_return = is_on($nick);
+	};
+};
 
 alias nickmgr.nickchange (nick, serv default "$servernum()", void)
 {
-	if (!nick || serv < 0 || !isconnected($serv) || nick == servernick($serv)) \
-		return
+	if (!nick || serv < 0 || !isconnected($serv) || nick == servernick($serv))
+		return;
 
-	xecho -b Nick Manager: Changing nick on server $serv to $nick
-	xeval -s $serv -- nick \$nick
-}
+	xecho -b NICKMGR: Changing nick on server $serv to $nick;
+	xeval -s $serv {
+		nick $nick;
+	};
+};
 
-/*
- * This will check each nick in $CONFIG.NICKMGR_NICKLIST, for each server
- * connection, until it either 1) finds one available, 2) reaches the end
- * of the list, or 3) reaches a nick less desirable than our current nick.
- *
- * In an attempt to ensure that servers don't get flooded with ISON requests
- * due to lag, a global variable in the NICKMGR.SCAN structure will be
- * created containing a timestamp of when the scan began. While this variable
- * exists no scans will be allowed to take place for that server.
- */
+#
+# This will check each nick in $CONFIG.NICKMGR_NICKLIST, for each server
+# connection, until it either 1) finds one available, 2) reaches the end
+# of the list, or 3) reaches a nick less desirable than our current nick.
+#
+# In an attempt to ensure that servers don't get flooded with ISON requests
+# due to lag, a global variable in the NICKMGR.SCAN structure will be
+# created containing a timestamp of when the scan began. While this variable
+# exists no scans will be allowed to take place for that server.
+#
 alias nickmgr.scan (void)
 {
-	@ :nlist = CONFIG.NICKMGR_NICKLIST
+	@ :nlist = CONFIG.NICKMGR_NICKLIST;
 
-	if (!CONFIG.NICKMGR || !nlist) \
-		return
+	if (!CONFIG.NICKMGR || !nlist)
+		return;
 
-	nickmgr.clean_ignore_list
+	nickmgr.clean_ignore_list;
 
 	for serv in ($serverrefs())
 	{
@@ -188,119 +183,147 @@ alias nickmgr.scan (void)
 		{
 			if (!NICKMGR.SCAN[$serv])
 			{
-				@ NICKMGR.SCAN.$serv = time()
+				@ NICKMGR.SCAN.$serv = time();
 				for ii from 1 to $numwords($nlist)
 				{
-					@ :nick = word(${ii-1} $nlist)
+					@ :nick = word(${ii-1} $nlist);
 					if (!nickmgr.wantnick($nick $serv))
 					{
-						break
-					}\
+						break;
+					}
 					else if (matchitem(nickmgr.ignore.$serv $nick *) < 0)
 					{
 						if (!nickmgr.is_on($nick $serv))
 						{
-							nickmgr.nickchange $nick $serv
-							break
-						}
-					}
-				}
-				^assign -NICKMGR.SCAN.$serv
-			}
-		}
-	}
-}
+							nickmgr.nickchange $nick $serv;
+							break;
+						};
+					};
+				};
+				^assign -NICKMGR.SCAN.$serv;
+			};
+		};
+	};
+};
 
-/*
- * Returns the specified nick if it is more desirable than our current
- * nick according to the value of $CONFIG.NICKMGR_NICKLIST.
- */
+#
+# Returns the specified nick if it is more desirable than our current
+# nick according to the value of $CONFIG.NICKMGR_NICKLIST.
+#
 alias nickmgr.wantnick (nick, serv default "$servernum()", void)
 {
-	if (!nick || nick == servernick($serv)) \
-		return
+	if (!nick || nick == servernick($serv))
+		return;
 
-	@ :list = CONFIG.NICKMGR_NICKLIST
-	@ :index = findw($nick $list)
-	@ :c_index = findw($servernick($serv) $list)
+	@ :list = CONFIG.NICKMGR_NICKLIST;
+	@ :index = findw($nick $list);
+	@ :c_index = findw($servernick($serv) $list);
+
 	if (index > -1)
 	{
 		if (c_index == -1) {
-			@ function_return = nick
+			@ function_return = nick;
 		} else if (index < c_index) {
-			@ function_return = nick
-		}
-	}
-}
+			@ function_return = nick;
+		};
+	};
+};
 
+on #-hook 422 "CONFIG NICKMGR_IGNORE_TIMEOUT *"
+{
+	@ :newval = CONFIG.NICKMGR_IGNORE_TIMEOUT;
+	@ :oldval = [$2-];
 
-/****** ON HOOKS ******/
+	if (newval != [] && (!isnumber(b10 $newval) || newval < 0))
+	{
+		xecho -b Value must be an integer greater than or equal to 0;
+		if (oldval == []) {
+			defer dset -NICKMGR_IGNORE_TIMEOUT;
+		} else {
+			defer dset NICKMGR_IGNORE_TIMEOUT $oldval;
+		};
+	};
+};
 
 on #-hook 422 "CONFIG NICKMGR_SCAN_INTERVAL *"
 {
-	if (!isnumber($CONFIG.NICKMGR_SCAN_INTERVAL b10) || CONFIG.NICKMGR_SCAN_INTERVAL < 5)
+	@ :newval = CONFIG.NICKMGR_SCAN_INTERVAL;
+	@ :oldval = [$2-];
+
+	if (!isnumber(b10 $newval) || newval < 5)
 	{
-		xecho -b Value must be an integer greater than or equal to 5
-		^assign CONFIG.NICKMGR_SCAN_INTERVAL ${[$2] ? [$2] : 60}
-		xecho -b Value of NICKMGR_SCAN_INTERVAL set to $CONFIG.NICKMGR_SCAN_INTERVAL
-	}
+		xecho -b Value must be an integer greater than or equal to 5;
+		defer dset NICKMGR_SCAN_INTERVAL ${[$2] ? [$2] : 60};
+	};
 
-	/* Restart the scan timer. */
-	@ timerctl(DELETE nickmgr)
-	timer -ref nickmgr -rep -1 $CONFIG.NICKMGR_SCAN_INTERVAL nickmgr.scan
-}
+	# Restart the scan timer.
+	defer {
+		@ timerctl(DELETE nickmgr);
+		nickmgr.add_timer;
+	};
+};
 
-/*
- * Remove ignored nicks when they rejoin.
- */
+on #-hook 422 "CONFIG NICKMGR_SCAN_TIMEOUT *"
+{
+	@ :newval = CONFIG.NICKMGR_SCAN_TIMEOUT;
+	@ :oldval = [$2-];
+
+	if (!newval || !isnumber(b10 $newval))
+	{
+		xecho -b Value must be a positive integer;
+		defer dset NICKMGR_SCAN_TIMEOUT $oldval;
+	};
+};
+
+#
+# Remove ignored nicks when they rejoin.
+#
 on #-join 422 "*"
 {
-	@ :serv = servernum()
-	@ :item = matchitem(nickmgr.ignore.$serv $0)
+	@ :serv = servernum();
+	@ :item = matchitem(nickmgr.ignore.$serv $0);
+
 	if (item > -1) {
-		@ delitem(nickmgr.ignore.$serv $item)
-	}
-}
+		@ delitem(nickmgr.ignore.$serv $item);
+	};
+};
 
 on #-raw_irc 422 "% NICK *"
 {
-	@ :nick = before(1 ! $0)
-	nickmgr.hook $nick
-}
+	@ :nick = before(1 ! $0);
+	nickmgr.hook $nick;
+};
 
 on #-raw_irc 422 "% QUIT *"
 {
-	@ :nick = before(1 ! $0)
-	@ :reason = after(1 : $2-)
+	@ :nick = before(1 ! $0);
+	@ :reason = after(1 : $2-);
+
 	if (CONFIG.NICKMGR_IGNORE_NETSPLITS && match("%.%.% %.%.%" "$reason"))
 	{
-		nickmgr.clean_ignore_list
-		nickmgr.ignore $nick
+		nickmgr.clean_ignore_list;
+		nickmgr.ignore $nick;
 	}{
-		nickmgr.hook $nick
-	}
-}
+		nickmgr.hook $nick;
+	};
+};
 
 on #-timer 422 "*"
 {
-	if (!timerctl(REFNUM nickmgr)) \
-		nickmgr.add_timer
+	if (!timerctl(REFNUM nickmgr))
+		nickmgr.add_timer;
 
 	foreach NICKMGR.SCAN serv
 	{
-		@ :ts = NICKMGR.SCAN[$serv]
-		@ :diff = time() - ts
+		@ :ts = NICKMGR.SCAN[$serv];
+		@ :diff = time() - ts;
 		if (diff > CONFIG.NICKMGR_SCAN_TIMEOUT) {
-			^assign -NICKMGR.SCAN.$serv
-		}
-	}
-}
+			^assign -NICKMGR.SCAN.$serv;
+		};
+	};
+};
 
 
-/****** STARTUP ******/
+defer nickmgr.scan;
+defer nickmgr.add_timer;
 
-defer nickmgr.scan
-defer nickmgr.add_timer
-
-
-/* EOF */

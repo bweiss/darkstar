@@ -1,62 +1,56 @@
-#version 0.6
-/* $Id$ */
-/*
- * oper.dsm - IRC Operator module for DarkStar/EPIC4
- * Copyright (c) 2002, 2003 Brian Weiss
- * See the 'COPYRIGHT' file for more information.
- *
- * This script uses serial numbers 0 and 427 for all /ON hooks.
- */
-
-/****** CLEANUP QUEUE ******/
+# version:0.6 loader:pf
+# $Id$
+#
+# oper.dsm - IRC Operator module for DarkStar/EPIC4
+# Copyright (c) 2002, 2003 Brian Weiss
+# See the 'COPYRIGHT' file for more information.
+#
+# This script uses serial numbers 0 and 427 for all /ON hooks.
+#
 
 queue cleanup.oper
 {
-	^alias -challenge
-	^alias -operview
-	^alias -operwall
-	^alias -tabkey.cmd.challenge
+	^alias -challenge;
+	^alias -operview;
+	^alias -operwall;
+	^alias -tabkey.cmd.challenge;
 
-	^on #381 427 -"*"
-	^on #464 427 -"*"
-	^on #connect 427 -"*"
-	^on #hook 427 -"CONFIG OPERVIEW *"
-	^on #hook 427 -"LOADMOD tabkey"
-	^on #timer 427 -"*"
-	^on #window_kill 427 -"% operview"
+	^on #381 427 -"*";
+	^on #464 427 -"*";
+	^on #connect 427 -"*";
+	^on #hook 427 -"CONFIG OPERVIEW *";
+	^on #hook 427 -"LOADMOD tabkey";
+	^on #timer 427 -"*";
+	^on #window_kill 427 -"% operview";
 
-	oper.operview.destroy
+	oper.operview.destroy;
 
-	if (OPER.CHALLENGE.ACTIVE) {
-		oper.challenge.cleanup $OPER.CHALLENGE.ACTIVE
-	}
-}
-
-
-/****** CONFIG/FORMAT VARIABLES ******/
-
-addconfig -b OPER_AUTO_CHALLENGE 0
-addconfig    OPER_RSA_RESPOND_TOOL
-addconfig    OPER_UMODES wzsky
-addconfig -b OPERVIEW 0
-addconfig    OPERVIEW_ARGS number 427 double off fixed on skip on swappable off size 5 level opnotes,snotes,wallops last
+	if (OPER.CHALLENGE.PENDING) {
+		oper.challenge.cleanup $OPER.CHALLENGE.PENDING;
+	};
+};
 
 
-/****** USER ALIASES ******/
+addconfig -b OPER_AUTO_CHALLENGE 0;
+addconfig    OPER_RSA_RESPOND_TOOL;
+addconfig    OPER_UMODES wzsky;
+addconfig -b OPERVIEW 0;
+addconfig    OPERVIEW_ARGS number 427 double off fixed on skip on swappable off size 5 level opnotes,snotes,wallops last;
 
-/*
- * Support for ircd-ratbox and hybrid7's challenge-response opering.
- *
- * Usage:
- *  /CHALLENGE -add <server> <nick> <key>
- *  /CHALLENGE -del <server>
- *  /CHALLENGE -list
- *  /CHALLENGE [nick]
- *
- * Note: There must be an entry for the current server in the
- * challenge-response list before this command can be used to gain
- * oper priveleges.
- */
+
+#
+# Support for ircd-ratbox and hybrid7's challenge-response opering.
+#
+# Usage:
+#  /CHALLENGE -add <server> <nick> <key>
+#  /CHALLENGE -del <server>
+#  /CHALLENGE -list
+#  /CHALLENGE [nick]
+#
+# Note: There must be an entry for the current server in the
+# challenge-response list before this command can be used to gain
+# oper priveleges.
+#
 alias challenge (...)
 {
 	switch ($0)
@@ -64,403 +58,387 @@ alias challenge (...)
 		(-a) (-add)
 		{
 			if (![$3]) {
-				xecho -b Usage: /CHALLENGE -add <server> <nick> <key>
-				return
-			}
+				xecho -b Usage: /CHALLENGE -add <server> <nick> <key>;
+				return;
+			};
 
 			switch ($oper.challenge.add($1-))
 			{
 				(0) { xecho -b Added entry for $1 to challenge-response list; }
 				(*) { xecho -b Failed to add entry for $1 to challenge-response list; }
-			}
+			};
 		}
 
 		(-d) (-del) (-delete)
 		{
 			if (![$1]) {
-				xecho -b Usage: /CHALLENGE -delete <server>
-				return
-			}
+				xecho -b Usage: /CHALLENGE -delete <server>;
+				return;
+			};
 
 			switch ($oper.challenge.delete($1))
 			{
 				(0) { xecho -b Deleted $1 from the challenge-response list; }
 				(*) { xecho -b Failed to delete $1 from the challenge-response list; }
-			}
+			};
 		}
 
 		(-l) (-list)
 		{
-			oper.challenge.list
+			oper.challenge.list;
 		}
 
 		(*)
 		{
 			if (fexist($CONFIG.OPER_RSA_RESPOND_TOOL) == -1)
 			{
-				xecho -b Invalid rsa_respond path. Aborting challenge.
-				return
-			}
+				xecho -b Invalid rsa_respond path. Aborting challenge.;
+				return;
+			};
 
-			oper.challenge $servername() $*
+			oper.challenge $servername() $*;
 		}
-	}
-}
+	};
+};
 
 alias operview (...)
 {
 	if ([$0]) {
-		dset OPERVIEW $0
+		dset OPERVIEW $0;
 	} else {
-		dset OPERVIEW ${CONFIG.OPERVIEW ? 0 : 1}
-	}
-}
+		dset OPERVIEW ${CONFIG.OPERVIEW ? 0 : 1};
+	};
+};
 
 alias operwall (text)
 {
 	if (text) {
-		//quote operwall :$text
+		//quote operwall :$text;
 	} else {
-		xecho -b Usage: /OPERWALL <text>
-	}
-}
+		xecho -b Usage: /OPERWALL <text>;
+	};
+};
 
 
-/****** INTERNAL ALIASES ******/
-
-/*
- * This is a special alias that will be run automatically whenever
- * the settings for this module are saved via /SAVE.
- */
+#
+# This is a special alias that will be run automatically whenever
+# the settings for this module are saved via /SAVE.
+#
 alias oper._save (fd, void)
 {
-	if (!fd) {
-		return
-	}
+	if (!fd)
+		return;
 
-	@ write($fd # Challenge/Response List)
+	@ write($fd # Challenge/Response List);
 	for ii from 0 to ${numitems(oper.challenge) - 1} {
-		@ write($fd @ setitem\(oper.challenge $ii $getitem(oper.challenge $ii)\))
+		@ write($fd @ setitem\(oper.challenge $ii $getitem(oper.challenge $ii)\));
 	}
-	@ write($fd )
-}
+	@ write($fd );
+};
 
 alias oper.add_tabcomp (void)
 {
 	^alias tabkey.cmd.challenge (...)
 	{
-		bless
+		bless;
 		if (curword == 1)
 		{
-			@ :tmp = [-ADD -DELETE -LIST]
-			push tmp $tabkey.method.nick($*)
-			@ :matches = pattern("$0*" $tmp)
-			@ function_return = matches ? matches : [ ]
-		}\
+			@ :tmp = [-ADD -DELETE -LIST];
+			push tmp $tabkey.method.nick($*);
+			@ :matches = pattern("$0*" $tmp);
+			@ function_return = matches ? matches : [ ];
+		}
 		else if (curword == 2)
 		{
-			^local servernames
+			^local servernames;
 			if (match($word(1 $L) -a -add))
 			{
 				for serv in ($serverrefs())
 				{
 					if (serv > -1 && (:servname = servername($serv)) != [<none>]) {
-						push servernames $servname
-					}
-				}
-			}\
+						push servernames $servname;
+					};
+				};
+			}
 			else if (match($word(1 $L) -d -del -delete))
 			{
 				for cnt from 1 to $numitems(oper.challenge) {
-					push servernames $word(0 $getitem(oper.challenge ${cnt-1}))
-				}
-			}{
-				/* Disable completion */
-				@ :servernames = [ ]
+					push servernames $word(0 $getitem(oper.challenge ${cnt-1}));
+				};
 			}
-			@ :matches = pattern("$0*" $servernames)
-			@ function_return = matches ? matches : [ ]
-		}\
+			else
+			{
+				# Disable completion.
+				@ :servernames = [ ];
+			};
+
+			@ :matches = pattern("$0*" $servernames);
+			@ function_return = matches ? matches : [ ];
+		}
 		else if (curword == 4)
 		{
-			@ function_return = tabkey.method.file($*)
+			@ function_return = tabkey.method.file($*);
 		}{
-			@ function_return = tabkey.method.nick($*)
-		}
-	}
-}
+			@ function_return = tabkey.method.nick($*);
+		};
+	};
+};
 
-/*
- * This does all the real work for challenge-response authentication.
- *
- * To prevent multiple challenges from interfering with each other, the
- * global variable OPER.CHALLENGE.ACTIVE will be set to the name of the
- * server to which the active challenge belongs and will be removed by the
- * oper.challenge.cleanup alias. This also allows us to use /INPUT, with
- * the -noecho option, instead of $"..." to get the user's password.
- */
+#
+# This does all the real work for challenge-response authentication.
+#
+# To prevent multiple challenges from interfering with each other, the
+# global variable OPER.CHALLENGE.PENDING will be set to the name of the
+# server to which the active challenge belongs and will be removed by the
+# oper.challenge.cleanup alias. This also allows us to use /INPUT, with
+# the -noecho option, instead of $"..." to get the user's password.
+#
 alias oper.challenge (serv, nick, void)
 {
-	if (!nick || OPER.CHALLENGE.ACTIVE || fexist($CONFIG.OPER_RSA_RESPOND_TOOL) == -1) {
-		return
-	}
+	if (!nick || OPER.CHALLENGE.PENDING || fexist($CONFIG.OPER_RSA_RESPOND_TOOL) == -1)
+		return;
 
-	@ :item = matchitem(oper.challenge $serv *)
+	@ :item = matchitem(oper.challenge $serv *);
 	if (item > -1)
 	{
-		/*
-		 * Challenge reply from server.
-		 */
+		# Challenge reply from server.
 		^on ^386 "$serv *"
 		{
-			xecho -b Received challenge reply from $0. Generating response...
-			@ :item = matchitem(oper.challenge $0 *)
-			@ :tmp = getitem(oper.challenge $item)
-			@ :key = word(2 $tmp)
-			exec -name challenge.$servernum($serv) $CONFIG.OPER_RSA_RESPOND_TOOL $key $1
-		}
+			xecho -b Received challenge reply from $0. Generating response...;
+			@ :item = matchitem(oper.challenge $0 *);
+			@ :tmp = getitem(oper.challenge $item);
+			@ :key = word(2 $tmp);
+			exec -name challenge.$servernum($serv) $CONFIG.OPER_RSA_RESPOND_TOOL $key $1;
+		};
 
-		/*
-		 * User does not have oper priveleges.
-		 */
+		# User does not have oper priveleges.
 		^on #-491 427 "$serv *"
 		{
-			oper.challenge.cleanup $0
-		}
+			oper.challenge.cleanup $0;
+		};
 
-		/*
-		 * Catch the response generated by the rsa_respond utility.
-		 */
+		# Response generated by the rsa_respond utility.
 		^on ^exec "challenge.$servernum($serv) *"
 		{
 			if ([$1])
 			{
-				@ :servernum = after(1 . $0)
-				xecho -w $serverwin($servernum) -b Sending challenge response to $servername($servernum)
-				xeval -s $servernum -- quote challenge +$1-
-			}
-		}
+				@ :servernum = after(1 . $0);
+				xecho -w $serverwin($servernum) -b Sending challenge response to $servername($servernum);
+				xeval -s $servernum -- quote challenge +$1-;
+			};
+		};
 
-		/*
-		 * Keep exec_exit quiet and cleanup after everything.
-		 */
+		# Keep exec_exit quiet and cleanup after everything.
 		^on ^exec_exit "challenge.$servernum($serv) *"
 		{
-			oper.challenge.cleanup $servername($after(1 . $0))
-		}
+			oper.challenge.cleanup $servername($after(1 . $0));
+		};
 
-		/*
-		 * If the key requires a password, prompt the user.
-		 */
+		# If the key requires a password, prompt the user.
 		^on ^exec_prompt "challenge.$servernum($serv) Enter passphrase for challenge*"
 		{
-			@ :serv = servername($after(1 . $0))
-			@ :item = matchitem(oper.challenge $serv *)
-			@ :key = word(2 $getitem(oper.challenge $item))
+			@ :serv = servername($after(1 . $0));
+			@ :item = matchitem(oper.challenge $serv *);
+			@ :key = word(2 $getitem(oper.challenge $item));
 			input -noecho "Enter passphrase for $key: "
 			{
-				^exec -in %challenge.$servernum($OPER.CHALLENGE.ACTIVE) ${[$*] ? [$*] : [-]}
-			}
-		}
+				^exec -in %challenge.$servernum($OPER.CHALLENGE.PENDING) ${[$*] ? [$*] : [-]};
+			};
+		};
 
 		^on #-server_notice 427 "$serv *PK authentication is not enabled*"
 		{
-			oper.challenge.cleanup $0
-		}
+			oper.challenge.cleanup $0;
+		};
 
-		/* Start the party... */
-		@ OPER.CHALLENGE.ACTIVE = serv
-		xecho -b Initiating challenge-response with $serv for $nick
-		xeval -s $serv -- quote challenge $nick
+		# Start the show.
+		@ OPER.CHALLENGE.PENDING = serv;
+		xecho -b Initiating challenge-response with $serv for $nick;
+		xeval -s $serv -- quote challenge $nick;
 	}{
-		xecho -b No entry for $serv in the challenge-response list
-		xecho -b You can add entries with: /CHALLENGE -add <server> <nick> <key>
-		xecho -b For manual challenge-response authentication use /QUOTE CHALLENGE
-	}
-}
+		xecho -b No entry for $serv in the challenge-response list;
+		xecho -b You can add entries with: /CHALLENGE -add <server> <nick> <key>;
+		xecho -b For manual challenge-response authentication use /QUOTE CHALLENGE;
+	};
+};
 
 alias oper.challenge.add (serv, nick, key, void)
 {
-	if (!key) {
-		return 1
-	}
+	if (!key)
+		return 1;
 
-	@ :item = matchitem(oper.challenge $serv *)
+	@ :item = matchitem(oper.challenge $serv *);
 	if (item > -1)
 	{
-		^local ask $'There is already an entry for $serv - Overwrite? '
+		^local ask $'There is already an entry for $serv - Overwrite? ';
 		if (ask == [y]) {
-			@ setitem(oper.challenge $item $serv $nick $key)
-			return 0
-		}
+			@ setitem(oper.challenge $item $serv $nick $key);
+			return 0;
+		};
 	}{
-		@ setitem(oper.challenge $numitems(oper.challenge) $serv $nick $key)
-		return 0
-	}
-}
+		@ setitem(oper.challenge $numitems(oper.challenge) $serv $nick $key);
+		return 0;
+	};
+};
 
 alias oper.challenge.cleanup (serv, void)
 {
-	if (!serv) {
-		return
-	}
+	if (!serv)
+		return;
 
-	^on 386 -"$serv *"
-	^on #491 427 -"$serv *"
-	^on exec -"challenge.$servernum($serv) *"
-	^on exec_exit -"challenge.$servernum($serv) *"
-	^on exec_prompt -"challenge.$servernum($serv) Enter passphrase for challenge*"
-	^on #server_notice 427 -"$serv *PK authentication is not enabled*"
-	^assign -OPER.CHALLENGE.ACTIVE
-}
+	^on 386 -"$serv *";
+	^on #491 427 -"$serv *";
+	^on exec -"challenge.$servernum($serv) *";
+	^on exec_exit -"challenge.$servernum($serv) *";
+	^on exec_prompt -"challenge.$servernum($serv) Enter passphrase for challenge*";
+	^on #server_notice 427 -"$serv *PK authentication is not enabled*";
+	^assign -OPER.CHALLENGE.PENDING;
+};
 
 alias oper.challenge.delete (serv, void)
 {
-	if (!serv) {
-		return 1
-	}
+	if (!serv)
+		return 1;
 
-	@ :item = matchitem(oper.challenge $serv *)
+	@ :item = matchitem(oper.challenge $serv *);
 	if (item > -1)
 	{
-		@ delitem(oper.challenge $item)
-		return 0
+		@ delitem(oper.challenge $item);
+		return 0;
 	}{
-		return 2
-	}
-}
+		return 2;
+	};
+};
 
 alias oper.challenge.list (void)
 {
 	if (numitems(oper.challenge))
 	{
-		xecho -b Challenge-response list:
-		echo Server                     Nick         Key
+		xecho -b Challenge-response list:;
+		echo Server                     Nick         Key;
 		for cnt from 1 to $numitems(oper.challenge)
 		{
-			@ :tmp  = getitem(oper.challenge ${cnt-1})
-			@ :serv = word(0 $tmp)
-			@ :nick = word(1 $tmp)
-			@ :key  = word(2 $tmp)
-			echo $[26]serv $[12]nick $key
-		}
+			@ :tmp  = getitem(oper.challenge ${cnt-1});
+			@ :serv = word(0 $tmp);
+			@ :nick = word(1 $tmp);
+			@ :key  = word(2 $tmp);
+			echo $[26]serv $[12]nick $key;
+		};
 	}{
-		xecho -b There are no entries in the challenge-response list
-	}
-}
+		xecho -b There are no entries in the challenge-response list;
+	};
+};
 
 alias oper.operview.create (void)
 {
 	if (winnum(operview) == -1) {
-		window new name operview $CONFIG.OPERVIEW_ARGS
-	}
-}
+		window new name operview $CONFIG.OPERVIEW_ARGS;
+	};
+};
 
 alias oper.operview.destroy (void)
 {
 	if (winnum(operview) != -1) {
-		window operview kill
-	}
-}
+		window $winnum(operview) kill;
+	};
+};
 
-
-/****** ON HOOKS ******/
 
 on #-381 427 "*"
 {
-	//mode $servernick() $CONFIG.OPER_UMODES
-	^assign -OPER.FAILED.$servernum()
-}
+	//mode $servernick() $CONFIG.OPER_UMODES;
+	^assign -OPER.FAILED.$servernum();
+};
 
-/*
- * Keep track of failed oper attempts so that the auto-challenge
- * feature can ignore them.
- */
+#
+# Keep track of failed oper attempts so that the auto-challenge
+# feature can ignore them.
+#
 on #-464 427 "*"
 {
-	@ OPER.FAILED.$servernum($0) = time()
-}
+	@ OPER.FAILED.$servernum($0) = time();
+};
 
 on #-connect 427 "*"
 {
 	if (CONFIG.OPER_AUTO_CHALLENGE)
 	{
-		@ :item = matchitem(oper.challenge $2 *)
-		if (item > -1)
+		@ :item = matchitem(oper.challenge $2 *);
+		if (item > -1 && servernum() != OPER.CHALLENGE.PENDING)
 		{
-			@ :nick = word(1 $getitem(oper.challenge $item))
-			xeval -s $servernum($2) -- challenge $nick
-		}
-	}
-}
+			@ :nick = word(1 $getitem(oper.challenge $item));
+			xeval -s $servernum() {
+				challenge $nick;
+			};
+		};
+	};
+};
 
 on #-hook 427 "CONFIG OPERVIEW *"
 {
 	if (CONFIG.OPERVIEW) {
-		oper.operview.create
+		oper.operview.create;
 	} else {
-		oper.operview.destroy
-	}
-}
+		oper.operview.destroy;
+	};
+};
 
 on #-hook 427 "LOADMOD tabkey"
 {
-	oper.add_tabcomp
-}
+	oper.add_tabcomp;
+};
 
-/*
- * Check each server to see if we should auto-challenge.
- *
- * Failed oper attempts, either with /OPER or /CHALLENGE, will cause
- * auto-challenge to ignore that server for 20 minutes.
- */
+#
+# Check each server to see if we should auto-challenge.
+#
+# Failed oper attempts, either with /OPER or /CHALLENGE, will cause
+# auto-challenge to ignore that server for 20 minutes.
+#
 on #-timer 427 "*"
 {
-	if (CONFIG.OPER_AUTO_CHALLENGE && !OPER.CHALLENGE.ACTIVE)
+	if (CONFIG.OPER_AUTO_CHALLENGE && !OPER.CHALLENGE.PENDING)
 	{
 		foreach OPER.FAILED member
 		{
-			@ :diff = time() - OPER[FAILED][$member]
+			@ :diff = time() - OPER[FAILED][$member];
 			if (diff > 1200) {
-				^assign -OPER.FAILED.$member
-			}
-		}
+				^assign -OPER.FAILED.$member;
+			};
+		};
 
 		for serv in ($serverrefs())
 		{
-			@ :servname = servername($serv)
-			@ :item = matchitem(oper.challenge $servname *)
+			@ :servname = servername($serv);
+			@ :item = matchitem(oper.challenge $servname *);
 			if (serv > -1 && item > -1 && !OPER[FAILED][$serv])
 			{
 				if (!pass(oO $usermode($serv)))
 				{
-					@ :nick = word(1 $getitem(oper.challenge $item))
-					xeval -s $serv -- challenge $nick
-				}
-			}
-		}
-	}
-}
+					@ :nick = word(1 $getitem(oper.challenge $item));
+					xeval -s $serv {
+						challenge $nick;
+					};
+				};
+			};
+		};
+	};
+};
 
 on #-window_kill 427 "% operview"
 {
-	dset OPERVIEW OFF
-}
+	dset OPERVIEW OFF;
+};
 
-
-/****** STARTUP ******/
 
 if (fexist($DS.SAVE_DIR/oper) == 1) {
-	^load $DS.SAVE_DIR/oper
-}
+	^load $DS.SAVE_DIR/oper;
+};
 
 if (isloaded(tabkey)) {
-	oper.add_tabcomp
-}
+	oper.add_tabcomp;
+};
 
 if (CONFIG.OPERVIEW) {
-	oper.operview.create
-}
+	oper.operview.create;
+};
 
-
-/* EOF */
