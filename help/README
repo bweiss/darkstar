@@ -1,7 +1,7 @@
 How to use the DarkStar/EPIC4 help system
 
 DarkStar uses EPIC4's builtin /HELP command to browse its documentation and
-thus tries to immitate it as closely as possible. If you are unfamiliar with
+thus tries to imitate it as closely as possible. If you are unfamiliar with
 the use of /HELP please see help(1) in the EPIC Help Files. If you do not
 have these, they can be obtained from the following sites:
 
@@ -21,7 +21,7 @@ You can go back a section while at the help prompt by simply pressing the
 ENTER key.
 
 Throughout this documentation topics in the "See Also" sections will include
-a UNIX manpage style section reference.
+a UNIX man page style section reference.
 
 Topics viewed via /HELP will appear like normal:        whois(2)
 Topics viewed via /DHELP will appear as:                ds:dset(1)
