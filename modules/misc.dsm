@@ -1,4 +1,4 @@
-#version 0.6
+#version 0.6.1
 /* $Id$ */
 /*
  * misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
@@ -235,7 +235,7 @@ on ^310 "*" #
 on ^311 "*"
 {
 	for var in (WHOIS_HEADER WHOIS_HEADER1 WHOIS_HEADER2) {
-		if (FORMAT.$var) {
+		if (FORMAT[$var]) {
 			echo $fparse($var $*)
 		}
 	}
@@ -264,7 +264,7 @@ on ^313 "*"
 on ^314 "*"
 {
 	for var in (WHOIS_HEADER WHOIS_HEADER1 WHOIS_HEADER2) {
-		if (FORMAT.$var) {
+		if (FORMAT[$var]) {
 			echo $fparse($var $*)
 		}
 	}
@@ -279,7 +279,7 @@ on ^314 "*"
 on ^315 "*"
 {
 	for var in (WHO_FOOTER WHO_FOOTER1 WHO_FOOTER2) {
-		if (FORMAT.$var) {
+		if (FORMAT[$var]) {
 			echo $fparse($var $*)
 		}
 	}
@@ -299,7 +299,7 @@ on ^317 "*"
 on ^318 "*"
 {
 	for var in (WHOIS_FOOTER WHOIS_FOOTER1 WHOIS_FOOTER2) {
-		if (FORMAT.$var) {
+		if (FORMAT[$var]) {
 			echo $fparse($var $*)
 		}
 	}
@@ -323,7 +323,7 @@ on ^320 "*"
 on ^369 "*"
 {
 	for var in (WHOIS_FOOTER WHOIS_FOOTER1 WHOIS_FOOTER2) {
-		if (FORMAT.$var) {
+		if (FORMAT[$var]) {
 			echo $fparse($var $*)
 		}
 	}
@@ -428,7 +428,7 @@ on ^who "* % % % % *"
 	if (!MISC.WHO_HEADER_DONE)
 	{
 		for var in (WHO_HEADER WHO_HEADER1 WHO_HEADER2) {
-			if (FORMAT.$var) {
+			if (FORMAT[$var]) {
 				echo $fparse($var $*)
 			}
 		}

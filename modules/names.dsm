@@ -1,4 +1,4 @@
-#version 0.3
+#version 0.3.1
 /* $Id$ */
 /*
  * names.dsm - DarkStar/EPIC4 module to display who's on a channel
@@ -142,7 +142,7 @@ alias names.showusers (chan default "$C", mode default "*", void)
 		 * Display the header, if any.
 		 */
 		for var in (NAMES_HEADER NAMES_HEADER1 NAMES_HEADER2) {
-			if (FORMAT.$var) {
+			if (FORMAT[$var]) {
 				echo $fparse($var $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
 			}
 		}
@@ -166,7 +166,7 @@ alias names.showusers (chan default "$C", mode default "*", void)
 		fe ($users) $tmp
 		{
 			^local line
-			if (FORMAT[NAMES_LEFT]) {
+			if (FORMAT.NAMES_LEFT) {
 				push line \$fparse(NAMES_LEFT)
 			}
 
@@ -176,7 +176,7 @@ alias names.showusers (chan default "$C", mode default "*", void)
 				eval push line \\\$names.parse\(\$chan \$nick[$cnt]\)
 			}
 
-			if (FORMAT[NAMES_RIGHT]) {
+			if (FORMAT.NAMES_RIGHT) {
 				push line \$fparse(NAMES_RIGHT)
 			}
 
@@ -187,7 +187,7 @@ alias names.showusers (chan default "$C", mode default "*", void)
 		 * Display footer, if any.
 		 */
 		for var in (NAMES_FOOTER NAMES_FOOTER1 NAMES_FOOTER2) {
-			if (FORMAT.$var) {
+			if (FORMAT[$var]) {
 				echo $fparse($var $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
 			}
 		}

@@ -1,4 +1,4 @@
-#version 0.4.1
+#version 0.4.2
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
@@ -622,7 +622,7 @@ on ^368 "*"
 	{
 		for var in (BANS_HEADER BANS_HEADER1 BANS_HEADER2)
 		{
-			if (FORMAT.$var) {
+			if (FORMAT[$var]) {
 				echo $fparse($var $*)
 			}
 		}
@@ -637,7 +637,7 @@ on ^368 "*"
 
 		for var in (BANS_FOOTER BANS_FOOTER1 BANS_FOOTER2)
 		{
-			if (FORMAT.$var) {
+			if (FORMAT[$var]) {
 				echo $fparse($var $*)
 			}
 		}
