@@ -1,4 +1,4 @@
-#version 0.4
+#version 0.4.1
 /* $Id$ */
 /*
  * misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
@@ -17,7 +17,7 @@ queue cleanup.misc
 		^alias -$alias
 	}
 
-	for hook in (301 $jot(310 315) $jot(317 320) ctcp ctcp_reply dcc_chat msg notice send_dcc_chat send_msg send_notice)
+	for hook in (301 307 $jot(310 315) $jot(317 320) ctcp ctcp_reply dcc_chat msg notice send_dcc_chat send_msg send_notice)
 	{
 		^on $hook -"*"
 	}
@@ -214,8 +214,7 @@ on ^301 "*"
 	{
 		if (CONFIG[SHOW_AWAY_ONCE])
 		{
-			if (matchitem(misc.away_users $0*) == -1)
-			{
+			if (matchitem(misc.away_users $0*) == -1) {
 				echo $fparse(WHOIS_AWAY $*)
 				@ setitem(misc.away_users $numitems(misc.away_users) $0 $time())
 			}
@@ -225,60 +224,59 @@ on ^301 "*"
 	}
 }
 
+/* DALnet */
+on ^307 "*"
+{
+	if (FORMAT[WHOIS_IDENTIFIED]) {
+		echo $fparse(WHOIS_IDENTIFIED $*)
+	}
+}
+
 on ^310 "*" #
 
 on ^311 "*"
 {
-	if (FORMAT[WHOIS_HEADER])
-	{
+	if (FORMAT[WHOIS_HEADER]) {
 		echo $fparse(WHOIS_HEADER)
 	}
-	if (FORMAT[WHOIS_NICK])
-	{
+	if (FORMAT[WHOIS_NICK]) {
 		echo $fparse(WHOIS_NICK $*)
 	}
-	if (FORMAT[WHOIS_NAME])
-	{
+	if (FORMAT[WHOIS_NAME]) {
 		echo $fparse(WHOIS_NAME $*)
 	}
 }
 
 on ^312 "*"
 {
-	if (FORMAT[WHOIS_SERVER])
-	{
+	if (FORMAT[WHOIS_SERVER]) {
 		echo $fparse(WHOIS_SERVER $*)
 	}
 }
 
 on ^313 "*"
 {
-	if (FORMAT[WHOIS_OPER])
-	{
+	if (FORMAT[WHOIS_OPER]) {
 		echo $fparse(WHOIS_OPER $*)
 	}
 }
 
 on ^314 "*"
 {
-      if (FORMAT[WHOIS_HEADER])
-      {
-            echo $fparse(WHOIS_HEADER)
-      }
-	if (FORMAT[WHOWAS_NICK])
-	{
+      if (FORMAT[WHOIS_HEADER]) {
+		echo $fparse(WHOIS_HEADER)
+	}
+	if (FORMAT[WHOWAS_NICK]) {
 		echo $fparse(WHOWAS_NICK $*)
 	}
-	if (FORMAT[WHOWAS_NAME])
-	{
+	if (FORMAT[WHOWAS_NAME]) {
 		echo $fparse(WHOWAS_NAME $*)
 	}
 }
 
 on ^315 "*"
 {
-	if (FORMAT[WHO_FOOTER])
-	{
+	if (FORMAT[WHO_FOOTER]) {
 		echo $fparse(WHO_FOOTER $*)
 	}
 	^assign -MISC.WHO_HEADER_DONE
@@ -286,44 +284,39 @@ on ^315 "*"
 
 on ^317 "*"
 {
-	if (FORMAT[WHOIS_IDLE])
-	{
+	if (FORMAT[WHOIS_IDLE]) {
 		echo $fparse(WHOIS_IDLE $*)
 	}
-	if (FORMAT[WHOIS_SIGNON])
-	{
+	if (FORMAT[WHOIS_SIGNON]) {
 		echo $fparse(WHOIS_SIGNON $*)
 	}
 }
 
 on ^318 "*"
 {
-	if (FORMAT[WHOIS_FOOTER])
-	{
+	if (FORMAT[WHOIS_FOOTER]) {
 		echo $fparse(WHOIS_FOOTER $*)
 	}
 }
 
 on ^319 "*"
 {
-	if (FORMAT[WHOIS_CHANNELS])
-	{
+	if (FORMAT[WHOIS_CHANNELS]) {
 		echo $fparse(WHOIS_CHANNELS $*)
 	}
 }
 
+/* OPN */
 on ^320 "*"
 {
-	if (FORMAT[WHOIS_IDENTIFIED])
-	{
+	if (FORMAT[WHOIS_IDENTIFIED]) {
 		echo $fparse(WHOIS_IDENTIFIED $*)
 	}
 }
 
 on ^369 "*"
 {
-	if (FORMAT[WHOIS_FOOTER])
-	{
+	if (FORMAT[WHOIS_FOOTER]) {
 		echo $fparse(WHOIS_FOOTER $*)
 	}
 }
@@ -338,96 +331,84 @@ on #^connect 424 "*" //mode $servernick() $CONFIG.DEFAULT_UMODES
  */
 on ^action '% $servernick() *'
 {
-	if (FORMAT[ACTION_USER])
-	{
+	if (FORMAT[ACTION_USER]) {
 		echo $fparse(ACTION_USER $*)
 	}
 }
 
 on ^ctcp "*"
 {
-	if (FORMAT[CTCP])
-	{
+	if (FORMAT[CTCP]) {
 		echo $fparse(CTCP $*)
 	}
 }
 
 on ^ctcp_reply "*"
 {
-	if (FORMAT[CTCP_REPLY])
-	{
+	if (FORMAT[CTCP_REPLY]) {
 		echo $fparse(CTCP_REPLY $*)
 	}
 }
 
 on ^dcc_chat "*"
 {
-	if (FORMAT[DCC_CHAT])
-	{
+	if (FORMAT[DCC_CHAT]) {
 		echo $fparse(DCC_CHAT $*)
 	}
 }
 
 on ^mode '$servernick() $servernick() *'
 {
-	if (FORMAT[UMODE])
-	{
+	if (FORMAT[UMODE]) {
 		echo $fparse(UMODE $*)
 	}
 }
 
 on ^msg "*"
 {
-	if (FORMAT[MSG])
-	{
+	if (FORMAT[MSG]) {
 		echo $fparse(MSG $0 $userhost() $1-)
 	}
 }
 
 on ^notice "*"
 {
-	if (FORMAT[NOTICE])
-	{
+	if (FORMAT[NOTICE]) {
 		echo $fparse(NOTICE $0 $userhost() $1-)
 	}
 }
 
 on ^send_action "*"
 {
-	if (FORMAT[SEND_ACTION_USER])
-	{
+	if (FORMAT[SEND_ACTION_USER]) {
 		echo $fparse(SEND_ACTION_USER $*)
 	}
 }
 
 on ^send_ctcp "PRIVMSG *"
 {
-	if (FORMAT[SEND_CTCP] && [$2] != [ACTION])
-	{
+	if (FORMAT[SEND_CTCP] && [$2] != [ACTION]) {
 		echo $fparse(SEND_CTCP $*)
 	}
 }
 
 on ^send_dcc_chat "*"
 {
-	if (FORMAT[SEND_DCC_CHAT])
-	{
+	if (FORMAT[SEND_DCC_CHAT]) {
 		echo $fparse(SEND_DCC_CHAT $*)
 	}
 }
 
 on ^send_msg "*"
 {
-	if (FORMAT[SEND_MSG])
-	{
+	if (FORMAT[SEND_MSG]) {
 		echo $fparse(SEND_MSG $*)
 	}
 }
 
 on ^send_notice "*"
 {
-	if (FORMAT[SEND_NOTICE])
-	{
+	if (FORMAT[SEND_NOTICE]) {
 		echo $fparse(SEND_NOTICE $*)
 	}
 }
@@ -454,14 +435,12 @@ on #-timer 424 "*"
 
 on ^who "* % % % % *"
 {
-	if (!MISC[WHO_HEADER_DONE] && FORMAT[WHO_HEADER])
-	{
+	if (!MISC[WHO_HEADER_DONE] && FORMAT[WHO_HEADER]) {
 		echo $fparse(WHO_HEADER)
 	}
 	/* This is removed by the 315 numeric (WHO_FOOTER) */
 	^assign MISC.WHO_HEADER_DONE 1
-	if (FORMAT[WHO])
-	{
+	if (FORMAT[WHO]) {
 		echo $fparse(WHO $*)
 	}
 }
@@ -473,8 +452,7 @@ on #-hook 426 "CONFIG IGNORE_CTCP_FINGER *"
 {
 	if (CONFIG[IGNORE_CTCP_FINGER])
 	{
-		^on ^raw_irc "% PRIVMSG % :FINGER"
-		{
+		^on ^raw_irc "% PRIVMSG % :FINGER" {
 			xecho -b CTCP FINGER request received from $before(1 ! $0), ignoring...
 		}
 	}{
@@ -484,8 +462,7 @@ on #-hook 426 "CONFIG IGNORE_CTCP_FINGER *"
 
 if (CONFIG[IGNORE_CTCP_FINGER])
 {
-	^on ^raw_irc "% PRIVMSG % :FINGER"
-	{
+	^on ^raw_irc "% PRIVMSG % :FINGER" {
 		xecho -b CTCP FINGER request received from $before(1 ! $0), ignoring...
 	}
 }
