@@ -60,6 +60,8 @@ alias bool_to_num (arg, void) {
 	}
 }
 
+alias country tld
+
 /*
  * This function converts an integer representing an arbitrary number
  * of bytes into a more human readable form. It was taken from the
@@ -167,6 +169,19 @@ alias serverrefs (void) {
 		}
 	}
 	return $ret
+}
+
+alias tld {
+	if (functioncall()) {
+		return $TLD.$0
+	} else if ([$0]) {
+		@ :name = TLD[$0]
+		if (name) {
+			xecho -b Top-Level domain "$0" is "$name"
+		} else {
+			xecho -b Top-Level domain "$0" is unknown
+		}
+	}
 }
 
 /*

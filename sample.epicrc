@@ -8,8 +8,12 @@
 # This is only useful for debugging purposes.
 #xdebug +crash
 
-# In most EPIC builds the default level of window #1 is ALL which is usually
-# undesirable for users that open multiple windows.
+# In most EPIC builds the default level of window 1 is ALL, a setting
+# that is usually undesirable for users that open multiple windows.
 window 1 level none
+
+# The first window is often named "ircII" by default, uncomment the
+# following to have this name removed.
+#window 1 name -
 
 load ~/darkstar/darkstar.irc

@@ -1,0 +1,10 @@
+Synopsis:
+   tld <tld>
+   country <tld>
+
+Description:
+   Converts a top-level domain to its full name.
+
+See Also:
+   ds:tld(2)
+

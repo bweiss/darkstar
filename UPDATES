@@ -1,3 +1,14 @@
+*** News 2003/09/05 -- New core command/function: /TLD, $tld()
+	A /TLD alias has been added to take advantage of the new TLD
+	structure. It works just like $country() in BitchX. See ds:tld(1)
+	and ds:tld(2) for more details.
+
+*** News 2003/09/05 -- New core script: globals.dsc
+	This new script will contain miscellaneous global variables
+	to be used by modules. Right now this just contains a list of
+	current top-level domains. They can be accessed through the
+	TLD structure.
+
 *** News 2003/05/10 -- New module: memo.dsm
 	This new module provides mechanisms to manipulate a text file
 	of one-line memos from the client's input prompt. See ds:memo(3)

@@ -54,13 +54,13 @@ for array in ($getarrays()) {
  * Important global variables
  */
 @ DS.VERSION = [0.2.9]
-@ DS.INTERNAL_VERSION = [20030509]
+@ DS.INTERNAL_VERSION = [20030905]
 
 /*
  * This will be incremented every time a change takes place in
  * the core scripts (this file and any .dsc files in core/).
  */
-@ DS.CORE_ID = 83
+@ DS.CORE_ID = 84
 
 eval xecho -b Loading DarkStar $DS.VERSION
 
@@ -149,15 +149,9 @@ set INDENT ON
 xdebug +NEW_MATH
 
 /*
- * Change window name and level for the first window, if necessary.
- */
-if (winnam(1) == [ircII]) {
-	^window ircII name - level none
-}
-
-/*
  * Load the core scripts.
  */
+eval load $DS.HOME/core/globals.dsc
 eval load $DS.HOME/core/functions.dsc
 eval load $DS.HOME/core/commands.dsc
 eval load $DS.HOME/core/config.dsc

@@ -1,0 +1,17 @@
+Synopsis:
+   $tld(<tld>)
+   $country(<tld>)
+
+Description:
+   Converts a top-level domain to its full name.
+
+Returns:
+   The full name of <tld> or nothing if it is unknown.
+
+Examples:
+   $tld(ca)                    returns "Canada"
+   $tld(zw)                    returns "Zimbabwe"
+
+See Also:
+   ds:tld(1)
+
