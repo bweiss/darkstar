@@ -221,7 +221,7 @@ alias names.parse (chan, nick, void)
 /****** ON HOOKS ******/
 
 /*
- * Hook the NAMES numerics and call names.showusers
+ * Hook the NAMES numerics and call names.main
  */
 on ^353 "*"
 {
