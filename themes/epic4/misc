@@ -15,7 +15,7 @@ assign FORMAT.WHOIS_AWAY $G $1 is away: $2-
 assign FORMAT.WHOIS_CHANNELS $G on channels: $3-
 assign FORMAT.WHOIS_FOOTER $G $2 : End of /WHOIS list.
 assign -FORMAT.WHOIS_HEADER
-assign FORMAT.WHOIS_IDENTIFIED $G $1 : $2-
+assign FORMAT.WHOIS_IDENTIFIED $G $2 : $3-
 assign FORMAT.WHOIS_IDLE $G $2 has been idle $tdiff($3), signed on at $strftime($4 %%a %%b %%T %%Z %%Y)
 assign -FORMAT.WHOIS_NAME
 assign FORMAT.WHOIS_NICK $G $2 is $3@$4 \($6-\)
