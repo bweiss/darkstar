@@ -1,6 +1,15 @@
 Darkstar ChangeLog
 
 
+3/14/02
+
+ * [window.dsm v0.3] Changes regarding the msg window, including:
+	- MSG_WINDOW_ARGS has been removed in favor of the following...
+	- New config variables: MSG_WINDOW_LEVEL MSG_WINDOW_SIZE
+	- Added some things to try and keep the msg window in shape when
+	  other windows are killed. This is hopefully more sane than previous
+	  attempts.
+
 3/13/02
 
  * New important global variable: STATUS.DOUBLE - This should be made true

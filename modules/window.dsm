@@ -1,4 +1,4 @@
-#version 0.2
+#version 0.3
 /* $Id$ */
 /*
  * window.dsm - Window module for Darkstar/EPIC4
@@ -17,9 +17,13 @@ queue cleanup.window
 		^alias -$alias
 	}
 
+	^on #hook 426 -"CONFIG MSG_WINDOW *"
+	^on #hook 426 -"CONFIG MSG_WINDOW_LEVEL *"
+	^on #hook 426 -"CONFIG MSG_WINDOW_SIZE *"
 	^on #join 426 -'\$servernick() *'
 	^on #leave 426 -'\$servernick() *'
 	^on #window_kill 426 -"msgs"
+	^on #window_kill 426 -"*"
 
 	if (winnum(msgs) != -1)
 	{
@@ -59,7 +63,8 @@ config.add    AUTO_CREATE_WINDOW_ARGS double on hide
 config.add    AUTO_CREATE_WINDOWS 10
 config.add -b AUTO_UNBIND_ON_PART 0
 config.add -b MSG_WINDOW 0
-config.add    MSG_WINDOW_ARGS size 5 level msgs,opnotes,wallops last
+config.add    MSG_WINDOW_LEVEL msgs,opnotes,wallops
+config.add    MSG_WINDOW_SIZE 5
 
 
 ^bind ^W META8_CHARACTER
@@ -134,7 +139,10 @@ if (CONFIG[MSG_WINDOW])
 {
 	if (winnum(msgs) == -1)
 	{
-		window new name msgs $CONFIG.MSG_WINDOW_ARGS
+		window new name msgs
+		window size $CONFIG.MSG_WINDOW_SIZE
+		window level $CONFIG.MSG_WINDOW_LEVEL
+		window last
 	}
 }
 
@@ -188,13 +196,6 @@ alias wj (chan)
 alias wk (void)
 {
 	window kill
-	/* Grumble.. */
-	if (CONFIG[MSG_WINDOW])
-	{
-		window swap last
-		^dset MSG_WINDOW off
-		^dset MSG_WINDOW on
-	}
 }
 
 alias wl (void)
@@ -244,7 +245,10 @@ on #-hook 426 "CONFIG MSG_WINDOW *"
 	{
 		if (winnum(msgs) == -1)
 		{
-			window new name msgs $CONFIG.MSG_WINDOW_ARGS
+			window new name msgs
+			window level $CONFIG.MSG_WINDOW_LEVEL
+			window size $CONFIG.MSG_WINDOW_SIZE
+			window last
 		}
 	}{
 		if (winnum(msgs) != -1)
@@ -254,7 +258,23 @@ on #-hook 426 "CONFIG MSG_WINDOW *"
 	}
 }
 
-on #^join 426 '$servernick() *'
+on #-hook 426 "CONFIG MSG_WINDOW_LEVEL *"
+{
+	if (CONFIG[MSG_WINDOW])
+	{
+		window msgs level $CONFIG.MSG_WINDOW_LEVEL
+	}
+}
+
+on #-hook 426 "CONFIG MSG_WINDOW_SIZE *"
+{
+	if (CONFIG[MSG_WINDOW])
+	{
+		window msgs size $CONFIG.MSG_WINDOW_SIZE
+	}
+}
+
+on #-join 426 '$servernick() *'
 {
 	if (CONFIG[AUTO_BIND_ON_JOIN])
 	{
@@ -262,7 +282,7 @@ on #^join 426 '$servernick() *'
 	}
 }
 
-on #^leave 426 '$servernick() *'
+on #-leave 426 '$servernick() *'
 {
 	if (CONFIG[AUTO_UNBIND_ON_PART])
 	{
@@ -270,11 +290,22 @@ on #^leave 426 '$servernick() *'
 	}
 }
 
-on #^window_kill 426 "msgs"
+on #-window_kill 426 "msgs"
 {
 	if (CONFIG[MSG_WINDOW])
 	{
 		dset MSG_WINDOW OFF
+	}
+}
+
+on #-window_kill 426 "*"
+{
+	if (CONFIG[MSG_WINDOW])
+	{
+		window previous
+		window show msgs
+		window size $CONFIG.MSG_WINDOW_SIZE
+		window last
 	}
 }
 
