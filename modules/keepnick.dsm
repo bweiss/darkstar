@@ -1,13 +1,9 @@
-#version 0.1
-/*     _             _        _
- *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
- * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
- * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
- *
+#version 0.1.1
+/*
  * KEEPNICK.DSM - Keepnick/Getnick module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/20/02 (bmw)
+ * Last modified: 2/17/02 (bmw)
  *
  * This script uses serial numbers 422 and 423 for /on hooks.
  */
@@ -69,8 +65,8 @@ alias getnick (nick, void)
 						if (servernick() == CONFIG[KEEPNICK_NICK])
 						{
 							getnick -
-						} \
-						elsif (S && servernick() != [<not registered yet>] && !is_on($_GETNICK))
+						}\
+						else if (S && servernick() != [<not registered yet>] && !is_on($_GETNICK))
 						{
 							xecho -b Changing nick to [$_GETNICK]
 							//nick $_GETNICK

@@ -6,7 +6,7 @@
  * CONFIG.DSC - Configuration manager for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/15/02 (bmw)
+ * Last modified: 2/17/02 (bmw)
  */
 
 alias conf dset

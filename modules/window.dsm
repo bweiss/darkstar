@@ -1,13 +1,9 @@
-#version 0.1.1
-/*     _             _        _
- *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
- * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
- * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
- *
+#version 0.1.2
+/*
  * WINDOW.DSM - Window module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/20/02 (bmw)
+ * Last modified: 2/17/02 (bmw)
  *
  * This script uses serial number 426 for all /on hooks.
  */
@@ -64,7 +60,7 @@ config.add    MSG_WINDOW_ARGS size 5 level msgs,opnotes,wallops last
 
 /* Force the loading of saved settings early so the two /if statements
    below will work. */
-loader.get_saved_settings
+loader.load_saved_settings
 
 
 if (CONFIG[AUTO_CREATE_WINDOWS])

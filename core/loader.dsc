@@ -6,7 +6,7 @@
  * LOADER.DSC - Module loader for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 2/9/02 (bmw)
+ * Last modified: 2/17/02 (bmw)
  */
 
 
@@ -174,7 +174,10 @@ alias loader.dependency (depmods)
 					loadmod $depmod
 				}{
 					^local tmp $"Module [$module] depends on [$depmod] - Load it now? [Yn] "
-					if (tmp == []) ^assign tmp Y
+					if (tmp == [])
+					{
+						^assign tmp Y
+					}
 
 					switch ($toupper($left(1 $tmp)))
 					{
@@ -186,22 +189,6 @@ alias loader.dependency (depmods)
 				xecho -b Warning: Unable to load dependency. Module [$depmod] not found.
 			}
 		}
-	}
-}
-
-/*
- * This allows modules to force saved settings to be loaded before the module
- * is finished loading. Very useful for events happening at module load time
- * that depend on certain config settings.
- */
-alias loader.get_saved_settings (void)
-{
-	@ :module = LOADER[PENDING_MODULE]
-	^local save_file $DS.SAVE_DIR/$module\.sav
-
-	if (fexist($save_file) == 1)
-	{
-		^load $save_file
 	}
 }
 
@@ -265,6 +252,21 @@ alias loader.load_module (module, void)
 
 	/* No such module. */
 	return 3
+}
+
+/*
+ * This allows modules to force saved settings to be loaded before the module
+ * is finished loading. Very useful for events happening at module load time
+ * that depend on certain config settings.
+ */
+alias loader.load_saved_settings (void)
+{
+	@ :module = LOADER.PENDING_MODULE
+	@ :save_file = DS[SAVE_DIR] ## [/] ## module ## [.sav]
+	if (fexist($save_file) == 1)
+	{
+		^load $save_file
+	}
 }
 
 /*
@@ -351,7 +353,6 @@ alias loader.which_mods (array, args)
 			{
 				@ :startmod = before(- $tmp)
 				@ :endmod = after(- $tmp)
-
 				if (startmod < endmod && startmod < numitems($array) && endmod <= numitems($array))
 				{
 					for cnt from $startmod to $endmod
@@ -396,7 +397,10 @@ if (CONFIG[AUTO_LOAD_PROMPT])
 	/* Prompt user. */
 	modlist
 	^assign mods $"Modules to load? ([A]uto / [N]one / 1 2-4 ...) [A] "
-	if (mods == []) {^assign mods A}
+	if (mods == [])
+	{
+		^assign mods A
+	}
 
 	switch ($toupper($mods))
 	{
@@ -418,8 +422,8 @@ if (CONFIG[AUTO_LOAD_PROMPT])
 	{
 		loadmod $modules
 	}
-} \
-elsif (CONFIG[AUTO_LOAD_MODULES])
+}\
+else if (CONFIG[AUTO_LOAD_MODULES])
 {
 	loadmod $CONFIG.AUTO_LOAD_MODULES
 }

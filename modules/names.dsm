@@ -1,9 +1,5 @@
-#version 0.1.1
-/*     _             _        _
- *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
- * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
- * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
- *
+#version 0.1.2
+/*
  * NAMES.DSM - Module to display who's on a channel for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
@@ -58,8 +54,8 @@ alias names.parse (chan, nick, void)
 	if (ischanop($nick $chan))
 	{
 		@ function_return = fparse(NAMES_OP $nick)
-	} \
-	elsif (ischanvoice($nick $chan) == 1)
+	}\
+	else if (ischanvoice($nick $chan) == 1)
 	{
 		@ function_return = fparse(NAMES_VOICE $nick)
 	}{

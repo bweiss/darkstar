@@ -3,8 +3,17 @@ Darkstar ChangeLog
 
 2/17/02
 
- * HEADS UP: Changes to the CONFIG/FORMAT HOOK events. The old value of
-   the variable being changed is now passed to these HOOK events instead
+ * HEADS UP: loader.get_saved_settings renamed to loader.load_saved_settings.
+   This is a much better representation of its actual function and this
+   seems to be the time to break backward compatibility ;-).
+
+ * HEADS UP: Changed all occurrences of "elsif" to "else if". I figured since
+   we're already heavily dependent on new features, making this change is
+   actually a good idea. This will completely destroy backwards compatibility
+   and force all users to upgrade.
+
+ * HEADS UP: Changes to the "CONFIG *" and "FORMAT *" HOOK events. The old
+   value of the variable being changed is now passed to these events instead
    of the new value. This is because the new value can already be accessed
    by the actual variable holding the value. This new behavior should be
    much more useful as modules can now easily reset the config or format
