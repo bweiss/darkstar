@@ -1,6 +1,12 @@
 DarkStar ChangeLog
 
 
+2002/05/31
+
+ * [window.dsm 0.4.2] Fixed some key binding issues with debug.dsm and
+   the F keys. These two modules should now be completely independent
+   of each other.
+
 2002/05/30
 
  * The format variables for the various modules now have descriptions in

@@ -1,4 +1,4 @@
-#version 0.4.1
+#version 0.4.2
 /* $Id$ */
 /*
  * window.dsm - Window module for DarkStar/EPIC4
@@ -37,12 +37,8 @@ queue cleanup.window
 	}
 	^bind ^W NEXT_WINDOW
 	^bind ^X META2_CHARACTER
-	^bind META2-1 META32_CHARACTER
-	^bind META2-2 META39_CHARACTER
-	^bind META2-3 META38_CHARACTER
-	^bind META2-4 META33_CHARACTER
-	^bind META2-5 META30_CHARACTER
-	^bind META2-6 META31_CHARACTER
+	^bind -symbolic key_f11 NOTHING
+	^bind -symbolic key_f12 NOTHING
 
 	for item in ($getrmatches(single_status msgs)) {
 		@ delitem(single_status $item)
