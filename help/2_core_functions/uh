@@ -1,0 +1,18 @@
+Synopsis:
+   $uh(<nick> ...)
+
+Description:
+   This function is just like the builtin userhost(6) except that it
+   queries the server instead of trying to grab the userhost from cache.
+
+Returns:
+   Returns the userhost (user@hostname) of each nick passed to it,
+   or <UNKNOWN>@<UNKNOWN> if the nick is not online.
+
+History:
+   This function first appeared in the "guh" script that is distributed
+   with EPIC. It was written by Jeremy Nelson <jnelson@epicsol.org>.
+
+See Also:
+   userhost(6)
+

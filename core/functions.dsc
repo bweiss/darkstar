@@ -167,5 +167,26 @@ alias serverrefs (void)
 	@ function_return = retval
 }
 
+/*
+ * Written by Jeremy Nelson in '93 and distributed
+ * with EPIC4 in the guh script.
+ *
+ * Takes a white space separated list of nicks and returns
+ * their userhosts. This differs from $userhost() in that it
+ * queries the server rather than trying to pull the userhosts
+ * from the client's cache.
+ */
+alias uh
+{
+	^local blahblah
+	wait for {
+		^userhost $* -cmd {
+			bless
+			push blahblah $3@$4
+		}
+	}
+	return $blahblah
+}
+
 
 /* EOF */

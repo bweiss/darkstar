@@ -1,3 +1,9 @@
+*** News 2002/07/09 -- New function: $uh()
+	I added the $uh() function from the guh script distributed with
+	EPIC4 (written by Jeremy Nelson). This works just like $userhost()
+	except it queries the server rather than trying to get the userhost
+	from the client's cache.
+
 *** News 2002/06/19 -- Changes to WHO in the darkstar and feedback themes
 	The WHO format variable in the darkstar and feedback themes was not
 	properly highlighting servers with 0 hops. In the process of fixing
