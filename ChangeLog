@@ -3,10 +3,10 @@ Darkstar ChangeLog
 
 12/24/01
 
- * [channel.dsm] Added 2 new format variables: ACTION_CHANNEL and
-   ACTION_CHANNEL_OTHER.
+ * [channel.dsm] New format variables: ACTION_CHANNEL, ACTION_CHANNEL_OTHER,
+   SEND_ACTION_CHANNEL, and SEND_ACTION_CHANNEL_OTHER.
 
- * [misc.dsm] New format variable: ACTION_USER.
+ * [misc.dsm] New format variables: ACTION_USER and SEND_ACTION_USER.
 
  * Regrettably I must break some some themes by changing the arguments passed
    to $fparse() for some of channel.dsm's format sets. The list of affected

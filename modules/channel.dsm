@@ -6,7 +6,7 @@
  * CHANNEL.DSM - Channel related stuff for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/23/01 (bmw)
+ * Last modified: 12/24/01 (bmw)
  *
  * This script uses serial numbers 0 and 424 for all ON hooks.
  */
@@ -641,6 +641,22 @@ on ^public_other "*"
 	if (FORMAT[PUBLIC_OTHER])
 	{
 		echo $fparse(PUBLIC_OTHER $channel.show_ov($0 $1) $1-)
+	}
+}
+
+on ^send_action '\\[#* &* +*\\] *'
+{
+	if (iscurchan($0))
+	{
+		if (FORMAT[SEND_ACTION_CHANNEL])
+		{
+			echo $fparse(SEND_ACTION_CHANNEL $*)
+		}
+	}{
+		if (FORMAT[SEND_ACTION_CHANNEL_OTHER])
+		{
+			echo $fparse(SEND_ACTION_CHANNEL_OTHER $*)
+		}
 	}
 }
 

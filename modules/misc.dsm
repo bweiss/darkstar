@@ -6,7 +6,7 @@
  * MISC.DSM - The 'miscellaneous stuff' module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/23/01 (bmw)
+ * Last modified: 12/24/01 (bmw)
  *
  * This script uses serial number 424 for all ON hooks.
  */
@@ -312,6 +312,14 @@ on ^notice "*"
 	if (FORMAT[NOTICE])
 	{
 		echo $fparse(NOTICE $0 $userhost() $1-)
+	}
+}
+
+on ^send_action "*"
+{
+	if (FORMAT[SEND_ACTION_USER])
+	{
+		echo $fparse(SEND_ACTION_USER $*)
 	}
 }
 

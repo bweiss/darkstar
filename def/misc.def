@@ -8,6 +8,7 @@ format CTCP_REPLY $G CTCP $3 reply from $1: $4-
 format DCC_CHAT [$Z] %W.%n$1%W[%cdcc%W]%n $2-
 format MSG [$Z] %W.%n$1%W[%c$2%W]%n $3-
 format NOTICE [$Z] -$1%c\(%n$2%c\)%n- $3-
+format SEND_ACTION_USER * -> $1: $servernick() $2-
 format SEND_CTCP $G Requesting a CTCP $3 from $2: $4-
 format SEND_DCC_CHAT [$Z] %W.%ndcc%W[%n$1%W]%n $2-
 format SEND_MSG [$Z] %W.%nmsg%W[%n$1%W]%n $2-

@@ -1,7 +1,7 @@
 /*
  * EPIC4 theme for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
- * Last modified: 12/23/01 (bmw)
+ * Last modified: 12/24/01 (bmw)
  */
 
 status -q epic4
@@ -24,6 +24,8 @@ fset PUBLIC <$1> $3-
 fset PUBLIC_AR <%W$1%n> $3-
 fset PUBLIC_OTHER <$1:$2> $3-
 fset PUBLIC_OTHER_AR <%W$1%n:$2> $3-
+fset SEND_ACTION_CHANNEL * $servernick() $2-
+fset SEND_ACTION_CHANNEL_OTHER * -> $1: $servernick() $2-
 fset SEND_PUBLIC > $3-
 fset SEND_PUBLIC_OTHER $2> $3-
 fset TOPIC $G Topic for $2: $3-
@@ -41,6 +43,7 @@ fset CTCP_REPLY $G CTCP $3 reply from $1: $4-
 fset DCC_CHAT =$1= $2-
 fset MSG *$1* $3-
 fset NOTICE -$1\- $3-
+fset SEND_ACTION_USER * -> $1: $servernick() $2-
 fset -SEND_CTCP
 fset SEND_DCC_CHAT => =$1= $2-
 fset SEND_MSG *$1*> $2-
