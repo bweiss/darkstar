@@ -1,0 +1,28 @@
+/* $Id$ */
+
+assign FORMAT.ACTION_CHANNEL %W* %c$1%n $3-
+assign FORMAT.ACTION_CHANNEL_OTHER <%C$2%n> %W*%n %c$1$%n $3-
+assign FORMAT.BANS $G $3-
+assign -FORMAT.BANS_FOOTER
+assign -FORMAT.BANS_HEADER
+assign FORMAT.CHANNEL_SIGNOFF $G Signoff: %c$2%n \($3-\)
+assign FORMAT.CHANNEL_SYNC $G Join to %C$1%n is now synched \($2 seconds\)
+assign FORMAT.CHANNEL_TS $G Channel %C$2%n created on $strftime($3 %%a %%b %%d %%T %%Y)
+assign FORMAT.JOIN $G %c$1%n %W\(%p$before(@ $3)%W\@%p$after(@ $3)%W\)%n has joined channel %C$2%n
+assign FORMAT.LEAVE $G %c$1%n has left channel %C$2%n
+assign FORMAT.MODE $G %WMode change%n \"$3-\" on channel %C$2%n by %c$1%n
+assign FORMAT.PUBLIC %c<%n$1%c>%n $3-
+assign FORMAT.PUBLIC_AR %c<%W$1%c>%n $3-
+assign FORMAT.PUBLIC_OTHER %c<%n$1:%C$2%c>%n $3-
+assign FORMAT.PUBLIC_OTHER_AR %c<%W$1%n:%C$2%c>%n $3-
+assign FORMAT.SEND_ACTION_CHANNEL %W*%n %C$servernick()%n $2-
+assign FORMAT.SEND_ACTION_CHANNEL_OTHER <%C$1%n> %W*%n %C$servernick()%n $2-
+assign FORMAT.SEND_PUBLIC %c<$2>%n $3-
+assign FORMAT.SEND_PUBLIC_OTHER %c<$1%n:%C$2>%n $3-
+assign FORMAT.TOPIC $G Topic for $2: $3-
+assign FORMAT.TOPIC_CHANGE $G $1 has set the topic on channel $2 to $3-
+assign FORMAT.TOPIC_SETBY $G set by $3 on $strftime($4 %%a %%b %%d %%T %%Y)
+assign FORMAT.TOPIC_UNSET $G $1 has unset the topic on channel $2
+
+
+/* EOF */

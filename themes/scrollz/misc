@@ -1,0 +1,31 @@
+/* $Id$ */
+
+assign FORMAT.ACTION_USER %W*%n> %c$1%n $3-
+assign FORMAT.CTCP $G %CCTCP $3%n from %c$1%n %W\(%p$before(@ $userhost())%W\@%p$after(@ $userhost())%W)%n
+assign FORMAT.CTCP_REPLY $G %CCTCP $3%n reply from %c$1%n: $4-
+assign FORMAT.MSG *%c$1%n* $3-  %W\(%p$before(@ $2)%W@%p$after(@ $2)%W\)%n [%K$Z%n]
+assign FORMAT.NOTICE %W-%G$1%W-%n $3-
+assign FORMAT.SEND_ACTION_USER <%C$1%n> %W*%n %C$servernick()%n $2-
+assign -FORMAT.SEND_CTCP 
+assign FORMAT.SEND_MSG %C[%w-%c$1%w-%C]%n $2-
+assign FORMAT.SEND_NOTICE %G<%n-%g$1%n-%G>%n $2-
+assign FORMAT.WHO %C$[10]1 %c$[9]2 %n$[3]3 %p$4%W@%p$5%n \(%W$8-%n\)
+assign -FORMAT.WHO_FOOTER
+assign -FORMAT.WHO_HEADER
+assign FORMAT.WHOIS_AWAY $G %BSetAway%n   : \($1\) $2-
+assign FORMAT.WHOIS_CHANNELS $G %BChannels%n  : %C$3-%n
+assign -FORMAT.WHOIS_FOOTER
+assign -FORMAT.WHOIS_HEADER 
+assign FORMAT.WHOIS_IDENTIFIED $G %BIdentified%n : $2-
+assign -FORMAT.WHOIS_IDLE
+assign -FORMAT.WHOIS_NAME 
+assign FORMAT.WHOIS_NICK $G %c$[9]2%n : %p$3%n%W@%n%p$4%K%n \($6-\)
+assign FORMAT.WHOIS_OPER $G %BIrcOp%n     : $2 is being SYN flooded \(IRC Operator\)
+assign FORMAT.WHOIS_SERVER $G %BServer%n    : %C$3%n \($4-\)
+assign FORMAT.WHOIS_SIGNON $G %BSignOn%n    : $strftime($4 %%a %%b %%d %%T %%Y)    %BIdle%n : $tdiff2($3)
+assign -FORMAT.WHOWAS_NAME
+assign FORMAT.WHOWAS_NICK $G %c$[9]2%n : %p$3%n%W@%n%p$4%K%n \($6-\)
+assign FORMAT.UMODE $G Mode change \"$3-\" for user $2 by $1
+
+
+/* EOF */
