@@ -1,4 +1,4 @@
-# version:0.10.2 loader:pf
+# version:0.10.3 loader:pf
 # $Id$
 #
 # window.dsm - Window related module for DarkStar/EPIC4
@@ -54,7 +54,7 @@ queue cleanup.window
 
 
 addconfig    AUTO_BIND_CHANNELS;
-addconfig    AUTO_CREATE_WINDOWS 2;
+addconfig    AUTO_CREATE_WINDOWS 0;
 addconfig -b AUTO_QUERY_UPDATE 1;
 addconfig -b AUTO_QUERY_WINDOW 0;
 addconfig    AUTO_QUERY_WINDOW_ARGS double off fixed on hide swap last;
