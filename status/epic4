@@ -31,3 +31,5 @@ set STATUS_UMODE  (+%#)
 set STATUS_USER ircII-EPIC4 -- Type /help for help
 set STATUS_VOICE +
 set STATUS_WINDOW ^^^^^^^^
+
+^window double off
