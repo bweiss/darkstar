@@ -8,7 +8,7 @@
  *
  * Last modified: 1/14/02 (bmw)
  *
- * This script uses serial numbers 422 and 423 for all /on hooks.
+ * This script uses serial numbers 422 and 423 for /on hooks.
  */
 
 queue cleanup.keepnick

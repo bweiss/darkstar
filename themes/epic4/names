@@ -2,8 +2,9 @@
 
 assign -FORMAT.NAMES_FOOTER
 assign FORMAT.NAMES_HEADER $G Users on $1: \(total/$2 - ops/$3 normal/$4\)
-assign FORMAT.NAMES_OP @
-assign FORMAT.NAMES_VOICE +
+assign FORMAT.NAMES_NONOP $chr(32)$[9]1
+assign FORMAT.NAMES_OP @$[9]1
+assign FORMAT.NAMES_VOICE +$[9]1
 
 
 /* bmw '01 */

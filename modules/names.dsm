@@ -6,9 +6,9 @@
  * NAMES.DSM - Module to display who's on a channel for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/14/02 (bmw)
+ * Last modified: 1/15/02 (bmw)
  *
- * This script uses serial number 0 for all /on hooks.
+ * This script uses serial numbers 0 and 428 for /on hooks.
  */
 
 queue cleanup.names
@@ -19,11 +19,13 @@ queue cleanup.names
 	}
 }
 
+config.add NAMES_COL 6
 
 format.add NAMES_FOOTER
 format.add NAMES_HEADER $G Users on $1: \(total/$2 - ops/$3 normal/$4\)
-format.add NAMES_OP %c@%n
-format.add NAMES_VOICE %m+%n
+format.add NAMES_NONOP $chr(32)$[9]1
+format.add NAMES_OP %c@%n$[9]1
+format.add NAMES_VOICE %m+%n$[9]1
 
 
 alias names scan
@@ -49,6 +51,20 @@ alias scanv (chan default "$C", void)
 	@ names.showusers($chan v)
 }
 
+
+alias names.parse (chan, nick, void)
+{
+	if (ischanop($nick $chan))
+	{
+		@ function_return = fparse(NAMES_OP $nick)
+	} \
+	elsif (ischanvoice($nick $chan) == 1)
+	{
+		@ function_return = fparse(NAMES_VOICE $nick)
+	}{
+		@ function_return = fparse(NAMES_NONOP $nick)
+	}
+}
 
 alias names.showusers (chan default "$C", mode default "*", void)
 {
@@ -82,33 +98,36 @@ alias names.showusers (chan default "$C", mode default "*", void)
 			(*) {@ users = onchannel($chan)}
 		}
 
-		/* If no users matching the request are found alert user and exit */
 		if (#users < 1)
 		{
 			xecho -b No $desc were found on $chan
 			return 0
 		}
 
-		if (FORMAT[NAMES_HEADER])
+		if (FORMAT[NAMES_HEADER]) {echo $fparse(NAMES_HEADER $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))}
+
+		^local tmp
+		for cnt from 1 to $CONFIG.NAMES_COL
 		{
-			echo $fparse(NAMES_HEADER $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
+			push tmp nick.$cnt
 		}
 
-		fe ($users) n1 n2 n3 n4 n5 n6
+		fe ($users) $tmp
 		{
-			xecho -b $names.getov($chan $n1)$[9]n1 $names.getov($chan $n2)$[9]n2 $names.getov($chan $n3)$[9]n3 $names.getov($chan $n4)$[9]n4 $names.getov($chan $n5)$[9]n5 $names.getov($chan $n6)$[9]n6
+			^local foo
+			for (@ :cnt = [1], nick[$cnt], @ cnt++)
+			{
+				eval push foo \\\$names.parse\(\$chan \$nick[$cnt]\)
+			}
+
+			eval xecho -b $foo
 		}
 
-		if (FORMAT[NAMES_FOOTER])
-		{
-			echo $fparse(NAMES_FOOTER $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
-		}
-
-		return 1
+		if (FORMAT[NAMES_FOOTER]) {echo $fparse(NAMES_FOOTER $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))}
 	}
-	return 0
-}
 
+	return
+}
 
 on ^353 "*"
 {
@@ -121,9 +140,14 @@ on ^366 "*"
 	^assign -NAMES.CHAN
 }
 
-alias names.getov (chan, nick, void)
+on #-hook 428 "CONFIG NAMES_COL *"
 {
-	@ function_return = ischanop($nick $chan) ? fparse(NAMES_OP) : (ischanvoice($nick $chan) == 1 ? fparse(NAMES_VOICE) : [ ])
+	if (!isnumber($CONFIG.NAMES_COL b10))
+	{
+		xecho -b Value must be an integer
+		^assign CONFIG.NAMES_COL 4
+		xecho -b Value of NAMES_COL set to 4
+	}
 }
 
 

@@ -114,7 +114,7 @@ alias config.set_routine (type, variable, value)
 							^assign $var $convert.onoff($value)
 							xecho -s -b Value of $toupper($var2) set to $toupper($convert.num($value))
 						}
-						(*) {xecho -s -b Value must either be ON, OFF, 1, or 0}
+						(*) {xecho -s -b Value must be either ON, OFF, 1, or 0}
 					}
 				}{
 					^assign $var $value
@@ -199,7 +199,7 @@ alias config.add
 
 alias format.add (variable, value)
 {
-	@ module = LOADER.PENDING_MODULE
+	@ :module = LOADER.PENDING_MODULE
 
 	if (!variable)
 	{

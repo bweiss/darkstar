@@ -1,6 +1,16 @@
 Darkstar ChangeLog
 
 
+1/15/02
+
+ * HEADS UP: Rewrote names.dsc to be a bit more configurable via /dset and
+   /fset. This means we have some changes that will affect themes.
+   Specifically, NAMES_OP and NAMES_VOICE have changed. There is also a
+   new config variable (NAMES_COL) and a new format variable (NAMES_NONOP).
+   See the included themes for examples.
+
+ * Added $round() to functions.dsc.
+
 1/14/02
 
  * Rewrote and optimized both themes.dsc and status.dsc. They still contain

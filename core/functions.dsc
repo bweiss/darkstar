@@ -6,7 +6,7 @@
  * FUNCTIONS.DSC - Some useful functions for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/22/01 (bmw)
+ * Last modified: 1/15/02 (bmw)
  *
  * If you have any functions you feel are useful enough to be in this file,
  * feel free to email me.
@@ -75,6 +75,29 @@ alias is_on (nick, void)
 alias padleft (size, char, text)
 {
 	@ function_return = repeat(${size - strlen($text)} $char) ## text
+}
+
+/*
+ * round(num)
+ * Rounds a decimal number based on the first digit to the right of the
+ * decimal point.
+ */
+alias round (num, void)
+{
+	@ :left = before(-1 . $num)
+	@ :right = left(1 $after(-1 . $num))
+
+	if (isnumber($left b10) && isnumber($right b10))
+	{
+		if (right > 4)
+		{
+			@ left++
+		}
+
+		@ function_return = left
+	}
+
+	return
 }
 
 
