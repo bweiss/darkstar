@@ -98,10 +98,10 @@ alias unloadmod (modules)
 		^local mods $"Modules to unload? (1 2-4 ...) "
 		if (mods)
 		{
-			@ modules = loader.which_mods(loaded_modules $mods)
+			@ :modules = loader.which_mods(loaded_modules $mods)
 		}
 	}{
-		@ modules = loader.which_mods(loaded_modules $modules)
+		@ :modules = loader.which_mods(loaded_modules $modules)
 	}
 
 	for module in ($modules)
@@ -135,17 +135,15 @@ alias loader.build_modlist (void)
 		for file in ($glob($dir\/\*.dsm))
 		{
 			@ :name = before(-1 . $after(-1 / $file))
-
 			/* Get module version. */
 			@ :fd = open($file R)
 			@ :line = read($fd)
 			@ close($fd)
-
 			if (match(#version $line))
 			{
 				@ :ver = word(1 $line)
 			}{
-				^local ver -
+				@ :ver = [-]
 			}
 
 			@ setitem(modules $numitems(modules) $name)
@@ -184,7 +182,7 @@ alias loader.load_module (module, void)
 	if (item > -1)
 	{
 		@ :file = getitem(module_files $item)
-		^local save_file $DS.SAVE_DIR/$module\.sav
+		@ :save_file = DS.SAVE_DIR ## [/] ## module ## [.sav]
 		@ :theme_file = getitem(theme_dirs $finditem(themes $DS.THEME)) ## module
 
 		/* Load the actual module. */
@@ -388,7 +386,7 @@ alias module.load_saved_settings (void)
 	@ :module = after(-1 / $before(-1 . $word(1 $loadinfo())))
 	if (module)
 	{
-		@ :save_file = DS[SAVE_DIR] ## [/] ## module ## [.sav]
+		@ :save_file = DS.SAVE_DIR ## [/] ## module ## [.sav]
 		if (fexist($save_file) == 1)
 		{
 			^load $save_file
@@ -424,7 +422,7 @@ if (CONFIG[AUTO_LOAD_PROMPT])
 	switch ($toupper($mods))
 	{
 		(N) {#}
-		(A) {@ modules = CONFIG[AUTO_LOAD_MODULES]}
+		(A) {@ modules = CONFIG.AUTO_LOAD_MODULES}
 		(*) {@ modules = loader.which_mods(modules $mods)}
 	}
 	

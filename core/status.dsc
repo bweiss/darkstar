@@ -26,7 +26,7 @@ alias status (args)
 		@ :sbar = word(1 $args)
 		if (word(0 $args) == [-q])
 		{
-			^local quiet 1
+			@ :quiet = 1
 		}
 	}{
 		@ :sbar = args
@@ -39,10 +39,7 @@ alias status (args)
 		status.buildlist
 		status.display
 		^assign sbar $"Which status bar would you like to use? "
-		if (!sbar)
-		{
-			return
-		}
+		if (!sbar) {return}
 	}
 
 	if (isnumber($sbar) && sbar > 0 && sbar <= numitems(status))

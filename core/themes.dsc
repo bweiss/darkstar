@@ -22,10 +22,7 @@ alias theme (theme, void)
 		themes.buildlist
 		themes.display
 		^assign theme $"Which theme would you like to use? "
-		if (!theme)
-		{
-			return
-		}
+		if (!theme) {return}
 	}
 
 	if (isnumber($theme) && theme > 0 && theme <= numitems(themes))
@@ -91,7 +88,7 @@ alias themes.change (theme, void)
 	if (t_item > -1)
 	{
 		@ :dir = getitem(theme_dirs $t_item)
-		^local master_file $dir/main.dst
+		@ :master_file = dir ## [/main.dst]
 		if (fexist($master_file) == 1)
 		{
 			load $master_file
@@ -106,8 +103,8 @@ alias themes.change (theme, void)
 				}
 			}
 
-			^assign DS.THEME $theme
-			^assign CONFIG.THEME $theme
+			@ DS.THEME = theme
+			@ CONFIG.THEME = theme
 			return 0
 		}
 

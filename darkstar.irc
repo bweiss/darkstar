@@ -61,12 +61,12 @@ for array in ($getarrays())
 /*
  * Important global variables
  */
-assign DS.VERSION 0.2.2
-assign DS.INTERNAL_VERSION 20020505
+@ DS.VERSION = [0.2.3]
+@ DS.INTERNAL_VERSION = [20020507]
 
 /* This will be incremented every time a change takes place to the core
    scripts (anything that requires /reload to update). */
-assign DS.COMMIT_ID 33
+@ DS.COMMIT_ID = 34
 
 
 /*
@@ -88,21 +88,21 @@ if (getenv(DARKSTAR_USERDIR))
 {
 	@ DS.USER_DIR = getenv(DARKSTAR_USERDIR)
 }{
-	^assign DS.USER_DIR ~/.darkstar
+	@ DS.USER_DIR = [~/.darkstar]
 }
 
 if (getenv(DARKSTAR_RC))
 {
 	@ DS.RC = getenv(DARKSTAR_RC)
 }{
-	^assign DS.RC ~/.dsrc
+	@ DS.RC = [~/.dsrc]
 }
 
-eval assign DS.HELP_DIR $DS.HOME/help
-eval assign DS.MODULE_DIR $DS.HOME/modules $DS.USER_DIR/modules
-eval assign DS.STATUS_DIR $DS.HOME/status $DS.USER_DIR/status
-eval assign DS.THEME_DIR $DS.HOME/themes $DS.USER_DIR/themes
-eval assign DS.SAVE_DIR $DS.USER_DIR/save
+@ DS.HELP_DIR = [$DS.HOME/help]
+@ DS.MODULE_DIR = [$DS.HOME/modules $DS.USER_DIR/modules]
+@ DS.STATUS_DIR = [$DS.HOME/status $DS.USER_DIR/status]
+@ DS.THEME_DIR = [$DS.HOME/themes $DS.USER_DIR/themes]
+@ DS.SAVE_DIR = [$DS.USER_DIR/save]
 
 if (fexist($DS.USER_DIR) == -1)
 {
@@ -132,7 +132,7 @@ set INDENT ON
  */
 if (winnam(1) == [ircII])
 {
-        ^window ircII name - level none
+	^window ircII name - level none
 }
 
 

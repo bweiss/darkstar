@@ -1,6 +1,9 @@
 DarkStar ChangeLog
 
 
+!! RELEASE: 0.2.3 (20020507) !!
+
+
 20020505
 
  * Changes to the whois, msg, and notice formats in the darkstar and

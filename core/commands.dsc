@@ -81,7 +81,7 @@ alias less (file, void)
 
 alias _less (fd, count, winnum default 0, void)
 {
-	^local line 0
+	@ :line = 0
 
 	while (!eof($fd) && (line++ < count))
 	{
