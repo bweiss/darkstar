@@ -33,7 +33,7 @@ alias status (args)
 	if (!sbar) {
 		status.buildlist
 		status.display
-		^assign sbar $"$INPUT_PROMPT\Which status bar would you like to use? "
+		^assign sbar $"Which status bar would you like to use? "
 		if (!sbar) {
 			return
 		}

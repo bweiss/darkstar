@@ -38,7 +38,7 @@ if (!epic() || V < 20020819)
 	xecho -b http://www.got.net/~brian/epic4/
 	xecho -b
 
-	^local pause $"Press any key to continue, or 'q' to quit. "
+	^local pause $'Press any key to continue or "q" to quit.'
 	if (pause == [q]) {
 		xecho -b Bye!
 		xecho -b
@@ -61,13 +61,13 @@ for array in ($getarrays()) {
  * Important global variables
  */
 @ DS.VERSION = [0.2.8]
-@ DS.INTERNAL_VERSION = [20020928]
+@ DS.INTERNAL_VERSION = [20020930]
 
 /*
  * This will be incremented every time a change takes place in
  * the core scripts (this file and any .dsc files in core/).
  */
-@ DS.CORE_ID = 72
+@ DS.CORE_ID = 73
 
 
 eval xecho -b Loading DarkStar $DS.VERSION
@@ -141,7 +141,7 @@ if (fexist($DS.USER_DIR) == -1)
 	xecho -b questions or comments. This message will not be displayed again.
 	xecho -b
 
-	^local pause $"Hit Enter to continue."
+	^local pause $'Press any key to continue.'
 }
 
 

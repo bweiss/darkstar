@@ -33,5 +33,7 @@ OTHER NOTES/IDEAS:
 * Figure out a way to allow modules to prevent output from /DSET (and /FSET?)
   from within /ON hooks.
 
+* Look into taking advantage of the 005 numeric.
+
 
 End of file.

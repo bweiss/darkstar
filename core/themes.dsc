@@ -20,7 +20,7 @@ alias theme (theme, void)
 	if (!theme) {
 		themes.buildlist
 		themes.display
-		^local theme $"$INPUT_PROMPT\Which theme would you like to use? "
+		^local theme $"Which theme would you like to use? "
 		if (!theme) {
 			return
 		}

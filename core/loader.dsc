@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * loader.dsc - Module loader
+ * loader.dsc - DarkStar module loader
  * Copyright (c) 2002 Brian Weiss
  * See the 'COPYRIGHT' file for more information.
  */
@@ -18,7 +18,7 @@ alias loadmod (modules)
 
 	if (!modules) {
 		modlist
-		^local modules $"$INPUT_PROMPT\Modules to load? (1 2-4 ...) "
+		^local modules $"Modules to load? (1 2-4 ...) "
 		if (modules == []) {
 			return
 		}
@@ -30,22 +30,22 @@ alias loadmod (modules)
 	{
 		@:retcode = loader.load_module($module)
 		if (!retcode) {
-			/* Module loaded successfully. */
+			/* Module loaded successfully */
 			if (verbose) {
 				@:modver = modinfo($module v)
 				xecho -b Loaded module: $module ${modver != [-] ? modver : []}
 			} else {
 				@:progress = progress ## [.]
 				push pass $module
-				^set input_prompt $oldprompt\Loading modules [$[$#modules]progress] \($module $modinfo($module v)\)
+				^set INPUT_PROMPT Loading modules [$[$#modules]progress] \($module $modinfo($module v)\)
 			}
 		} else {
-			/* Module failed to load. */
+			/* Module failed to load */
 			@:progress = progress ## [x]
 			switch ($retcode) {
 				(1) {xecho -b Error: No modules found}
 				(2) {xecho -b Error: Module is already loaded \($module\)}
-				(3) {xecho -b Error: Module not found \($module\)}
+				(3) {xecho -b Error: Module not found: $module}
 				(*) {xecho -b Error: Unknown \(module: $module\)}
 			}
 		}
@@ -97,10 +97,9 @@ alias modlist (void)
 alias reloadmod (modules)
 {
 	if (!modules) {
-		xecho -b Usage: /RELOADMOD <module> [module] ...
+		xecho -b Usage: /RELOADMOD <module> ...
 		return
 	}
-
 	unloadmod $modules
 	loadmod $modules
 }
@@ -118,7 +117,7 @@ alias unloadmod (modules)
 			@:num = cnt + 1
 			echo $[3]num $getitem(loaded_modules $cnt)
 		}
-		^local modules $"$INPUT_PROMPT\Modules to unload? (1 2-4 ...) "
+		^local modules $"Modules to unload? (1 2-4 ...) "
 		if (modules == []) {
 			return
 		}
@@ -134,16 +133,16 @@ alias unloadmod (modules)
 
 		@:retcode = loader.unload_module($module)
 		if (!retcode) {
-			/* Module unloaded successfully. */
+			/* Module unloaded successfully */
 			if (verbose) {
 				xecho -b Unloaded module: $module
 			} else {
 				@:progress = progress ## [.]
 				push pass $module
-				^set INPUT_PROMPT $oldprompt\Unloading modules [$[$#modules]progress] \($module $modinfo($module v)\)
+				^set INPUT_PROMPT Unloading modules [$[$#modules]progress] \($module $modinfo($module v)\)
 			}
 		} else {
-			/* Module could not be unloaded. */
+			/* Module could not be unloaded */
 			@:progress = progress ## [x]
 			switch ($retcode) {
 				(1) {xecho -b Error: No modules are currently loaded}
@@ -180,7 +179,7 @@ alias module.dep (depmods)
 	}
 
 	if (!depmods) {
-		echo Error: module.dep: Not enough arguments \(Module: $module\)
+		echo Error: module.dep: Not enough arguments \(module: $module\)
 		return
 	}
 
@@ -192,21 +191,20 @@ alias module.dep (depmods)
 			{
 				if (CONFIG.AUTO_LOAD_DEPENDENCIES)
 				{
-					xecho -b Module [$module] depends on [$depmod]. Auto-loading...
+					xecho -b Module $module depends on $depmod - Auto-loading...
 					loadmod $depmod
 				}{
-					^local tmp $"$INPUT_PROMPT\Module [$module] depends on [$depmod] - Load it now? [Yn] "
+					^local tmp $'Module $module depends on $depmod - Load it now? [Yn] '
 					if (tmp == []) {
-						^assign tmp Y
+						@:tmp = [Y]
 					}
-
 					switch ($toupper($left(1 $tmp))) {
 						(Y) {loadmod $depmod}
-						(*) {xecho -b Skipping dependency [$depmod]. Module may not work properly.}
+						(*) {xecho -b Skipping dependency $depmod - Module may not work properly}
 					}
 				}
 			}{
-				xecho -b Warning: Unable to load dependency. Module [$depmod] not found.
+				xecho -b Warning: Unable to load dependency: Module not found: $depmod
 			}
 		}
 	}
@@ -252,7 +250,12 @@ alias loader.build_modlist (void)
 		{
 			@:name = before(-1 . $after(-1 / $file))
 
-			/* Get module version */
+			if (tolower($name) == [core]) {
+				xecho -b Error: loader.build_modlist: The name "core" is reserved
+				return
+			}
+
+			/* Get the module's version */
 			@:fd = open($file R)
 			@:line = read($fd)
 			@ close($fd)
@@ -262,6 +265,8 @@ alias loader.build_modlist (void)
 				@:ver = [-]
 			}
 
+			/* If a module with the same name already exists, remove it
+			   so that the new module overrides the old. */
 			@:item = matchitem(modules $name)
 			if (item > -1) {
 				@ delitem(modules $item)
@@ -269,25 +274,21 @@ alias loader.build_modlist (void)
 				@ delitem(module_versions $item)
 			}
 
-			if (tolower($name) == [core]) {
-				xecho -b Error: loader.build_modlist: The "core" module name is reserved
-			} else {
-				@ setitem(modules $numitems(modules) $name)
-				@ setitem(module_files $numitems(module_files) $file)
-				@ setitem(module_versions $numitems(module_versions) $ver)
-			}
+			@ setitem(modules $numitems(modules) $name)
+			@ setitem(module_files $numitems(module_files) $file)
+			@ setitem(module_versions $numitems(module_versions) $ver)
 		}
 	}
 }
 
 /*
- * Loads a module including theme and saved settings. Returns 0 on success,
- * and > 0 on failure.
+ * Loads a module including theme and saved settings.
+ * Returns 0 on success, and > 0 on failure.
  */
 alias loader.load_module (module, void)
 {
 	if (!numitems(modules)) {
-		/* No modules found. */
+		/* No modules found */
 		return 1
 	}
 
@@ -308,20 +309,16 @@ alias loader.load_module (module, void)
 		@:save_file = DS.SAVE_DIR ## [/] ## module ## [.sav]
 		@:theme_file = getitem(theme_dirs $finditem(themes $DS.THEME)) ## module
 
-		/* Load the actual module */
 		load $file
 
-		/* Load the save file */
 		if (fexist($save_file) == 1) {
 			load $save_file
 		}
 
-		/* Load the theme file for this module */
 		if (fexist($theme_file) == 1) {
 			load $theme_file
 		}
 
-		/* Add module to loaded_modules array */
 		@ setitem(loaded_modules $numitems(loaded_modules) $module)
 
 		/* Hook the event so other modules can act on it */
@@ -335,8 +332,8 @@ alias loader.load_module (module, void)
 }
 
 /*
- * Unloads a module and cleans up after it. Returns 0 on success,
- * and > 0 on failure.
+ * Unloads a module and cleans up after it.
+ * Returns 0 on success, and > 0 on failure.
  */
 alias loader.unload_module (module, void)
 {
@@ -357,11 +354,11 @@ alias loader.unload_module (module, void)
 		queue -do cleanup.$module
 
 		/* Get rid of any global aliases/variables obviously
-		   related to this module */
+		   associated with this module */
 		purge $module
 		purgealias $module
 
-		/* Get rid of any arrays obviously related to this module */
+		/* Get rid of any arrays obviously associated with this module */
 		for array in ($pattern($module\.* $getarrays())) {
 			@ delarray($array)
 		}
@@ -372,7 +369,6 @@ alias loader.unload_module (module, void)
 			^assign -DSET.CONFIG.$var
 			^assign -DSET.BOOL.$var
 		}
-			
 		for var in ($FSET.MODULES[$module]) {
 			^assign -FORMAT.$var
 			^assign -FSET.FORMAT.$var
@@ -384,7 +380,6 @@ alias loader.unload_module (module, void)
 		/* Remove any info lines for this module */
 		purge MODINFO[$module]
 
-		/* Remove from loaded_modules array */
 		@ delitem(loaded_modules $item)
 
 		/* Hook event so other modules can act on it */
@@ -420,14 +415,14 @@ alias loader.which_mods (array, args)
 						push modules $getitem($array $item)
 					}
 				} else {
-					xecho -b Error: loader.which_mods\(\): Illegal range specified!
+					xecho -b Error: loader.which_mods\(\): Illegal range specified
 				}
 			}{
 				if (tmp <= numitems($array)) {
 					@:item = tmp - 1
 					push modules $getitem($array $item)
 				} else {
-					xecho -b Error: loader.which_mods\(\): Module not found [$tmp]
+					xecho -b Error: loader.which_mods\(\): Module not found: $tmp
 				}
 			}
 		}{
@@ -457,7 +452,7 @@ if (CONFIG.AUTO_LOAD_PROMPT)
 	^set SUPPRESS_SERVER_MOTD ON
 
 	modlist
-	^local mods $"$INPUT_PROMPT\Modules to load? ([A]uto / [N]one / 1 2-4 ...) [A] "
+	^local mods $"Modules to load? ([A]uto / [N]one / 1 2-4 ...) [A] "
 	if (mods == []) {
 		@:mods = [A]
 	}

@@ -1,18 +1,20 @@
 DarkStar 0.3
 
-*** News 2002/09/28 -- window.dsm 0.6.1 - New query stuff + bug fixes
+
+*** News 2002/09/28 -- window.dsm 0.6.1 - New query related features
 	A new boolean config variable named AUTO_QUERY has been added.
 	When true, all incoming msgs will cause a hidden window to be created
 	and a query to be started with the person who sent the msg. It will
 	also automatically update any existing queries if the user changes
 	their nick.
 
-	An alias called /WQ has been added. It works just like the /WJ alias
-	except that it starts a query with its argument instead of joining
-	a channel.
+	An alias called /WQ has also been added. It works just like the /WJ
+	alias except that it starts a query with its argument instead of
+	joining a channel.
 
-	Fixed a problem in /WJ that was causing the msg window to be resized
-	incorrectly.
+
+DarkStar 0.2.8 (20020918)
+
 
 *** News 2002/09/17 -- oper.dsm 0.1.2 - New format variable: WALLOP
 	All incoming wallops will now be formatted according to the value
@@ -89,7 +91,9 @@ DarkStar 0.3
 	current topic by placing it on the input line preceded by "/topic".
 	The /tt and /ttopic aliases point to /etopic.
 
-*** News 2002/06/10 -- DarkStar 0.2.7 released
+
+DarkStar 0.2.7 (20020610)
+
 
 *** News 2002/06/09 -- tabkey.dsm 0.7.2
 	The assign procedure has been renamed aliasctl and now handles
