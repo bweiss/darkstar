@@ -8,9 +8,7 @@
 
 set AUTO_WHOWAS OFF
 set BEEP OFF
-set -CONTINUED_LINE
 set CLOCK_24HOUR ON
-set INDENT ON
 set LOAD_PATH ~/.epic4:/usr/local/share/epic:.
 set NO_FAIL_DISCONNECT ON
 set SCROLLBACK 1024

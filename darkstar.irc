@@ -41,7 +41,7 @@ if (getenv(DARKSTAR_RC))
 {
 	@ DS.RCFILE = getenv(DARKSTAR_RC)
 }{
-	^assign DS.RCFILE $DS.HOME/sample.dsrc
+	^assign DS.RCFILE ~/.dsrc
 }
 
 eval assign DS.DEFAULTS_DIR $DS.HOME/defaults
@@ -53,9 +53,11 @@ eval assign DS.STATUS_DIR $DS.HOME/status
 /* Important /SET's */
 
 eval set CLIENT_INFORMATION Darkstar $DS.VER
+set -CONTINUED_LINE
 set CONTROL_C_COLOR ON
 set DISPLAY_PC_CHARACTERS 4
 set HIGH_BIT_ESCAPE 0
+set INDENT ON
 
 
 if (fexist($DS.RCFILE) == 1)
