@@ -98,7 +98,7 @@ alias tabkey.main {
 		if (TABKEY.INDEX == numwords($TABKEY.LASTMATCHES)) {
 			@ TABKEY.INDEX = 0
 		}
-		@ nextword = word($TABKEY.INDEX $TABKEY.LASTMATCHES)
+		@ :nextword = word($TABKEY.INDEX $TABKEY.LASTMATCHES)
 		parsekey delete_to_previous_space
 		xtype -l $nextword
 		@ TABKEY.INDEX++
