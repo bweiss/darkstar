@@ -18,13 +18,14 @@ queue cleanup.misc
 		^alias -$alias
 	}
 
-	for hook in (301 $jot(310 314) $jot(317 319) ctcp ctcp_reply dcc_chat msg notice send_ctcp send_dcc_chat send_msg send_notice)
+	for hook in (301 $jot(310 314) $jot(317 319) ctcp ctcp_reply dcc_chat msg notice send_dcc_chat send_msg send_notice)
 	{
 		^on $hook -"*"
 	}
 
 	^on #connect 424 -"*"
 	^on mode -'\$servernick\(\) \$servernick\(\) *' 
+	^on send_ctcp -"PRIVMSG *"
 	^on #timer 424 -"*"
 	^on who -"* % % % % *"
 
@@ -294,13 +295,14 @@ on ^notice "*"
 	}
 }
 
-on ^send_ctcp "ACTION *" #
-
 on ^send_ctcp "PRIVMSG *"
 {
-	if (FORMAT[SEND_CTCP])
+	unless ([$2] == [ACTION])
 	{
-		echo $fparse(SEND_CTCP $*)
+		if (FORMAT[SEND_CTCP])
+		{
+			echo $fparse(SEND_CTCP $*)
+		}
 	}
 }
 
