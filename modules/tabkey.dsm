@@ -287,9 +287,18 @@ alias tabkey.nick_routine (void)
 	
 	unless (lastc == [ ])
 	{
+		/*
+ 		 * Nasty hack time. Convert all \ into ' so that $pattern() will
+		 * work correctly, then convert back to \. This is safe here
+		 * because ' is not allowed in nicks.
+		 */
+		^local list $remw($: $onchannel()) $:
 		@ :lastw = word(${#L - 1} $L)
-		@ :findnick = pattern($lastw% $remw($: $onchannel()) $:)
-		
+		@ list = sar(g/\\/'/$list)
+		@ lastw = sar(g/\\/'/$lastw)
+		@ :findnick = pattern($lastw% $list)
+		@ findnick = sar(g/'/\\/$findnick)
+
 		if (match($word(1 $L) $findnick))
 		{
 			xecho -b Matches:

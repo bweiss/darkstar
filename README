@@ -56,12 +56,16 @@ of the following environment variables...
 NOTE: You do not need to do this if you are using the default locations.
 
   DARKSTAR_HOME - Darkstar home directory (default: ~/darkstar)
+
   DARKSTAR_RC - Location of the rc file. This is loaded every time darkstar.irc
-		is loaded, including /RELOADs. (default: ~/.dsrc)
+		is loaded, including /RELOADs. This should be used for EPIC
+		settings in place of ~/.ircrc. This frees ~/.ircrc up to load
+		darkstar.irc on startup. (default: ~/.dsrc)
+
   DARKSTAR_USER - Location of the "User directory." This just contains
 		  directories where you can put your own modules, status bars,
-		  and themes. Saved settings also go here by default.
-		  (default: ~/.darkstar)
+		  and themes so they are not messed with when you upgrade.
+		  Saved settings also go here by default. (default: ~/.darkstar)
 
 This can be accomplished in the following ways (depending on your shell) ...
 
@@ -78,8 +82,7 @@ putting them in a shell startup script. (~/.bash_profile, ~/.profile,
 ~/.zshrc, ~/.cshrc, etc.)
 
 Nothing else is required to begin using Darkstar. However, I would recommend
-having a look at sample.dsrc in the main directory. This file will be loaded
-by default if DARKSTAR_RC is not set. If you're going to make changes to this
+having a look at sample.dsrc in the main directory.
 
 
 At this point you can just type /load /path/to/darkstar/darkstar.irc to
@@ -97,7 +100,7 @@ place the following code in ~/.ircrc (or ~/.epicrc if using epic4-1.1)
 
 Once the script is loaded you can use /dhelp for further assistance.
 
-That's it! I hope you enjoy my script and please feel free to send me any
+That's it! I hope you enjoy my scripts and please feel free to send me any
 feedback you might have.
 
 
@@ -134,23 +137,22 @@ FILES
 I would like to briefly thank the following people for contributing in some
 way to this wonderful project.
 
-	Jeremy Nelson
-	Colten Edwards
-	Eli Sand
-	Daniel Shatter
-	Tyler Hall
-	RoboHak
-	BlackJac
-	defiler	
-	shade
-	dialtone
+	Jeremy Nelson <jnelson@epicsol.org>
+	Colten Edwards <edwards@teknap.com>
+	Eli Sand <nutbar@innocent.com>
+	Daniel Shatter <shatter@flag.blackened.net>
+	Tyler Hall <thall@epicsol.org>
+	RoboHak <robohak@epicsol.org>
+	BlackJac <BlackJac@EFnet>
+	shade <shade@chemlab.org>
+	dialtone <dialtone@neglected.net>
+	myke <myke@neglected.net>
+	ww <wwarneck@impurity.org>
 	adm
-	myke
-	Tilt
 
 If you think I forgot your name on this list, please drop me an email.
 
   - bmw
 
 
-EOF.
+#EOF

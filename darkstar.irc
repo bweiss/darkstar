@@ -61,7 +61,7 @@ for array in ($getarrays())
  * Important global variables
  */
 assign DS.VERSION 0.1.4
-assign DS.INTERNAL_VERSION 20020111
+assign DS.INTERNAL_VERSION 20020113
 
 
 /*
@@ -170,7 +170,7 @@ if (fexist($DS.RC) == 1)
 
 
 /*
- * Warn if DS.HOME is not set properly.
+ * Warn user if DS.HOME was not set properly.
  */
 if (fexist($DS.HOME/darkstar.irc) == -1)
 {
@@ -178,5 +178,5 @@ if (fexist($DS.HOME/darkstar.irc) == -1)
 	xecho -b Please have a look at the README file
 }
 
-      
+
 /* bmw '01 */

@@ -1,7 +1,12 @@
 Darkstar ChangeLog
 
 
+!! RELEASE: 0.1.4 (1/13/02) !!
+
+
 1/13/02
+
+ * [tabkey.dsm] tabkey.nick_routine() can now handle nicks containing "\"
 
  * [tabkey.dsm] Added $: (nick of the last person to join a channel you're on)
    to the list of nicks in tabkey.nick_routine().
