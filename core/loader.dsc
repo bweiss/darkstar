@@ -130,6 +130,10 @@ alias unloadmod (modules)
 
 	for module in ($modules)
 	{
+		if (CONFIG.AUTO_SAVE_ON_UNLOAD) {
+			^save $module
+		}
+
 		@:retcode = loader.unload_module($module)
 		if (!retcode) {
 			/* Module unloaded successfully. */
