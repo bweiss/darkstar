@@ -1,4 +1,4 @@
-#version 0.1
+#version 0.1.1
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -105,14 +105,14 @@ alias tabkey.default {
 alias tabkey.main {
 	@ :curword = indextoword($curpos() $L )
 	@ :wordind = wordtoindex($curword $L)
-	if (32 >= (127 & ascii($mid(${curpos()-1} 1 $L )))) {
+	if (32 >= (127 & ascii($mid(${curpos() - 1} 1 $L )))) {
 		@ curword++
 		@ wordind = curpos()
 	}
-	@ :word = mid($wordind ${curpos()-wordind} $L)
+	@ :word = mid($wordind ${curpos() - wordind} $L)
 	@ :matches = []
 	if (!index($cmdchars $L)) {
-		wait for @ matches = tabkey.cmd($word)
+		wait for @ :matches = tabkey.cmd($word)
 	} else {
 		wait for @ :matches = tabkey.default($word)
 	}
@@ -143,20 +143,21 @@ alias tabkey.addnicktohist (server, nick, void) {
 alias tabkey.cmd {
 	bless
 	@ :ret = :cmd = []
-	@ :pass = chr($jot($ascii(AZ)))
-	@ :pass#= chr($jot($ascii(az)))
-	@ :pass#= chr($jot($ascii(09)))
-	@ :args = mid(0 $curpos() $L)
-	@ :args = unsplit(. $args)
-	@ :args = pass(._$pass $args)
+	@ :pass  = chr($jot($ascii(AZ)))
+	@ :pass #= chr($jot($ascii(az)))
+	@ :pass #= chr($jot($ascii(09)))
+	@ :args  = mid(0 $curpos() $L)
 	/* Make absolutely sure we remove $CMDCHARS from the beginning of the
-	   the string. This is only necessary when $CMDCHARS is '.' -bmw */
+	   the string. This is needed whenever $CMDCHARS contains one of the
+	   characters supplied to the above $pass() call. -bmw */
 	if (mid(0 $strlen($CMDCHARS) $args) == CMDCHARS) {
 		@:args = rest($strlen($CMDCHARS) $args)
 	}
+	@ :args = unsplit(. $args)
+	@ :args = pass(._$pass $args)
 	if (!curword) {
 		@ ret = tabkey.method.commands($args)
-		repeat $#ret {push ret /$shift(ret)}
+		repeat $#ret {push ret $K$shift(ret)}
 		return $ret
 	}
 	while (args) {
