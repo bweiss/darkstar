@@ -26,6 +26,10 @@ OTHER NOTES/IDEAS:
 [17:27] .whitefang[thall@epicsol.org] but if you press it again, it should
          start cycling through
 
+* Write the current values of all STATUS_* /SETs to $DS.USER_DIR/status/custom
+  on /SAVE.
+
+<larne> any chance of saving the current status bar on /save to status/custom?
 
 
 EOF
