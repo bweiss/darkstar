@@ -30,7 +30,7 @@ assign DS.VERSION 20010915
 
 
 /*
- * Find out where everything is
+ * Find out where everything is and store it in the DS structure.
  */
 if (getenv(DARKSTAR_HOME))
 {
@@ -43,7 +43,7 @@ if (getenv(DARKSTAR_RC))
 {
 	@ DS.RCFILE = getenv(DARKSTAR_RC)
 }{
-	^assign DS.RCFILE ~/.dsrc
+	^assign DS.RCFILE ~/.epic4/.dsrc
 }
 
 if (getenv(DARKSTAR_SAVEDIR))
@@ -168,10 +168,11 @@ alias uptime (void)
 	xecho -b ircII $J $uname() - $CLIENT_INFORMATION
 	xecho -b Uptime: $tdiff(${time() - F})
 }
-            
 
-/* Warn if client doesn't meet specifications */
 
+/*
+ * Warn user if client doesn't meet specifications
+ */
 if (!epic() || V < 20010401)
 {
 	xecho -b  
