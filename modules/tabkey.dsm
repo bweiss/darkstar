@@ -1,4 +1,4 @@
-#version 0.7.4
+#version 0.7.5
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key module for DarkStar/EPIC4
@@ -32,7 +32,7 @@ config.add TABKEY_NICKCOMP_SUFFIX ,
 /****** INIT ******/
 
 /*
- * Add a module info line for display with /dinfo.
+ * Add a module info line for display with /DINFO
  */
 assign MODINFO.TABKEY.1 Completion rules: $numitems(tabkey.rules)
 
@@ -46,26 +46,26 @@ bind ^I parse_command tabkey.process_tabkey
 
 alias tabkey
 {
-	switch ($tolower($0))
+	switch ($toupper($0))
 	{
-		(addrule)   {tabkey.addrule $1-}
-		(clear) {
+		(ADDRULE)   {tabkey.addrule $1-}
+		(CLEAR) {
 			purge TABKEY.NICKS
 			purge TABKEY.INDEX
 			xecho -b Tabkey history cleared
 		}
-		(listrules) {tabkey.listrules}
-		(rmrule)    {tabkey.rmrule $1-}
-		(saverules) {tabkey.saverules}
+		(LISTRULES) {tabkey.listrules}
+		(RMRULE)    {tabkey.rmrule $1-}
+		(SAVERULES) {tabkey.saverules}
 		(*) {
 			xecho -b Invalid sub-command: $0
-			xecho -b Usage: /tabkey <sub-command> [arguments]
+			xecho -b Usage: /TABKEY <sub-command> [arguments]
 			xecho -b   - <sub-command> and [arguments] can be any one of the following.
-			xecho -b        addrule <pattern> <procedure> [extra arguments]
-			xecho -b        clear
-			xecho -b        listrules
-			xecho -b        rmrule <pattern>
-			xecho -b        saverules
+			xecho -b        ADDRULE <pattern> <procedure> [extra arguments]
+			xecho -b        CLEAR
+			xecho -b        LISTRULES
+			xecho -b        RMRULE <pattern>
+			xecho -b        SAVERULES
 			xecho -b   - In all cases, <pattern> and [extra arguments] must be quoted
 			xecho -b See ds:tabkey(3) for details
 		}
@@ -85,11 +85,12 @@ alias tabkey
  * existing tabkey procedure (tabkey.proc.<procedure>) and [extra arguments]
  * is given as the arguments to the procedure being executed.
  *
- * Example: tabkey.addrule "/foo *" channel "$mychannels()"
+ * Example: tabkey.addrule "/FOO *" channel "$mychannels()"
  */
 alias tabkey.addrule
 {
 	@:pattern = word(0 $*)
+
 	/* This is here to deal with a pattern of "" */
 	if (!pattern) {
 		@:proc = word(0 $restw(1 $*))
@@ -98,16 +99,23 @@ alias tabkey.addrule
 		@:proc = word(1 $*)
 		@:extra = word(2 $*)
 	}
-	@:pattern = ["] ## pattern ## ["]
 
 	if (!proc) {
 		xecho -b Error: tabkey.addrule: Not enough arguments
 		return
 	}
 
-	@:foo = finditem(tabkey.rules $pattern)
-	if (foo > -1) {
-		xecho -b Error: tabkey.addrule: Pattern $pattern already exists in current rules \(${foo+1}\)
+	/* Prevent user from adding rules with patterns that cannot be removed */
+	if (toupper($pattern) == [ALL]) {
+		xecho -b Error: tabkey.addrule: A pattern of "ALL" is not allowed
+		return
+	}
+
+	@:pattern = ["] ## pattern ## ["]
+	@:item = finditem(tabkey.rules $pattern)
+
+	if (item > -1) {
+		xecho -b Error: tabkey.addrule: Pattern $pattern already exists in current rules \(${item+1}\)
 		return
 	}
 
@@ -129,17 +137,14 @@ alias tabkey.addnick (server, nick, void)
 		xecho -b Error: tabkey.addnick: Not enough arguments
 		return
 	}
-
 	if (match($nick $TABKEY.NICKS[$server])) {
 		@ TABKEY.NICKS.$server = remw($nick $TABKEY.NICKS[$server])
 	}
-
 	if (numwords($TABKEY.NICKS[$server]) == CONFIG.TABKEY_NICK_HISTORY) {
 		shift TABKEY.NICKS.$server
 	}
-
-	@ push(TABKEY.NICKS[$server] $nick)
-	@ TABKEY.INDEX.$server = [-1]
+	push TABKEY.NICKS[$server] $nick
+	@ TABKEY.INDEX.$server = -1
 }
 
 alias tabkey.listrules (void)
@@ -171,18 +176,17 @@ alias tabkey.process_tabkey (void)
 
 /*
  * Removes a rule that matches <pattern>. Just like everywhere else, the
- * pattern should be encased in double quotes. If <pattern> is "all" then
+ * pattern should be encased in double quotes. If <pattern> is "ALL" then
  * all completion rules will be removed.
  */
 alias tabkey.rmrule (pattern)
 {
-	if (tolower($pattern) == [all]) {
+	if (toupper($pattern) == [ALL]) {
 		@ delarray(tabkey.rules)
 		@ delarray(tabkey.rinfo)
 		xecho -s -b Removed all completion rules
 		return
 	}
-
 	@:item = finditem(tabkey.rules $pattern)
 	if (item > 0) {
 		@ delitem(tabkey.rules $item)
@@ -238,9 +242,7 @@ alias tabkey.show_matches (list)
 	if (!list) {
 		return
 	}
-
 	beep
-
 	if (L == TABKEY.LAST_INPUT && strlen($L) == strlen($TABKEY.LAST_INPUT)) {
 		xecho -b Matches:
 		for tmp in ($list) {
@@ -269,14 +271,13 @@ alias tabkey.proc.aliasctl (type, void)
 	{
 		@:lastw = word(${#L - 1} $L)
 
-		/* Deal with the removal of variables correctly. */
+		/* Deal with the removal of variables correctly */
 		if (left(1 $lastw) == [-]) {
 			@:rm = 1
 			@:lastw = mid(1 $strlen($lastw) $lastw)
 		}
 
 		@:matches = pattern($lastw% $aliasctl($type match $lastw))
-
 		if (#matches == 1) {
 			parsekey delete_to_previous_space
 			xtype -l ${rm ? [-] : []}$matches${[ ]}
@@ -292,7 +293,7 @@ alias tabkey.proc.array (array, void)
 {
 	^local items
 	for cnt from 0 to ${numitems($array) - 1} {
- 		@ push(items $getitem($array $cnt))
+ 		push items $getitem($array $cnt)
 	}
 
 	@:lastc = mid(${strlen($L) - 1} 1 $L)
@@ -320,7 +321,7 @@ alias tabkey.proc.channel (list default "$mychannels()")
 		@:matches = list
 	} else {
 		@:lastw = word(${#L - 1} $L)
-		/* This allows us to complete channels with "\" in them. */
+		/* This allows us to complete channels with '\' in them */
 		@:lastw = sar(g/\\/\\\\\/$lastw)
 		@:matches = pattern($lastw% $list)
 	}
@@ -337,16 +338,14 @@ alias tabkey.proc.channel (list default "$mychannels()")
 
 alias tabkey.proc.command (void)
 {
-	if (numwords($L) == 1)
-	{
+	if (numwords($L) == 1) {
 		parsekey command_completion
-	}{
+	} else {
 		@:lastw = word(${#L - 1} $L)
 		@:matches = getcommands($lastw%)
 		if (!matches) {
 			@:matches = aliasctl(alias match $lastw)
 		}
-
 		if (#matches == 1) {
 			parsekey delete_to_previous_space
 			xtype -l $matches${[ ]}
@@ -381,7 +380,6 @@ alias tabkey.proc.generic (list)
 	if (!list) {
 		return
 	}
-
 	@:lastc = mid(${strlen($L) - 1} 1 $L)
 	unless (lastc == [ ]) {
 		@:lastw = word(${#L - 1} $L)
@@ -406,15 +404,19 @@ alias tabkey.proc.generic (list)
 alias tabkey.proc.mask (void)
 {
 	@:lastc = mid(${strlen($L) - 1} 1 $L)
-	unless (lastc == [ ]) {
+	unless (lastc == [ ])
+	{
 		@:lastw = twiddle($word(${#L - 1} $L))
-		/* Try getting their userhost from cache first. */
+
+		/* Try getting their userhost from cache first */
 		@:uhost = userhost($lastw)
-		/* If that fails, query the server via $uh(). */
+
+		/* If that fails, query the server via $uh() */
 		if (uhost == [<UNKNOWN>@<UNKNOWN>]) {
 			@:uhost = uh($lastw)
 		}
-		/* If both fail, the user is not online and we should give up. */
+
+		/* If both fail, the user is not online and we should give up */
 		if (uhost == [<UNKNOWN>@<UNKNOWN>]) {
 			return
 		}
@@ -457,7 +459,7 @@ alias tabkey.proc.nick (list)
 		@:matches = list
 	} else {
 		@:lastw = word(${#L - 1} $L)
-		/* This allows us to complete nicks with "\" in them. */
+		/* This allows us to complete nicks with '\' in them */
 		@:lastw = sar(g/\\/\\\\\/$lastw)
 		if (#L < 2) {
 			@:suffix = CONFIG.TABKEY_NICKCOMP_SUFFIX ## [ ]
@@ -516,7 +518,7 @@ alias tabkey.set_var_comp (type, void)
 		@:var = lastw
 	}
 
-	/* Deal with the removal of variables correctly. */
+	/* Deal with the removal of variables correctly */
 	if (left(1 $var) == [-]) {
 		@:rm = 1
 		@:var = mid(1 $strlen($var) $var)
@@ -617,49 +619,49 @@ tabkey.addrule "*"                  nick        "$remw($: $onchannel()) $:"
 tabkey.addrule "#%"                 channel
 tabkey.addrule "* #%"               channel
 tabkey.addrule "/%"                 command
-tabkey.addrule "/do %"              command
-tabkey.addrule "/eval %"            command
-tabkey.addrule "/tabkey %"          generic     "addrule clear listrules rmrule saverules"
-tabkey.addrule "/config *"          set         "config"
-tabkey.addrule "/dset *"            set         "config"
-tabkey.addrule "/format *"          set         "format"
-tabkey.addrule "/fset *"            set         "format"
-tabkey.addrule "/set *"             set         "set"
-tabkey.addrule "/loadmod *"         array       "modules"
-tabkey.addrule "/reloadmod *"       array       "loaded_modules"
-tabkey.addrule "/save *"            array       "loaded_modules"
-tabkey.addrule "/status %"          array       "status"
-tabkey.addrule "/theme %"           array       "themes"
-tabkey.addrule "/unloadmod *"       array       "loaded_modules"
-tabkey.addrule "/dcc send % %"      file
-tabkey.addrule "/less *"            file
-tabkey.addrule "/load *"            file
-tabkey.addrule "/exec *"            file
-tabkey.addrule "/m %"               nick        "$remw($: $onchannel()) $:"
-tabkey.addrule "/m % *"             msg         "m"
-tabkey.addrule "/msg %"             nick        "$remw($: $onchannel()) $:"
-tabkey.addrule "/msg % *"           msg
-tabkey.addrule "/q *"               msg         "q"
-tabkey.addrule "/query *"           msg         "query"
-tabkey.addrule "/channel *"         channel
-tabkey.addrule "/join *"            channel
-tabkey.addrule "/j *"               channel
-tabkey.addrule "/leave *"           channel
-tabkey.addrule "/part *"            channel
-tabkey.addrule "/mode %"            channel
-tabkey.addrule "/m #%"              channel
-tabkey.addrule "/msg #%"            channel
-tabkey.addrule "/assign %"          aliasctl    "assign"
-tabkey.addrule "/push %"            aliasctl    "assign"
-tabkey.addrule "/pop %"             aliasctl    "assign"
-tabkey.addrule "/shift %"           aliasctl    "assign"
-tabkey.addrule "/unshift %"         aliasctl    "assign"
-tabkey.addrule "/foreach %"         aliasctl    "assign"
-tabkey.addrule "/foreach -%"        aliasctl    "alias"
-tabkey.addrule "/alias %"           aliasctl    "alias"
-tabkey.addrule "/ban *"             mask
-tabkey.addrule "/ignore %"          mask
-tabkey.addrule "/ignore % *"        generic     "ALL CRAP CTCPS INVITES JOINS MSGS NICKS NONE NOTES NOTICES PARTS PUBLIC TOPICS WALLS WALLOPS"
+tabkey.addrule "/DO %"              command
+tabkey.addrule "/EVAL %"            command
+tabkey.addrule "/TABKEY %"          generic     "ADDRULE CLEAR LISTRULES RMRULE SAVERULES"
+tabkey.addrule "/CONFIG *"          set         "config"
+tabkey.addrule "/DSET *"            set         "config"
+tabkey.addrule "/FORMAT *"          set         "format"
+tabkey.addrule "/FSET *"            set         "format"
+tabkey.addrule "/SET *"             set         "set"
+tabkey.addrule "/LOADMOD *"         array       "modules"
+tabkey.addrule "/RELOADMOD *"       array       "loaded_modules"
+tabkey.addrule "/SAVE *"            array       "loaded_modules"
+tabkey.addrule "/STATUS %"          array       "status"
+tabkey.addrule "/THEME %"           array       "themes"
+tabkey.addrule "/UNLOADMOD *"       array       "loaded_modules"
+tabkey.addrule "/DCC SEND % %"      file
+tabkey.addrule "/LESS *"            file
+tabkey.addrule "/LOAD *"            file
+tabkey.addrule "/EXEC *"            file
+tabkey.addrule "/M %"               nick        "$remw($: $onchannel()) $:"
+tabkey.addrule "/M % *"             msg         "M"
+tabkey.addrule "/MSG %"             nick        "$remw($: $onchannel()) $:"
+tabkey.addrule "/MSG % *"           msg
+tabkey.addrule "/Q *"               msg         "Q"
+tabkey.addrule "/QUERY *"           msg         "QUERY"
+tabkey.addrule "/CHANNEL *"         channel
+tabkey.addrule "/JOIN *"            channel
+tabkey.addrule "/J *"               channel
+tabkey.addrule "/LEAVE *"           channel
+tabkey.addrule "/PART *"            channel
+tabkey.addrule "/MODE %"            channel
+tabkey.addrule "/M #%"              channel
+tabkey.addrule "/MSG #%"            channel
+tabkey.addrule "/ASSIGN %"          aliasctl    "assign"
+tabkey.addrule "/PUSH %"            aliasctl    "assign"
+tabkey.addrule "/POP %"             aliasctl    "assign"
+tabkey.addrule "/SHIFT %"           aliasctl    "assign"
+tabkey.addrule "/UNSHIFT %"         aliasctl    "assign"
+tabkey.addrule "/FOREACH %"         aliasctl    "assign"
+tabkey.addrule "/FOREACH -%"        aliasctl    "alias"
+tabkey.addrule "/ALIAS %"           aliasctl    "alias"
+tabkey.addrule "/BAN *"             mask
+tabkey.addrule "/IGNORE %"          mask
+tabkey.addrule "/IGNORE % *"        generic     "ALL CRAP CTCPS INVITES JOINS MSGS NICKS NONE NOTES NOTICES PARTS PUBLIC TOPICS WALLS WALLOPS"
 
 /*
  * Load the user's custom rule set if one exists.
