@@ -1,7 +1,7 @@
 DarkStar 0.3
 
 
-*** News 2002/09/28 -- window.dsm 0.6.1 - New query related features
+*** News 2002/09/28 -- window.dsm 0.6 - /DSET AUTO_QUERY and /WQ
 	A new boolean config variable named AUTO_QUERY has been added.
 	When true, all incoming msgs will cause a hidden window to be created
 	and a query to be started with the person who sent the msg. It will

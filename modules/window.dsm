@@ -1,4 +1,4 @@
-#version 0.6.1
+#version 0.6.3
 /* $Id$ */
 /*
  * window.dsm - Window module for DarkStar/EPIC4
@@ -35,6 +35,7 @@ queue cleanup.window
 	for keyb in (^[^I ^[[1~ ^[[2~ ^[[3~ ^[[4~ ^[[5~ ^[[6~) {
 		^bind $keyb NOTHING
 	}
+	^bind ^R NOTHING
 	^bind ^W NEXT_WINDOW
 	^bind ^X SELF_INSERT
 	^bind -symbolic key_f11 NOTHING
@@ -74,6 +75,8 @@ config.add -b UNBIND_ON_PART 0
 /*
  * Key bindings.
  */
+^bind ^R NEXT_WINDOW
+^bind ^W DELETE_PREVIOUS_WORD
 ^bind ^X SWITCH_CHANNELS
 ^bind ^[^I PARSE_COMMAND ^window next
 ^bind ^[1 PARSE_COMMAND ^window swap 1
@@ -92,7 +95,6 @@ config.add -b UNBIND_ON_PART 0
 ^bind ^[[4~ SCROLL_END
 ^bind ^[[5~ SCROLL_BACKWARD
 ^bind ^[[6~ SCROLL_FORWARD
-^bind ^W DELETE_PREVIOUS_WORD
 ^bind -symbolic key_f11 TOGGLE_INSERT_MODE
 ^bind -symbolic key_f12 PARSE_COMMAND if (winnum(msgs) != -1) {window msgs clear}
 ^bind ^[[7~ SCROLL_START
@@ -125,10 +127,6 @@ alias swap (winnum, void)
 	}
 }
 
-/*
- * We use the "new_hide" verb instead of "new" and "hide" to keep
- * the msg window from being resized when creating new windows.
- */
 alias wb  (chan default "$C", void) {window bind $chan}
 alias wc  (void)                    {window new_hide swap last}
 alias wj  (...)                     {window new_hide swap last channel "$*"}
@@ -168,7 +166,7 @@ on #-hook 426 "CONFIG MSG_WINDOW *"
 {
 	if (CONFIG.MSG_WINDOW) {
 		if (winnum(msgs) == -1) {
-			window new name msgs double off
+			window new name msgs double off fixed on
 			window level $CONFIG.MSG_WINDOW_LEVEL
 			window size $CONFIG.MSG_WINDOW_SIZE
 			window last
@@ -220,7 +218,7 @@ on #-hook 426 "CONFIG MSG_WINDOW_SIZE *"
 	@:size = CONFIG.MSG_WINDOW_SIZE
 	@:max_size = word(1 $geom()) - 4
 	if (!isnumber($size b10) || size < 1 || size > max_size) {
-		xecho -b Value must be an integer greater than zero and no larger than the largest possible window
+		xecho -b Value must be an integer greater than 0 and no larger than $max_size
 		^assign CONFIG.MSG_WINDOW_SIZE $2
 		xecho -b Value of MSG_WINDOW_SIZE set to $CONFIG.MSG_WINDOW_SIZE
 	}
@@ -296,7 +294,7 @@ on #-window_kill 426 "*"
 	/* Remove shortcut alias for this window */
 	^alias -$0
 
-	/* Reset the msgs window */
+	/* Ensure that the msg window doesn't become hidden or the wrong size */
 	if (CONFIG.MSG_WINDOW) {
 		window previous
 		window show msgs
@@ -328,7 +326,7 @@ if (CONFIG.AUTO_CREATE_WINDOWS)
 if (CONFIG.MSG_WINDOW)
 {
 	if (winnum(msgs) == -1) {
-		window new name msgs double off
+		window new name msgs double off fixed on
 		window size $CONFIG.MSG_WINDOW_SIZE
 		window level $CONFIG.MSG_WINDOW_LEVEL
 		window last

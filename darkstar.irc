@@ -18,30 +18,30 @@
  */
 if (!epic() || V < 20020819)
 {
-	xecho -b
-	xecho -b WARNING!
-	xecho -b
-	xecho -b This script pack is for use with EPIC4, version 1.1.7 and up.
-	xecho -b Your client, $J, does not meet this requirement.
-	xecho -b Continue to use this script pack at your own risk.
-	xecho -b
-	xecho -b If you would like to obtain EPIC4, you can visit one of the
-	xecho -b following sites.
-	xecho -b
-	xecho -b Official EPIC Homepage:     http://www.epicsol.org/
-	xecho -b Official EPIC FTP site:     ftp://ftp.epicsol.org/
-	xecho -b
-	xecho -b Current versions of both DarkStar and EPIC4 can also be found
-	xecho -b at the following URLs.
-	xecho -b
-	xecho -b http://darkstar.epicsol.org/
-	xecho -b http://www.got.net/~brian/epic4/
-	xecho -b
+	echo
+	echo WARNING!
+	echo
+	echo This script pack is for use with EPIC4, version 1.1.7 and up.
+	echo Your client, $J, does not meet this requirement.
+	echo Continue to use this script pack at your own risk.
+	echo
+	echo If you would like to obtain EPIC4, you can visit one of the
+	echo following sites.
+	echo
+	echo Official EPIC Homepage:     http://www.epicsol.org/
+	echo Official EPIC FTP site:     ftp://ftp.epicsol.org/
+	echo
+	echo Current versions of both DarkStar and EPIC4 can also be found
+	echo at the following URLs.
+	echo
+	echo http://darkstar.epicsol.org/
+	echo http://www.got.net/~brian/epic4/
+	echo
 
 	^local pause $'Press any key to continue or "q" to quit.'
 	if (pause == [q]) {
-		xecho -b Bye!
-		xecho -b
+		echo Bye!
+		echo
 		//quit
 	}
 }
@@ -67,7 +67,7 @@ for array in ($getarrays()) {
  * This will be incremented every time a change takes place in
  * the core scripts (this file and any .dsc files in core/).
  */
-@ DS.CORE_ID = 73
+@ DS.CORE_ID = 74
 
 
 eval xecho -b Loading DarkStar $DS.VERSION
@@ -121,26 +121,25 @@ if (fexist($DS.USER_DIR) == -1)
 	 * This could be a first time user, so we'll display
 	 * some extra information for them.
 	 */
-	xecho -b
-	xecho -b Welcome to the DarkStar/EPIC4 script pack!
-	xecho -b Copyright (c) 2002 Brian Weiss <brian@epicsol.org>
-	xecho -b See the 'COPYRIGHT' file for details.
-	xecho -b http://darkstar.epicsol.org/
-	xecho -b
-	xecho -b If you have not looked at the README yet, you should do so now.
-	xecho -b
-	xecho -b You are about to be presented with a list of modules and asked to
-	xecho -b choose which of them you would like to have loaded. Just pressing
-	xecho -b enter will load all the modules on the default auto-load list.
-	xecho -b
-	xecho -b After the modules have loaded, it is probably a good idea to have
-	xecho -b a look around in the help browser (/dhelp).
-	xecho -b
-	xecho -b That's it! I hope you enjoy these scripts, a lot of effort has
-	xecho -b gone into them. Please feel free to contact me if you have any
-	xecho -b questions or comments. This message will not be displayed again.
-	xecho -b
-
+	echo
+	echo Welcome to the DarkStar/EPIC4 script pack!
+	echo Copyright (c) 2002 Brian Weiss <brian@epicsol.org>
+	echo See the 'COPYRIGHT' file for details.
+	echo http://darkstar.epicsol.org/
+	echo
+	echo If you have not looked at the README yet, you should do so now.
+	echo
+	echo You are about to be presented with a list of modules and asked to
+	echo choose which of them you would like to have loaded. Just pressing
+	echo enter will load all the modules on the default auto-load list.
+	echo
+	echo After the modules have loaded, it is probably a good idea to have
+	echo a look around in the help browser (/dhelp).
+	echo
+	echo That's it! I hope you enjoy these scripts, a lot of effort has
+	echo gone into them. Please feel free to contact me if you have any
+	echo questions or comments. This message will not be displayed again.
+	echo
 	^local pause $'Press any key to continue.'
 }
 
@@ -214,9 +213,9 @@ if (fexist($DS.RC) != -1) {
 
 
 if (fexist($DS.HOME/darkstar.irc) == -1) {
-	xecho -b WARNING! We were unable to detect our location.
-	xecho -b You may need to set the DARKSTAR_HOME environment variable.
-	xecho -b Please have a look at the README file for more information.
+	echo WARNING! We were unable to detect our location.
+	echo You may need to set the DARKSTAR_HOME environment variable.
+	echo Please have a look at the README file for more information.
 }
 
 
