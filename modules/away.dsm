@@ -1,4 +1,4 @@
-#version 1.4
+#version 1.4.1
 /* $Id$ */
 /*
  * away.dsm - Away module for DarkStar/EPIC4
@@ -166,6 +166,7 @@ on #-msg 421 "*" {
 		if (CONFIG.AWAY_LOG && match(MSGS $CONFIG.AWAY_LOG_LEVEL)) {
 			if ((:fd = open($CONFIG.AWAY_LOGFILE W)) > -1) {
 				@ write($fd [$strftime(%x %X)] MSG <$0!$userhost()> $1-)
+				@ close($fd)
 			}
 			@ AWAY.NEWMSGS++
 		}
@@ -176,6 +177,7 @@ on #-notice 421 "*" {
 	if (A && CONFIG.AWAY_LOG && match(NOTICES $CONFIG.AWAY_LOG_LEVEL)) {
 		if ((:fd = open($CONFIG.AWAY_LOGFILE W)) > -1) {
 			@ write($fd [$strftime(%x %X)] NOTICE <$0!$userhost()> $1-)
+			@ close($fd)
 		}
 		@ AWAY.NEWMSGS++
 	}
@@ -186,6 +188,7 @@ for hook in (public public_other) {
 		if (A && CONFIG.AWAY_LOG && match(PUBLICS $CONFIG.AWAY_LOG_LEVEL)) {
 			if ((:fd = open($CONFIG.AWAY_LOGFILE W)) > -1) {
 				@ write($fd [$strftime(%x %X)] PUBLIC $1 <$0!$userhost()> $2-)
+				@ close($fd)
 			}
 			@ AWAY.NEWMSGS++
 		}
