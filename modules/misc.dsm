@@ -1,4 +1,4 @@
-#version 0.9.3
+#version 0.9.4
 /* $Id$ */
 /*
  * misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
@@ -282,7 +282,7 @@ on ^319 "*" {
 		@ :fmt_var = [WHOIS_CHANNELS]
 		@ :line = []
 		@ :width = word(0 $geom())
-		while ($channels) {
+		while (channels) {
 			@ :foo = stripcrap(ALL $fparse($fmt_var $0 $1 $channels))
 			if (strlen($foo) >= width) {
 				@ :bar = before(-1 " " $mid(0 $width $foo))
@@ -302,7 +302,6 @@ on ^319 "*" {
 				@ :line = fparse($fmt_var $0 $1 $channels)
 				@ :channels = []
 			}
-			for chan in ($channels)
 			echo $line
 		}
 	} else {
