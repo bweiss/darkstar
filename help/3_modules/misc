@@ -31,6 +31,9 @@ Author: Brian Weiss <brian@epicsol.org>
    SEND_CTCP               - Sent CTCPs.
    SEND_MSG                - Sent private messages.
    SEND_NOTICE             - Sent notices.
+   SIGNOFF                 - Signoff messages. This is suppressed by
+                             the channel module if CHANNEL_SIGNOFF has
+                             a value.
    WHO                     - Output from a WHO request.
    WHO_FOOTER[1|2]         - WHO output footers.
    WHO_HEADER[1|2]         - WHO output headers.

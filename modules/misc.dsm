@@ -1,4 +1,4 @@
-#version 0.9.4
+#version 1.0
 /* $Id$ */
 /*
  * misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
@@ -274,7 +274,7 @@ on ^318 "*" {
  *
  * NOTE: The WHOIS_CHANNELS variable will still be used for 
  * the first line, and the WHOIS_CHANNELS_WRAP variable will
- * be used to format all proceeding lines.
+ * be used to format all following lines.
  */
 on ^319 "*" {
 	if (FORMAT.WHOIS_CHANNELS_WRAP) {
@@ -283,20 +283,20 @@ on ^319 "*" {
 		@ :line = []
 		@ :width = word(0 $geom())
 		while (channels) {
-			@ :foo = stripcrap(ALL $fparse($fmt_var $0 $1 $channels))
-			if (strlen($foo) >= width) {
-				@ :bar = before(-1 " " $mid(0 $width $foo))
-				@ :bar = restw($numwords($stripcrap(ALL $fparse($fmt_var $0 $1))) $bar)
-				@ :bar = leftw($numwords($bar) $channels)
+			@ :tmp = stripcrap(ALL $fparse($fmt_var $0 $1 $channels))
+			if (strlen($tmp) >= width) {
+				@ :tmp = before(-1 " " $mid(0 $width $tmp))
+				@ :tmp = restw($numwords($stripcrap(ALL $fparse($fmt_var $0 $1))) $tmp)
+				@ :tmp = leftw($numwords($tmp) $channels)
 				/* Add clear-color and highlight-off tags to the end of each
 				 * channel name to prevent color codes from extending to the
 				 * next channel. Bleh. */
-				@ :baz = []
-				for chan in ($bar) {
-					push baz $chan-1
+				@ :chans = []
+				for chan in ($tmp) {
+					push chans $chan-1
 				}
-				@ :line = fparse($fmt_var $0 $1 $baz)
-				@ :channels = rest(${strlen($bar) + 2} $channels)
+				@ :line = fparse($fmt_var $0 $1 $chans)
+				@ :channels = rest(${strlen($tmp) + 2} $channels)
 				@ :fmt_var = [WHOIS_CHANNELS_WRAP]
 			} else {
 				@ :line = fparse($fmt_var $0 $1 $channels)
@@ -393,6 +393,10 @@ on ^msg "*" {
 	}
 }
 
+/*
+ * This event does not get hooked if the channel module is loaded
+ * and the CHANNEL_NICK format variable has a value.
+ */
 on ^nickname "*" {
 	if (FORMAT.NICKNAME) {
 		echo $fparse(NICKNAME $*)
@@ -446,6 +450,16 @@ on ^send_msg "*" {
 on ^send_notice "*" {
 	if (FORMAT.SEND_NOTICE) {
 		echo $fparse(SEND_NOTICE $*)
+	}
+}
+
+/*
+ * This event does not get hooked if the channel module is loaded
+ * and the CHANNEL_SIGNOFF format variable has a value.
+ */
+on ^signoff "*" {
+	if (FORMAT.SIGNOFF) {
+		echo $fparse(SIGNOFF $*)
 	}
 }
 

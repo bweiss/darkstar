@@ -18,6 +18,9 @@ Author: Brian Weiss <brian@epicsol.org>
                                   trigger auto-response.
    BANTYPE                      - Integer argument for mask(6). This is used
                                   by the ban related aliases.
+   CHANNEL_WALL_TYPE            - Determines the method /WALL uses to send
+                                  its notices. Valid types are 1, 2, or 3.
+                                  See /WALL description below for details.
    DEFAULT_KICK_REASON          - Default kick reason for various aliases.
    MAX_MODES                    - Number of modes to send to the server
                                   at once. This should be set as high as
@@ -204,10 +207,10 @@ Author: Brian Weiss <brian@epicsol.org>
      - Sets +v on an unlimited number of nicks, 4 at a time.
 
    wall <text>
-     - Sends a notice to all ops on the current channel, 7 at a time.
-       It's possible this will not work on all servers.
-
-   wall2 <text>
-     - Sends a notice to all ops on the current channel, one at a time.
-       This should work on all servers, but is much less efficient.
+     - Sends a NOTICE to all +o users in the current channel.
+       The method for sending these NOTICEs is determined by the value
+       of the CHANNEL_WALL_TYPE config variable. There are three
+       possible values:  1 - Send a single NOTICE to @<channel>
+                         2 - Send NOTICEs to all ops, seven at a time
+                         3 - Send NOTICEs one at a time (USE WITH CARE)
 

@@ -2,6 +2,25 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://darkstar.epicsol.org/UPDATES
 
 
+*** News 2003/09/21 -- misc.dsm 1.0 - New format variable: SIGNOFF
+	There is a new format variable named SIGNOFF that will format the
+	output of signoff messages. This variable will not be used if the
+	channel module is loaded and CHANNEL_SIGNOFF has a value.
+
+*** News 2003/09/21 -- channel.dsm 1.0 - /WALL Yay, /WALL2 Nay
+	I finally fixed the /WALL alias and got rid of /WALL2. The method
+	for used for sending the NOTICEs will now be determined by the new
+	config variable CHANNEL_WALL_TYPE. There are three possible types:
+	   1 - Send a single NOTICE to @<channel>
+	   2 - Send NOTICEs to all +o users, seven at a time
+	   3 - Send NOTICEs one at a time (USE WITH CAUTION)
+
+	Also, the ban list headers and footers (/FSET BAN) will now be
+	displayed even if there are no bans on the channel. This is more
+	consistent with the client's normal behavior and should make some
+	of the mimic themes more authentic.
+
+
 DarkStar 0.2.10 (20030915)
 
 
