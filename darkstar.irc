@@ -174,4 +174,4 @@ if (fexist($DS.HOME/darkstar.irc) == -1)
 }
 
 
-/* bmw '01 */
+/* EOF */

@@ -1,13 +1,12 @@
-/*     _             _        _
- *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
- * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
- * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
+/* $Id$ */
+/*
+ * config.dsc - Configuration interface
  *
- * CONFIG.DSC - Configuration manager for Darkstar/EPIC4
- * Author: Brian Weiss <brian@epicsol.org> - 2001
- *
- * Last modified: 2/22/02 (bmw)
+ * Written by Brian Weiss
+ * Copyright © 2002 Brian Weiss
+ * See the 'COPYRIGHT' file for more information.
  */
+
 
 alias conf dset
 alias config dset
@@ -227,4 +226,4 @@ alias format.add (variable, value)
 }
 
 
-/* bmw '01 */
+/* EOF */

@@ -1,15 +1,10 @@
-/*     _             _        _
- *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
- * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
- * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
+/* $Id$ */
+/*
+ * help.dsc - Help browser
  *
- * HELP.DSC - Help system for Darkstar/EPIC4
- * Author: Brian Weiss <brian@epicsol.org> - 2001
- *         whitefang <thall@epicsol.org>
- *
- * Last modified: 12/29/01 (bmw)
- *
- * This was originally written by whitefang. He deserves all the credit.
+ * Written by Tyler Hall
+ * Copyright © 2002 Tyler Hall
+ * See the 'COPYRIGHT' file for more information.
  */
 
 alias dhelp (...)
@@ -34,4 +29,4 @@ alias dhelp (...)
 }
 
 
-/* bmw '01 */
+/* EOF */
