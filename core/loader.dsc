@@ -16,7 +16,7 @@ alias loadmod (module, void)
 {
 	if (module && !isnumber($module))
 	{
-		if (load_module($module))
+		if (loader.load_module($module))
 		{
 			xecho -b Module [$module] has been successfully loaded
 		}{
@@ -38,9 +38,9 @@ alias loadmod (module, void)
 
 		unless (tolower(mods) == [q])
 		{
-			for module in ($which_mods(load $mods))
+			for module in ($loader.which_mods(load $mods))
 			{
-				if (load_module($module))
+				if (loader.load_module($module))
 				{
 					xecho -b Module [$module] has been successfully loaded
 				}{
@@ -341,10 +341,10 @@ if (CONFIG[AUTO_LOAD_MODULES])
 		^assign dont_suppress_motd 1
 	}
 
-	modlist
-
 	if (CONFIG[AUTO_LOAD_PROMPT])
 	{
+		modlist
+
 		input "Modules to load? ([A]uto / [N]one / 1 2-4 ...) [A] "
 		{
 			if ([$0] == [])

@@ -2,6 +2,8 @@ Darkstar ChangeLog
 
 [0.0.10]
 
+ - [loader.dsc] The module list will no longer be displayed if AUTO_LOAD_PROMPT
+   is false. (whitefang)
  - [loader.dsc] Went through a bit of a rewrite.
  - New config variable: DEFAULT_THEME. This is now how you should be setting
    your default theme. You can remove the "status" line from your rcfiles.
