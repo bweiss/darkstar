@@ -16,7 +16,6 @@ set STATUS_CHANOP @
 set STATUS_CLOCK  %T
 set STATUS_CPU_SAVER  \(%L\)
 set STATUS_DOES_EXPANDOS ON
-#set STATUS_FORMAT [%W%R%W] %Q 
 set STATUS_FORMAT [$Z] [%R] %*%=%@%N%#%C%+%H%B%I%O%Q%F%L %> %A
 set STATUS_FORMAT1 [$Z] [%R] %*%=%@%N%#%C%+%H%B%I%O%Q%F%L %> %A
 set STATUS_FORMAT2 %U%{2}S %>%M [%V]
@@ -37,7 +36,7 @@ set STATUS_TRUNCATE_RHS ON
 set STATUS_UMODE \(+%#\)
 set STATUS_USER ${numonchannel() ? [[t/$numonchannel() o/$#chops() v/$#chvoices() n/$#nochops()]  ] : []}
 set STATUS_VOICE +
-set STATUS_WINDOW -
+set -STATUS_WINDOW
 
 assign FORMAT.MODLIST_FOOTER -------------------------------------------------------
 assign FORMAT.MODLIST_FOOTER1 $G Available modules: $numitems(_modules), Loaded modules: $numitems(_loaded_modules)

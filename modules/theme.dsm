@@ -1,4 +1,4 @@
-# version:0.1.3 loader:pf
+# version:0.1.4 loader:pf
 # $Id$
 #
 # theme.dsm - Theme system for DarkStar/EPIC4
@@ -136,17 +136,27 @@ alias theme.save (name, void)
 					@ write($fd );
 					for setvar in (BANNER INPUT_PROMPT $getsets(STATUS_*))
 					{
+						# The '$' here is intentional. It forces double expansion.
 						@ :value = $setvar;
-						@ write($fd set $setvar $value);
+						if (value != []) {
+							@ write($fd set $setvar $value);
+						} else {
+							@ write($fd set -$setvar);
+						};
 					};
 					@ write($fd );
 				}
 				else if (mod == [formats])
 				{
-					@ write($fd assign CONFIG.NAMES_COL $CONFIG.NAMES_COL);
+					if (CONFIG.NAMES_COL != []) {
+						@ write($fd assign CONFIG.NAMES_COL $CONFIG.NAMES_COL);
+					} else {
+						@ write($fd assign -CONFIG.NAMES_COL);
+					};
 					@ write($fd );
 				};
 
+				# This alias is part of save.dsc
 				_save.write_format_vars $fd $mod;
 
 				@ close($fd);

@@ -29,3 +29,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Fix the /LEAVE alias for EPIC5 (It now uses //PART).
 * Don't set the NAMES_SORT_BY_MODE config variable within themes.
 * Change the default value of AUTO_CREATE_WINDOWS to 0.
+* Fix /THEME -SAVE so it writes settings to unset variables with no value.
