@@ -3,7 +3,7 @@
  * CHANNEL.DSM - Channel related stuff for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 2/17/02 (bmw)
+ * Last modified: 2/19/02 (bmw)
  *
  * This script uses serial numbers 0 and 424 for /on hooks.
  */
@@ -300,7 +300,7 @@ alias lk (reason default "$CONFIG.DEFAULT_KICK_REASON")
 			if (match(.. $left(2 $user)))
 			{
 				//kick $C $nick $reason
-			} \
+			}\
 			else if (match(.? $left(2 $user)))
 			{
 				//kick $C $nick $reason
@@ -409,14 +409,13 @@ alias tban (chan default "$C", void)
 		{
 			@ :startban = before(- $bannum)
 			@ :endban = after(- $bannum)
-
 			if (startban < endban && startban < numitems(tban) && endban <= numitems(tban))
 			{
 				for cnt from $startban to $endban
 				{
 					push bans $word(2 $getitem(tban ${cnt - 1}))
 				}
-			} \
+			}\
 			else if (bannum <= numitems(tban))
 			{
 				push bans $word(2 $getitem(tban ${bannum - 1}))
@@ -725,11 +724,9 @@ on ^topic "*"
 	}
 
 	@ :topic_itm = matchitem(topics $1*)
-	
 	if (topic_itm > -1)
 	{
 		@ :oldtopic_itm = matchitem(oldtopics $1*)
-		
 		if (oldtopic_itm > -1)
 		{
 			@ delitem(oldtopics $oldtopic_itm)
@@ -759,10 +756,10 @@ on ^public '% % *\\[${CONFIG[AUTO_RESPONSE_STR]}\\]*'
 			if (BEEP == [OFF])
 			{
 				^set BEEP ON
-				//beep
+				beep
 				^set BEEP OFF
 			}{
-				//beep
+				beep
 			}
 		}
 	}{
@@ -787,10 +784,10 @@ on ^public_other '% % *\\[${CONFIG[AUTO_RESPONSE_STR]}\\]*'
 			if (BEEP == [OFF])
 			{
 				^set BEEP ON
-				//beep
+				beep
 				^set BEEP OFF
 			}{
-				//beep
+				beep
 			}
 		}
 	}{

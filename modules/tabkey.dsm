@@ -3,7 +3,7 @@
  * TABKEY.DSM - Tab key module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 2/18/02 (bmw)
+ * Last modified: 2/19/02 (bmw)
  *
  * This script uses serial number 420 for all /on hooks.
  */
