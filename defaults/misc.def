@@ -9,6 +9,8 @@ fset SEND_MSG [$Z] %W.%nmsg%W[%n$1%W]%n $2-
 fset SEND_NOTICE [$Z] %W.%nnotice%c[%n$1%c]%n $2-
 fset WHOIS_AWAY %c[**] %Wa%nway     %c:%n $1 - $2-
 fset WHOIS_CHANNELS %c[**] %Wc%nhannels %c:%n $1-
+fset WHOIS_FOOTER
+fset WHOIS_HEADER
 fset WHOIS_IDLE %c[**] %Wi%ndle     %c:%n $tdiff($1)
 fset WHOIS_NAME %c[**] %Wi%nrcname  %c:%n $1-
 fset WHOIS_NICK %c[**] %n$1 %c\(%n$2@$3%c\)%n

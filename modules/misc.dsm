@@ -6,7 +6,7 @@
  * MISC.DSM - The 'miscellaneous stuff' module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 8/27/01 (bmw)
+ * Last modified: 9/1/01 (bmw)
  *
  * This script uses serial number 424 for all ON hooks.
  */
@@ -112,13 +112,17 @@ alias wii (nick default "$servernick()", void)
 alias ww whowas
 
 
-/* ON hooks */
-
-/* Whois/Whowas */
+/*
+ * WHOIS/WHOWAS
+ */
 on ^301 "*" echo $fparse(WHOIS_AWAY $*)
-on ^310 ^"*"
+on ^310 "*" #
 on ^311 "*"
 {
+	if (FORMAT[WHOIS_HEADER])
+	{
+		echo $fparse(WHOIS_HEADER)
+	}
 	echo $fparse(WHOIS_NICK $1 $2 $3)
 	echo $fparse(WHOIS_NAME $5-)
 }
@@ -134,13 +138,23 @@ on ^317 "*"
 	echo $fparse(WHOIS_IDLE $2)
 	echo $fparse(WHOIS_SIGNON $strftime($3 %c))
 }
-on ^318 ^"*"
+on ^318 "*"
+{
+	if (FORMAT[WHOIS_FOOTER])
+	{
+		echo $fparse(WHOIS_FOOTER $1-)
+	}
+}
 on ^319 "*" echo $fparse(WHOIS_CHANNELS $2-)
 
-/* Default user modes */
+/*
+ * Default user modes
+ */
 on #^connect 424 "*" //mode $servernick() $CONFIG.DEFAULT_UMODES
 
-/* Other fset hooks */
+/*
+ * Other /FSET related hooks
+ */
 on ^ctcp "*" xecho -b $fparse(CTCP $*)
 on ^ctcp_reply "*" xecho -b $fparse(CTCP_REPLY $*)
 on ^dcc_chat "*" echo $fparse(DCC_CHAT $*)

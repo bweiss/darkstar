@@ -2,6 +2,9 @@ Darkstar ChangeLog
 
 [current]
 
+ - [tabkey.dsm] Now lists each variable on a separate line when displaying
+   matches in the set routine.
+ - [misc.dsm] New fsets: WHOIS_HEADER and WHOIS_FOOTER
  - Fixed a bunch of bugs in the "epic4" statbar (Thanks to Jeremy Nelson).
  - [status.dsc] /status now displays a list of available statbars and prompts
    the user to choose one if no arguments are given.
