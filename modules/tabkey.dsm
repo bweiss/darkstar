@@ -1,4 +1,4 @@
-#version 0.2.4
+#version 0.2.5
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -351,13 +351,13 @@ alias tabkey.cmd.window {
 	}
 	switch ($toupper($cmd)) {
 		(ADD) (QUERY) (REMOVE) {
-			@ :ret = tabkey.method.nickchan($*)
+			@ :list = tabkey.method.nickchan($*)
 		}
 		(BEEP_ALWAYS) (DOUBLE) (FIXED) (HOLD_MODE) (LOG) (SCRATCH) (SCROLL) (SKIP) {
-			@ :ret = pattern("$word*" ON OFF TOGGLE)
+			@ :list = [ON OFF TOGGLE]
 		}
 		(BIND) (CHANNEL) {
-			@ :ret = tabkey.method.chan($*)
+			@ :list = tabkey.method.chan($*)
 		}
 		(ECHO) (GOTO) (GROW) (HOLD_INTERVAL) (LASTLOG) (MOVE) (NAME) (NUMBER) (PROMPT) (REFNUM) (REFNUM_OR_SWAP) (SCROLLBACK) (SERVER) (SHRINK) (SIZE) (STATUS_%) (SWAP) {
 			@ :nocomp = 1
