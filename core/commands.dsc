@@ -38,7 +38,6 @@ alias dinfo (void)
 	foreach MODINFO module {
 		for var in ($aliasctl(assign match MODINFO.$module\.)) {
 			@:modname = tolower($module)
-			/* This is pretty nasty but it works. */
 			eval ^local iline \$$var
 			eval xecho -b [\$[12]modname] $iline
 		}
