@@ -135,7 +135,7 @@ alias challenge (...)
 
 			if (fexist($CONFIG.CHALLENGE_RSA_RESPOND) == -1)
 			{
-				xecho -b -s Invalid rsa respond path. Aborting challenge.
+				xecho -b -s Invalid rsa_respond path. Aborting challenge.
 				return
 			}
 
@@ -156,7 +156,7 @@ alias challenge (...)
 					stack pop on 386
 				}
 
-				quote challenge $0
+				quote challenge $nick
 			}{
 				xecho -b -s No entry for $servername() in the challenge list
 				xecho -b -s You can add entries with: /CHALLENGE -add <server> <nick> <key>

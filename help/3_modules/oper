@@ -6,15 +6,29 @@ Author: Brian Weiss <brian@epicsol.org>
    of greatness.
 
 Config Variables:
-   OPER_UMODES           - User modes to set when you become an operator.
-   OPERVIEW              - Boolean. Creates a new window called "operview"
-                           that will display operator related messages
-                           such as wallops and server notices.
-   OPERVIEW_HIDDEN       - Boolean. Determines whether the operview window
-                           will be split or hidden.
-   OPERVIEW_SIZE         - Size of the operview window when it is not hidden.
+   AUTO_CHALLENGE         - Boolean. If true, you will automatically be opered
+                            with the /CHALLENGE command on any servers that
+                            have entries in the challenge list.
+   CHALLENGE_RSA_RESPOND  - Path to the rsa_respond binary. This is required
+                            to use the any of the challenge related features.
+   OPER_UMODES            - User modes to set when you become an operator.
+   OPERVIEW               - Boolean. Creates a new window called "operview"
+                            that will display operator related messages
+                            such as wallops and server notices.
+   OPERVIEW_HIDDEN        - Boolean. Determines whether the operview window
+                            will be split or hidden.
+   OPERVIEW_SIZE          - Size of the operview window when it is not hidden.
 
 Commands:
+   challenge -add <server> <nick> <key>
+   challenge -del <server>
+   challenge -list
+   challenge [nick]
+     - Manages the challenge list or issues a CHALLENGE command to the
+       current server for [nick]. For this to work, the CHALLENGE_RSA_RESPOND
+       config variable must be set to the location of the rsa_respond binary
+       and there must be an entry for the server in the challenge list.
+
    operview [on|off]
      - Toggles the operview window.
 
