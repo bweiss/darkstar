@@ -25,8 +25,7 @@ alias loadmod (modules)
 
 	if (!CONFIG.LOADMODULE_VERBOSE) {
 		^local progress
-		@:pass = 0
-		@:fail = 0
+		^local pass
 		@:oldprompt = INPUT_PROMPT
 	}
 
@@ -36,28 +35,28 @@ alias loadmod (modules)
 		if (!retcode) {
 			/* Module loaded successfully. */
 			if (CONFIG.LOADMODULE_VERBOSE) {
-				xecho -b Module [$module] has been loaded
+				@:modver = modinfo($module v)
+				xecho -b Loaded module: $module ${modver != [-] ? modver : []}
 			} else {
 				@:progress = progress ## [.]
-				@:pass++
+				push pass $module
 				^set input_prompt $oldprompt\Loading modules [$[$#modules]progress] \($module $modinfo($module v)\)
 			}
 		} else {
 			/* Module failed to load. */
 			@:progress = progress ## [x]
-			@:fail++
 			switch ($retcode) {
-				(1) {xecho -b Error: No modules found \($retcode\)}
-				(2) {xecho -b Error: Module [$module] is already loaded \($retcode\)}
-				(3) {xecho -b Error: Module [$module] not found \($retcode\)}
-				(*) {xecho -b Error: Unknown \($retcode\)}
+				(1) {xecho -b Error: No modules found}
+				(2) {xecho -b Error: Module is already loaded \($module\)}
+				(3) {xecho -b Error: Module not found \($module\)}
+				(*) {xecho -b Error: Unknown \(module: $module\)}
 			}
 		}
 	}
 
 	if (!CONFIG.LOADMODULE_VERBOSE) {
 		^set INPUT_PROMPT $oldprompt
-		xecho -b LOADMODULE: $pass module${pass == 1 ? [] : [s]} loaded${fail ? [, $fail failed] : []}
+		xecho -b Loaded $#pass module${#pass == 1 ? [] : [s]}${#pass > 0 ? [ \($pass\)] : []}
 	}
 }
 
@@ -123,8 +122,7 @@ alias unloadmod (modules)
 
 	if (!CONFIG.LOADMODULE_VERBOSE) {
 		^local progress
-		@:pass = 0
-		@:fail = 0
+		^local pass
 		@:oldprompt = INPUT_PROMPT
 	}
 
@@ -138,27 +136,26 @@ alias unloadmod (modules)
 		if (!retcode) {
 			/* Module unloaded successfully. */
 			if (CONFIG.LOADMODULE_VERBOSE) {
-				xecho -b Module [$module] has been unloaded
+				xecho -b Unloaded module: $module
 			} else {
 				@:progress = progress ## [.]
-				@:pass++
+				push pass $module
 				^set INPUT_PROMPT $oldprompt\Unloading modules [$[$#modules]progress] \($module $modinfo($module v)\)
 			}
 		} else {
 			/* Module could not be unloaded. */
 			@:progress = progress ## [x]
-			@:fail++
 			switch ($retcode) {
-				(1) {xecho -b Error: No modules are currently loaded \($retcode\)}
-				(2) {xecho -b Error: Module [$module] is not loaded \($retcode\)}
-				(*) {xecho -b Error: Unknown \($retcode\)}
+				(1) {xecho -b Error: No modules are currently loaded}
+				(2) {xecho -b Error: Module is not loaded \($module\)}
+				(*) {xecho -b Error: Unknown \(module: $module\)}
 			}
 		}
 	}
 
 	if (!CONFIG.LOADMODULE_VERBOSE) {
 		^set INPUT_PROMPT $oldprompt
-		xecho -b UNLOADMODULE: $pass module${pass == 1 ? [] : [s]} unloaded${fail ? [, $fail failed] : []}
+		xecho -b Unloaded $#pass module${#pass == 1 ? [] : [s]}${#pass > 0 ? [ \($pass\)] : []}
 	}
 }
 
