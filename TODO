@@ -55,6 +55,8 @@ TODO:
     -:- #darkstar/epic  Channel is open.
     -:- #darkstar/epic  Your KNOCK has been delivered.
 
+  * Write a more powerful version of STATUS_NOTIFY (%F).
+
 
 OTHER NOTES/IDEAS:
 

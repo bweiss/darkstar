@@ -116,5 +116,15 @@ A: There are currently two ways to add a timestamp to output. The easiest,
    add $ts() to any /FSET variables that you want to be timestamped and
    then type /DSET TIMESTAMP ON.
 
+--
+
+Q: How can I save my /SET variables? The /SAVE command doesn't seem to
+   write these settings.
+
+A: I have tried to keep the DarkStar stuff pretty separate from EPIC itself
+   so these settings are not saved with the /SAVE command. The best way
+   to retain the values of /SET variables is to set them in one of your
+   rc files, either ~/.epicrc or ~/.dsrc
+
 
 End of file.
