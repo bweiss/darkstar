@@ -1,4 +1,4 @@
-#version 0.8
+#version 0.8.1
 /* $Id$ */
 /*
  * misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
@@ -377,10 +377,11 @@ on ^378 "*"
 	}
 }
 
-/*
- * Default user modes
- */
-on #^connect 424 "*" //mode $servernick() $CONFIG.DEFAULT_UMODES
+on #^connect 424 "*"
+{
+	pause 2
+	//mode $servernick() $CONFIG.DEFAULT_UMODES
+}
 
 on ^action '% $servernick() *'
 {
