@@ -9,11 +9,10 @@ Author: Brian Weiss <brian@epicsol.org>
    AUTO_BIND_CHANNELS         - If $CONFIG.AUTO_CREATE_WINDOWS is true,
                                 bind the specified channels to windows as
                                 they are created.
-   AUTO_CREATE_WINDOW_ARGS    - List of commands to pass to /window when
-                                creating windows according to the following..
-   AUTO_CREATE_WINDOWS        - Number of windows to create at load time.
-   AUTO_UNBIND_ON_PART        - Boolean. Automatically unbind channels
-                                after you part them.
+   AUTO_CREATE_WINDOWS        - Number of windows you want to have when
+                                this module loads.
+   BIND_ON_JOIN               - Boolean. Automatically bind channels
+                                when you join them.
    MSG_WINDOW                 - Boolean. Creates a split screen "msg window".
    MSG_WINDOW_LEVEL           - Comma-separated list of window levels for
                                 the msg window. This determines what actually
@@ -53,4 +52,9 @@ Author: Brian Weiss <brian@epicsol.org>
 
    wub
      - Unbinds the current window.
+
+Other Notes:
+   In addition to the above commands, this module will automatically
+   add and remove shortcut aliases (of the form /1, /2, /3, etc.) for
+   all existing windows.
 

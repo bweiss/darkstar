@@ -1,12 +1,12 @@
 /* $Id$ */
 
-assign FORMAT.ACTION_USER %K>%n $1%K/%n$2 %W$3-%n
+assign FORMAT.ACTION_USER %K>%n $2%K/%c$1 %W$3-%n
 assign FORMAT.CTCP $G ctcp%K/%W$tolower($3)%c: %K[%W$4-%K]%n to %W$2%n from %W$1%K[%n$before(1 @ $userhost($1))%c@%n$after(1 @ $userhost($1))%K]%n
 assign FORMAT.CTCP_REPLY $G ctcp%K/%W$tolower($3)%c:%n reply from %W$1%K[%n$4-%K]%n
 assign FORMAT.MSG %K\(%W$1%K[%n$before(1 @ $2)%c@%n$after(1 @ $2)%K]\)%n $3-
 assign FORMAT.NICKNAME $G $1 is now known as $2
 assign FORMAT.NOTICE %K-%W$1%K[%n$before(1 @ $2)%c@%n$after(1 @ $2)%K]%n $3-
-assign FORMAT.SEND_ACTION_USER %K> %W$servernick()%K/%W$1%n $2-
+assign FORMAT.SEND_ACTION_USER %K-> %W$1%K/%c$servernick()%n $2-
 assign -FORMAT.SEND_CTCP
 assign FORMAT.SEND_MSG %K->%n msg%K[%W$1%K]%c:%n $2-
 assign FORMAT.SEND_NOTICE %K->%n not%K[%W$1%K]%c:%n $2-

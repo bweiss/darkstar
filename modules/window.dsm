@@ -1,4 +1,4 @@
-#version 0.4.2
+#version 0.5
 /* $Id$ */
 /*
  * window.dsm - Window module for DarkStar/EPIC4
@@ -17,12 +17,16 @@ queue cleanup.window
 	for alias in (swap wb wc wj wk wl wn wp wub) {
 		^alias -$alias
 	}
+	for wref in ($winrefs()) {
+		^alias -$wref
+	}
 
 	^on #hook 426 -"CONFIG MSG_WINDOW *"
 	^on #hook 426 -"CONFIG MSG_WINDOW_LEVEL *"
 	^on #hook 426 -"CONFIG MSG_WINDOW_SIZE *"
 	^on #join 426 -'\$servernick() *'
 	^on #leave 426 -'\$servernick() *'
+	^on #window_create 426 -"*"
 	^on #window_kill 426 -"msgs"
 	^on #window_kill 426 -"*"
 
@@ -52,7 +56,6 @@ queue cleanup.window
 /****** CONFIG/FORMAT VARIABLES ******/
 
 config.add    AUTO_BIND_CHANNELS
-config.add    AUTO_CREATE_WINDOW_ARGS double on hide
 config.add    AUTO_CREATE_WINDOWS 10
 config.add -b BIND_ON_JOIN 0
 config.add -b MSG_WINDOW 0
@@ -122,30 +125,10 @@ config.add -b UNBIND_ON_PART 0
 module.load_saved_settings
 
 /*
- * Create some windows when the module loads.
+ * Add shortcut aliases for all existing windows.
  */
-if (CONFIG.AUTO_CREATE_WINDOWS)
-{
-	for cnt from 0 to $CONFIG.AUTO_CREATE_WINDOWS {
-		@:autobind_chan = word($cnt $CONFIG.AUTO_BIND_CHANNELS)
-		@:win = cnt + 1
-		if (winnum($win) == -1) {
-			window new $CONFIG.AUTO_CREATE_WINDOW_ARGS
-		}
-		if (autobind_chan) {
-			window $win bind $autobind_chan
-		}
-	}
-}
-
-if (CONFIG.MSG_WINDOW)
-{
-	if (winnum(msgs) == -1) {
-		window new name msgs
-		window size $CONFIG.MSG_WINDOW_SIZE
-		window level $CONFIG.MSG_WINDOW_LEVEL
-		window last
-	}
+for wref in ($winrefs()) {
+	^alias $wref window swap $wref
 }
 
 
@@ -162,38 +145,14 @@ alias swap (winnum, void)
 	}
 }
 
-alias wb (chan default "$C", void)
-{
-	window bind $chan
-}
-
-alias wc (void)
-{
-	window new_hide swap last
-	if (STATUS.DOUBLE) {
-		window double on
-	}
-}
-
-alias wj (chan)
-{
-	if (!chan) {
-		xecho -b Usage: /wj <channel> [key]
-		return
-	}
-
-	window new_hide swap last
-	join $chan
-	if (STATUS.DOUBLE) {
-		window double on
-	}
-}
-
-alias wk  {window kill}
-alias wl  {window last}
-alias wn  {window next}
-alias wp  {window previous}
-alias wub {window unbind}
+alias wb (chan default "$C", void)  {window bind $chan}
+alias wc (void)                     {window new_hide}
+alias wj (chan)                     {window new channel "$chan" hide}
+alias wk (...)                      {window kill}
+alias wl (...)                      {window last}
+alias wn (...)                      {window next}
+alias wp (...)                      {window previous}
+alias wub (...)                     {window unbind}
 
 
 /****** INTERNAL ALIASES ******/
@@ -224,7 +183,7 @@ on #-hook 426 "CONFIG MSG_WINDOW *"
 {
 	if (CONFIG.MSG_WINDOW) {
 		if (winnum(msgs) == -1) {
-			window new name msgs
+			window new name msgs double off
 			window level $CONFIG.MSG_WINDOW_LEVEL
 			window size $CONFIG.MSG_WINDOW_SIZE
 			window last
@@ -264,6 +223,19 @@ on #-leave 426 '$servernick() *'
 	}
 }
 
+on #-window_create 426 "*"
+{
+	/* Add a shortcut alias for this window. */
+	^alias $0 window swap $0
+
+	if (STATUS.DOUBLE) {
+		^window double on
+	}
+}
+
+/*
+ * Turn off MSG_WINDOW if someone manually kills the msgs window.
+ */
 on #-window_kill 426 "msgs"
 {
 	if (CONFIG.MSG_WINDOW) {
@@ -273,10 +245,44 @@ on #-window_kill 426 "msgs"
 
 on #-window_kill 426 "*"
 {
+	/* Remove shortcut alias for this window. */
+	^alias -$0
+
+	/* Reset the msgs window. */
 	if (CONFIG.MSG_WINDOW) {
 		window previous
 		window show msgs
 		window size $CONFIG.MSG_WINDOW_SIZE
+		window last
+	}
+}
+
+
+/****** STARTUP ******/
+
+/*
+ * Create some windows when the module loads.
+ */
+if (CONFIG.AUTO_CREATE_WINDOWS)
+{
+	for cnt from 1 to $CONFIG.AUTO_CREATE_WINDOWS {
+		@:autobind_chan = word($cnt $CONFIG.AUTO_BIND_CHANNELS)
+		if (winnum($cnt) == -1) {
+			window new
+		}
+		if (autobind_chan) {
+			window bind $autobind_chan
+		}
+		window hide
+	}
+}
+
+if (CONFIG.MSG_WINDOW)
+{
+	if (winnum(msgs) == -1) {
+		window new name msgs double off
+		window size $CONFIG.MSG_WINDOW_SIZE
+		window level $CONFIG.MSG_WINDOW_LEVEL
 		window last
 	}
 }
