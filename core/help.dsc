@@ -7,7 +7,7 @@
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *         whitefang <thall@epicsol.org>
  *
- * Last modified: 12/22/01 (bmw)
+ * Last modified: 12/29/01 (bmw)
  *
  * This was originally written by whitefang. He deserves all the credit.
  */
@@ -19,7 +19,7 @@ alias dhelp (...)
 	
 	if (@ && HELP_PROMPT == [OFF])
 	{
-		timer 0
+		defer
 		{
 			^on ^help ^"*"
 			//help

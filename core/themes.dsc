@@ -6,7 +6,7 @@
  * THEMES.DSC - Theme support for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/25/01 (bmw)
+ * Last modified: 12/29/01 (bmw)
  *
  * This script uses serial number 1 for all ON hooks.
  */
@@ -38,13 +38,10 @@ alias theme (theme, void)
 		defer ^alias -_change_theme
 	}
 
-	/*
-	 * Find the name of the desired theme and execute _change_theme.
-	 */
+	/* Find the name of the desired theme and execute _change_theme. */
 	if (!theme)
 	{
 		@ themes.display()
-
 		input "$INPUT_PROMPT\Which theme would you like to use? " if ([$0])
 		{
 			if (isnumber($0) && [$0] > 0 && [$0] <= numitems(themes))
@@ -80,19 +77,16 @@ alias themes.buildlist (void)
 	for dir in ($DS.THEME_DIR)
 	{
 		@ :dir = twiddle($dir)
-
 		if (fexist($dir) == 1)
 		{
 			for t_dir in ($glob($dir\/\*))
 			{
 				@ :name = after(-1 / $before(-1 / $t_dir))
-
 				if (finditem(themes $name) > -1)
 				{
 					xecho -b themes.buildlist(): Duplicate theme name: $name
 				}{
 					@ :t_file = t_dir ## name ## [.dst]
-
 					if (fexist($t_file) == 1)
 					{
 						@ setitem(themes $numitems(themes) $name)
@@ -113,11 +107,9 @@ alias themes.buildlist (void)
 alias themes.change (theme, void)
 {
 	@ :item = finditem(themes $theme)
-
 	if (item > -1)
 	{
 		@ :dir = getitem(theme_files $item)
-
 		if (fexist($dir) == 1)
 		{
 			@ :t_file = dir ## theme ## [.dst]
@@ -127,7 +119,6 @@ alias themes.change (theme, void)
 			{
 				@ :module = getitem(loaded_modules $cnt)
 				@ :file = dir ## module
-
 				if (fexist($file) == 1)
 				{
 					load $file

@@ -6,7 +6,7 @@
  * LOADER.DSC - Module loader for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/28/01 (bmw)
+ * Last modified: 12/29/01 (bmw)
  */
 
 
@@ -255,9 +255,7 @@ alias loader.load_module (module, void)
 		@ setitem(loaded_modules $numitems(loaded_modules) $module)
 
 		/* Load theme file for this module */
-		@ :t_item = finditem(themes $DS.THEME)
-		@ :t_file = getitem(theme_files $t_item) ## module
-
+		@ :t_file = getitem(theme_files $finditem(themes $DS.THEME)) ## module
 		if (fexist($t_file) == 1)
 		{
 			load $t_file
@@ -375,9 +373,9 @@ alias loader.which_mods (array, args)
 
 if (CONFIG[AUTO_LOAD_PROMPT])
 {
-	/*
-	 * Keep things quiet while we list available modules.
-	 */
+	^local mods,modules
+
+	/* Keep things quiet while we list available modules */
 	for hook in (250 251 252 254 255 265 266)
 	{
 		^on ^$hook ^"*"
@@ -386,12 +384,8 @@ if (CONFIG[AUTO_LOAD_PROMPT])
 	^stack push set SUPPRESS_SERVER_MOTD
 	^set SUPPRESS_SERVER_MOTD ON
 
-	/*
-	 * Prompt user or go ahead and load everything on the auto-load list.
-	 */
-	^local mods
+	/* Prompt user */
 	modlist
-
 	while (!mods)
 	{
 		^assign mods $"Modules to load? ([A]uto / [N]one / 1 2-4 ...) [A] "
@@ -408,9 +402,7 @@ if (CONFIG[AUTO_LOAD_PROMPT])
 		(*) {@ modules = loader.which_mods(modules $mods)}
 	}
 	
-	/*
-	 * Cleanup after ourselves.
-	 */
+	/* Cleanup after ourselves */
 	wait -cmd for hook in (250 251 252 254 255 265 266)
 	{
 		^on ^$hook -"*"
@@ -418,9 +410,7 @@ if (CONFIG[AUTO_LOAD_PROMPT])
 
 	^stack pop set SUPPRESS_SERVER_MOTD
 
-	/*
-	 * Load 'em
-	 */
+	/* Load the modules */
 	if (modules)
 	{
 		loadmod $modules

@@ -40,7 +40,7 @@ alias convert.onoff (arg, void)
 /*
  * isloaded(module)
  * Returns true if specified module is loaded. I mostly added this for the
- * convenience of module writers. It is not used anywhere in the core scripts.
+ * convenience of module writers.
  */
 alias isloaded (module, void)
 {

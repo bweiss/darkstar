@@ -6,7 +6,7 @@
  * SAVE.DSC - Save /CONFIG and /FSET settings for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/25/01 (bmw)
+ * Last modified: 12/29/01 (bmw)
  */
 
 /*
@@ -20,9 +20,7 @@ alias save (args)
 {
 	^local modules,save_dir
 	
-	/*
-	 * Find our save directory.
-	 */
+	/* Find our save directory. */
 	switch ($word(0 $args))
 	{
 		(-d)
@@ -36,9 +34,7 @@ alias save (args)
 		}
 	}
 	
-	/*
-	 * Find out what modules to save settings for.
-	 */
+	/* Find out what modules to save settings for. */
 	if (!args || word(0 $args) == [*])
 	{
 		/* Save everything! */
@@ -58,9 +54,7 @@ alias save (args)
 		}
 	}	
 
-	/*
-	 * Check our save directory and create it if necessary.
-	 */
+	/* Check our save directory and create it if necessary. */
 	if (fexist($save_dir) == -1)
 	{
 		xecho -b No save directory found. Creating [$save_dir] ...
@@ -75,9 +69,7 @@ alias save (args)
 
 	xecho -b Saving settings to [$save_dir] ...
 
-	/*
-	 * Save our config settings (/DSET)
-	 */
+	/* Save config settings (/DSET) */
 	for module in ($modules)
 	{
 		switch ($save.save_config($save_dir $module))
@@ -87,9 +79,7 @@ alias save (args)
 		}
 	}
 
-	/*
-	 * Save our format settings (/FSET)
-	 */
+	/* Save format settings (/FSET) */
 	switch ($save.save_formats($modules))
 	{
 		(0) {(CONFIG[VERBOSE_SAVE]) {xecho -b Format settings saved to [$DS.USER_DIR/themes/custom/]}}
@@ -164,9 +154,7 @@ alias save.save_formats (modules)
 		@ mkdir($save_dir)
 	}
 
-	/*
-	 * Write the master theme file.
-	 */
+	/* Write the master theme file. */
 	^local save_file $save_dir/custom.dst
 	@ unlink($save_file)
 	@ :fd = open($save_file W)
@@ -207,9 +195,7 @@ alias save.save_formats (modules)
 		return 2
 	}
 
-	/*
-	 * Write the theme files for each specified module.
-	 */
+	/* Write the theme files for each specified module. */
 	for module in ($sar(i/core//$modules))
 	{
 		@ :variables = aliasctl(assign get FSET.MODULES.$module)

@@ -6,12 +6,11 @@
  * CONFIG.DSC - Configuration manager for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/22/01 (bmw)
+ * Last modified: 12/29/01 (bmw)
  */
 
 alias conf dset
 alias config dset
-
 
 alias dset (...)
 {
@@ -23,6 +22,7 @@ alias fset (...)
 	@ config.set_routine(fset $*)
 }
 
+
 alias fparse
 {
 	eval return $cparse($(FORMAT.$0))
@@ -33,13 +33,12 @@ alias fparse2
 	eval return $(FORMAT.$0)
 }
 
+
 alias config.set_routine (type, variable, value)
 {
 	^local struct1,struct2
 	
-	/*
-	 * Figure out what kind of variables we're dealing with.
-	 */
+	/* Figure out what kind of variables we're dealing with. */
 	switch ($toupper($type))
 	{
 		(DSET)
@@ -56,9 +55,7 @@ alias config.set_routine (type, variable, value)
 	
 	if (!variable)
 	{
-		/*
-		 * No variable specified by user. Display all.
-		 */
+		/* No variable specified by user so display all. */
 		for var in ($aliasctl(assign match $struct1\.$struct2\.))
 		{
 			@ :var = after(1 . $var)
@@ -100,6 +97,7 @@ alias config.set_routine (type, variable, value)
 				^assign -$var
 				xecho -s -b Value of $toupper($var2) set to <EMPTY>
 
+				/* Hook the changes so modules can act on it. */
 				if (toupper($type) == [DSET])
 				{
 					hook CONFIG $var2
@@ -107,7 +105,7 @@ alias config.set_routine (type, variable, value)
 			} \
 			elsif (value != [])
 			{
-				if (struct2 == [CONFIG] && aliasctl(assign get DSET.BOOL.$var2))
+				if (struct2 == [CONFIG] && DSET[BOOL][$var2])
 				{
 					^assign $var $convert.onoff($value)
 					xecho -s -b Value of $toupper($var2) set to $toupper($convert.num($value))
@@ -116,11 +114,13 @@ alias config.set_routine (type, variable, value)
 					xecho -s -b Value of $toupper($var2) set to $value
 				}
 
+				/* Hook the changes so modules can act on it. */
 				if (toupper($type) == [DSET])
 				{
 					hook CONFIG $var2 $value
 				}
 			}{
+				/* No new value specified. Display current value. */
 				@ config.setcat($var)
 			}
 		}{
@@ -137,14 +137,16 @@ alias config.set_routine (type, variable, value)
 alias config.setcat (var, void)
 {
 	@ :var2 = after(1 . $var)
-	
 	eval if \($var != []\)
 	{
-		if (FORMAT[SET] && before(. $var) == [CONFIG] && aliasctl(assign get DSET.BOOL.$var2))
+		if (FORMAT[SET])
 		{
-			xecho -s $fparse(SET $toupper($var2) $toupper($convert.num($($var))))
-		}{
-			xecho -s $fparse(SET $toupper($var2) $($var))
+			if (before(. $var) == [CONFIG] && DSET[BOOL][$var2])
+			{
+				xecho -s $fparse(SET $toupper($var2) $toupper($convert.num($($var))))
+			}{
+				xecho -s $fparse(SET $toupper($var2) $($var))
+			}
 		}
 	}{
 		if (FORMAT[SET_NOVALUE])

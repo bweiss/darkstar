@@ -75,7 +75,7 @@ alias _less (fd, count, winnum default 0, void)
 
 /*
  * /PURGE
- * Requested by whitefang.
+ * Used to purge structures. (Requested by whitefang)
  */
 alias purge
 {

@@ -6,7 +6,7 @@
  * STATUS.DSC - Statbar manager for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/21/01 (bmw)
+ * Last modified: 12/29/01 (bmw)
  */
 
 alias sbar status
@@ -23,13 +23,10 @@ alias status (args)
 {
 	^local sbar,quiet
 
-	/*
-	 * Check for quiet option
-	 */
+	/* Check for quiet option. */
 	if (left(1 $word(0 $args)) == [-])
 	{
 		@ sbar = word(1 $args)
-
 		if (word(0 $args) == [-q])
 		{
 			^assign quiet 1
@@ -55,13 +52,10 @@ alias status (args)
 		defer ^alias -_change_status
 	}
 
-	/*
-	 * Find the name of the desired status bar and execute _change_status.
-	 */
+	/* Find the name of the desired statbar and execute _change_status. */
 	if (!sbar)
 	{
 		@ status.display()
-
 		input "$INPUT_PROMPT\Which status bar would you like to use? " if ([$0])
 		{
 			if (isnumber($0) && [$0] > 0 && [$0] <= numitems(status))
@@ -99,13 +93,11 @@ alias status.buildlist (void)
 	for dir in ($DS.STATUS_DIR)
 	{
 		@ :dir = twiddle($dir)
-
 		if (fexist($dir) == 1)
 		{
 			for file in ($glob($dir\/\*))
 			{
 				@ :lastc = mid(${strlen($file) - 1} 1 $file)
-
 				unless (lastc == [/])
 				{
 					@ :name = after(-1 / $file)
@@ -127,11 +119,9 @@ alias status.buildlist (void)
 alias status.change (sbar, void)
 {
 	@ :item = finditem(status $sbar)
-
 	if (item > -1)
 	{
 		@ :file = getitem(status_files $item)
-
 		if (fexist($file) == 1)
 		{
 			load $file

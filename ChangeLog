@@ -3,6 +3,11 @@ Darkstar ChangeLog
 
 12/29/01
 
+ * Cleaned up the core scripts a bit.
+
+ * Fixed a trivial bug in the module loader. Had a global variable that
+   should have been local.
+
  * [keepnick.dsm] General cleanup and fixed a few minor bugs.
 
 
