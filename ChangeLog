@@ -3,6 +3,9 @@ Darkstar ChangeLog
 
 [0.0.9]
 
+ - Slight change to the format of the defaults files.
+ - Fixed a bug in auto-response where public_other's would display the nick
+   twice. (Discovered by myke)
  - Some speed improvements and general cleanup. Removed a bunch of $common()'s
    which are quite expensive. (Thanks to Jeremy Nelson for pointing these out)
 

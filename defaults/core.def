@@ -1,6 +1,6 @@
-config:AUTO_LOAD_MODULES:away channel keepnick misc nickcomp scan tabkey window
-config:DEFAULT_STATUS:2
-config:VERBOSE_SAVE:1
-fset:SET:Current value of $1 is $2-
-fset:SET_NOVALUE:No value for $1 has been set
-fset:STRFTIME:%c
+config AUTO_LOAD_MODULES away channel keepnick misc nickcomp scan tabkey window
+config DEFAULT_STATUS 2
+config VERBOSE_SAVE 1
+fset SET Current value of $1 is $2-
+fset SET_NOVALUE No value for $1 has been set
+fset STRFTIME %c

@@ -1,10 +1,10 @@
-config:AUTO_AWAY:1
-config:AUTO_AWAY_TIME:1200
-config:AUTO_UNSET_AWAY:0
-config:AWAY_LOG:1
-config:AWAY_LOGFILE:~/.epic4/away.log
-config:DEFAULT_AWAY_REASON:gone
-config:DEFAULT_BACK_REASON:hi
-config:PUBLIC_AWAY:0
-config:PUBLIC_AWAY_CHANNELS:
-config:SEND_AWAY_NOTICE:1
+config AUTO_AWAY 1
+config AUTO_AWAY_TIME 1200
+config AUTO_UNSET_AWAY 0
+config AWAY_LOG 1
+config AWAY_LOGFILE ~/.epic4/away.log
+config DEFAULT_AWAY_REASON gone
+config DEFAULT_BACK_REASON hi
+config PUBLIC_AWAY 0
+config PUBLIC_AWAY_CHANNELS 
+config SEND_AWAY_NOTICE 1

@@ -70,9 +70,9 @@ alias load_module (module, void)
 				while (!eof($fd))
 				{
 					@ :line = read($fd)
-					@ :type = before(1 : $line)
-					@ :variable = after(1 : $before(2 : $word(0 $line)))
-					@ :value = after(2 : $line)
+					@ :type = word(0 $line)
+					@ :variable = word(1 $line)
+					@ :value = restw(2 $line)
 				
 					if (match(config $type))
 					{
