@@ -5,6 +5,11 @@
 #
 # To use this file, simply copy it to ~/.epicrc or ~/.ircrc
 #
+# NOTE: Any aliases, assign variables, or hooks that are added in this file
+# will be removed when darkstar.irc is loaded. If you wish to add these things
+# it should be done as part of a module. See doc/modules.txt for a tutorial
+# on writing DarkStar modules.
+#
 
 # In most EPIC builds the default level of window 1 is ALL, a setting
 # that is usually undesirable for users that open multiple windows.
@@ -32,5 +37,5 @@ set SWITCH_CHANNELS_BETWEEN_WINDOWS OFF
 set WORD_BREAK ,;
 
 # Load DarkStar on client startup.
-load ~/darkstar/darkstar.irc
+load -pf ~/darkstar/darkstar.irc
 

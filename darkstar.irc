@@ -13,8 +13,6 @@
 #  See the 'COPYRIGHT' file for licensing information.
 #
 
-if (DS.HOME) {return};
-
 if (word(2 $loadinfo()) != [pf])
 {
 	load -pf $word(1 $loadinfo());
@@ -78,7 +76,7 @@ for array in ($getarrays()) {
 # This will be incremented every time a change takes place in
 # the core scripts (this file and any *.dsc files in $DS.HOME/core/).
 #
-@ DS.CORE_ID = 116;
+@ DS.CORE_ID = 117;
 
 xecho -b -c Loading DarkStar $DS.VERSION;
 
