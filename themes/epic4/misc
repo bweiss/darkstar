@@ -26,6 +26,7 @@ assign -FORMAT.WHOIS_FOOTER2
 assign -FORMAT.WHOIS_HEADER
 assign -FORMAT.WHOIS_HEADER1
 assign -FORMAT.WHOIS_HEADER2
+assign FORMAT.WHOIS_HOST $G $2 : $3-
 assign FORMAT.WHOIS_IDENTIFIED $G $2 : $3-
 assign FORMAT.WHOIS_IDLE $G $2 has been idle $tdiff($3), signed on at $strftime($4 %%a %%b %%T %%Z %%Y)
 assign -FORMAT.WHOIS_NAME

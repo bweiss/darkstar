@@ -26,6 +26,7 @@ assign -FORMAT.WHOIS_FOOTER2
 assign -FORMAT.WHOIS_HEADER
 assign -FORMAT.WHOIS_HEADER1
 assign -FORMAT.WHOIS_HEADER2
+assign FORMAT.WHOIS_HOST $G HOST       %c:%n $after(1 @ $6)
 assign FORMAT.WHOIS_IDENTIFIED $G IDENTIFIED %c:%n $2-
 assign FORMAT.WHOIS_IDLE $G IDLE       %c:%n $tdiff($3)
 assign FORMAT.WHOIS_NAME $G IRCNAME    %c:%n $6-

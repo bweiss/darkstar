@@ -26,9 +26,10 @@ assign -FORMAT.WHOIS_FOOTER2
 assign FORMAT.WHOIS_HEADER %WÚÄ%nÄÄ%KÄ-%nÄ- %WÄ-%nÄÄ%KÄÄ%nÄÄ-Ä%WÄ- Ä %n-Ä %KÄ %nÄ- %WÄÄÄ%nÄ-%KÄ - %nÄÄ%W-Ä%n- %W-  - %nÄ %WÄ%n
 assign -FORMAT.WHOIS_HEADER1
 assign -FORMAT.WHOIS_HEADER2
+assign FORMAT.WHOIS_HOST ³%K³[     %Wh%nost%K]%n   $after(1 @ $6)
 assign FORMAT.WHOIS_IDENTIFIED %K³ [     %Wi%ndent%K] ³%n $2-
 assign FORMAT.WHOIS_IDLE %K³ [     %Wi%ndle%K] ³%n $tdiff($3)
-assign FORMAT.WHOIS_NAME ³%KÚ[  %Wi%nrcname%K]%nÄÙ $6-
+assign FORMAT.WHOIS_NAME ³Ú%K[  %Wi%nrcname%K]%nÄÙ $6-
 assign FORMAT.WHOIS_NICK %W³ %K[%W$[-9]2%K] ³ [%n$3%c@%n$4%K]%n
 assign FORMAT.WHOIS_OPER %K³ [ %Wo%nperator%K] ³%n $2 is being syn flooded (irc operator)
 assign FORMAT.WHOIS_SERVER ³À%K[   %Ws%nerver%K]%nÄ¿ $3 %K[%n$4-%K]%n

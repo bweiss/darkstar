@@ -26,6 +26,7 @@ assign -FORMAT.WHOIS_FOOTER2
 assign -FORMAT.WHOIS_HEADER 
 assign -FORMAT.WHOIS_HEADER1
 assign -FORMAT.WHOIS_HEADER2
+assign FORMAT.WHOIS_HOST $G %BHost%n      : $after(1 @ $6)
 assign FORMAT.WHOIS_IDENTIFIED $G %BIdentified%n : $2-
 assign -FORMAT.WHOIS_IDLE
 assign -FORMAT.WHOIS_NAME 

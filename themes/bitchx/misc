@@ -26,6 +26,7 @@ assign -FORMAT.WHOIS_FOOTER2
 assign FORMAT.WHOIS_HEADER %GÚÄÄÄÄÄ---%gÄ%G--%gÄÄ%G-%gÄÄÄÄÄÄ---%KÄ%g--%KÄÄ%g-%KÄÄÄÄÄÄÄÄÄ--- --  -
 assign -FORMAT.WHOIS_HEADER1
 assign -FORMAT.WHOIS_HEADER2
+assign FORMAT.WHOIS_HOST %G| %Wh%nost     : $after(1 @ $6)
 assign FORMAT.WHOIS_IDENTIFIED %K| %Wi%ndentified : $2-
 assign FORMAT.WHOIS_IDLE %K: %Wi%ndle     : $tdiff($3) \(signon: $strftime($4 %%a %%b %%d %%T %%Y)\)
 assign FORMAT.WHOIS_NAME %G³ %Wi%nrcname  : $6-
