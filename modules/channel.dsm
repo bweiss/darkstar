@@ -64,6 +64,7 @@ format.add TOPIC_CHANGE $G $1 has changed the topic on channel $2 to $3-
 format.add TOPIC_SETBY $G The topic was set by $3 on $strftime($4 %%c)
 
 
+alias alldop alldeop
 alias bans banlist
 alias bk bankick
 alias dop deop
@@ -81,41 +82,41 @@ alias t topic
 
 alias alldeop (nicks)
 {
-	if (nicks)
+	if (!nicks)
 	{
-		for chan in ($mychannels())
+		xecho -b Usage: /alldeop <nick1> [nick2] [nick3] ...
+		return
+	}
+
+	for chan in ($mychannels())
+	{
+		for nick in ($nicks)
 		{
-			for nick in ($nicks)
+			if (ischanop($servernick() $chan) && ischanop($nick $chan))
 			{
-				if (ischanop($servernick() $chan) && ischanop($nick $chan))
-				{
-					//mode $chan -o $nick
-				}
+				//mode $chan -o $nick
 			}
 		}
-	}{
-		xecho -b Usage: /alldeop <nick1> [nick2] [nick3] ...
 	}
 }
 
-alias alldop alldeop
-
 alias allop (nicks)
 {
-	if (nicks)
+	if (!nicks)
 	{
-		for chan in ($mychannels())
+		xecho -b Usage: /allop <nick1> [nick2] [nick3] ...
+		return
+	}
+
+	for chan in ($mychannels())
+	{
+		for nick in ($nicks)
 		{
-			for nick in ($nicks)
+			if (ischanop($servernick() $chan) && onchannel($nick $chan) && !ischanop($nick $chan))
 			{
-				if (ischanop($servernick() $chan) && onchannel($nick $chan) && !ischanop($nick $chan))
-				{
-					//mode $chan +o $nick
-				}
+				//mode $chan +o $nick
 			}
 		}
-	}{
-		xecho -b Usage: /allop <nick1> [nick2] [nick3] ...
 	}
 }
 
@@ -131,14 +132,11 @@ alias ban (targets)
 
 	for target in ($targets)
 	{
-		if (ischanop($N $C))
+		if (onchannel($target $C))
 		{
-			if (onchannel($target $C))
-			{
-				push bans $mask($CONFIG.BANTYPE $userhost($target))
-			}{
-				push bans $target
-			}
+			push bans $mask($CONFIG.BANTYPE $userhost($target))
+		}{
+			push bans $target
 		}
 	}
 
@@ -156,14 +154,14 @@ alias ban (targets)
 
 alias bankick (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
-	if (nick && ischanop($N $C) && onchannel($nick $C))
+	if (!nick)
 	{
-		//mode $C +b $mask($CONFIG.BANTYPE $userhost($nick))
-		//kick $C $nick $reason
-	}{
 		xecho -b Usage: /bankick <nick> [reason]
-		xecho -b   - You must be oped and <nick> must be on the current channel.
+		return
 	}
+
+	ban $nick
+	//kick $C $nick $reason
 }
 
 alias banlist (chan default "$C", void)
@@ -173,6 +171,12 @@ alias banlist (chan default "$C", void)
 
 alias cmode (mode, ...)
 {
+	if (!mode)
+	{
+		xecho -b Usage: /cmode <modes>
+		return
+	}
+
 	//mode $C $mode $*
 }
 
@@ -186,32 +190,35 @@ alias cycle (chan default "$C", void)
 
 alias deop (nicks)
 {
-	if (nicks)
+	if (!nicks)
 	{
-		massmode $C - o $nicks
-	}{
 		xecho -b Usage: /deop <nick1> [nick2] ...
+		return
 	}
+
+	massmode $C - o $nicks
 }
 
 alias devoice (nicks)
 {
-	if (nicks)
+	if (!nicks)
 	{
-		massmode $C - v $nicks
-	}{
 		xecho -b Usage: /devoice <nick1> [nick2] ...
+		return
 	}
+
+	massmode $C - v $nicks
 }
 
 alias invite (nick, channel default "$C", void)
 {
-	if (nick)
+	if (!nick)
 	{
-		//invite $nick $channel
-	}{
 		xecho -b Usage: /invite <nick> [channel]
+		return
 	}
+
+	//invite $nick $channel
 }
 
 /*
@@ -226,46 +233,44 @@ alias join
 			join $before(, $*)
 			join $after(, $*)
 		}
-
 		(#*) (&*) (0) (-*) (!*) {//join $*}
-
 		() {//join -i}
-
 		(*) {//join #$*}
 	}
 }
 
 alias key (key, void)
 {
-	if (key)
+	if (!key)
 	{
-		//mode $C +k $key
-	}{
 		xecho -b Usage: /key <key>
+		return
 	}
+
+	//mode $C +k $key
 }
 
 alias kick (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
-	if (nick && ischanop($N $C) && onchannel($nick $C))
+	if (!nick)
 	{
-		//kick $C $nick $reason
-	}{
 		xecho -b Usage: /kick <nick> [reason]
-		xecho -b   - You must be oped and <nick> must be on the current channel.
+		return
 	}
+
+	//kick $C $nick $reason
 }
 
 alias kickban (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
-	if (nick && ischanop($N $C) && onchannel($nick $C))
+	if (!nick)
 	{
-		//kick $C $nick $reason
-		//mode $C +b $mask($CONFIG.BANTYPE $userhost($nick))
-	}{
 		xecho -b Usage: /kickban <nick> [reason]
-		xecho -b   - You must be oped and <nick> must be on the current channel.
+		return
 	}
+
+	//kick $C $nick $reason
+	ban $nick
 }
 
 /*
@@ -280,11 +285,8 @@ alias leave
 			leave $before(, $0) $1-
 			leave $after(, $0) $1-
 		}
-
 		(#*) (&*) (0) (-*) (!*) {//leave $*}
-
 		() (\*) {//leave * $1-}
-
 		(*) {//leave #$*}
 	}
 }
@@ -295,50 +297,42 @@ alias leave
  */
 alias lk (reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
-	if (ischanop($N $C))
+	if (!ischanop($N $C))
 	{
-		@ reason2 = reason
+		xecho -b Sorry, you gotta be +o to kick people
+		return
+	}
 
-		input "Kick all non-ops from $C? (y/N) "
+	^local ask $"Kick all non-ops from $C? "
+
+	if (toupper($left(1 $ask)) == [Y])
+	{
+		for user in ($channel())
 		{
-			@ :reason = reason2
-			^assign -reason2
-
-			switch ($toupper($0))
+			@ :nick = mid(2 $CONFIG.MAX_NICK_LENGTH $user)
+			if (match(.. $left(2 $user)))
 			{
-				(Y)
-				{
-					for user in ($channel())
-					{
-						@ :nick = mid(2 $CONFIG.MAX_NICK_LENGTH $user)
-
-						if (match(.. $left(2 $user)))
-						{
-							//kick $C $nick $reason
-						} \
-						elsif (match(.? $left(2 $user)))
-						{
-							//kick $C $nick $reason
-						}
-					}
-				}
+				//kick $C $nick $reason
+			} \
+			elsif (match(.? $left(2 $user)))
+			{
+				//kick $C $nick $reason
 			}
 		}
-	}{
-		xecho -b Sorry, you gotta be +o to kick people.
 	}
 }
 
-alias massmode (chan, action, mode, what)
+alias massmode (chan, action, mode, ...)
 {
-	if (action && mode)
+	if (!chan || !action || !mode || ![$*])
 	{
-		fe ($what) a1 a2 a3 a4
-		{
-			//mode $chan $action $repeat(4 $mode) $a1 $a2 $a3 $a4
-		}
-	}{
-		xecho -b Usage: /massmode <channel> <+|-> <mode> [extra parameters]
+		xecho -b Usage: /massmode <channel> <+|-> <mode> <mode parameters>
+		return
+	}
+
+	fe ($*) a1 a2 a3 a4
+	{
+		//mode $chan $action $repeat(4 $mode) $a1 $a2 $a3 $a4
 	}
 }
 
@@ -365,7 +359,6 @@ alias mvoice (chan default "$C", void)
 alias oldtopic (chan default "$C", void)
 {
 	@ :oldtopic = gettmatch(oldtopics $chan*)
-	
 	if (oldtopic)
 	{
 		xecho -b Last topic for $chan: $restw(1 $oldtopic)
@@ -376,26 +369,24 @@ alias oldtopic (chan default "$C", void)
 			
 alias op (nicks)
 {
-	if (nicks)
+	if (!nicks)
 	{
-		massmode $C + o $nicks
-	}{
 		xecho -b Usage: /op <nick1> [nick2] [...]
+		return
 	}
+
+	massmode $C + o $nicks
 }
 
 alias partall (void)
 {
-	input "Are you sure you want to part all your channels? (y/N) " if ([$0])
+	input "Are you sure you want to part all your channels? "
 	{
-		switch ($tolower($left(1 $0)))
+		if (toupper($left(1 $0)) == [Y])
 		{
-			(y)
+			for chan in ($mychannels())
 			{
-				for chan in ($mychannels())
-				{
-					quote part $chan
-				}
+				//part $chan
 			}
 		}
 	}
@@ -404,7 +395,6 @@ alias partall (void)
 alias setoldtopic (chan default "$C", void)
 {
 	@ :oldtopic = gettmatch(oldtopics $chan*)
-	
 	if (oldtopic)
 	{
 		//topic $oldtopic
@@ -466,31 +456,33 @@ alias tban (chan default "$C", void)
 
 alias tempban (time, target, void)
 {
-	if (time && target && ischanop($N $C))
+	if (!time || !target)
 	{
-		if (onchannel($target $C))
-		{
-			//mode $C +b $mask($CONFIG.BANTYPE $userhost($target))
-			timer $time //mode $C -b $mask($CONFIG.BANTYPE $userhost($target))
-		}{
-			//mode $C +b $target
-			timer $time //mode $C -b $target
-		}
-	}{
 		xecho -b Usage: /tempban <seconds> <nick|ban>
+		return
+	}
+
+	if (onchannel($target $C))
+	{
+		//mode $C +b $mask($CONFIG.BANTYPE $userhost($target))
+		timer $time //mode $C -b $mask($CONFIG.BANTYPE $userhost($target))
+	}{
+		//mode $C +b $target
+		timer $time //mode $C -b $target
 	}
 }
 
 alias unban (bans)
 {
-	if (bans)
+	if (!bans)
 	{
-		for ban in ($bans)
-		{
-			//mode $C -b $ban
-		}
-	}{
 		xecho -b Usage: /unban <ban1> [ban2] [ban3] ...
+		return
+	}
+
+	for ban in ($bans)
+	{
+		//mode $C -b $ban
 	}
 }
 
@@ -511,37 +503,40 @@ alias untopic (chan default "$C", void)
 
 alias voice (nicks)
 {
-	if (nicks)
+	if (!nicks)
 	{
-		massmode $C + v $nicks
-	}{
 		xecho -b Usage: /voice <nick1> [nick2] [...]
+		return
 	}
+
+	massmode $C + v $nicks
 }
 
 alias wall (text)
 {
-	if (text)
+	if (!text)
 	{
-		fe ($filter($N $chops())) o1 o2 o3 o4 o5 o6 o7
-		{
-			^notice $o1,$o2,$o3,$o4,$o5,$o6,$o7 [wall/$C] $text
-		}
-		xecho -l walls -- * > [wall/$C] $text
-	}{
 		xecho -b Usage: /wall <text>
+		return
 	}
+
+	fe ($filter($N $chops())) o1 o2 o3 o4 o5 o6 o7
+	{
+		^notice $o1,$o2,$o3,$o4,$o5,$o6,$o7 [wall/$C] $text
+	}
+	xecho -l walls -- * > [wall/$C] $text
 }
 
 alias wall2 (text)
 {
-	if (text)
+	if (!text)
 	{
-		^notice $sar(g/#/#@/$C) [wall/$C] $text
-		xecho -l walls -- * > [wall/$C] $text
-	}{
 		xecho -b Usage: /wall2 <text>
+		return
 	}
+
+	^notice $sar(g/#/#@/$C) [wall/$C] $text
+	xecho -l walls -- * > [wall/$C] $text
 }
 
 

@@ -73,13 +73,13 @@ alias ww whowas
 
 alias chat (nick, void)
 {
-        if (nick)
-        {
-                dcc chat $nick
-        }{
-                xecho -b Usage: /chat <nick>
-                xecho -b   - Attempts a DCC chat with <nick>
-        }
+	if (!nick)
+	{
+		xecho -b Usage: /chat <nick>
+		return
+	}
+
+	//dcc chat $nick
 }
 
 alias colors (void)
@@ -90,35 +90,37 @@ alias colors (void)
 
 alias dns (nicks)
 {
-	if (nicks)
+	if (!nicks)
 	{
-		for nick in ($nicks)
-		{
-			^local address
-			
-			if (is_on($nick))
-			{
-				@ address = after(-1 @ $userhost($nick))
-			}{
-				xecho -b User $nick is not online
-			}
-		
-			xecho -b $nick!$userhost($nick) is ${convert($address) ? convert($address) : [unknown]}
-		}
-	}{
 		xecho -b Usage: /dns <nick> [nick2] [nick3] ...
+		return
+	}
+
+	for nick in ($nicks)
+	{
+		^local address
+
+		if (is_on($nick))
+		{
+			@ address = after(-1 @ $userhost($nick))
+		}{
+			xecho -b User $nick is not online
+		}
+		
+		xecho -b $nick!$userhost($nick) is ${convert($address) ? convert($address) : [unknown]}
 	}
 }
 
 alias nslookup (address, void)
 {
-	if (address)
+	if (!address)
 	{
-		@ :tmp = convert($address)
-		xecho -b $address is ${tmp ? tmp : [unknown]}
-	}{
 		xecho -b Usage: /nslookup <address>
+		return
 	}
+
+	@ :tmp = convert($address)
+	xecho -b $address is ${tmp ? tmp : [unknown]}
 }
 
 alias pingme (void)

@@ -86,18 +86,19 @@ alias wc (void)
 
 alias wj (chan)
 {
-	if (chan)
+	if (!chan)
 	{
-		window new_hide
-		window swap last
-		//join $chan
-		
-		if (CONFIG[AUTO_BIND_ON_WINDOW_JOIN])
-		{
-			window bind $word(0 $chan)
-		}
-	}{
 		xecho -b Usage: /wj <channel>
+		return
+	}
+
+	window new_hide
+	window swap last
+	//join $chan
+		
+	if (CONFIG[AUTO_BIND_ON_WINDOW_JOIN])
+	{
+		window bind $word(0 $chan)
 	}
 }
 
