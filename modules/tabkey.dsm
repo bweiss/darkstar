@@ -1,4 +1,4 @@
-#version 0.4.1
+#version 0.4.2
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -92,7 +92,12 @@ bind ^I parse_command tabkey.main
 alias tabkey.main (void) {
 	@ :oxd = xdebug(extractw)
 	xdebug extractw
-	@ :curword = indextoword($curpos() $L )
+	/* $indextoword() is broken in EPIC4 versions prior to commit_id 610. */
+	if (info(i) >= 610) {
+		@ :curword = indextoword($curpos() $L)
+	} else {
+		@ :curword = indextoword($curpos() $L )
+	}
 	@ :wordind = wordtoindex($curword $L)
 	@ :cmdind = 0
 	if (32 >= (127 & ascii($mid(${curpos() - 1} 1 $L )))) {
