@@ -6,27 +6,29 @@
  * MISC.DSM - The 'miscellaneous stuff' module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 9/1/01 (bmw)
+ * Last modified: 10/14/01 (bmw)
  *
  * This script uses serial number 424 for all ON hooks.
  */
 
 queue cleanup.misc
 {
-	for alias in (chat colors dns disco m nslookup pingme q umode ver wi wii ww)
+	for alias in (chat colors dns disco m nslookup pingme q umode ver whois wi wii ww)
 	{
 		^alias -$alias
 	}
 
-	^on #connect 424 -"*"
-
-	for hook in (301 $jot(310 314) $jot(317 319) ctcp ctcp_reply dcc_chat msg notice send_dcc_chat send_msg send_notice)
+	for hook in (301 $jot(310 314) $jot(317 319) ctcp ctcp_reply dcc_chat msg notice send_ctcp send_dcc_chat send_msg send_notice)
 	{
 		^on $hook -"*"
 	}
-	
+
+	^on #connect 424 -"*"
 	^on mode -'\$servernick\(\) \$servernick\(\) *' 
+	^on #timer 424 -"*"
 	^on who -"* % % % % *"
+
+	@ delarray(away_users)
 }
 
 alias chat (nick, void)
@@ -124,7 +126,7 @@ alias ww whowas
 
 
 /*
- * WHOIS/WHOWAS
+ * WHOIS/WHOWAS related hooks.
  */
 
 on #-timer 424 "*"
@@ -150,7 +152,7 @@ on ^301 "*"
 {
 	if (CONFIG[SHOW_AWAY_ONCE])
 	{
-		if (matchitem(away_users $0*) < 0))
+		if (matchitem(away_users $0*) == -1)
 		{
 			echo $fparse(WHOIS_AWAY $*)
 			@ setitem(away_users $numitems(away_users) $0 $time())
@@ -161,6 +163,7 @@ on ^301 "*"
 }
 
 on ^310 "*" #
+
 on ^311 "*"
 {
 	if (FORMAT[WHOIS_HEADER])
@@ -170,18 +173,23 @@ on ^311 "*"
 	echo $fparse(WHOIS_NICK $1 $2 $3)
 	echo $fparse(WHOIS_NAME $5-)
 }
+
 on ^312 "*" echo $fparse(WHOIS_SERVER $2-)
+
 on ^313 "*" echo $fparse(WHOIS_OPER $1)
+
 on ^314 "*"
 {
 	echo $fparse(WHOWAS_NICK $1 $2 $3)
 	echo $fparse(WHOWAS_NAME $5-)
 }
+
 on ^317 "*"
 {
 	echo $fparse(WHOIS_IDLE $2)
 	echo $fparse(WHOIS_SIGNON $strftime($3 %c))
 }
+
 on ^318 "*"
 {
 	if (FORMAT[WHOIS_FOOTER])
@@ -189,6 +197,7 @@ on ^318 "*"
 		echo $fparse(WHOIS_FOOTER $1-)
 	}
 }
+
 on ^319 "*" echo $fparse(WHOIS_CHANNELS $2-)
 
 /*
