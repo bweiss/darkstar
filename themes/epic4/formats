@@ -57,7 +57,7 @@ assign -FORMAT.SEND_CTCP
 assign FORMAT.SEND_DCC_CHAT => =$1= $2-
 assign FORMAT.SEND_MSG *$1*> $2-
 assign -FORMAT.SEND_NOTICE
-assign FORMAT.SEND_PUBLIC > $3-
+assign FORMAT.SEND_PUBLIC $1> $3-
 assign FORMAT.SEND_PUBLIC_OTHER $2> $3-
 assign FORMAT.SEND_WALL -@$1\-> $2-
 assign FORMAT.SERVER_NOTICE $G $1-

@@ -4,7 +4,7 @@ KNOWN ERRATA (eg, bugs, or unresolved requests):
 ------------------------------------------------
 <none>
 
-[See http://darkstar.prbh.org/CHANGELOG for things that changed in the past]
+[ See http://darkstar.epicsol.org/CHANGELOG for all changes. ]
 
 THE CHANGELOG SINCE THE LAST RELEASE:
 -------------------------------------
@@ -22,3 +22,7 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Always delete the 'nickmgr' timer in nickmgr.add_timer before creating a
   new timer.
 * Add support for backward match cycling in the tabkey module.
+* Remove "set REVERSE_STATUS_LINE" from all themes and add '^O' to the
+  beginning of all STATUS_FORMAT* sets.
+* Do not write the value of REVERSE_STATUS_LINE when saving themes.
+* Change the SEND_PUBLIC format in the epic4 theme to show the target.

@@ -7,16 +7,15 @@ dset DOUBLE_STATUS OFF
 
 set BANNER ***
 set INPUT_PROMPT > 
-set REVERSE_STATUS_LINE ON
 set STATUS_AWAY  (Away)
 set STATUS_CHANNEL  %C
 set STATUS_CHANOP @
 set STATUS_CLOCK  %T
 set STATUS_CPU_SAVER  (%L)
 set STATUS_DOES_EXPANDOS OFF
-set STATUS_FORMAT %T [%R] %*%=%@%N%#%S%H%B%Q%A%C%+%I%O%M%F%L %D %U %W 
-set STATUS_FORMAT1 %T [%R] %*%=%@%N%#%S%H%B%Q%A%C%+%I%O%M%F%L %U 
-set STATUS_FORMAT2 %W %X %Y %Z 
+set STATUS_FORMAT %T [%R] %*%=%@%N%#%S%H%B%Q%A%C%+%I%O%M%F%L %D %U %W 
+set STATUS_FORMAT1 %T [%R] %*%=%@%N%#%S%H%B%Q%A%C%+%I%O%M%F%L %U 
+set STATUS_FORMAT2 %W %X %Y %Z 
 set STATUS_HOLD  Held:
 set STATUS_HOLD_LINES %B
 set -STATUS_INSERT

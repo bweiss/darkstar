@@ -1,4 +1,4 @@
-# version:0.1.1 loader:pf
+# version:0.1.2 loader:pf
 # $Id$
 #
 # theme.dsm - Theme system for DarkStar/EPIC4
@@ -134,7 +134,7 @@ alias theme.save (name, void)
 				{
 					@ write($fd dset DOUBLE_STATUS ${CONFIG.DOUBLE_STATUS ? [ON] : [OFF]});
 					@ write($fd );
-					for setvar in (BANNER INPUT_PROMPT REVERSE_STATUS_LINE $getsets(STATUS_*))
+					for setvar in (BANNER INPUT_PROMPT $getsets(STATUS_*))
 					{
 						@ :value = $setvar;
 						@ write($fd set $setvar $value);
