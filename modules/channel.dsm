@@ -1,4 +1,4 @@
-#version 0.5.5
+#version 0.5.6
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
@@ -808,7 +808,7 @@ on ^send_action '\\[#* &* +*\\] *'
 
 on ^send_public "*"
 {
-	if ([$0] == C) {
+	if (iscurchan($0)) {
 		if (FORMAT.SEND_PUBLIC) {
 			echo $fparse(SEND_PUBLIC $0 $servernick() $1-)
 		}
