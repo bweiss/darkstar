@@ -1,4 +1,4 @@
-#version 0.5.2
+#version 0.5.3
 /*
  * TABKEY.DSM - Tab key module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
@@ -334,7 +334,9 @@ alias tabkey.proc.nick (list)
 		@ :lastw = sar(g/\\/\\\\\/$lastw)
 		if (#L < 2)
 		{
-			@ suffix = CONFIG[TABKEY_NICKCOMP_SUFFIX] ## [ ]
+			@ :suffix = CONFIG[TABKEY_NICKCOMP_SUFFIX] ## [ ]
+		}{
+			@ :suffix = [ ]
 		}
 		@ :matches = pattern($lastw% $list)
 	}
