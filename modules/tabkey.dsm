@@ -1,4 +1,4 @@
-#version 0.4
+#version 0.4.1
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -607,7 +607,7 @@ alias tabkey.method.variable (type, void) {
 		^local retval
 		if (rm) {
 			for ii in ($matches) {
-				push ret -$ii
+				push retval -$ii
 			}
 		} else {
 			@ :retval = matches
