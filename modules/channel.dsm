@@ -1,4 +1,4 @@
-#version 0.6.1
+#version 0.6.2
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
@@ -72,7 +72,7 @@ alias alldop alldeop
 alias alldeop (nicks)
 {
 	if (!nicks) {
-		xecho -b Usage: /alldeop <nick> ...
+		xecho -b Usage: /ALLDEOP <nick> ...
 		return
 	}
 
@@ -88,7 +88,7 @@ alias alldeop (nicks)
 alias allop (nicks)
 {
 	if (!nicks) {
-		xecho -b Usage: /allop <nick> ...
+		xecho -b Usage: /ALLOP <nick> ...
 		return
 	}
 
@@ -106,7 +106,7 @@ alias ban (targets)
 	^local bans,mode
 
 	if (!targets) {
-		xecho -b Usage: /ban <nick|hostmask> ...
+		xecho -b Usage: /BAN <nick|hostmask> ...
 		return
 	}
 
@@ -125,7 +125,7 @@ alias bk bankick
 alias bankick (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
 	if (!nick) {
-		xecho -b Usage: /bankick <nick> [reason]
+		xecho -b Usage: /BANKICK <nick> [reason]
 		return
 	}
 
@@ -142,7 +142,7 @@ alias banlist (chan default "$C", void)
 alias cmode (mode, ...)
 {
 	if (!mode) {
-		xecho -b Usage: /cmode <modes>
+		xecho -b Usage: /CMODE <modes>
 		return
 	}
 
@@ -161,7 +161,7 @@ alias dop deop
 alias deop (nicks)
 {
 	if (!nicks) {
-		xecho -b Usage: /deop <nick> ...
+		xecho -b Usage: /DEOP <nick> ...
 		return
 	}
 
@@ -172,7 +172,7 @@ alias dvoice devoice
 alias devoice (nicks)
 {
 	if (!nicks) {
-		xecho -b Usage: /devoice <nick> ...
+		xecho -b Usage: /DEVOICE <nick> ...
 		return
 	}
 
@@ -214,7 +214,7 @@ alias i invite
 alias invite (nick, channel default "$C", void)
 {
 	if (!nick) {
-		xecho -b Usage: /invite <nick> [channel]
+		xecho -b Usage: /INVITE <nick> [channel]
 		return
 	}
 
@@ -246,7 +246,7 @@ alias join
 alias key (key, void)
 {
 	if (!key) {
-		xecho -b Usage: /key <key>
+		xecho -b Usage: /KEY <key>
 		return
 	}
 
@@ -257,7 +257,7 @@ alias k kick
 alias kick (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
 	if (!nick) {
-		xecho -b Usage: /kick <nick> [reason]
+		xecho -b Usage: /KICK <nick> [reason]
 		return
 	}
 
@@ -268,7 +268,7 @@ alias kb kickban
 alias kickban (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
 	if (!nick) {
-		xecho -b Usage: /kickban <nick> [reason]
+		xecho -b Usage: /KICKBAN <nick> [reason]
 		return
 	}
 
@@ -306,7 +306,7 @@ alias leave
 alias lk (reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
 	if (!ischanop($N $C)) {
-		xecho -b Sorry, you gotta be +o to kick people
+		xecho -b Sorry, you must be +o to kick people
 		return
 	}
 
@@ -327,7 +327,12 @@ alias lk (reason default "$CONFIG.DEFAULT_KICK_REASON")
 alias massmode (chan, action, mode, ...)
 {
 	if (!chan || !action || !mode || ![$*]) {
-		xecho -b Usage: /massmode <channel> <+|-> <mode> <mode parameters>
+		xecho -b Usage: /MASSMODE <channel> <+|-> <mode> <mode parameters>
+		return
+	}
+
+	if (!ischanop($servernick() $chan)) {
+		xecho -b Sorry, you must be +o to set channel modes
 		return
 	}
 
@@ -349,7 +354,11 @@ alias massmode (chan, action, mode, ...)
 alias mdop mdeop
 alias mdeop (chan default "$C", void)
 {
-	massmode $chan - o $remw($servernick() $chops($chan))
+	if (chops($chan)) {
+		massmode $chan - o $remw($servernick() $chops($chan))
+	} else {
+		xecho -b No operators found on $chan
+	}
 }
 
 alias mdvoice mdevoice
@@ -368,7 +377,7 @@ alias mme
 	}
 
 	if (!text) {
-		xecho -b Usage: /mme [-all] <text>
+		xecho -b Usage: /MME [-all] <text>
 		return
 	}
 
@@ -387,7 +396,11 @@ alias mme
 
 alias mop (chan default "$C", void)
 {
-	massmode $chan + o $remw($servernick() $nochops($chan))
+	if (nochops($chan)) {
+		massmode $chan + o $remw($servernick() $nochops($chan))
+	} else {
+		xecho -b No normal users found on $chan
+	}
 }
 
 alias msay
@@ -400,7 +413,7 @@ alias msay
 	}
 
 	if (!text) {
-		xecho -b Usage: /msay [-all] <text>
+		xecho -b Usage: /MSAY [-all] <text>
 		return
 	}
 
@@ -435,7 +448,7 @@ alias oldtopic (chan default "$C", void)
 alias op (nicks)
 {
 	if (!nicks) {
-		xecho -b Usage: /op <nick> ...
+		xecho -b Usage: /OP <nick> ...
 		return
 	}
 
@@ -516,7 +529,7 @@ alias tban (chan default "$C", void)
 alias tempban (time, target, void)
 {
 	if (!time || !target) {
-		xecho -b Usage: /tempban <seconds> <nick|mask>
+		xecho -b Usage: /TEMPBAN <seconds> <nick|mask>
 		return
 	}
 
@@ -532,7 +545,7 @@ alias tempban (time, target, void)
 alias unban (bans)
 {
 	if (!bans) {
-		xecho -b Usage: /unban <ban> ...
+		xecho -b Usage: /UNBAN <ban> ...
 		return
 	}
 
@@ -556,7 +569,7 @@ alias untopic (chan default "$C", void)
 alias voice (nicks)
 {
 	if (!nicks) {
-		xecho -b Usage: /voice <nick> ...
+		xecho -b Usage: /VOICE <nick> ...
 		return
 	}
 
@@ -570,7 +583,7 @@ alias voice (nicks)
 alias wall (text)
 {
 	if (!text) {
-		xecho -b Usage: /wall <text>
+		xecho -b Usage: /WALL <text>
 		return
 	}
 
@@ -582,13 +595,13 @@ alias wall (text)
 }
 
 /*
- * This is the same as /wall but only sends one nick per command
+ * This is the same as /WALL but only sends one nick per command
  * sent to the server.
  */
 alias wall2 (text)
 {
 	if (!text) {
-		xecho -b Usage: /wall2 <text>
+		xecho -b Usage: /WALL2 <text>
 		return
 	}
 

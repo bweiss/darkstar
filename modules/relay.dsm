@@ -39,7 +39,7 @@ config.add -b RELAY_STRIP_CRAP 1
 alias relay (type, ...)
 {
 	if (!type) {
-		xecho -b Usage: /relay <type> [-clear|-list|<item#> [<target>]]
+		xecho -b Usage: /RELAY <type> [-clear|-list|<item#> [<target>]]
 		xecho -b Available types: ctcp ctcp_reply msg notice public public_other send_ctcp send_msg send_notice send_public send_public_other
 		return
 	}

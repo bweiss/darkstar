@@ -32,7 +32,7 @@ alias operwall (text)
 	if (text) {
 		//quote operwall :$text
 	} else {
-		xecho -b Usage: /operwall <text>
+		xecho -b Usage: /OPERWALL <text>
 	}
 }
 

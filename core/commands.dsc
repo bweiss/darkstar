@@ -66,7 +66,7 @@ alias less (file, void)
 			xecho -b -w $winnum $file\: no such file.
 		}
 	} else {
-		xecho -b -w $winnum Usage: /less <filename>
+		xecho -b -w $winnum Usage: /LESS <filename>
 	}
 }
 

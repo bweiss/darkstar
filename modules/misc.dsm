@@ -85,7 +85,7 @@ alias disco disconnect
 alias dns (nicks)
 {
 	if (!nicks) {
-		xecho -b Usage: /dns <nick> ...
+		xecho -b Usage: /DNS <nick> ...
 		return
 	}
 
@@ -106,7 +106,7 @@ alias m msg
 alias nslookup
 {
 	if (![$*]) {
-		xecho -b Usage: /nslookup <address> ...
+		xecho -b Usage: /NSLOOKUP <address> ...
 		return
 	}
 
@@ -127,12 +127,12 @@ alias tig (void)
 {
 	@ delarray(misc.tig)
 
-	/* Grab the ignore list and store it in the misc.tig array. */
+	/* Grab the ignore list and store it in the misc.tig array */
 	for mask in ($igmask(*)) {
 		@ setitem(misc.tig $numitems(misc.tig) $mask $igtype($mask))
 	}
 
-	/* Display ignore list. */
+	/* Display ignore list */
 	xecho -b Ignorance list:
 	for cnt from 0 to ${numitems(misc.tig) - 1} {
 		@:line = getitem(misc.tig $cnt)
@@ -142,7 +142,7 @@ alias tig (void)
 
 	^local tmp $"Which ignore(s) to remove? (1, 2-5, ...) "
 
-	/* Remove any of the ignores that the user specified above. */
+	/* Remove any of the ignores that the user specified above */
 	for ignum in ($tmp) {
 		@:start = before(- $ignum)
 		@:end = after(- $ignum)
@@ -301,7 +301,7 @@ on ^319 "*"
 		 *
 		 * NOTE: The WHOIS_CHANNELS variable will still be used for
 		 * the first line, and the WHOIS_CHANNELS_WRAP variable will
-		 * be used for all proceeding lines.
+		 * be used to format all proceeding lines.
 		 */
 
 		^local format_var WHOIS_CHANNELS
@@ -533,7 +533,7 @@ on ^who "* % % % % *"
 
 		/*
 		 * This prevents the header from being displayed more than once.
-		 * It is removed by the WHO_FOOTER hook (315).
+		 * It is removed by the 315 hook (WHO_FOOTER).
 		 */
 		@ MISC.WHO_HEADER_DONE = 1
 	}

@@ -97,7 +97,7 @@ alias modlist (void)
 alias reloadmod (modules)
 {
 	if (!modules) {
-		xecho -b Usage: /reloadmod <module> [module] ...
+		xecho -b Usage: /RELOADMOD <module> [module] ...
 		return
 	}
 

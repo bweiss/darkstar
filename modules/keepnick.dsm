@@ -80,7 +80,7 @@ alias getnick (nick, void)
 			xecho -b Your current nick is already [$nick]
 		} else {
 			xecho -b Getnick is *${_GETNICK ? [active] : [inactive]}* [$_GETNICK]
-			xecho -b Usage: /getnick <nick|->
+			xecho -b Usage: /GETNICK <nick|->
 		}
 	}
 }
