@@ -19,7 +19,7 @@ queue cleanup.dcc
 }
 
 
-config.add DCC_AUTOGET 0
+config.add -b DCC_AUTOGET 0
 
 format.add DCC_CHAT [$Z] DCC <$1> $2-
 format.add SEND_DCC_CHAT [$Z] SEND_DCC $1> $2-
