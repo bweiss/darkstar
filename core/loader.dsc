@@ -9,6 +9,11 @@
 
 alias loadmod (modules)
 {
+	^local pass
+	^local progress
+	@:oldprompt = INPUT_PROMPT
+	@:verbose = CONFIG.LOADMODULE_VERBOSE
+
 	loader.build_modlist
 
 	if (!modules) {
@@ -20,13 +25,6 @@ alias loadmod (modules)
 	}
 
 	@:modules = loader.which_mods(modules $modules)
-	@:verbose = CONFIG.LOADMODULE_VERBOSE
-
-	if (!verbose) {
-		^local progress
-		^local pass
-		@:oldprompt = INPUT_PROMPT
-	}
 
 	for module in ($modules)
 	{
@@ -54,7 +52,11 @@ alias loadmod (modules)
 	}
 
 	if (!verbose) {
-		^set INPUT_PROMPT $oldprompt
+		if (oldprompt == []) {
+			^set -INPUT_PROMPT
+		} else {
+			^set INPUT_PROMPT $oldprompt
+		}
 		xecho -b Loaded $#pass module${#pass == 1 ? [] : [s]}${#pass > 0 ? [ \($pass\)] : []}
 	}
 }
@@ -105,6 +107,11 @@ alias reloadmod (modules)
 
 alias unloadmod (modules)
 {
+	^local pass
+	^local progress
+	@:oldprompt = INPUT_PROMPT
+	@:verbose = CONFIG.LOADMODULE_VERBOSE
+
 	if (!modules) {
 		echo #   Module
 		for cnt from 0 to ${numitems(loaded_modules) - 1} {
@@ -118,13 +125,6 @@ alias unloadmod (modules)
 	}
 
 	@:modules = loader.which_mods(loaded_modules $modules)
-	@:verbose = CONFIG.LOADMODULE_VERBOSE
-
-	if (!verbose) {
-		^local progress
-		^local pass
-		@:oldprompt = INPUT_PROMPT
-	}
 
 	for module in ($modules)
 	{
@@ -154,7 +154,11 @@ alias unloadmod (modules)
 	}
 
 	if (!verbose) {
-		^set INPUT_PROMPT $oldprompt
+		if (oldprompt == []) {
+			^set -INPUT_PROMPT
+		} else {
+			^set INPUT_PROMPT $oldprompt
+		}
 		xecho -b Unloaded $#pass module${#pass == 1 ? [] : [s]}${#pass > 0 ? [ \($pass\)] : []}
 	}
 }
