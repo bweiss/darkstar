@@ -1,4 +1,4 @@
-#version 0.3.2
+#version 0.3.3
 /* $Id$ */
 /*
  * window.dsm - Window module for Darkstar/EPIC4
@@ -119,11 +119,11 @@ config.add    MSG_WINDOW_SIZE 5
 ^bind META12-~ PARSE_COMMAND window.msgwin_up
 ^bind META13-~ PARSE_COMMAND window.msgwin_down
 ^bind -symbolic key_f11 TOGGLE_INSERT_MODE
-^bind -symbolic key_f12 PARSE_COMMAND window msgs clear
+^bind -symbolic key_f12 PARSE_COMMAND if (winnum(msgs) != -1) {window msgs clear}
 
 
-/* Force the loading of saved settings early so the two /if statements
-   below will work. */
+/* Force the loading of saved settings early
+   so the following /if commands can use them. */
 module.load_saved_settings
 
 
