@@ -56,7 +56,7 @@ queue cleanup.window
 /****** CONFIG/FORMAT VARIABLES ******/
 
 config.add    AUTO_BIND_CHANNELS
-config.add    AUTO_CREATE_WINDOWS 10
+config.add    AUTO_CREATE_WINDOWS 2
 config.add -b BIND_ON_JOIN 0
 config.add -b MSG_WINDOW 0
 config.add    MSG_WINDOW_LEVEL msgs,opnotes,wallops

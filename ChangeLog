@@ -15,6 +15,9 @@ DarkStar ChangeLog
    The window module should now only create windows up to a refnum equal
    to the value of the AUTO_CREATE_WINDOWS config variable.
 
+   The default value for AUTO_CREATE_WINDOWS has been lowered to 2.
+   This should dramatically improve load times.
+
  * All of the status bars (with the exception of "epic4") now limit the
    number of characters that will be displayed for channels and servers.
    The benefits of this are pretty obvious if you join a channel with
