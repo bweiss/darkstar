@@ -23,7 +23,7 @@ alias save (args)
 		}
 		(*)
 		{
-			@ savedir = twiddle($CONFIG.SAVE_DIRECTORY)
+			@ savedir = twiddle($DS.SAVE_DIR)
 		}
 	}
 	

@@ -49,6 +49,8 @@ of the following environment variables...
 
   DARKSTAR_HOME - Darkstar home directory (default ~/darkstar)
   DARKSTAR_RC - Location of the Darkstar startup file (default ~/.epic4/.dsrc)
+  DARKSTAR_SAVEDIR - Directory where settings should be saved
+		     (default ~/.epic4/.darkstar)
 
 This can be accomplished in the following ways (depending on your shell) ...
 

@@ -2,6 +2,9 @@ Darkstar ChangeLog
 
 [current]
 
+ - New environment variable: DARKSTAR_SAVEDIR. The SAVE_DIRECTORY config
+   variable has been removed entirely. Please use the previously mentioned
+   environment variable to change the default save directory.
  - Changes to the format of the defaults files. Boolean config variables now
    need to be specified with the "bool" keyword. Everything else is taken as
    a literal config variable (opposite of old behaviour).
