@@ -3,6 +3,8 @@ Darkstar ChangeLog
 
 12/21/01
 
+ * The epic4 theme is now the default.
+
  * The config script (config.dsc) will now hook any changes to config (not
    format) variables to the "hook" /on hook. The arguments it receives are
    as follows: CONFIG <variable name> <new value>
