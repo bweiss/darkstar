@@ -4,7 +4,7 @@
  * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
  *
  * FUNCTIONS.DSC - Some useful functions for Darkstar/EPIC4
- * Author: Brian Weiss <brian@got.net> - 2001
+ * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
  * If you have any functions you feel are useful enough to be in this file,
  * feel free to email me.

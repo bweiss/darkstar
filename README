@@ -1,21 +1,23 @@
 Darkstar README
 Author: Brian Weiss <brian@epicsol.org>
 
-Last modification: 6/1/01
+Last modification: 7/4/01
 
 Darkstar and EPIC4 can be obtained from http://www.got.net/~brian/
 
 Official EPIC Website: http://www.epicsol.org/
 
 
+ABOUT
+
 Darkstar is a modular script written for use with EPIC4, specifically,
-version 1.0. The idea behind this script was to create something that was
-very powerful for other scripters, yet at the same time easy for normal
-people to use. I believe I have accomplished just such a thing. The modularity
-of the script allows the addition/removal of features at any time. This lets
-you to make the script as lightweight or as bloated as you want. I tried to
-make the core of the script as fast and small as possible and I think I've
-done a pretty good job. Hopefully you'll find this script as useful as I do.
+version 1.0. It is intended mostly for advanced users that wish to
+take the time to customize their client. The core script itself is quite
+small and provides everything necessary to load/unload modules, configure
+settings, save settings, and browse the help files. All other features
+come in the form of modules that can be loaded or unloaded at any time.
+This gives the script great flexibility and power. Anyway, I hope you find
+this script as useful as I do.
 
 
 GETTING STARTED
@@ -30,13 +32,17 @@ of the following environment variables...
 
 This can be accomplished in the following ways (depending on your shell) ...
 
-  (sh, bash, zsh, etc)
+(sh, bash, zsh, etc)
 
   export DARKSTAR_HOME=~/.epic4/darkstar
 
-  (*csh)
+(*csh)
 
   setenv DARKSTAR_HOME ~/.epic4/darkstar
+
+If you don't want to create these variables every time you login, I recommend
+putting them in a shell startup script. (~/.bash_profile, ~/.profile,
+~/.zshrc, ~/.cshrc, etc.)
 
 Nothing else is required to begin using Darkstar. However, I would recommend
 having a look at sample.dsrc in the main directory. This file will be loaded
@@ -93,8 +99,14 @@ modules/*.dsm		- The modules themselves.
 
 
 I would like to briefly thank the following people for contributing in some
-way to this script: hop, panasync, RoboHak, shade, BlackJac, adm, dialtone,
-		    nutbar, whitefang, Tilt, defiler, ww, myke, and Dragoon.
+way to this script:
+			Jeremy Nelson		RoboHak
+			Colten Edwards		dialtone
+			Eli Sand		adm
+			shade			whitefang
+			BlackJac		Tilt
+			defiler			ww
+			myke
 
 If you think I forgot your name on this list, just drop me an email.
 

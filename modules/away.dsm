@@ -4,7 +4,7 @@
  * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
  *
  * AWAY.DSM - Away module for Darkstar/EPIC4
- * Author: Brian Weiss <brian@got.net> - 2001
+ * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
  * This script uses serial number 421 for all ON hooks.
  */
@@ -33,7 +33,7 @@ queue cleanup.away
 
 alias away (reason default "$CONFIG.DEFAULT_AWAY_REASON")
 {
-	if (!_AWAY)
+	if (!A)
 	{
 		if (CONFIG[AWAY_LOG])
 		{
@@ -60,7 +60,7 @@ alias away (reason default "$CONFIG.DEFAULT_AWAY_REASON")
 		}
 
 		@ away.add_logging()
-		^assign _AWAY $time() \"$reason\"
+		^assign AWAY.TIME $time()
 		//away $reason
 	}{
 		xecho -b You are already away!
@@ -69,7 +69,7 @@ alias away (reason default "$CONFIG.DEFAULT_AWAY_REASON")
 
 alias back (reason default "$CONFIG.DEFAULT_BACK_REASON")
 {
-	if (_AWAY)
+	if (A)
 	{
 		if (CONFIG[AWAY_LOG])
 		{
@@ -84,19 +84,19 @@ alias back (reason default "$CONFIG.DEFAULT_BACK_REASON")
 			{
 				for chan in ($common($CONFIG.PUBLIC_AWAY_CHANNELS / $mychannels()))
 				{
-					describe $chan is back: $reason [Gone since: $strftime($word(0 $_AWAY) %c)]
+					describe $chan is back: $reason [Gone since: $strftime($AWAY.TIME %c)]
 				}
 			}{
 				for chan in ($mychannels())
 				{
-					describe $chan is back: $reason [Gone since: $strftime($word(0 $_AWAY) %c)]
+					describe $chan is back: $reason [Gone since: $strftime($AWAY.TIME %c)]
 				}
 			}
 		}
 
 		@ away.cleanup_logging()
 		@ delarray(sent_away)
-		^assign -_AWAY
+		^assign -AWAY.TIME
 		//away
 
 		if (AWAY[NEWMSGS])
@@ -163,7 +163,7 @@ alias remlog (void)
 		xecho -b Logfile [$CONFIG.AWAY_LOGFILE] does not exist.
 	}
 	
-	if (_AWAY && CONFIG[AWAY_LOG])
+	if (A && CONFIG[AWAY_LOG])
 	{
 		@ :fd = open($CONFIG.AWAY_LOGFILE w)
 		@ write($fd [MsgLog Started $strftime(%c)])
@@ -175,7 +175,7 @@ on #^input 421 "*"
 {
 	@ TS.LAST_INPUT = time()
 	
-	if (_AWAY && CONFIG[AUTO_UNSET_AWAY])
+	if (A && CONFIG[AUTO_UNSET_AWAY])
 	{
 		back
 	}
@@ -183,7 +183,7 @@ on #^input 421 "*"
 
 on #^timer 421 "*"
 {
-	if (!_AWAY && CONFIG[AUTO_AWAY] && CONFIG[AUTO_AWAY_TIME] > 0)
+	if (!A && CONFIG[AUTO_AWAY] && CONFIG[AUTO_AWAY_TIME] > 0)
 	{
 		@ :diff = time() - CONFIG[AUTO_AWAY_TIME]
 		@ :minutes = CONFIG[AUTO_AWAY_TIME] / 60
@@ -197,7 +197,7 @@ on #^timer 421 "*"
 
 on #^timer 421 "12:00"
 {
-	if (_AWAY && CONFIG[AWAY_LOG])
+	if (A && CONFIG[AWAY_LOG])
 	{
 		@ :fd = open($CONFIG.AWAY_LOGFILE w)
 		@ write($fd [TimeStamp $strftime(%c)])
@@ -210,7 +210,7 @@ alias away.add_logging (void)
 {
 	^on #^msg 421 "*"
 	{
-		if (_AWAY)
+		if (A)
 		{
 			@ away.process_incoming(MSG $*)
 		}
@@ -218,7 +218,7 @@ alias away.add_logging (void)
 
 	^on #^notice 421 "*"
 	{
-		if (_AWAY)
+		if (A)
 		{
 			@ away.process_incoming(NOTICE $*)
 		}
@@ -239,7 +239,7 @@ alias away.process_incoming (type, nick, msg)
 	if (CONFIG[SEND_AWAY_NOTICE] && finditem(sent_away $nick) < 0)
 	{
 		@ setitem(sent_away $numitems(sent_away) $nick)
-		notice $nick I am currently away. \($word(1 $_AWAY)\) [Gone since: $strftime($word(0 $_AWAY) %c)] [Log/${CONFIG[AWAY_LOG] ? [ON] : [OFF]}]
+		notice $nick I am currently away. \($A\) [Gone since: $strftime($AWAY.TIME %c)] [Log/${CONFIG[AWAY_LOG] ? [ON] : [OFF]}]
 	}
 
 	return

@@ -4,9 +4,10 @@
  * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
  *
  * HELP.DSC - Help system for Darkstar/EPIC4
- * Author: Brian Weiss <brian@got.net> - 2001
+ * Author: Brian Weiss <brian@epicsol.org> - 2001
+ *         whitefang
  *
- * This was originally written by whitefang. He deserves all credit.
+ * This was originally written by whitefang. He deserves all the credit.
  */
 
 alias dhelp (...)

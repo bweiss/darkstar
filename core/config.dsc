@@ -4,7 +4,7 @@
  * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
  *
  * CONFIG.DSC - Configuration manager for Darkstar/EPIC4
- * Author: Brian Weiss <brian@got.net> - 2001
+ * Author: Brian Weiss <brian@epicsol.org> - 2001
  */
 
 alias conf dset

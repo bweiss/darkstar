@@ -4,7 +4,7 @@
  * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
  *
  * SAVE.DSC - Save /CONFIG and /FSET settings for Darkstar/EPIC4
- * Author: Brian Weiss <brian@got.net> - 2001
+ * Author: Brian Weiss <brian@epicsol.org> - 2001
  */
 
 alias save (savedir default "$DS.SAVE_DIR", void)

@@ -5,7 +5,7 @@
  *
  *
  * NICKCOMP.DSM - Nick completion module for Darkstar/EPIC4
- * Author: Brian Weiss <brian@got.net> - 2001
+ * Author: Brian Weiss <brian@epicsol.org> - 2001
  *         shade <shade@chemlab.org>
  *
  * Most of this was taken from the nick completion module that shade wrote

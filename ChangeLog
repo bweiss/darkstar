@@ -3,6 +3,9 @@ Darkstar ChangeLog
 
 [0.0.9]
 
+ - [away.dsm] Now uses the internal variable $A to determine if away or not.
+   This fixes a bug that caused the script to think we're not away when the
+   server says we are.
  - New dset variable: AUTO_LOAD_PROMPT - If true, you will be asked on startup
    which modules you would like to load (old behaviour). If false, the modules
    listed in AUTO_LOAD_MODULES will be loaded without prompting the user.

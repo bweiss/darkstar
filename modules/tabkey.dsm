@@ -4,7 +4,7 @@
  * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
  *
  * TABKEY.DSM - Tab key module for Darkstar/EPIC4
- * Author: Brian Weiss <brian@got.net> - 2001
+ * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
  * This script uses serial number 420 for all ON hooks.
  */
@@ -75,11 +75,6 @@ alias tabkey.process_tabkey (void)
 				(msg % *)
 				{
 					@ tabkey.msg_routine()
-				}
-				(dcc % %)
-				(mode % %)
-				{
-					@ tabkey.nickcomp_routine()
 				}
 				(config %)
 				(dset %)
