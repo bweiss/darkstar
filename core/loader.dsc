@@ -393,6 +393,8 @@ if (CONFIG[AUTO_LOAD_MODULES])
 			@ ugh = []
 		}
 	}{
+		@ loader.build_modlist()
+
 		xecho -b Auto-Loading modules...
 		for module in ($CONFIG.AUTO_LOAD_MODULES)
 		{
