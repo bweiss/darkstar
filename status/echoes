@@ -24,7 +24,7 @@ set STATUS_CHANOP @
 set STATUS_CLOCK %T
 set STATUS_DOES_EXPANDOS ON
 set STATUS_FORMAT 16Ä15Ä14[ 10%@15%N14/16%#10: 15%2 %>%Q%F15win14/16%R 14]15Ä16Ä
-set STATUS_FORMAT1 15Ú16Â15Ä14[ 10%@15%N14/16%#10: 15%S %>%Q%F15win14/16%R 14]15Ä16¿
+set STATUS_FORMAT1 15Ú16Â15Ä14[ 10%@15%N14/16%#10: 15%2 %>%Q%F15win14/16%R 14]15Ä16¿
 set STATUS_FORMAT2 16³15À14[-1 %C14/16%+10: %1 %>%H%M%A15time14/16%T 14]15Ù
 set STATUS_HOLD 14\(more14\) 
 set -STATUS_HOLD_LINES
@@ -37,9 +37,10 @@ set STATUS_OPER *
 set -STATUS_OVERWRITE
 set STATUS_QUERY 14\(15query14/16$Q14\) 
 set -STATUS_SCROLLBACK
-set STATUS_SERVER $left(24 $servername($winserv()))
+set -STATUS_SERVER
 set STATUS_UMODE +%#
 set STATUS_USER1 15o14/16$numwords($chanops()) 15n14/16$numwords($nochops()) 15t14/16$numonchannel()
+set STATUS_USER2 $left(24 $servername($winserv()))
 set STATUS_VOICE +
 set -STATUS_WINDOW
 

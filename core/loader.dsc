@@ -48,7 +48,7 @@ alias loadmod (modules)
 			@:fail++
 			switch ($retcode) {
 				(1) {xecho -b Error: No modules found \($retcode\)}
-				(2) {xecho -b Error: Module [$module] is already \($retcode\)}
+				(2) {xecho -b Error: Module [$module] is already loaded \($retcode\)}
 				(3) {xecho -b Error: Module [$module] not found \($retcode\)}
 				(*) {xecho -b Error: Unknown \($retcode\)}
 			}
