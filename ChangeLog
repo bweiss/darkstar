@@ -3,6 +3,10 @@ Darkstar ChangeLog
 
 [10/12/01]
 
+ * I removed %D (DCC status) from the "darkstar" status bar as it caused rapid
+   screen redraws. These redraws were enough to saturate the bandwidth on
+   dialup connections.
+
  * Added /purge to functions.dsc (requested by whitefang).
 
  * [nickcomp.dsm] The new format variable NICK_COMPLETION now determines the
