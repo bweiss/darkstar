@@ -35,9 +35,9 @@ WHERE TO GET DARKSTAR AND EPIC4
 Recent versions of both DarkStar and EPIC4 can be found at the
 following URLs:
 
-  http://www.epicsol.org/~brian/darkstar/
-  http://www.got.net/~brian/epic4/
+  http://darkstar.epicsol.org/
   http://www.epicsol.org/
+  http://www.got.net/~brian/epic4/
 
 A snapshot of my current tree (as well as EPIC) is also available via CVS:
 
