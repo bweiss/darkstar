@@ -1,6 +1,13 @@
 Darkstar ChangeLog
 
 
+[10/18/01]
+
+ * Added $fparse2() to config.dsc. Works exactly the same as $fparse() except
+   it does not pass its arguments through $cparse(). For the moment this is
+   only being used by nickcomp.dsm. As a result, I am no longer replacing
+   "^C-1" with "^C".
+
 [10/17/01]
 
  * [keepnick.dsm] Fixed a bug discovered by whitefang and hop. Bad things

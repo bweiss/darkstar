@@ -34,7 +34,7 @@ on ^input "%: *"
 	if (CONFIG[NICK_COMPLETION])
 	{
 		@ :complete = nickcomp.getnick($before($CONFIG.NICK_COMPLETION_CHAR $*))
-		sendline ${complete ? sar(g/-1//$fparse(NICK_COMPLETION $complete $1-)) : [$*]}
+		sendline ${complete ? fparse2(NICK_COMPLETION $complete $1-) : [$*]}
 	}
 }
 

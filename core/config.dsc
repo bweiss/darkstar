@@ -116,6 +116,11 @@ alias fparse
 	eval return $cparse($(FORMAT.$0))
 }
 
+alias fparse2
+{
+	eval return $(FORMAT.$0)
+}
+
 /*
  * This is a modified version of shade's setcat.
  */
