@@ -6,7 +6,7 @@
  * LOADER.DSC - Module loader for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 2/17/02 (bmw)
+ * Last modified: 2/21/02 (bmw)
  */
 
 

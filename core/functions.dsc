@@ -6,7 +6,7 @@
  * FUNCTIONS.DSC - Some useful functions for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/21/02 (bmw)
+ * Last modified: 2/22/02 (bmw)
  *
  * If you have any functions you feel are useful enough to be in this file,
  * feel free to email me.
@@ -15,7 +15,7 @@
 /*
  * convert.num(0|1)
  * convert.onoff(off|on)
- * Convert between 0/1 and OFF/ON. These are mostly used by /dset.
+ * Convert between 0/1 and OFF/ON. These are mostly used by /DSET.
  */ 
 alias convert.num (arg, void)
 {
@@ -38,8 +38,7 @@ alias convert.onoff (arg, void)
 }
 
 /*
- * Returns true if specified module is loaded. I mostly added this for the
- * convenience of module writers.
+ * Returns true if specified module is loaded.
  */
 alias isloaded (module, void)
 {
@@ -64,6 +63,35 @@ alias is_on (nick, void)
 		return $0
 	}
 	wait for ison $nick
+}
+
+/*
+ * $modinfo(<module> [a|f|v])
+ * Easy interface to the module information.
+ * Flags:    a - Returns filename and version.
+ *           f - Returns only the filename.
+ *           v - Returns only the version.
+ * If no flag is specified then 'a' is assumed.
+ */
+alias modinfo (module, flag)
+{
+	@ :item = finditem(modules $module)
+	if (item > -1)
+	{
+		switch ($tolower($flag))
+		{
+			(a) ()
+			{
+				@ :retval = getitem(module_files $item)
+				@ push(retval $getitem(module_version $item))
+				@ function_return = retval
+			}
+			(f) { @ function_return = getitem(module_files $item) }
+			(v) { @ function_return = getitem(module_version $item) }
+		}
+	}
+
+	return
 }
 
 /*

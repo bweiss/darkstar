@@ -6,7 +6,7 @@
  * CONFIG.DSC - Configuration manager for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 2/18/02 (bmw)
+ * Last modified: 2/22/02 (bmw)
  */
 
 alias conf dset
@@ -79,8 +79,8 @@ alias config.set_routine (type, variable, value)
 				@ :var = after(1 . $var)
 				@ config.setcat($var)
 			}
-		} \
-		elsif (#matches == 1 || cur_value)
+		}\
+		else if (#matches == 1 || cur_value)
 		{
 			@ :var = after(1 . $word(0 $matches))
 			@ :var2 = after(1 . $var)
@@ -103,8 +103,8 @@ alias config.set_routine (type, variable, value)
 				{
 					hook CONFIG $var2 $old_value
 				}
-			} \
-			elsif (value != [])
+			}\
+			else if (value != [])
 			{
 				if (struct2 == [CONFIG] && DSET[BOOL][$var2])
 				{
