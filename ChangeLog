@@ -1,6 +1,13 @@
 DarkStar ChangeLog
 
 
+2002/05/25
+
+ * [misc.dsm 0.7.1] Change of behavior for the WHOIS_CHANNELS* format
+   variables. If a value for WHOIS_CHANNELS_WRAP exists then the channels
+   will still be displayed over multiple lines, but the WHOIS_CHANNELS
+   variable will be used for the first line. Requested by dh.
+
 2002/05/24
 
  * [window.dsm 0.4] HEADS UP: The AUTO_BIND_ON_JOIN and AUTO_UNBIND_ON_PART

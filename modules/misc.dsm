@@ -1,4 +1,4 @@
-#version 0.7
+#version 0.7.1
 /* $Id$ */
 /*
  * misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
@@ -308,27 +308,31 @@ on ^318 "*"
 
 on ^319 "*"
 {
-	if (FORMAT.WHOIS_CHANNELS_WRAP) {
+	if (FORMAT.WHOIS_CHANNELS_WRAP)
+	{
+		^local format_var WHOIS_CHANNELS
 		^local channels
 		for chan in ($2-) {
 			if (!channels) {
 				push channels $chan
-			} else if (no_fit && strlen($fparse(WHOIS_CHANNELS_WRAP $0 $1 $channels)) >= word(0 $geom())) {
-				echo $fparse(WHOIS_CHANNELS_WRAP $0 $1 $channels)
+			} else if (no_fit && strlen($fparse($format_var $0 $1 $channels)) >= word(0 $geom())) {
+				echo $fparse($format_var $0 $1 $channels)
 				@:channels = chan
 				@:no_fit = []
-			} else if (strlen($fparse(WHOIS_CHANNELS_WRAP $0 $1 $channels $chan)) >= word(0 $geom())) {
-				echo $fparse(WHOIS_CHANNELS_WRAP $0 $1 $channels)
+			} else if (strlen($fparse($format_var $0 $1 $channels $chan)) >= word(0 $geom())) {
+				echo $fparse($format_var $0 $1 $channels)
 				@:channels = chan
+				@:format_var = [WHOIS_CHANNELS_WRAP]
 				@:no_fit = 1
 			} else {
 				push channels $chan
 			}
 		}
 		if (channels) {
-			echo $fparse(WHOIS_CHANNELS_WRAP $0 $1 $channels)
+			echo $fparse($format_var $0 $1 $channels)
 		}
-	} else if (FORMAT.WHOIS_CHANNELS) {
+	}\
+	else if (FORMAT.WHOIS_CHANNELS) {
 		echo $fparse(WHOIS_CHANNELS $*)
 	}
 }
