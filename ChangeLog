@@ -1,6 +1,14 @@
 Darkstar ChangeLog
 
 
+20020401
+
+ * darkstar.irc now attempts to use $loadinfo() to determine a value for
+   $DS.HOME if the DARKSTAR_HOME environment variable is not set. It will
+   still fall back to the old method (just setting it to ~/darkstar) if
+   the first two methods fail. This means that you can now install darkstar
+   anywhere without bothering to set DARKSTAR_HOME, a big improvement. :-)
+
 20020331
 
 * /DINFO now displays the output from $pipe(uptime) in the OS field.

@@ -1,5 +1,5 @@
 README file for Darkstar/EPIC4
-Last updated: 3/29/2002
+Last updated: 4/1/2002
 
 Darkstar written by Brian Weiss <brian@epicsol.org>
 Copyright (c) 2002 Brian Weiss
@@ -25,7 +25,7 @@ are mostly made up of scripts that I was using before this project.
 
 The current state of this project is:
   Core scripts: Beta, but stable. Still subject to change. End user commands
-		have been documented.
+                have been documented.
   Modules: Beta, but stable. Still subject to change. Documented.
 
 Contributors are welcomed! If you would like to get involved with this
@@ -39,6 +39,7 @@ following URLs:
 
   http://www.got.net/~brian/epic4/scripts/darkstar/
   http://www.epicsol.org/
+  http://www.epicsol.org/~brian/
 
 A snapshot of my current tree (as well as EPIC) is also available via CVS:
 
@@ -63,18 +64,24 @@ the script where everything is located. This can be done through the setting
 of the following environment variables...
 
 NOTE: You do not need to do this if you are using the default locations.
+      Due to recent changes (see *** note below), it is now completely safe
+      to skip all this and go right to "/load path/to/darkstar.irc".
 
   DARKSTAR_HOME - Darkstar home directory (default: ~/darkstar)
+                  *** You are no longer required to set this if you install
+                      somewhere other than the default. It will now use
+                      $loadinfo() to determine the home directory.
 
   DARKSTAR_RC - Location of the rc file. This is loaded every time darkstar.irc
-		is loaded, including /RELOADs. This should be used for EPIC
-		settings in place of ~/.epicrc. This frees ~/.epicrc up to
-		load darkstar.irc on startup. (default: ~/.dsrc)
+                is loaded, including /RELOADs. This should be used for EPIC
+                settings in place of ~/.epicrc. This frees ~/.epicrc up to
+                load darkstar.irc on startup. (default: ~/.dsrc)
 
   DARKSTAR_USER - Location of the "User directory." This just contains
-		  directories where you can put your own modules, status bars,
-		  and themes so they are not messed with when you upgrade.
-		  Saved settings also go here by default. (default: ~/.darkstar)
+                  directories where you can put your own modules, status bars,
+                  and themes so they are not messed with when you upgrade.
+                  Saved settings also go here by default.
+                  (default: ~/.darkstar)
 
 This can be accomplished in the following ways (depending on your shell) ...
 
