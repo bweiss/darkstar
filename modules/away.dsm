@@ -1,4 +1,4 @@
-#version 1.1
+#version 1.2
 /* $Id$ */
 /*
  * away.dsm - Away module for Darkstar/EPIC4
@@ -110,21 +110,23 @@ on #-306 421 "*"
  */
 on #-305 421 "*"
 {
-	if (CONFIG[PUBLIC_AWAY])
+	if (CONFIG[PUBLIC_AWAY] && AWAY[TIME])
 	{
+		@ :away_time = time() - AWAY.TIME
+
 		if (CONFIG[PUBLIC_AWAY_CHANNELS])
 		{
 			for chan in ($CONFIG.PUBLIC_AWAY_CHANNELS)
 			{
 				if (match($chan $mychannels()))
 				{
-					describe $chan is back [Gone since: $strftime($AWAY.TIME %c)]
+					describe $chan is back [Gone $tdiff($away_time)]
 				}
 			}
 		}{
 			for chan in ($mychannels())
 			{
-				describe $chan is back [Gone since: $strftime($AWAY.TIME %c)]
+				describe $chan is back [Gone $tdiff($away_time)]
 			}
 		}
 	}

@@ -1,6 +1,13 @@
 Darkstar ChangeLog
 
 
+2/28/02
+
+ * [away.dsm v1.2] If PUBLIC_AWAY is true, and you are not away, but attempt
+   to unset away, no actions will be sent. We are also now displaying the
+   amount of time you were away (formatted by $tdiff()) instead of the date
+   of when you set away.
+
 2/22/02
 
  * New function: $modinfo() - See comment in functions.dsc for details.
