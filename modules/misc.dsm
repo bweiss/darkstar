@@ -1,4 +1,4 @@
-#version 0.7.4
+#version 0.7.5
 /* $Id$ */
 /*
  * misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
@@ -86,12 +86,14 @@ alias dns (nicks)
 	}
 
 	for nick in ($nicks) {
-		if (is_on($nick)) {
-			@:address = after(-1 @ $userhost($nick))
-		} else {
+		@:uhost = uh($nick)
+		if (uhost == [<UNKNOWN>@<UNKNOWN>]) {
 			xecho -b User $nick is not online
+		} else {
+			@:addr = after(-1 @ $uhost)
+			@:addr2 = convert($addr)
+			xecho -b $nick!$uhost is ${addr2 ? addr2 : [unknown]}
 		}
-		xecho -b $nick!$userhost($nick) is ${convert($address) ? convert($address) : [unknown]}
 	}
 }
 
