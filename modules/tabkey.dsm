@@ -1,4 +1,4 @@
-#version 0.5.3
+#version 0.5.4
 /*
  * TABKEY.DSM - Tab key module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
@@ -446,7 +446,8 @@ on #^dcc_connect 420 "% CHAT *"
 @ setitem(tabkey_rinfo 0 msg !DO NOT REMOVE!)
 
 tabkey.addrule "*"                  nick        "$remw($: $onchannel()) $:"
-tabkey.addrule "*#%"                channel
+tabkey.addrule "#%"                 channel
+tabkey.addrule "* #%"               channel
 tabkey.addrule "/%"                 command
 tabkey.addrule "/config %"          config
 tabkey.addrule "/dset %"            config
@@ -471,6 +472,8 @@ tabkey.addrule "/j *"               channel
 tabkey.addrule "/leave *"           channel
 tabkey.addrule "/part *"            channel
 tabkey.addrule "/mode %"            channel
+tabkey.addrule "/m #%"              channel
+tabkey.addrule "/msg #%"            channel
 
 
 /* bmw '01 */
