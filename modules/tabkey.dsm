@@ -1,9 +1,9 @@
-#version 0.5
+#version 0.5.1
 /*
  * TABKEY.DSM - Tab key module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 2/17/02 (bmw)
+ * Last modified: 2/18/02 (bmw)
  *
  * This script uses serial number 420 for all /on hooks.
  */
@@ -409,7 +409,7 @@ for hook in (msg send_msg)
 { 
 	on #^$hook 420 "*"
 	{
-		@ tabkey.addnick $0
+		tabkey.addnick $0
 	}
 }
 
@@ -417,13 +417,13 @@ for hook in (dcc_chat send_dcc_chat)
 {
 	on #^$hook 420 "*"
 	{
-		@ tabkey.addnick =$0
+		tabkey.addnick =$0
 	}
 }
 
 on #^dcc_connect 420 "% CHAT *"
 {
-	@ tabkey.addnick =$0
+	tabkey.addnick =$0
 }
 
 
