@@ -10,6 +10,7 @@ DarkStar 0.3
 	Things that differ from the old module (for users):
 	 - Cursor sensitive. Allows you to complete words anywhere on
 	   the input line.
+	 - Works with any value for $CMDCHARS.
 	 - Support for /HELP completion.
 	 - Support for /WINDOW completion.
 	 - The TABKEY_NICK_HISTORY config variable has been renamed to
