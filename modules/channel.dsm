@@ -1,4 +1,4 @@
-#version 1.1.1
+#version 1.1.2
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
@@ -174,16 +174,46 @@ alias ban (targets)
 	^local bans
 	for target in ($targets)
 	{
-		@ :uhost = userhost($target) == [<UNKNOWN>@<UNKNOWN>] ? uh($target) : userhost($target)
-		/* Check again in case $uh() failed too. */
-		if (uhost && uhost != [<UNKNOWN>@<UNKNOWN>]) {
-			push bans $mask($CONFIG.BANTYPE $uhost)
-		} else {
-			push bans $target
+		switch ($pass(!@. $target))
+		{
+			() {
+				/*
+				 * Target is a nickname. Attempt to get the user@host from
+				 * $userhost() or $uh() then pass it through $mask(). If
+				 * both functions fail to return a usable host, just pass
+				 * the target through and let the client handle it.
+				 */
+				@ :uhost = userhost($target) == [<UNKNOWN>@<UNKNOWN>] ? uh($target) : userhost($target)
+				/* Check again in case $uh() failed too. */
+				if (uhost && uhost != [<UNKNOWN>@<UNKNOWN>]) {
+					push bans $mask($CONFIG.BANTYPE $uhost)
+				} else {
+					push bans $target
+				}
+			}
+
+			(.) {
+				/* Target is a hostname or IP, pass it through $mask() only. */
+				push bans $mask($CONFIG.BANTYPE $target)
+			}
+
+			(*) {
+				/* Target is already a hostmask, just pass it on through. */
+				push bans $target
+			}
 		}
 	}
 
 	massmode $C + b $bans
+
+	/*
+	 * Allow this alias to be called as a function so that /TEMPBAN
+	 * can use it to do the banning but still know which hostmask to
+	 * remove from the ban list later.
+	 */
+	if (functioncall()) {
+		@ function_return = bans
+	}
 }
 
 alias bk bankick
@@ -675,15 +705,7 @@ alias tempban (time, target, void)
 		return
 	}
 
-	@ :uhost = userhost($target) == [<UNKNOWN>@<UNKNOWN>] ? uh($target) : userhost($target)
-	/* Check again in case $uh() failed too. */
-	if (uhost && uhost != [<UNKNOWN>@<UNKNOWN>]) {
-		@ :banmask = mask($CONFIG.BANTYPE $uhost)
-	} else {
-		@ :banmask = target
-	}
-
-	//mode $C +b $banmask
+	@ :banmask = ban($target)
 	timer $time //mode $C -b $banmask
 }
 
