@@ -8,6 +8,9 @@ Author: CrazyEddy / Brian Weiss <brian@epicsol.org>
    track of private msgs and DCC CHAT connections for easy replies.
 
 Config Variables:
+   TABKEY_CYCLE_MATCHES     - Boolean. If true, continually pushing the
+                              tab key will cause the module to cycle through
+                              the list of possible matches.
    TABKEY_MAX_NICKHIST      - Number of nicks to remember for msg completion.
    TABKEY_NICKCOMP_SUFFIX   - If completing a nickname, and the nick is the
                               first word on the input prompt, append this

@@ -1,4 +1,4 @@
-#version 0.2.1
+#version 0.2.2
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -80,8 +80,9 @@ queue cleanup.tabkey {
 	^on #send_ctcp 420 -"PRIVMSG % DCC CHAT *"
 }
 
-config.add TABKEY_MAX_NICKHIST 6
-config.add TABKEY_NICKCOMP_SUFFIX ,
+config.add -b TABKEY_CYCLE_MATCHES 1
+config.add    TABKEY_MAX_NICKHIST 6
+config.add    TABKEY_NICKCOMP_SUFFIX ,
 
 bind ^I parse_command tabkey.main
 
@@ -110,7 +111,7 @@ alias tabkey.main {
 		@ wordind = curpos()
 	}
 	@ :word = mid($wordind ${curpos() - wordind} $L)
-	if (word != [] && word == TABKEY.LASTWORD) {
+	if (CONFIG.TABKEY_CYCLE_MATCHES && word != [] && word == TABKEY.LASTWORD) {
 		if (TABKEY.INDEX == numwords($TABKEY.LASTMATCHES)) {
 			@ TABKEY.INDEX = 0
 		}
