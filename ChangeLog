@@ -1,6 +1,10 @@
 Darkstar ChangeLog
 
 
+2/22/02
+
+ * New function: $modinfo() - See comment in functions.dsc for details.
+
 2/21/02
 
  * You can now pass multiple module names to /reloadmod.
