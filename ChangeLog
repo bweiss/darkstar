@@ -1,6 +1,16 @@
 DarkStar ChangeLog
 
 
+20020511
+
+ * Modules located in the user directory can now override the modules
+   provided in the official script pack.
+
+ * In the process of making the above change, I also changed the name of
+   the array containing module version strings from "module_version" to
+   "module_versions". This was mostly done for consistency and shouldn't
+   affect anyone but me. :-)
+
 20020508
 
  * [misc.dsm 0.4] Added a /tig alias for removing ignores. It works just

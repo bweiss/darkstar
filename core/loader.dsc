@@ -17,7 +17,7 @@ alias loadedmodules (void)
 		@ :num = cnt + 1
 		@ :modname = getitem(loaded_modules $cnt)
 		@ :item = finditem(modules $modname)
-		@ :modver = getitem(module_version $item)
+		@ :modver = getitem(module_versions $item)
 		@ :modsize = fsize($getitem(module_files $item))
 		echo  $[3]num $[20]modname [$[10]modver] [$[-10]modsize]
 	}
@@ -34,8 +34,7 @@ alias loadmod (modules)
 	{
 		modlist
 		^local mods $"Modules to load? (1 2-4 ...) "
-		if (mods)
-		{
+		if (mods) {
 			@ modules = loader.which_mods(modules $mods)
 		}
 	}
@@ -65,7 +64,7 @@ alias modlist (void)
 		@ :num = cnt + 1
 		@ :file = getitem(module_files $cnt)
 		@ :module = getitem(modules $cnt)
-		@ :version = getitem(module_version $cnt)
+		@ :version = getitem(module_versions $cnt)
 		@ :auto_load = common($module / $CONFIG.AUTO_LOAD_MODULES) ? [*] : []
 		@ :loaded = finditem(loaded_modules $module) > -1 ? [*] : []
 		echo  $[3]num $[20]module [$[10]version] [$[-10]fsize($file)]   $[8]loaded $auto_load
@@ -77,14 +76,12 @@ alias modlist (void)
 
 alias reloadmod (modules)
 {
-	if (!modules)
-	{
+	if (!modules) {
 		xecho -b Usage: /reloadmod <module> [module] ...
 		return
 	}
 
-	for module in ($modules)
-	{
+	for module in ($modules) {
 		unloadmod $module
 		loadmod $module
 	}
@@ -96,8 +93,7 @@ alias unloadmod (modules)
 	{
 		loadedmodules
 		^local mods $"Modules to unload? (1 2-4 ...) "
-		if (mods)
-		{
+		if (mods) {
 			@ :modules = loader.which_mods(loaded_modules $mods)
 		}
 	}{
@@ -119,15 +115,15 @@ alias unloadmod (modules)
 
 /*
  * Stores available modules in two arrays, one for module names (modules)
- * and one for module filenames (module_files). Now also reads a version
- * tag from the first line of the module and stores it in the module_version
+ * and one for module filenames (module_files). It also reads a version tag
+ * from the first line of the module and stores it in the module_versions
  * array.
  */
 alias loader.build_modlist (void)
 {
 	@ delarray(modules)
 	@ delarray(module_files)
-	@ delarray(module_version)
+	@ delarray(module_versions)
 
 	for dir in ($DS.MODULE_DIR)
 	{
@@ -139,16 +135,22 @@ alias loader.build_modlist (void)
 			@ :fd = open($file R)
 			@ :line = read($fd)
 			@ close($fd)
-			if (match(#version $line))
-			{
+			if (match(#version $line)) {
 				@ :ver = word(1 $line)
 			}{
 				@ :ver = [-]
 			}
 
+			@ :item = matchitem(modules $name)
+			if (item > -1) {
+				@ delitem(modules $item)
+				@ delitem(module_files $item)
+				@ delitem(module_versions $item)
+			}
+
 			@ setitem(modules $numitems(modules) $name)
 			@ setitem(module_files $numitems(module_files) $file)
-			@ setitem(module_version $numitems(module_version) $ver)
+			@ setitem(module_versions $numitems(module_versions) $ver)
 		}
 	}
 }
@@ -159,20 +161,17 @@ alias loader.build_modlist (void)
  */
 alias loader.load_module (module, void)
 {
-	if (!numitems(modules))
-	{
+	if (!numitems(modules)) {
 		/* No modules found. */
 		return 1
 	}
 
 	/* Remove the extension if necessary. */
-	if (match(%.% $module))
-	{
+	if (match(%.% $module)) {
 		@ :module = before(-1 . $module)
 	}
 
-	if (finditem(loaded_modules $module) > -1)
-	{
+	if (finditem(loaded_modules $module) > -1) {
 		/* Module already loaded. */
 		return 2
 	}
@@ -189,14 +188,12 @@ alias loader.load_module (module, void)
 		load $file
 
 		/* Load the save file. */
-		if (fexist($save_file) == 1)
-		{
+		if (fexist($save_file) == 1) {
 			load $save_file
 		}
 
 		/* Load the theme file for this module. */
-		if (fexist($theme_file) == 1)
-		{
+		if (fexist($theme_file) == 1) {
 			load $theme_file
 		}
 
@@ -219,15 +216,13 @@ alias loader.load_module (module, void)
  */
 alias loader.unload_module (module, void)
 {
-	if (!numitems(loaded_modules))
-	{
+	if (!numitems(loaded_modules)) {
 		/* No modules are loaded. */
 		return 1
 	}
 
 	/* Remove the extension if necessary. */
-	if (match(%.% $module))
-	{
+	if (match(%.% $module)) {
 		@ :module = before(-1 . $module)
 	}
 
@@ -244,15 +239,13 @@ alias loader.unload_module (module, void)
 		purgealias $module
 
 		/* Remove all config and format variables. */
-		for var in ($DSET.MODULES[$module])
-		{
+		for var in ($DSET.MODULES[$module]) {
 			^assign -CONFIG.$var
 			^assign -DSET.CONFIG.$var
 			^assign -DSET.BOOL.$var
 		}
 			
-		for var in ($FSET.MODULES[$module])
-		{
+		for var in ($FSET.MODULES[$module]) {
 			^assign -FORMAT.$var
 			^assign -FSET.FORMAT.$var
 		}
@@ -333,14 +326,12 @@ alias module.dep (depmods)
 {
 	@ :module = after(-1 / $before(-1 . $word(1 $loadinfo())))
 
-	if (!module)
-	{
+	if (!module) {
 		echo Error: module.dep: This command must be called at load time
 		return
 	}
 
-	if (!depmods)
-	{
+	if (!depmods) {
 		echo Error: module.dep: Not enough arguments \(Module: $module\)
 		return
 	}
@@ -357,8 +348,7 @@ alias module.dep (depmods)
 					loadmod $depmod
 				}{
 					^local tmp $"Module [$module] depends on [$depmod] - Load it now? [Yn] "
-					if (tmp == [])
-					{
+					if (tmp == []) {
 						^assign tmp Y
 					}
 
@@ -384,11 +374,9 @@ alias module.dep (depmods)
 alias module.load_saved_settings (void)
 {
 	@ :module = after(-1 / $before(-1 . $word(1 $loadinfo())))
-	if (module)
-	{
+	if (module) {
 		@ :save_file = DS.SAVE_DIR ## [/] ## module ## [.sav]
-		if (fexist($save_file) == 1)
-		{
+		if (fexist($save_file) == 1) {
 			^load $save_file
 		}
 	}
@@ -400,11 +388,10 @@ alias module.load_saved_settings (void)
  */
 if (CONFIG[AUTO_LOAD_PROMPT])
 {
-	^local mods,modules
+	^local modules
 
 	/* Keep things quiet while we list available modules. */
-	for hook in (250 251 252 254 255 265 266)
-	{
+	for hook in (250 251 252 254 255 265 266) {
 		^on ^$hook ^"*"
 	}
 
@@ -413,10 +400,9 @@ if (CONFIG[AUTO_LOAD_PROMPT])
 
 	/* Prompt user. */
 	modlist
-	^assign mods $"Modules to load? ([A]uto / [N]one / 1 2-4 ...) [A] "
-	if (mods == [])
-	{
-		^assign mods A
+	^local mods $"Modules to load? ([A]uto / [N]one / 1 2-4 ...) [A] "
+	if (mods == []) {
+		@ :mods = [A]
 	}
 
 	switch ($toupper($mods))
@@ -427,16 +413,14 @@ if (CONFIG[AUTO_LOAD_PROMPT])
 	}
 	
 	/* Cleanup after ourselves. */
-	wait -cmd for hook in (250 251 252 254 255 265 266)
-	{
+	wait -cmd for hook in (250 251 252 254 255 265 266) {
 		^on ^$hook -"*"
 	}
 
 	^stack pop set SUPPRESS_SERVER_MOTD
 
 	/* Load the modules. */
-	if (modules)
-	{
+	if (modules) {
 		loadmod $modules
 	}
 }\

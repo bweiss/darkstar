@@ -116,11 +116,11 @@ alias modinfo (module, flag)
 			(a) ()
 			{
 				@ :retval = getitem(module_files $item)
-				@ push(retval $getitem(module_version $item))
+				@ push(retval $getitem(module_versions $item))
 				@ function_return = retval
 			}
 			(f) { @ function_return = getitem(module_files $item) }
-			(v) { @ function_return = getitem(module_version $item) }
+			(v) { @ function_return = getitem(module_versions $item) }
 		}
 	}
 
