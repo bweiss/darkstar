@@ -6,18 +6,20 @@ FOR 0.3 RELEASE:
 
   * Write a new_users help page for /DHELP
 
-  * Add support for "paste mode" either as a module or as part of the core.
-
-  * Add support for a topic bar.
-
   * Add a function that will return the nicks of all normal users (no ops,
     no half-ops, no voice) in a specified channel. This is needed because
     $nochops() returns voiced users along with the normal ones.
 
-  * Add support for half-ops? (I really hate this)
+  * Add support for half-ops. Bleh.
+
+  * Update help files and write better module documentation (doc/modules.txt)
 
 
 AFTER 0.3 RELEASE:
+
+  * Add support for "paste mode" either as a module or as part of the core.
+
+  * Add support for a topic bar.
 
   * Write a log management module. It should provide basic log management,   
     such as setting up automatic logging for various things (channels, nicks,
@@ -41,20 +43,20 @@ AFTER 0.3 RELEASE:
 
   * Add support for a random kick msg file like what BX has.
 
+  * Rewrite the /JOIN and /LEAVE aliases so that they use the CHANTYPES
+    parameter from the 005 numeric to determine the allowed channel prefixes.
+
 
 OTHER NOTES/IDEAS:
 
-* Honor the DISPLAY variable in format related /ON hooks?
+  * Honor the DISPLAY variable in format related /ON hooks?
 
-* Figure out a way to allow modules to prevent output from /DSET (and /FSET?)
-  from within /ON hooks.
+  * Figure out a way to allow modules to prevent output from /DSET (and /FSET?)
+    from within /ON hooks.
 
-* Would some kind of generic caching system be useful? Features like
-  REMEMBER_TOPICS and auto-query could use it instead of each having to
-  handle caching things themselves.
-
-* Rewrite the /JOIN and /LEAVE aliases so that they use the CHANTYPES
-  parameter from the 005 numeric to determine the allowed channel prefixes.
+  * Would some kind of generic caching system be useful? Features like
+    REMEMBER_TOPICS and auto-query could use it instead of each having to
+    handle caching things themselves.
 
 
 End of file.
