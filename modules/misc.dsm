@@ -1,4 +1,4 @@
-#version 0.6.1
+#version 0.6.2
 /* $Id$ */
 /*
  * misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
@@ -14,7 +14,7 @@
 
 queue cleanup.misc
 {
-	for alias in (dns disco m nslookup pingme q tig umode ver whois wi wii ww)
+	for alias in (dns disco m nslookup ping q tig umode ver whois wi wii ww)
 	{
 		^alias -$alias
 	}
@@ -134,9 +134,9 @@ alias nslookup
 	}
 }
 
-alias pingme (void)
+alias ping (target default "$servernick()", void)
 {
-	//ping $servernick()
+	//ping $target
 }
 
 alias q query

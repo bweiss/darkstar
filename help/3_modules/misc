@@ -38,8 +38,9 @@ Author: Brian Weiss <brian@epicsol.org>
    nslookup <address> ...
      - Perform a DNS lookup on each specified address.
 
-   pingme
-     - Send a CTCP PING to yourself.
+   ping [target]
+     - Alias to the internal /ping command. Uses your current nickname
+       as the defualt target.
 
    q [nick]
      - Attempts to start a query with [nick], or closes an existing query

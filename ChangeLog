@@ -1,6 +1,12 @@
 DarkStar ChangeLog
 
 
+2002/05/22
+
+ * [misc.dsm 0.6.2] Removed /pingme and added a /ping alias. If no target
+   is specified, it will default to your current nickname (the equivalent
+   of /pingme).
+
 2002/05/21
 
  * [names.dsm 0.3.1] Added a new format variable called NAMES_MID.
