@@ -12,23 +12,25 @@ Author: Brian Weiss <brian@epicsol.org>
    clearrelaybuf
      - Clears all the arrays containing your msgs and notices.
 
-   relay -<m|n|sm|sn> <target> [<item number>|ask]
-     - Relays a specific type of msg to <target>. Takes an optional
-       item number argument that defaults to "ask" (which prompts the
-       user to choose an item from a list). The types are as follows:
-       m - msg    n - notice    sm - sent_msg    sn - sent_notice
+   relay <-m|-n|-sm|-sn> [-list|<item#> [<target>]]
+     - The first argument determines the type of message. The values
+       are as follows:
+         '-m'  : msg             '-n'  : notice
+         '-sm' : sent_msg        '-sn' : sent_notice
+     - If the "-list" option is specified, the list of items available
+       to be relayed will be displayed.
+     - If no item # is given, the most recent entry will be used.
+     - If no target is given, the current window's target ($T) will be used.
 
-   relm [<target>] [<item number>|ask]
-     - Relays received messages. Takes optional <target> and <item num>
-       arguments. If no item number is specified, it will default to
-       the last message in the buffer (unlike /relay).
+   relm [-list|<item#> [<target>]]
+     - Passes its arguments to /relay with the '-m' type.
 
-   reln [<target>] [<item number>|ask]
-     - Relays received notices.
+   reln [-list|<item#> [<target>]]
+     - Passes its arguments to /relay with the '-n' type.
 
-   relsm [<target>] [<item number>|ask]
-     - Relays sent messages.
+   relsm [-list|<item#> [<target>]]
+     - Passes its arguments to /relay with the '-sm' type.
 
-   relsn [<target>] [<item number>|ask]
-     - Relays sent notices.
+   relsn [-list|<item#> [<target>]]
+     - Passes its arguments to /relay with the '-sn' type.
 

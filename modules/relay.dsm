@@ -1,4 +1,4 @@
-#version 0.1.1
+#version 0.2
 /* $Id$ */
 /*
  * relay.dsm -  Relay module for DarkStar/EPIC4
@@ -40,51 +40,56 @@ alias clearrelaybuf (void)
 	}
 }
 
-alias relay (type, target, inum default "ask")
+alias relay (type, ...)
 {
-	if (!type || !target) {
-		xecho -b Usage: /relay <type> <target> [<item number>|ask]
+	if (!type) {
+		xecho -b Usage: /relay <-m|-n|-sm|-sn> [-list|<item#> [<target>]]
 		return
 	}
 
 	switch ($tolower($type)) {
-		(-m%) {relay.show msg $target $inum}
-		(-n%) {relay.show notice $target $inum}
-		(-sm) {relay.show sent_msg $target $inum}
-		(-sn) {relsn.show sent_notice $target $inum}
+		(-m)  {
+			echo relay.show msg $*
+			relay.show msg $*
+		}
+		(-n)  {relay.show notice $*}
+		(-sm) {relay.show sent_msg $*}
+		(-sn) {relsn.show sent_notice $*}
 	}
 }
 
-alias relm (target default "$T", inum)
+alias relm (...)
 {
-	relay.show msg $target $inum
+	relay -m $*
 }
 
-alias reln (target default "$T", inum)
+alias reln (...)
 {
-	relay.show notice $target $inum
+	relay -n $*
 }
 
-alias relsm (target default "$T", inum)
+alias relsm (...)
 {
-	relay.show sent_msg $target $inum
+	relay -sm $*
 }
 
-alias relsn (target default "$T", inum)
+alias relsn (...)
 {
-	relay.show sent_notice $target $inum
+	relay -sn $*
 }
 
 
 /****** INTERNAL ALIASES ******/
 
-alias relay.show (type, target, inum)
+alias relay.show (type, ...)
 {
-	if (!type || !target) {
+	if (!type) {
+		xecho -b Error: relay.show: Not enough arguments
 		return
 	}
 
-	switch ($tolower($type)) {
+	switch ($tolower($type))
+	{
 		(msg) {
 			@ :array = [relay.msgs]
 			@ :format = [MSG]
@@ -104,22 +109,22 @@ alias relay.show (type, target, inum)
 		(*) {xecho -b Error: relay.show: Invalid type}
 	}
 
-	if (!inum) {
-		@ :inum = numitems($array) - 1
-	} else if (inum == [ask]) {
+	if (pattern(-l% $0)) {
 		relay.showarray $array $format
-		^local inum $"Enter an item number: "
-		if (inum == []) {
-			return
-		} else if (!isnumber($inum b10)) {
-			xecho -b Error: relay.show: Needed an integer
-			return
-		}
-	}
-
-	if (inum < 0 || inum >= numitems($array)) {
+		return
+	} else if ([$0] == []) {
+		@ :inum = numitems($array) - 1
+	} else if ([$0] < 0 || [$0] >= numitems($array)) {
 		xecho -b Error: relay.show: Item number out of range
 		return
+	} else {
+		@ :inum = [$0]
+	}
+
+	if (![$1]) {
+		@ :target = T
+	} else {
+		@ :target = [$1]
 	}
 
 	msg $target $fparse($format $getitem($array $inum))
