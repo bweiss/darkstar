@@ -17,11 +17,15 @@ alias modules modlist
 
 alias loadedmodules (void)
 {
-	echo #   Module
+	echo #   Module                    Version      Size (bytes)
 	for cnt from 0 to ${numitems(loaded_modules) - 1}
 	{
 		@ :num = cnt + 1
-		echo $[3]num $getitem(loaded_modules $cnt)
+		@ :modname = getitem(loaded_modules $cnt)
+		@ :item = finditem(modules $modname)
+		@ :modver = getitem(module_version $item)
+		@ :modsize = fsize($getitem(module_files $item))
+		echo $[3]num $[25]modname [$[10]modver] [$[-10]modsize]
 	}
 }
 
@@ -57,15 +61,16 @@ alias modlist (void)
 {
 	loader.build_modlist
 
-	echo #   Module                     Size (bytes)  Loaded  Auto-Load
+	echo #   Module                    Version      Size (bytes)  Loaded  Auto-Load
 	for cnt from 0 to ${numitems(modules) - 1}
 	{
 		@ :num = cnt + 1
 		@ :file = getitem(module_files $cnt)
 		@ :module = getitem(modules $cnt)
+		@ :version = getitem(module_version $cnt)
 		@ :auto_load = common($module / $CONFIG.AUTO_LOAD_MODULES) ? [*] : []
 		@ :loaded = finditem(loaded_modules $module) > -1 ? [*] : []
-		echo $[3]num $[25]module $[-12]fsize($file)     $[8]loaded $[8]auto_load
+		echo $[3]num $[25]module [$[10]version] [$[-10]fsize($file)]     $[8]loaded $[8]auto_load
 	}
 	xecho -b Type '/dset AUTO_LOAD_MODULES' to modify the Auto-Load list
 	xecho -b Type '/loadmod [<module> ...]' to load a module
@@ -113,6 +118,7 @@ alias loader.build_modlist (void)
 {
 	@ delarray(modules)
 	@ delarray(module_files)
+	@ delarray(module_version)
 
 	for dir in ($DS.MODULE_DIR)
 	{
@@ -120,8 +126,22 @@ alias loader.build_modlist (void)
 		for file in ($glob($dir\/\*.dsm))
 		{
 			@ :name = before(-1 . $after(-1 / $file))
+
+			/* Get module version. */
+			@ :fd = open($file R)
+			@ :line = read($fd)
+			@ close($fd)
+
+			if (match(#version $line))
+			{
+				@ :ver = word(1 $line)
+			}{
+				@ :ver = 0
+			}
+
 			@ setitem(modules $numitems(modules) $name)
 			@ setitem(module_files $numitems(module_files) $file)
+			@ setitem(module_version $numitems(module_version) $ver)
 		}
 	}
 }
