@@ -69,9 +69,6 @@ alias modlist (void)
 		@ :loaded = finditem(loaded_modules $module) > -1 ? [*] : []
 		echo  $[3]num $[20]module [$[10]version] [$[-10]fsize($file)]   $[8]loaded $auto_load
 	}
-	xecho -b Type '/dset AUTO_LOAD_MODULES' to modify the Auto-Load list
-	xecho -b Type '/loadmod [<module> ...]' to load a module
-	xecho -b Type '/unloadmod [<module> ...]' to unload a module
 }
 
 alias reloadmod (modules)
@@ -386,7 +383,7 @@ alias module.load_saved_settings (void)
 /*
  * Load some modules at startup, if desired.
  */
-if (CONFIG[AUTO_LOAD_PROMPT])
+if (CONFIG.AUTO_LOAD_PROMPT)
 {
 	^local modules
 
@@ -398,7 +395,6 @@ if (CONFIG[AUTO_LOAD_PROMPT])
 	^stack push set SUPPRESS_SERVER_MOTD
 	^set SUPPRESS_SERVER_MOTD ON
 
-	/* Prompt user. */
 	modlist
 	^local mods $"Modules to load? ([A]uto / [N]one / 1 2-4 ...) [A] "
 	if (mods == []) {

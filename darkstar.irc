@@ -20,7 +20,7 @@ if (!epic() || V < 20011203)
 	xecho -b
 	xecho -b WARNING!
 	xecho -b
-	xecho -b This script was intended for use with EPIC4-1.1.2 and higher.
+	xecho -b This script pack is for use with EPIC4, version 1.1
 	xecho -b Your client, $J, does not meet this requirement.
 	xecho -b Continue to use this script pack at your own risk.
 	xecho -b
@@ -38,7 +38,6 @@ if (!epic() || V < 20011203)
 	xecho -b
 
 	^local pause $"Press any key to continue, or 'q' to quit. "
-
 	if (pause == [q])
 	{
 		xecho -b Bye!
@@ -52,7 +51,6 @@ if (!epic() || V < 20011203)
  */
 dump all
 timer -del all
-
 for array in ($getarrays())
 {
 	@ delarray($array)
@@ -67,7 +65,7 @@ for array in ($getarrays())
 
 /* This will be incremented every time a change takes place to the core
    scripts (anything that requires /reload to update). */
-@ DS.COMMIT_ID = 38
+@ DS.COMMIT_ID = 39
 
 
 /*
@@ -105,6 +103,10 @@ if (getenv(DARKSTAR_RC))
 @ DS.THEME_DIR = [$DS.HOME/themes $DS.USER_DIR/themes]
 @ DS.SAVE_DIR = [$DS.USER_DIR/save]
 
+
+/*
+ * Check for a user directory and create it if necessary.
+ */
 if (fexist($DS.USER_DIR) == -1)
 {
 	xecho -b Creating user directory: $DS.USER_DIR
@@ -113,6 +115,30 @@ if (fexist($DS.USER_DIR) == -1)
 	@ mkdir($DS.USER_DIR/status)
 	@ mkdir($DS.USER_DIR/themes)
 	@ mkdir($DS.USER_DIR/save)
+
+	/* This could be a first time user, so we'll display
+	   some extra information for them. */
+	xecho -b
+	xecho -b Welcome to the DarkStar/EPIC4 script pack!
+	xecho -b Copyright (c) 2002 Brian Weiss <brian@epicsol.org>
+	xecho -b See the 'COPYRIGHT' file for details.
+	xecho -b http://darkstar.epicsol.org/
+	xecho -b
+	xecho -b If you have not looked at the README yet, you should do so now.
+	xecho -b
+	xecho -b You are about to be presented with a list of modules and asked to
+	xecho -b choose which of them you would like to have loaded. Just pressing
+	xecho -b enter will load all the modules on the default auto-load list.
+	xecho -b
+	xecho -b After the modules have loaded, it is probably a good idea to have
+	xecho -b a look around in the help browser (/dhelp).
+	xecho -b
+	xecho -b That's it! I hope you enjoy these scripts, a lot of effort has
+	xecho -b gone into them. Please feel free to contact me if you have any
+	xecho -b questions or comments. This message will not be displayed again.
+	xecho -b
+
+	^local pause $"Press any key to continue."
 }
 
 
