@@ -2,6 +2,11 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://darkstar.epicsol.org/UPDATES
 
 
+*** News 2004/04/17 -- window.dsm 0.10.2 - /DSET MSG_WINDOW_LEVEL
+	A new config variable named MSG_WINDOW_LEVEL has been added.
+	This already existed with the old msg window code but I never
+	bothered writing it into the new multi-server msgwin code.
+
 *** News 2003/12/11 -- Module header formats have changed
 	The format of module headers has changed. Module header tags
 	are now specified in the form "# <tag>:<value> ...". This allows

@@ -1,8 +1,8 @@
-# version:0.10.1 loader:pf
+# version:0.10.2 loader:pf
 # $Id$
 #
 # window.dsm - Window related module for DarkStar/EPIC4
-# Copyright (c) 2002, 2003 Brian Weiss
+# Copyright (c) 2002-2004 Brian Weiss
 # See the 'COPYRIGHT' file for more information.
 #
 # This script uses serial number 426 for all /ON hooks.
@@ -20,6 +20,7 @@ queue cleanup.window
 	^on #connect 426 -"*";
 	^on #disconnect 426 -"*";
 	^on #hook 426 -"CONFIG MSG_WINDOW *";
+	^on #hook 426 -"CONFIG MSG_WINDOW_LEVEL *";
 	^on #hook 426 -"CONFIG MSG_WINDOW_NUMBER *";
 	^on #hook 426 -"CONFIG MSG_WINDOW_SIZE *";
 	^on #join 426 -'\$servernick() *';
@@ -61,10 +62,14 @@ addconfig -b BIND_ON_JOIN 0;
 addconfig -b JOIN_NEW_WINDOW 0;
 addconfig    JOIN_NEW_WINDOW_ARGS hide_others;
 addconfig -b MSG_WINDOW 0;
+addconfig    MSG_WINDOW_LEVEL MSGS;
 addconfig    MSG_WINDOW_NUMBER 100;
 addconfig    MSG_WINDOW_SIZE 5;
 addconfig -b PART_KILL_WINDOW 0;
 addconfig -b UNBIND_ON_PART 0;
+
+
+@ WINDOW.LEVELS = [ACTIONS CTCP DCC MSGS NOTES NOTICES OPNOTES PUBLIC SNOTES USERLOG1 USERLOG2 USERLOG3 USERLOG4 WALLS WALLOPS CRAP ALL NONE];
 
 
 ^bind ^R next_window;
@@ -204,7 +209,7 @@ alias window.msgwin.create (serv, void)
 
 		if (winnum(msgs/$serv) == -1)
 		{
-			^window new name msgs/$serv server $serv level msgs scrolladj off;
+			^window new name msgs/$serv server $serv level $CONFIG.MSG_WINDOW_LEVEL scrolladj off;
 			if (:num = CONFIG.MSG_WINDOW_NUMBER) {
 				while (winnum($num) > -1) {
 					@ :num++;
@@ -323,6 +328,32 @@ on #-hook 426 "CONFIG MSG_WINDOW *"
 	}{
 		for ii from 1 to $numitems(window.msgwins) {
 			window.msgwin.destroy $getitem(window.msgwins ${ii-1});
+		};
+	};
+};
+
+on #-hook 426 "CONFIG MSG_WINDOW_LEVEL *"
+{
+	@ CONFIG.MSG_WINDOW_LEVEL = toupper($split(, $CONFIG.MSG_WINDOW_LEVEL));
+	@ :levels = CONFIG.MSG_WINDOW_LEVEL;
+
+	for lvl in ($levels)
+	{
+		if (!match($lvl $WINDOW.LEVELS))
+		{
+			xecho -b Unknown level: $lvl;
+			xecho -b Valid levels: $WINDOW.LEVELS;
+			@ :levels = remw($lvl $levels);
+		};
+	};
+
+	if (levels != CONFIG.MSG_WINDOW_LEVEL) {
+		defer dset MSG_WINDOW_LEVEL ${levels ? levels : [$2-]};
+	};
+
+	defer {
+		for ii from 0 to ${numitems(window.msgwins) - 1} {
+			^window $getitem(window.msgwins $ii) level $unsplit(, $CONFIG.MSG_WINDOW_LEVEL);
 		};
 	};
 };
