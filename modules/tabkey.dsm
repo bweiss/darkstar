@@ -1,4 +1,4 @@
-#version 0.3
+#version 0.3.1
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -194,26 +194,28 @@ alias tabkey.default {
 	return $ret
 }
 
+alias tabkey.nofallback { return ${[$*] == [] ? [ ] : [$*]}; }
+
 
 # Context sensitive completion goes here.
 
-alias tabkey.cmd.alias    { return $tabkey.method.variables(alias); }
+alias tabkey.cmd.alias    { return $tabkey.nofallback($tabkey.method.variables(alias)); }
 
-alias tabkey.cmd.assign   { return $tabkey.method.variables(assign); }
+alias tabkey.cmd.assign   { return $tabkey.nofallback($tabkey.method.variables(assign)); }
 
-alias tabkey.cmd.channel  { return $tabkey.method.chan($*); }
+alias tabkey.cmd.channel  { return $tabkey.nofallback($tabkey.method.chan($*)); }
 
-alias tabkey.cmd.config   { return $tabkey.method.variables(config); }
+alias tabkey.cmd.config   { return $tabkey.nofallback($tabkey.method.variables(config)); }
 
-alias tabkey.cmd.dcc      { return $pattern("$0*" CHAT CLOSE CLOSEALL GET LIST RAW RENAME RESUME SEND); }
+alias tabkey.cmd.dcc      { return $tabkey.nofallback($pattern("$0*" CHAT CLOSE CLOSEALL GET LIST RAW RENAME RESUME SEND)); }
 alias tabkey.cmd.dcc.resume tabkey.cmd.dcc.send
 alias tabkey.cmd.dcc.send {
 	bless
 	switch ($curword) {
 		(0) {echo This should never happen.;call}
 		(1) {echo This should never happen.;call}
-		(2) {return $tabkey.method.nick($*)}
-		(*) {return $tabkey.method.file($*)}
+		(2) {return $tabkey.nofallback($tabkey.method.nick($*))}
+		(*) {return $tabkey.nofallback($tabkey.method.file($*))}
 	}
 }
 
@@ -222,16 +224,16 @@ alias tabkey.cmd.dhelp {
 	^set HELP_PATH $DS.HELP_DIR
 	wait for @ :ret = tabkey.cmd.help($*)
 	^set HELP_PATH $foo
-	return $ret
+	return $tabkey.nofallback($ret)
 }
 
 alias tabkey.cmd.do tabkey.cmd.eval
 
-alias tabkey.cmd.dset    { return $tabkey.method.variables(config); }
+alias tabkey.cmd.dset    { return $tabkey.nofallback($tabkey.method.variables(config)); }
 
-alias tabkey.cmd.eval    { return $tabkey.method.commands($*); }
+alias tabkey.cmd.eval    { return $tabkey.nofallback($tabkey.method.commands($*)); }
 
-alias tabkey.cmd.exec    { return $tabkey.method.file($*); }
+alias tabkey.cmd.exec    { return $tabkey.nofallback($tabkey.method.file($*)); }
 
 alias tabkey.cmd.foreach {
 	bless
@@ -240,10 +242,10 @@ alias tabkey.cmd.foreach {
 	} else if (curword == 1) {
 		@ :ret = tabkey.method.variables(assign)
 	}
-	return $ret
+	return $tabkey.nofallback($ret)
 }
 
-alias tabkey.cmd.fset { return $tabkey.method.variables(format); }
+alias tabkey.cmd.fset { return $tabkey.nofallback($tabkey.method.variables(format)); }
 
 alias tabkey.cmd.help {
 	bless
@@ -252,7 +254,7 @@ alias tabkey.cmd.help {
 	if (wordind == curpos()) {@ push(path *)}
 	@ matches = globi($unsplit(/ $getset(HELP_PATH) $path*))
 	repeat $#matches @ push(matches $rightw(1 $remws(/ $split(/ $shift(matches)))))
-	return $matches
+	return $tabkey.nofallback($remw(CVS $matches))
 }
 
 alias tabkey.cmd.ignore {
@@ -262,29 +264,29 @@ alias tabkey.cmd.ignore {
 	} else if (curword > 1) {
 		@ :ret = pattern("$0*" ALL CRAP CTCPS INVITES JOINS MSGS NICKS NONE NOTES NOTICES PARTS PUBLIC TOPICS WALLS WALLOPS)
 	}
-	return $ret
+	return $tabkey.nofallback($ret)
 }
 
 alias tabkey.cmd.j tabkey.cmd.join
-alias tabkey.cmd.join    { return $tabkey.method.chan($*); }
+alias tabkey.cmd.join    { return $tabkey.nofallback($tabkey.method.chan($*)); }
 
 alias tabkey.cmd.l tabkey.cmd.leave
-alias tabkey.cmd.leave   { return $tabkey.method.chan($*); }
+alias tabkey.cmd.leave   { return $tabkey.nofallback($tabkey.method.chan($*)); }
 
-alias tabkey.cmd.less    { return $tabkey.method.file($*); }
+alias tabkey.cmd.less    { return $tabkey.nofallback($tabkey.method.file($*)); }
 
-alias tabkey.cmd.load    { return $tabkey.method.file($*); }
+alias tabkey.cmd.load    { return $tabkey.nofallback($tabkey.method.file($*)); }
 
-alias tabkey.cmd.loadmod { return $tabkey.method.arrays(modules); }
+alias tabkey.cmd.loadmod { return $tabkey.nofallback($tabkey.method.arrays(modules)); }
 
 alias tabkey.cmd.mode {
 	bless
 	if (curword == 1) {
-		@:ret = tabkey.method.chan($*)
+		@ :ret = tabkey.method.chan($*)
 	} else {
-		@:ret = tabkey.method.nick($*)
+		@ :ret = tabkey.method.nick($*)
 	}
-	return $ret
+	return $tabkey.nofallback($ret)
 }
 
 alias tabkey.cmd.m tabkey.cmd.msg
@@ -320,27 +322,27 @@ alias tabkey.cmd.msg {
 
 alias tabkey.cmd.part tabkey.cmd.leave
 
-alias tabkey.cmd.pop       { return $tabkey.method.variables(assign); }
-alias tabkey.cmd.push      { return $tabkey.method.variables(assign); }
+alias tabkey.cmd.pop       { return $tabkey.nofallback($tabkey.method.variables(assign)); }
+alias tabkey.cmd.push      { return $tabkey.nofallback($tabkey.method.variables(assign)); }
 
 alias tabkey.cmd.q tabkey.cmd.query
 alias tabkey.cmd.query     { return $pattern("$0*" $sort($uniq($TABKEY.MSGHIST[$winserv()] $tabkey.method.nickchan($*)))); }
 
-alias tabkey.cmd.reloadmod { return $tabkey.method.arrays(loaded_modules); }
+alias tabkey.cmd.reloadmod { return $tabkey.nofallback($tabkey.method.arrays(loaded_modules)); }
 
-alias tabkey.cmd.save      { return $tabkey.method.arrays(loaded_modules); }
+alias tabkey.cmd.save      { return $tabkey.nofallback($tabkey.method.arrays(loaded_modules)); }
 
-alias tabkey.cmd.set       { return $tabkey.method.variables(set); }
+alias tabkey.cmd.set       { return $tabkey.nofallback($tabkey.method.variables(set)); }
 
-alias tabkey.cmd.shift     { return $tabkey.method.variables(assign); }
+alias tabkey.cmd.shift     { return $tabkey.nofallback($tabkey.method.variables(assign)); }
 
-alias tabkey.cmd.status    { return $tabkey.method.arrays(status); }
+alias tabkey.cmd.status    { return $tabkey.nofallback($tabkey.method.arrays(status)); }
 
-alias tabkey.cmd.theme     { return $tabkey.method.arrays(themes); }
+alias tabkey.cmd.theme     { return $tabkey.nofallback($tabkey.method.arrays(themes)); }
 
-alias tabkey.cmd.unloadmod { return $tabkey.method.arrays(loaded_modules); }
+alias tabkey.cmd.unloadmod { return $tabkey.nofallback($tabkey.method.arrays(loaded_modules)); }
 
-alias tabkey.cmd.unshift   { return $tabkey.method.variables(assign); }
+alias tabkey.cmd.unshift   { return $tabkey.nofallback($tabkey.method.variables(assign)); }
 
 alias tabkey.cmd.window {
 	bless
@@ -393,7 +395,7 @@ alias tabkey.cmd.window {
 	} else {
 		@ :ret = pattern("$word*" $list)
 	}
-	return $ret
+	return $tabkey.nofallback($ret)
 }
 
 
@@ -513,7 +515,6 @@ alias tabkey.method.variables (type, void) {
 				eval xtype -l \$$word(${curword - 1} $L)
 			}
 		}
-		@ :ret = [ ]
 	}
 	return $ret
 }
