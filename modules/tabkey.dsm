@@ -216,6 +216,14 @@ alias tabkey.cmd.dcc.send {
 	}
 }
 
+alias tabkey.cmd.dhelp {
+	@ :foo = HELP_PATH
+	^set HELP_PATH $DS.HELP_DIR
+	wait for @ :ret = tabkey.cmd.help($*)
+	^set HELP_PATH $foo
+	return $ret
+}
+
 alias tabkey.cmd.do tabkey.cmd.eval
 
 alias tabkey.cmd.dset    { return $tabkey.method.variables(config); }
@@ -227,9 +235,9 @@ alias tabkey.cmd.exec    { return $tabkey.method.file($*); }
 alias tabkey.cmd.foreach {
 	bless
 	if (curword == 1 && left(1 $word) == [-]) {
-		@ :ret = tabkey.method.aliasctl(alias)
+		@ :ret = tabkey.method.variables(alias)
 	} else if (curword == 1) {
-		@ :ret = tabkey.method.aliasctl(assign)
+		@ :ret = tabkey.method.variables(assign)
 	}
 	return $ret
 }

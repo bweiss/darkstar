@@ -17,7 +17,7 @@ DarkStar 0.3
 	 - Works with any value for $CMDCHARS.
 	 - Cycles through possible matches when the user continues to
 	   press the tab key.
-	 - Support for /HELP completion.
+	 - Support for /HELP and /DHELP completion.
 	 - Support for /WINDOW completion.
 	 - The TABKEY_NICK_HISTORY config variable has been renamed to
 	   TABKEY_MAX_NICKHIST.
