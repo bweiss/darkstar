@@ -1,5 +1,8 @@
 This file contains all notable changes since the last major release.
-The entire file can be found at http://darkstar.epicsol.org/UPDATES
+The entire file can be found at http://www.epicsol.org/darkstar/UPDATES
+
+
+DarkStar 0.3 (20040814)
 
 
 *** News 2004/08/13 -- New function: $chnormal()

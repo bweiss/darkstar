@@ -1,6 +1,4 @@
-FOR 0.3 RELEASE:
-
-  * Rewrite doc/modules.txt
+TODO:
 
   * Add some sort of function to return a list of all the channels that you
     and the specified nick are both joined to. Maybe something like
@@ -9,9 +7,6 @@ FOR 0.3 RELEASE:
   * Add /ALLKICK and /ALLBAN aliases.
 
   * Add highlight formats for actions.
-
-
-AFTER 0.3 RELEASE:
 
   * Add support for "paste mode" either as a module or as part of the core.
 

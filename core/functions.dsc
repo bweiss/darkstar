@@ -1,7 +1,7 @@
 #
 # $Id$
 # functions.dsc - Miscellaneous functions
-# Copyright (c) 2002, 2003 Brian Weiss (except where noted)
+# Copyright (c) 2002-2004 Brian Weiss (except where noted)
 # See the 'COPYRIGHT' file for more information.
 #
 
@@ -55,22 +55,20 @@ alias bool2num (arg, void)
 {
 	switch ($toupper($arg))
 	{
-		(0) (OFF) {@ :ret = 0}
-		(1) (ON)  {@ :ret = 1}
-		(*)       {@ :ret = arg}
+		(0) (OFF) {@ function_return = 0};
+		(1) (ON)  {@ function_return = 1};
+		(*)       {@ function_return = arg};
 	};
-	@ function_return = ret;
 };
 
 alias bool2word (arg, void)      
 {
 	switch ($arg)
 	{
-		(0) (OFF) {@ :ret = [OFF]}
-		(1) (ON)  {@ :ret = [ON]}
-		(*)       {@ :ret = arg}
+		(0) (OFF) {@ function_return = [OFF]};
+		(1) (ON)  {@ function_return = [ON]};
+		(*)       {@ function_return = arg};
 	};
-	@ function_return = ret;
 };
 
 #
@@ -104,7 +102,11 @@ alias chnormal (chan default "$C", void)
 
 alias country (...)
 {
-	tld $*;
+	if (functioncall()) {
+		@ function_return = tld($*);
+	} else {
+		tld $*;
+	};
 };
 
 #
@@ -160,36 +162,32 @@ alias getitems (array, offset, list)
 		if (isnumber(b10 $word))
 		{
 			@ :word += offset;
-			@ push(:retval $getitem($array $word));
+			@ push(function_return $getitem($array $word));
 		}
 		else if (match(%-% $word) && isnumber(b10 $strip(- $word)))
 		{
 			for num in ($jot($split(- $word))) {
 				@ :num += offset;
-				@ push(:retval $getitem($array $num));
+				@ push(function_return $getitem($array $num));
 			};
 		}{
-			@ push(:retval $word);
+			@ push(function_return $word);
 		};
 	};
-
-	@ function_return = retval;
 };
 
 alias getdsets (args default "*")
 {
 	for patt in ($args) {
-		@ push(:ret $pattern("$patt" $sar(g/_DSET.//$aliasctl(assign match _DSET.))));
+		@ push(function_return $pattern("$patt" $sar(g/_DSET.//$aliasctl(assign match _DSET.))));
 	};
-	@ function_return = ret;
 };
 
 alias getfsets (args default "*")
 {
 	for patt in ($args) {
-		@ push(:ret $pattern("$patt" $sar(g/_FSET.//$aliasctl(assign match _FSET.))));
+		@ push(function_return $pattern("$patt" $sar(g/_FSET.//$aliasctl(assign match _FSET.))));
 	};
-	@ function_return = ret;
 };
 
 #
@@ -241,17 +239,16 @@ alias modinfo (module, flag)
 		switch ($tolower($flag))
 		{
 			(a) () {
-				@ :retval = _MODULE.$module;
-				@ push(:retval $_MODULE[$module][VERSION]);
+				@ function_return = _MODULE.$module;
+				@ push(function_return $_MODULE[$module][VERSION]);
 			}
 			(f) {
-				@ :retval = _MODULE[$module];
+				@ function_return = _MODULE[$module];
 			}
 			(v) {
-				@ :retval = _MODULE[$module][VERSION];
+				@ function_return = _MODULE[$module][VERSION];
 			}
 		};
-		@ function_return = retval;
 	};
 };
 
@@ -355,10 +352,9 @@ alias winchannels (win default "$winnum()", void)
 	{
 		xeval -s $serv {
 			if (winchan($chan) == win) {
-				@ push(:channels $chan);
+				@ push(function_return $chan);
 			};
 		};
 	};
-	@ function_return = channels;
 };
 

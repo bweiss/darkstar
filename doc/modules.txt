@@ -32,26 +32,34 @@ detail about some of these, as well as the cleanup queue, in the comments
 of the example module below.
 
 Limitations:
-  - The module's name can only contain characters that are valid as
-    /assign variable names. This is because much of the data about the
-    module will be stored in assign structures named after the module.
 
-  - Modules cannot use the name "core", as it is reserved for the core
-    scripts. Attempting to name a module core.dsm will result in an error
-    message from loader.build_modlist and the module will not be available
-    for loading.
+  - The module's name can only contain characters that are valid as
+    /ASSIGN variable names. This is because much of the data about the
+    module will be stored in ASSIGN structures named after the module.
+
+  - The following module names are reserved for use by the core scripts:
+    core, ds, module, config, format, and anything beginning with an
+    underscore (e.g. _foo). Attempting to name a module one of these words
+    will result in an error and the module will not be present in the
+    modlist.
 
 
 --- START OF FILE: sample.dsm ---
-#version 0.1.3
-# The above line is an optional tag that is read by the module loader
-# (/LOAD sees it as a comment). If present, the number proceeding it will
-# be stored in the module_version array, and is displayed in the output
-# of /MODLIST. It must be the first line of the file or it will not work.
+# version:0.1.3 loader:std
+/*
+ * The above line is called a module header and is read by the module loader
+ * (/LOAD sees it as a comment) when it scans for modules. This header gives
+ * the loader information about the module. Currently only two header tags
+ * are supported: version and loader. The 'version' tag, as its name implies,
+ * gives the loader a version string to be displayed in the modlist. The
+ * 'loader' tag allows module authors to specify whether they would like to
+ * use EPIC's standard loader (std) or the new pre-formatted loader (pf).
+ * See epic4/doc/pf-loader for details about this wonderful /LOAD option.
+ * NOTE: As of DarkStar 0.3 all core scripts and modules use the PF loader.
+ */
+
 /*
  * sample.dsm - Example module for DarkStar/EPIC4
- * Copyright (c) 2002 Brian Weiss
- * See the 'COPYRIGHT' file for details.
  *
  * Standard header comment, you can put whatever you like here. To make
  * things easy on other module authors, I like to include a line like the
@@ -92,10 +100,10 @@ queue cleanup.sample
 /****** CONFIG/FORMAT VARIABLES ******/
 
 /*
- * The aliases config.add and format.add (provided by core/config.dsc) add
+ * The /ADDCONFIG and /ADDFORMAT commands (provided by core/set.dsc) add
  * config and format variables whose values can be changed via /DSET and
- * /FSET. The '-b' option passed to config.add creates a boolean variable.
- * Please see the comments in config.dsc for the complete usage of these
+ * /FSET. The '-b' option passed to /ADDCONFIG creates a boolean variable.
+ * Please see the comments in set.dsc for the complete usage of these
  * commands. These variables are removed automatically when the module
  * that added them is unloaded.
  *
@@ -103,9 +111,9 @@ queue cleanup.sample
  * CONFIG structure and should be accessed (and sometimes directly changed)
  * from there. See examples later in this file.
  */
-config.add -b FOO 1
-config.add    SAMPLE_TRIGGER !foo
-config.add -b SAMPLE_WINDOW 1
+addconfig -b FOO 1
+addconfig    SAMPLE_TRIGGER !foo
+addconfig -b SAMPLE_WINDOW 1
 
 /*
  * Format variables should be used with $fparse() and $fparse2() (the only
@@ -121,17 +129,18 @@ config.add -b SAMPLE_WINDOW 1
  *
  * See the public hook for the call to $fparse() in this example.
  */
-format.add BLAH <%G$1%n> $3-
+addformat PUBLIC <%G$1%n> $3-
 
 
 /****** INIT ******/
 
 /*
  * Force the loading of saved settings early so we can use them at
- * load time. Example directly below. You can also have a look at
- * modules/window.dsm and modules/misc.dsm to see this in action.
+ * load time. Example directly below.
  */
-module.load_saved_settings
+if (fexist($DS.SAVE_DIR/sample) == 1) {
+	^load $DS.SAEV_DIR/sample
+}
 
 /*
  * Create a split window named "sample" at load time. This window
@@ -192,8 +201,8 @@ on ^public '% % $CONFIG.SAMPLE_TRIGGER *'
 	 * It is usually desirable to check for a value in format
 	 * variables before passing them along to $fparse().
 	 */
-	if (FORMAT.BLAH) {
-		echo $fparse(BLAH $*)
+	if (FORMAT.PUBLIC) {
+		echo $fparse(PUBLIC $*)
 	}
 
 	if (CONFIG.FOO && finditem(foobar $0) == -1) {
@@ -230,8 +239,6 @@ on #-hook 123 "CONFIG SAMPLE_WINDOW *"
 	}
 }
 
-
-/* EOF */
 --- END OF FILE: sample.dsm ---
 
 
@@ -239,7 +246,7 @@ That should give you a pretty good taste of what makes up a module. At this
 point you may want to have a closer look at the various modules that are
 included in the script pack. Other areas of interest would be commands.dsc
 and functions.dsc in the core/ directory. And if you feel brave, have a
-peak at config.dsc and loader.dsc ;). Please feel free to email me if you
+peak at set.dsc and modules.dsc ;). Please feel free to email me if you
 have a question about something not covered here, or especially if you have
 a suggestion for how something can be improved. That's all for now,
 happy scripting!

@@ -49,3 +49,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Don't bind pgup/pgdn in window.dsc -- They are bound by default.
 * Add $chnormal().
 * Rewrite and optimize $chhops(), $nochhops(), $chvoices(), and $nochvoices().
+* DarkStar 0.3 released here.

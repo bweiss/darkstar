@@ -69,14 +69,14 @@ for array in ($getarrays()) {
 #
 # Important global variables
 #
-@ DS.VERSION = [0.3pre4];
-@ DS.INTERNAL_VERSION = [20031210];
+@ DS.VERSION = [0.3];
+@ DS.INTERNAL_VERSION = [20040814];
 
 #
 # This will be incremented every time a change takes place in
 # the core scripts (this file and any *.dsc files in $DS.HOME/core/).
 #
-@ DS.CORE_ID = 126;
+@ DS.CORE_ID = 127;
 
 xecho -b -c Loading DarkStar $DS.VERSION;
 
@@ -127,7 +127,7 @@ if (fexist($DS.USER_DIR) == -1)
 	echo;
 	echo Copyright (c) 2002-2004 Brian Weiss <brian@epicsol.org>;
 	echo See the 'COPYRIGHT' file for details.;
-	echo Official Website: http://darkstar.epicsol.org/;
+	echo Official Website: http://www.epicsol.org/darkstar/;
 	echo;
 	echo If you have not looked at the README yet, you should do so now.;
 	echo It is also a good idea to have a look through the various help files;

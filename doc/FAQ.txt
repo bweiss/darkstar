@@ -85,26 +85,6 @@ A: The status bar is chosen by your theme. If you want to change the status
 
 --
 
-Q: How can I create my own theme?
-
-A: All you need to do in order to create your own theme (from one of the
-   existing themes) is to copy that theme's directory over to your
-   "user directory" and rename it. The name of the directory will be used
-   as the name of the theme and will be available immediately without any
-   kind of reload.
-
-   e.g.
-   % cd darkstar/themes/
-   % cp -R astral ~/.darkstar/themes/mytheme
-
-   The /SAVE command provided by the core scripts also writes the current
-   theme and status bar settings to the "custom" theme. Combined with
-   a little help from the tabkey module this makes it easy to edit/create
-   themes at the EPIC input prompt. (The tabkey module can be used to
-   complete commands, and even variable names and their values.)
-
---
-
 Q: How can I get publics to show '@' and '+' before the nicks of users who
    are oped/voiced?
 
@@ -133,7 +113,8 @@ A: There are currently two ways to add a timestamp to output. The easiest,
    /SET OUTPUT_REWRITE [$Z] $1-
 
    If you want to add a timestamp only to specific output, you should
-   add $Z to any /FSET variables that you want to be timestamped.
+   add $ts() to any /FSET variables that you want to be timestamped and
+   then type /DSET TIMESTAMP ON.
 
 
 End of file.
