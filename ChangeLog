@@ -3,6 +3,8 @@ Darkstar ChangeLog
 
 12/23/01
 
+ * Added help pages for /less, /reload, /sv, and /uptime.
+
  * Forgot to unset NAMES_FOOTER in both themes.
 
  * Forgot to escape some ()'s in the darkstar status.

@@ -6,7 +6,7 @@
  * COMMANDS.DSC - Some useful commands for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/22/01 (bmw)
+ * Last modified: 12/23/01 (bmw)
  *
  * If you have any aliases you feel are useful enough to be in this file,
  * feel free to email me.
@@ -20,6 +20,8 @@
 # Modified on Jan 25, 1999 as an example of how to use arglists.
 # Modified on Oct 17, 2001 by Brian Weiss for use with Darkstar/EPIC4
 #
+
+alias more less
 
 alias less (file, void)
 {

@@ -1,0 +1,7 @@
+Synopsis:
+   less <filename>
+   more <filename>
+
+Description:
+   A basic file pager.
+
