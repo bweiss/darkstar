@@ -15,3 +15,13 @@ Author: Brian Weiss <brian@epicsol.org>
    chat <nick>
      - Alias to /dcc chat.
 
+Other Notes:
+   It is wise, especially if you enable autoget, to change the value of
+   /set DCC_STORE_PATH to something other than your home directory. This
+   will prevent people from overwriting files there and also helps to
+   maintain your sanity. I use ~/incoming, but you are free to make up
+   anything you like.
+
+See Also:
+   set(4) dcc_store_path
+
