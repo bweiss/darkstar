@@ -3,6 +3,8 @@ Darkstar ChangeLog
 
 20020401
 
+ * [channel.dsm 0.2.5] Several shortcut aliases were broken. Oops.
+
  * darkstar.irc now attempts to use $loadinfo() to determine a value for
    $DS.HOME if the DARKSTAR_HOME environment variable is not set. It will
    still fall back to the old method (just setting it to ~/darkstar) if

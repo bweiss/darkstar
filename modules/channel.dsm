@@ -62,7 +62,7 @@ format.add TOPIC_CHANGE $G $1 has changed the topic on channel $2 to $3-
 format.add TOPIC_SETBY $G The topic was set by $3 on $strftime($4 %%c)
 
 
-alias alldop
+alias alldop alldeop
 alias alldeop (nicks)
 {
 	if (!nicks)
@@ -148,7 +148,7 @@ alias bankick (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 	//kick $C $nick $reason
 }
 
-alias bans
+alias bans banlist
 alias banlist (chan default "$C", void)
 {
 	//mode $chan +b
@@ -335,13 +335,13 @@ alias massmode (chan, action, mode, ...)
 	}
 }
 
-alias mdop
+alias mdop mdeop
 alias mdeop (chan default "$C", void)
 {
 	massmode $chan - o $remw($servernick() $chops($chan))
 }
 
-alias mdvoice
+alias mdvoice mdevoice
 alias mdevoice (chan default "$C", void)
 {
 	massmode $chan - v $remw($servernick() $onchannel($chan))
