@@ -1,4 +1,4 @@
-#version 0.1.1
+#version 0.1.2
 /* $Id$ */
 /*
  * oper.dsm - IRC Operator module for DarkStar/EPIC4
@@ -14,12 +14,15 @@ queue cleanup.oper
 {
 	^alias -operwall
 	^on #381 427 -"*"
+	^on wallop -"*"
 }
 
 
 /****** CONFIG/FORMAT VARIABLES ******/
 
 config.add OPER_UMODES wzsky
+
+format.add WALLOP !$1$2! $3-
 
 
 /****** USER ALIASES ******/
@@ -39,6 +42,13 @@ alias operwall (text)
 on #^381 427 "*"
 {
 	//mode $servernick() $CONFIG.OPER_UMODES
+}
+
+on ^wallop "*"
+{
+	if (FORMAT.WALLOP) {
+		echo $fparse(WALLOP $*)
+	}
 }
 
 

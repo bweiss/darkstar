@@ -1,0 +1,6 @@
+/* $Id$ */
+
+assign FORMAT.WALLOP !$1! $3-
+
+
+/* EOF */

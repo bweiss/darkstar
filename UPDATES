@@ -1,3 +1,11 @@
+*** News 2002/09/17 -- oper.dsm 0.1.2 - New format variable: WALLOP
+	All incoming wallops will now be formatted according to the value
+	of the WALLOP format variable.
+
+*** News 2002/09/17 -- channel.dsm 0.6.1 - New format variable: SEND_WALL
+	The /WALL and /WALL2 aliases will now honor the SEND_WALL variable
+	when formatting their output.
+
 *** News 2002/09/07 -- /SAVE now writes custom status file
 	The /SAVE alias provided by the core scripts (core/save.dsc) will
 	now write a "custom" status file to your user directory.

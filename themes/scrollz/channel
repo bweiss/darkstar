@@ -26,7 +26,7 @@ assign FORMAT.SEND_ACTION_CHANNEL %W*%n %C$1%n $3-
 assign FORMAT.SEND_ACTION_CHANNEL_OTHER <%C$2%n> %W*%n %C$1%n $3-
 assign FORMAT.SEND_PUBLIC %c<$2>%n $3-
 assign FORMAT.SEND_PUBLIC_OTHER %c<$1%n:%C$2>%n $3-
-assign FORMAT.SEND_WALL %G<%n-%G@%g$1%n-%G>%n $2-
+assign FORMAT.SEND_WALL $G Sent wallmsg on $1 to $remw($servernick() $chops($1))
 assign FORMAT.TOPIC $G Topic for $2: $3-
 assign FORMAT.TOPIC_CHANGE $G $1 has set the topic on channel $2 to $3-
 assign FORMAT.TOPIC_SETBY $G set by $3 on $strftime($4 %%a %%b %%d %%T %%Y)
