@@ -1,9 +1,11 @@
 #version 0.2.2
+/* $Id$ */
 /*
- * CHANNEL.DSM - Channel related stuff for Darkstar/EPIC4
- * Author: Brian Weiss <brian@epicsol.org> - 2001
+ * channel.dsm - Channel related module for Darkstar/EPIC4
  *
- * Last modified: 2/21/02 (bmw)
+ * Written by Brian Weiss
+ * Copyright © 2002 Brian Weiss
+ * See the 'COPYRIGHT' file for more information.
  *
  * This script uses serial numbers 0 and 424 for /on hooks.
  */
@@ -814,4 +816,4 @@ on ^public_other '% % *\\[${CONFIG[AUTO_RESPONSE_STR]}\\]*'
 }
 
 
-/* bmw '01 */
+/* EOF */

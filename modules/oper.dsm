@@ -1,9 +1,11 @@
 #version 0.1
+/* $Id$ */
 /*
- * OPER.DSM - IRC Operator module for Darkstar/EPIC4
- * Author: Brian Weiss <brian@epicsol.org> - 2001
+ * oper.dsm - IRC Operator module for Darkstar/EPIC4
  *
- * Last modified: 2/17/02 (bmw)
+ * Written by Brian Weiss
+ * Copyright © 2002 Brian Weiss
+ * See the 'COPYRIGHT' file for more information.
  *
  * This script uses serial number 427 for all /on hooks.
  */
@@ -33,4 +35,4 @@ on #^381 427 "*"
 }
 
 
-/* bmw '01 */
+/* EOF */

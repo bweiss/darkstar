@@ -1,9 +1,11 @@
 #version 0.1.2
+/* $Id$ */
 /*
- * WINDOW.DSM - Window module for Darkstar/EPIC4
- * Author: Brian Weiss <brian@epicsol.org> - 2001
+ * window.dsm - Window module for Darkstar/EPIC4
  *
- * Last modified: 2/17/02 (bmw)
+ * Written by Brian Weiss
+ * Copyright © 2002 Brian Weiss
+ * See the 'COPYRIGHT' file for more information.
  *
  * This script uses serial number 426 for all /on hooks.
  */
@@ -261,4 +263,4 @@ alias window.msgwin_down (void)
 ^bind -symbolic key_f12 PARSE_COMMAND window msgs clear
 
 
-/* bmw '01 */
+/* EOF */

@@ -1,9 +1,11 @@
 #version 1.1
+/* $Id$ */
 /*
- * AWAY.DSM - Away module for Darkstar/EPIC4
- * Author: Brian Weiss <brian@epicsol.org> - 2001
+ * away.dsm - Away module for Darkstar/EPIC4
  *
- * Last modified: 2/17/02 (bmw)
+ * Written by Brian Weiss
+ * Copyright © 2002 Brian Weiss
+ * See the 'COPYRIGHT' file for more information.
  *
  * This script uses serial number 421 for all /on hooks.
  */
@@ -231,4 +233,4 @@ alias away.send_notice (nick default "0", void)
 }
 
 
-/* bmw '01 */
+/* EOF */
