@@ -1,4 +1,4 @@
-#version 1.1
+#version 1.1.1
 /* $Id$ */
 /*
  * misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
@@ -26,8 +26,7 @@ queue cleanup.misc
 	^on send_ctcp -"PRIVMSG *"
 	^on #timer 424 -"*"
 	^on who -"* % % % % *"
-	^on #hook 424 -"CONFIG IGNORE_CTCP_FINGER *"
-	^on raw_irc -"% PRIVMSG % :FINGER"
+	^on raw_irc -"% PRIVMSG % :FINGER*"
 }
 
 
@@ -499,7 +498,7 @@ on ^notice "*"
 	}
 }
 
-on ?raw_irc "% PRIVMSG % :FINGER"
+on ?raw_irc "% PRIVMSG % :FINGER*"
 {
 	if (CONFIG.IGNORE_CTCP_FINGER)
 	{
