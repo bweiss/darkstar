@@ -1,7 +1,7 @@
 Darkstar README
 Author: Brian Weiss <brian@epicsol.org>
 
-Last modification: 8/27/01
+Last modification: 10/14/01
 
 
 ABOUT
@@ -47,10 +47,13 @@ The first thing that needs to be done in order to use Darkstar is to tell
 the script where everything is located. This can be done through the setting
 of the following environment variables...
 
-  DARKSTAR_HOME - Darkstar home directory (default ~/darkstar)
-  DARKSTAR_RC - Location of the Darkstar startup file (default ~/.epic4/.dsrc)
-  DARKSTAR_SAVEDIR - Directory where settings should be saved
-		     (default ~/.epic4/.darkstar)
+  DARKSTAR_HOME - Darkstar home directory (default: ~/darkstar)
+  DARKSTAR_RC - Location of the rc file. This is loaded every time darkstar.irc
+		is loaded, including /RELOADs. (default: ~/.dsrc)
+  DARKSTAR_USER - Location of the "User directory." This just contains
+		  directories where you can put your own modules, status bars,
+		  and themes. Saved settings also go here by default.
+		  (default: ~/.darkstar)
 
 This can be accomplished in the following ways (depending on your shell) ...
 
@@ -123,9 +126,10 @@ way to this script:
 			Colten Edwards		dialtone
 			Eli Sand		adm
 			Daniel Shatter		myke
-			shade			whitefang
-			BlackJac		Tilt
-			defiler			ww
+			Tyler Hall (whitefang)  Tilt
+			shade			ww
+			BlackJac
+			defiler	
 
 If you think I forgot your name on this list, just drop me an email.
 
