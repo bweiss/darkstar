@@ -1,4 +1,4 @@
-#version 0.3.6
+#version 0.3.7
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -7,9 +7,8 @@
  *
  * This script is based on the tabkey.ce script written by CrazyEddy and
  * distributed with the EPIC4 IRC client. Most of the important code comes
- * from there.
- *
- * Extended and maintained for DarkStar by Brian Weiss <brian@epicsol.org>
+ * from there. It is extended and maintained for the DarkStar script pack
+ * by Brian Weiss <brian@epicsol.org>.
  *
  * This script uses serial number 420 for all /ON hooks.
  *
@@ -93,21 +92,25 @@ alias tabkey.main {
 	xdebug extractw
 	@ :curword = indextoword($curpos() $L )
 	@ :wordind = wordtoindex($curword $L)
+	@ :cmdind = 0
 	if (32 >= (127 & ascii($mid(${curpos() - 1} 1 $L )))) {
 		@ curword++
 		@ wordind = curpos()
 	}
 	@ :word = mid($wordind ${curpos() - wordind} $L)
-	if (CONFIG.TABKEY_CYCLE_MATCHES && TABKEY.LASTMATCHES != [] && L != [] && word == TABKEY.LASTWORD) {
-		if (TABKEY.INDEX == numwords($TABKEY.LASTMATCHES)) {
-			@ TABKEY.INDEX = 0
+	if (CONFIG.TABKEY_CYCLE_MATCHES && TABKEY.LASTMATCHES != [] && word == TABKEY.LASTWORD) {
+		if (word != [] || (word == [] && L == TABKEY.LASTLINE)) {
+			if (TABKEY.INDEX == numwords($TABKEY.LASTMATCHES)) {
+				@ TABKEY.INDEX = 0
+			}
+			@ :nextword = word($TABKEY.INDEX $TABKEY.LASTMATCHES)
+			parsekey delete_to_previous_space
+			xtype -l $nextword
+			@ TABKEY.INDEX++
+			@ TABKEY.LASTLINE = L
+			@ TABKEY.LASTWORD = nextword
+			return
 		}
-		@ :nextword = word($TABKEY.INDEX $TABKEY.LASTMATCHES)
-		parsekey delete_to_previous_space
-		xtype -l $nextword
-		@ TABKEY.INDEX++
-		@ TABKEY.LASTWORD = nextword
-		return
 	}
 	if (word =~ ["*"]) {
 		@ :word = shift(word)
@@ -124,6 +127,7 @@ alias tabkey.main {
 	if (numwords($matches) > 1 && word == prefix) {
 		echo Completions for \"$word\": $matches
 		@ TABKEY.INDEX = 0
+		@ TABKEY.LASTLINE = L
 		@ TABKEY.LASTMATCHES = matches
 		@ TABKEY.LASTWORD = word
 	} elsif (#matches && strlen($word) <= strlen($prefix)) {
@@ -156,7 +160,8 @@ alias tabkey.cmd {
 	@ :pass  = chr($jot($ascii(AZ)))
 	@ :pass #= chr($jot($ascii(az)))
 	@ :pass #= chr($jot($ascii(09)))
-	@ :args  = mid(0 $curpos() $L)
+	@ :args = wordtoindex($cmdind $L)
+	@ :args = mid($args $curpos() $L)
 	/* Make absolutely sure we remove $CMDCHARS from the beginning of the
 	   the string. This is needed whenever $CMDCHARS contains one of the
 	   characters supplied to the above call to $pass(). -bmw */
@@ -209,6 +214,18 @@ alias tabkey.default {
 
 alias tabkey.nofallback { return ${[$*] == [] ? [ ] : [$*]}; }
 
+# Used for things like /eval and /repeat where what you are repeating
+# is another command.  depth is the arg number where the command begins.
+# This is not well cpu optimised.  See examples below.
+alias tabkey.recurse (depth, ...) {
+	bless
+	@ :cmdind += depth
+	@ :curword -= depth
+	@ function_return = 0 > curword ? [] : tabkey.cmd($*)
+	@ :curword += depth
+	@ :cmdind -= depth
+}
+
 
 # Context sensitive completion goes here.
 
@@ -246,13 +263,13 @@ alias tabkey.cmd.dhelp {
 	return $tabkey.nofallback($ret)
 }
 
-alias tabkey.cmd.do tabkey.cmd.eval
+alias tabkey.cmd.do tabkey.recurse 1
 
-alias tabkey.cmd.dset    { return $tabkey.nofallback($tabkey.method.variables(config)); }
+alias tabkey.cmd.dset { return $tabkey.nofallback($tabkey.method.variables(config)); }
 
-alias tabkey.cmd.eval    { return $tabkey.nofallback($tabkey.method.commands($*)); }
+alias tabkey.cmd.eval tabkey.recurse 1
 
-alias tabkey.cmd.exec    { return $tabkey.nofallback($tabkey.method.file($*)); }
+alias tabkey.cmd.exec { return $tabkey.nofallback($tabkey.method.file($*)); }
 
 alias tabkey.cmd.foreach {
 	bless
@@ -348,6 +365,8 @@ alias tabkey.cmd.q tabkey.cmd.query
 alias tabkey.cmd.query     { return $pattern("$0*" $sort($uniq($TABKEY.MSGHIST[$winserv()] $tabkey.method.nickchan($*)))); }
 
 alias tabkey.cmd.reloadmod { return $tabkey.nofallback($tabkey.method.arrays(loaded_modules)); }
+
+alias tabkey.cmd.repeat tabkey.recurse 2
 
 alias tabkey.cmd.save      { return $tabkey.nofallback($tabkey.method.arrays(loaded_modules)); }
 
