@@ -42,10 +42,10 @@ A: This depends heavily on the amount of customization you do. If you have
 
 --
 
-Q: The 'darkstar' status bar is displaying letters with accents instead of
-   straight lines. How can I fix this?
+Q: My status bar is displaying letters with accents instead of straight lines.
+   How can I fix this?
 
-A: You need a font that displays these upper ASCII characters "correctly".
+A: You need a font that displays these upper ASCII characters correctly.
    Any of the vga fonts should work. I have two of the vga fonts available
    at http://www.got.net/~brian/fonts/ and http://www.epicsol.org/~brian/.
    You can probably find others with a quick search on google.
@@ -106,7 +106,7 @@ A: This can be accomplished by adding a small piece of code to the
 
    If you do this, you will probably want to create your own custom theme
    for it so that any changes you make are not overwritten the next time
-   you udpate DarkStar. See the above question about creating your own theme
+   you update DarkStar. See the above question about creating your own theme
    for help with this.
 
 --

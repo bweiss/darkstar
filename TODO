@@ -40,6 +40,14 @@ FOR 0.3 RELEASE:
 
   * Rename the bool_to_* functions? $booltoword() and $booltonum()?
 
+  * Change most of the error messages in the core (especially the module
+    loader) so that they are less alarming. Messages like "Error: Module
+    is already loaded (<modname>)" should become something more like
+    "*** Module <modname> is already loaded".
+
+  * Add some global variables to the core that the module loader will set
+    to the name of the module currently being (un)loaded.
+
  Modules:
 
   * [memo.dsm] Add the ability to group memos.
@@ -59,6 +67,12 @@ FOR 0.3 RELEASE:
     that is displayed when resuming DCC transfers.
 
   * [misc.dsm] Add a server ping command (/SPING).
+
+  * [seen.dsm] The method being used to write the seen db to disk is totally
+    flawed. It would be much better if the user had to specify groups of
+    servers that they wish the seen module to monitor. The db could then
+    be written to disk according to the group names instead of individual
+    server names.
 
 
 AFTER 0.3 RELEASE:
@@ -81,6 +95,11 @@ OTHER NOTES/IDEAS:
 
 * Figure out a way to allow modules to prevent output from /DSET (and /FSET?)
   from within /ON hooks.
+
+* Is it possible to have /HELP browse both the EPIC and DarkStar help files
+  at the same time? DarkStar could have its own section e.g. "9_DarkStar"
+  so that we won't have to reference the help pages with the current, lame
+  notation: ds:<page>(<section>).
 
 
 End of file.
