@@ -113,12 +113,12 @@ alias _set (type, variable, value)
 
 		if (#matches > 1 && !bingo)
 		{
-			if (FORMAT.SET_HEADER) {xecho -s $fparse(SET_HEADER $#getdsets($var*) $var)}
-			xecho -s $fparse(SET_AMBIGUOUS $toupper($var))
+			if (FORMAT.SET_HEADER)    {xecho -s $fparse(SET_HEADER $#getdsets($var*) $var)}
+			if (FORMAT.SET_AMBIGUOUS) {xecho -s $fparse(SET_AMBIGUOUS $toupper($var))}
 			for tmp in ($matches) {
 				_setcat $type\.$after(1 . $tmp)
 			}
-			if (FORMAT.SET_FOOTER) {xecho -s $fparse(SET_FOOTER $#getdsets($var*) $var)}
+			if (FORMAT.SET_FOOTER)    {xecho -s $fparse(SET_FOOTER $#getdsets($var*) $var)}
 		}\
 		else if (bingo || #matches == 1)
 		{
