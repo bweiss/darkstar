@@ -1,4 +1,4 @@
-#version 0.3.1
+#version 0.4
 /*     _             _        _
  *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
  * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
@@ -93,8 +93,10 @@ alias tabkey.addrule
 }
 
 /*
- * Adds nicks to the msg_routine history. This will keep separate lists for
- * each server you are connected to.
+ * tabkey.addnick <nick>
+ *
+ * Adds <nick> to the msg history. This will keep separate lists for each
+ * server you are connected to.
  */
 alias tabkey.addnick (nick, void)
 {
@@ -112,53 +114,6 @@ alias tabkey.addnick (nick, void)
 	@ TABKEY.INDEX.$winserv() = [-1]
 }
 
-/*
- * Generic completion procedure. This can be used by the other procedures that
- * will be called by tabkey.process_tabkey or as an example for writing your
- * own. If you would like the completed word to be suffixed with something
- * other than a space, you can change the value of TABKEY.SUFFIX in your
- * procedure.
- */
-alias tabkey.complete (word, list)
-{
-	if (!word || !list)
-	{
-		return
-	}
-
-	if (word == [*])
-	{
-		@ :matches = list
-	}{
-		@ :matches = pattern($word% $list)
-	}
-
-	if (#matches == 1)
-	{
-		^assign -TABKEY.SHOWMATCHES
-		parsekey delete_to_previous_space
-		xtype -l $matches$TABKEY.SUFFIX
-	}\
-	else if (#matches > 1)
-	{
-		beep
-		@ TABKEY.SHOWMATCHES++
-		parsekey delete_to_previous_space
-		xtype -l $prefix($matches)
-
-		if (TABKEY[SHOWMATCHES] > 1)
-		{
-			xecho -b Matches:
-			for tmp in ($matches)
-			{
-				echo $tmp
-			}
-		}
-	}{
-		^assign -TABKEY.SHOWMATCHES
-	}
-}
-
 alias tabkey.display_rules (void)
 {
 	echo #   Pattern                    Procedure    Word List
@@ -173,18 +128,42 @@ alias tabkey.display_rules (void)
 }
 
 /*
+ * tabkey.show_matches <list>
+ *
+ * Beeps the terminal and displays the <list> of matches when the tabkey is
+ * pressed a second time. This is intended to be used by the completion
+ * procedures since almost all of them want it.
+ */
+alias tabkey.show_matches (list)
+{
+	if (!list)
+	{
+		return
+	}
+
+	if (L == TABKEY[LAST_INPUT] && strlen(L) == strlen($TABKEY.LAST_INPUT))
+	{
+		beep
+		xecho -b Matches:
+		for tmp in ($list)
+		{
+			echo $tmp
+		}
+	}
+}
+
+/*
  * This is called whenever the user actually pushes the Tab key.
  */
 alias tabkey.process_tabkey (void)
 {
+	@ TABKEY.LAST_INPUT = L
 	@ :item = rmatchitem(tabkey_rules "$L")
-
 	if (item > -1)
 	{
 		@ :rinfo = getitem(tabkey_rinfo $item)
 		@ :proc = word(0 $rinfo)
 		eval ^local list $restw(1 $rinfo)
-		@ TABKEY.SUFFIX = [ ]
 		tabkey.proc.$proc $list
 	}
 }
@@ -202,11 +181,24 @@ alias tabkey.proc.channel (list)
 	@ :lastc = mid(${strlen($L) - 1} 1 $L)
 	if (lastc == [ ])
 	{
-		tabkey.complete * $list
+		@ :matches = list
 	}{
 		@ :lastw = word(${#L - 1} $L)
+		/* This allows us to complete channels with "\" in them. */
 		@ :lastw = sar(g/\\/\\\\\/$lastw)
-		tabkey.complete $lastw $list
+		@ :matches = pattern($lastw% $list)
+	}
+
+	if (#matches == 1)
+	{
+		parsekey delete_to_previous_space
+		xtype -l $matches${[ ]}
+	}\
+	else if (#matches > 1)
+	{
+		parsekey delete_to_previous_space
+		xtype -l $prefix($matches)
+		tabkey.show_matches $matches
 	}
 }
 
@@ -225,65 +217,56 @@ alias tabkey.proc.file (void)
 		
 		if (#matches == 1)
 		{
-			^assign -TABKEY.SHOWMATCHES
 			@ :lastc = mid(${strlen($matches) - 1} 1 $matches)
 			parsekey delete_to_previous_space
 			xtype -l $matches${lastc == [/] ? [] : [ ]}
 		}\
 		else if (#matches > 1)
 		{
-			beep
-			@ TABKEY.SHOWMATCHES++
 			parsekey delete_to_previous_space
 			xtype -l $prefix($matches)
-
-			if (TABKEY[SHOWMATCHES] > 1)
-			{
-				xecho -b Matches:
-				for file in ($matches)
-				{
-					echo $file
-				}
-			}
-		}{
-			^assign -TABKEY.SHOWMATCHES
+			tabkey.show_matches $matches
 		}
 	}
 }
 
 alias tabkey.proc.lmods (void)
 {
-	^local modules
-	for cnt from 0 to ${numitems(loaded_modules) - 1}
-	{
-		@ push(modules $getitem(loaded_modules $cnt))
-	}
-
-	@ :lastc = mid(${strlen($L) - 1} 1 $L)
-	if (lastc == [ ])
-	{
-		tabkey.complete * $modules
-	}{
-		@ :lastw = word(${#L - 1} $L)
-		tabkey.complete $lastw $modules
-	}
+	tabkey.module_proc loaded_modules
 }
 
 alias tabkey.proc.mods (void)
 {
+	tabkey.module_proc modules
+}
+
+alias tabkey.module_proc (array, void)
+{
 	^local modules
-	for cnt from 0 to ${numitems(modules) - 1}
+	for cnt from 0 to ${numitems($array) - 1}
 	{
-		@ push(modules $getitem(modules $cnt))
+		@ push(modules $getitem($array $cnt))
 	}
 
 	@ :lastc = mid(${strlen($L) - 1} 1 $L)
 	if (lastc == [ ])
 	{
-		tabkey.complete * $modules
+		@ :matches = modules
 	}{
 		@ :lastw = word(${#L - 1} $L)
-		tabkey.complete $lastw $modules
+		@ :matches = pattern($lastw% $modules)
+	}
+
+	if (#matches == 1)
+	{
+		parsekey delete_to_previous_space
+		xtype -l $matches${[ ]}
+	}\
+	else if (#matches > 1)
+	{
+		parsekey delete_to_previous_space
+		xtype -l $prefix($matches)
+		tabkey.show_matches $matches
 	}
 }
 
@@ -317,15 +300,28 @@ alias tabkey.proc.nick (list)
 	@ :lastc = mid(${strlen($L) - 1} 1 $L)
 	if (lastc == [ ])
 	{
-		tabkey.complete * $list
+		@ :matches = list
 	}{
 		@ :lastw = word(${#L - 1} $L)
+		/* This allows us to complete nicks with "\" in them. */
 		@ :lastw = sar(g/\\/\\\\\/$lastw)
 		if (#L < 2)
 		{
-			@ TABKEY.SUFFIX = CONFIG[TABKEY_NICKCOMP_SUFFIX] ## [ ]
+			@ suffix = CONFIG[TABKEY_NICKCOMP_SUFFIX] ## [ ]
 		}
-		tabkey.complete $lastw $list
+		@ :matches = pattern($lastw% $list)
+	}
+
+	if (#matches == 1)
+	{
+		parsekey delete_to_previous_space
+		xtype -l $matches$suffix
+	}\
+	else if (#matches > 1)
+	{
+		parsekey delete_to_previous_space
+		xtype -l $prefix($matches)
+		tabkey.show_matches $matches
 	}
 }
 
