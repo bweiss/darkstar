@@ -9,12 +9,12 @@ status -q darkstar
 set BANNER ***
 
 /* Module: channel */
-fset BANS $[3]1 $[12]5  $strftime($6 %x@%X)  $4
+fset BANS $[3]1 $[12]5  $strftime($6 %%x@%%X)  $4
 fset BANS_FOOTER $G Total bans on $3: $2
 fset BANS_HEADER #   SetBy         When               Ban
 fset CHANNEL_SIGNOFF $G SignOff $1: $2 \($3-%n\) [$tolower($Z)]
 fset CHANNEL_SYNC $G Channel $1 synced in $2 seconds
-fset CHANNEL_TS $G Channel $2 created $strftime($3 %a %b %T %Z %Y) [$3]
+fset CHANNEL_TS $G Channel $2 created $strftime($3 %%a %%b %%T %%Z %%Y) [$3]
 fset JOIN $G $1 \($2\) has joined $3 at $Z
 fset LEAVE $G $1 \($2\) has left $3 at $Z
 fset MODE $G Mode change \"$3-\" on channel $2 by $1
@@ -26,12 +26,11 @@ fset SEND_PUBLIC <$2> $3-
 fset SEND_PUBLIC_OTHER <$1:$2> $3-
 fset TOPIC $G Topic for $2: $3-
 fset TOPIC_CHANGE $G $1 has changed the topic on channel $2 to $3-
-fset TOPIC_SETBY $G The topic was set by $3 on $getstrftime($4)
+fset TOPIC_SETBY $G The topic was set by $3 on $strftime($4 %%c)
 
 /* Module: core */
 fset SET $G Current value of $1 is $2-
 fset SET_NOVALUE $G No value for $1 has been set
-fset STRFTIME %c
 
 /* Module: misc */
 fset CTCP $G CTCP $3 from $1 to $2: $4-
@@ -52,7 +51,7 @@ fset WHOIS_NAME %c[**]%n ircname  %c:%n $6-
 fset WHOIS_NICK %c[**]%n $2 %c\(%n$3@$4%c\)%n
 fset WHOIS_OPER %c[**]%n operator %c:%n $2 is an IRC Operator
 fset WHOIS_SERVER %c[**]%n server   %c:%n $3 \($4-\)
-fset WHOIS_SIGNON %c[**]%n signon   %c:%n $strftime($4 %a %b %T %Z %Y)
+fset WHOIS_SIGNON %c[**]%n signon   %c:%n $strftime($4 %%a %%b %%T %%Z %%Y)
 fset WHOWAS_NAME %c[**]%n ircname  %c:%n $6-
 fset WHOWAS_NICK %c[**]%n $2 was %c\(%n$3@$4%c\)%n
 fset UMODE $G Mode change \"$3-\" for user $2 by $1

@@ -1,1 +1,1 @@
-config bool AUTO_CYCLE_OPLESS 0
+config bool AUTO_CYCLE 0

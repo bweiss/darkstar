@@ -6,7 +6,7 @@
  * AUTOCYCLE.DSM - Auto-Cycle module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/2/01 (bmw)
+ * Last modified: 12/22/01 (bmw)
  *
  * This script uses serial number 425 for all ON hooks.
  *
@@ -28,7 +28,7 @@ queue cleanup.autocycle
 
 alias autocycle (channel, void)
 {
-	if (CONFIG[AUTO_CYCLE_OPLESS] && getmatches(synced_channels $channel) != [] && !ischanop($servernick() $channel) && numonchannel($channel) <= 2)
+	if (CONFIG[AUTO_CYCLE] && getmatches(synced_channels $channel) != [] && !ischanop($servernick() $channel) && numonchannel($channel) <= 2)
 	{
 		echo Auto-cycling $channel to gain ops
 		quote part $channel

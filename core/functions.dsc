@@ -6,7 +6,7 @@
  * FUNCTIONS.DSC - Some useful functions for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/19/01 (bmw)
+ * Last modified: 12/22/01 (bmw)
  *
  * If you have any functions you feel are useful enough to be in this file,
  * feel free to email me.
@@ -35,15 +35,6 @@ alias convert.onoff (arg, void)
 		(on) {return 1}
 		(*) {return $arg}
 	}
-}
-
-/*
- * getstrftime(time)
- * Returns the time according to $FORMAT.STRFTIME
- */
-alias getstrftime (time, void)
-{
-	@ function_return = strftime(${time ? time : time()} $FORMAT.STRFTIME)
 }
 
 /*

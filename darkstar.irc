@@ -64,8 +64,8 @@ do
 /*
  * Important global variables
  */
-assign DS.VERSION 0.0.13
-assign DS.INTERNAL_VERSION 20011203
+assign DS.VERSION 0.1.0
+assign DS.INTERNAL_VERSION 20011222
 
 
 /*

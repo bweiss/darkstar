@@ -1,7 +1,20 @@
 Darkstar ChangeLog
 
 
+!! RELEASE: 0.1.0 (12/22/01) !!
+
+
 12/22/01
+
+ * The core scripts have been documented!
+
+ * The STRFTIME format variable has been removed as well as $getstrftime().
+   I was using them to get around the problem of $cparse() and $strftime()
+   using the same % codes. We now get around this by using "%%" to make a
+   literal "%" anywhere $strftime() is used. Themes will need to be adjusted
+   accordingly.
+
+ * [autocycle.dsm] AUTO_CYCLE_OPLESS renamed to AUTO_CYCLE.
 
  * Renamed some internal functions to prevent them from showing up in
    command completion.

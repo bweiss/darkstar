@@ -7,24 +7,14 @@ have these, they can be obtained from the following sites:
 
 ftp://ftp.epicsol.org/pub/epic/EPIC4-PRODUCTION/
 http://www.got.net/~brian/epic4/
-http://www.neglected.net/~brian/epic4/
 
 The help files for Darkstar are organized into the following groups:
 
-   Section 1: Darkstar Core
+   Section 1: Darkstar Core Scripts
    Section 2: Modules
-   Section 3: Programming
 
 In order to read a help file its section number must be given. This is true
 except when you are already at the help prompt and in the proper section.
-
-Examples:
-
-   > /dhelp 1 dset
-
-     or
-
-   1_Core Help? dset
 
 You can go back a section while at the help prompt by simply pressing the
 ENTER key.
@@ -32,9 +22,14 @@ ENTER key.
 Throughout this documentation topics in the "See Also" sections will include
 a UNIX manpage style section reference.
 
-Topics viewed via /HELP will appear like normal:	whois(2)
-Topics viewed via /DHELP will appear as:		ds:dset(1)
+Topics viewed via /HELP will appear like normal:        whois(2)
+Topics viewed via /DHELP will appear as:                ds:dset(1)
+
+Examples:
+
+   > /dhelp 1 dset
+   1_Core Help? dset
 
 See Also:
-   Introduction(7); New_User(7); help(1)
+   Introduction(7);  New_User(7);  help(1)
 

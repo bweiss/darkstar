@@ -1,21 +1,28 @@
 README file for Darkstar/EPIC4
 Author: Brian Weiss <brian@epicsol.org>
 
-Last modification: 12/20/01
+Last modified: 12/22/01
 
 
 ABOUT
 
 Darkstar is a modular script pack written for use with EPIC4, specifically,
 version 1.1.2 and up. It is intended mostly for advanced users that wish to
-take the time to customize their client. The core script itself is quite
-small and provides everything necessary to load/unload modules, configure
-settings, save settings, change statbars, and browse the help files. All
+take the time to customize their client. A great deal of effort has been put
+into making the core scripts as small and fast as possible. They provide
+everything necessary to load/unload modules, configure settings, save
+settings, change statbars, manage themes, and browse the help files. All
 other features come in the form of modules that can be loaded or unloaded
-at any time. This gives the script great flexibility and power. I must
-apologize for the lack of real documentation at this time, but the following
-should be enough to get you started. The script is quite usable despite it
-being in the early stages of development.
+at any time. This gives Darkstar great flexibility. It can literally become
+anything you want it to. The end goal is to provide a set of core scripts
+that make it easy for other scripters to customize their clients by writing
+their own modules. Even so, it should be quite usable for less advanced
+people.
+
+Currently, only the basic user commands provided by the core scripts have
+been documented. I do have plans to write more in-depth documentation at a
+later time, but for now, if you are a scripter and are interested in writing
+your own modules, themes, or status bars, please feel free to contact me.
 
 
 WHERE TO GET DARKSTAR AND EPIC4
@@ -25,12 +32,15 @@ Darkstar and EPIC4 can be found at the following URLs:
 http://www.got.net/~brian/
 http://www.epicsol.org/
 
-A snapshot of my current tree is also available via CVS:
+A snapshot of my current tree (as well as EPIC) is also available via CVS:
 
   export CVSROOT=:pserver:anoncvs@epicsol.org:/home/cvs/repository
   cvs login
-  (password is "anoncvs")
+  (Password is "anoncvs")
   cvs co darkstar
+
+  (Or to checkout the latest EPIC4 tree...)
+  cvs co epic4
 
 Once you have done a checkout you can just do the following to update it.
 
@@ -79,7 +89,7 @@ will be prompted about which ones to load. Just pushing enter will load all
 modules on the Auto-Load list (/dset AUTO_LOAD_MODULES).
 
 If you would like to load Darkstar automatically on client startup, you can
-place the following code in ~/.ircrc (or ~/.epicrc if epic4-1.1)
+place the following code in ~/.ircrc (or ~/.epicrc if using epic4-1.1)
 
   if (epic() && !bitchx())
   {
@@ -94,29 +104,41 @@ feedback you might have.
 
 FILES
 
-COPYRIGHT		- The license file.
-README			- This file.
-TODO			- To-do list.
-ChangeLog		- The changelog.
-darkstar.irc		- The startup script. This is what you actually /load
+  COPYRIGHT		- The license file.
+
+  README		- This file.
+
+  TODO			- To-do list.
+
+  ChangeLog		- The changelog.
+
+  darkstar.irc		- The startup script. This is what you actually /load
 			  to start using Darkstar.
-sample.dsrc		- Sample .dsrc file.
-core/*.dsc		- Scripts that make up the core of Darkstar
+
+  sample.dsrc		- Sample .dsrc file.
+
+  core/*.dsc		- Scripts that make up the core of Darkstar
 			  These are all required.
-def/*.def		- These files define what variables are seen by
+
+  def/*.def		- These files define what variables are seen by
 			  /dset and /fset as well as their default values.
 			  I do not recommend editing these files as it may
 			  cause things not to work. You have been warned.
-modules/*.dsm		- The modules that provide most of the features. All
+
+  help/*		- The Darkstar help files.
+
+  modules/*.dsm		- The modules that provide most of the features. All
 			  of these are completely optional and are independent
 			  of each other.
-status/*		- Statbar files.
-themes/*.dst		- Theme files. These change cosmetic aspects of the
+
+  status/*		- Statbar files.
+
+  themes/*.dst		- Theme files. These change cosmetic aspects of the
 			  script.
 
 
 I would like to briefly thank the following people for contributing in some
-way to this script pack:
+way to this wonderful project.
 
 	Jeremy Nelson
 	Colten Edwards
