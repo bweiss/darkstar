@@ -18,8 +18,7 @@ assign FORMAT.WHOIS_AWAY %K| %Wa%nway     : $1 - $2-
 assign FORMAT.WHOIS_CHANNELS %g| %Wc%nhannels : $3-
 assign -FORMAT.WHOIS_FOOTER
 assign FORMAT.WHOIS_HEADER %GÚÄÄÄÄÄ---%gÄ%G--%gÄÄ%G-%gÄÄÄÄÄÄ---%KÄ%g--%KÄÄ%g-%KÄÄÄÄÄÄÄÄÄ--- --  -
-assign -FORMAT.WHOIS_IDENTIFIED
-#assign FORMAT.WHOIS_IDENTIFIED %c[**]%n identified %c:%n $2-
+assign FORMAT.WHOIS_IDENTIFIED %K| %Wi%ndentified : $2-
 assign FORMAT.WHOIS_IDLE %K: %Wi%ndle     : $tdiff($3) \(signon: $strftime($4 %%a %%b %%d %%T %%Y)\)
 assign FORMAT.WHOIS_NAME %G³ %Wi%nrcname  : $6-
 assign FORMAT.WHOIS_NICK %G| %W$2 %K\(%n$3@$4%K\)%n
