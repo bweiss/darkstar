@@ -118,7 +118,7 @@ alias _set (type, variable, value)
 			for tmp in ($matches) {
 				_setcat $type\.$after(1 . $tmp)
 			}
-			if (FORMAT.SET_HEADER) {xecho -s $fparse(SET_HEADER $#getdsets($var*) $var)}
+			if (FORMAT.SET_FOOTER) {xecho -s $fparse(SET_FOOTER $#getdsets($var*) $var)}
 		}\
 		else if (bingo || #matches == 1)
 		{
@@ -137,7 +137,7 @@ alias _set (type, variable, value)
 			{
 				if (FORMAT.SET_HEADER) {xecho -s $fparse(SET_HEADER 1 $var)}
 				_setcat $realvar
-				if (FORMAT.SET_HEADER) {xecho -s $fparse(SET_HEADER 1 $var)}
+				if (FORMAT.SET_FOOTER) {xecho -s $fparse(SET_FOOTER 1 $var)}
 			}\
 			else
 			{
