@@ -221,7 +221,7 @@ on ^310 "*" #
 on ^311 "*"
 {
 	if (FORMAT[WHOIS_HEADER]) {
-		echo $fparse(WHOIS_HEADER)
+		echo $fparse(WHOIS_HEADER $*)
 	}
 	if (FORMAT[WHOIS_NICK]) {
 		echo $fparse(WHOIS_NICK $*)
@@ -248,7 +248,7 @@ on ^313 "*"
 on ^314 "*"
 {
       if (FORMAT[WHOIS_HEADER]) {
-		echo $fparse(WHOIS_HEADER)
+		echo $fparse(WHOIS_HEADER $*)
 	}
 	if (FORMAT[WHOWAS_NICK]) {
 		echo $fparse(WHOWAS_NICK $*)
