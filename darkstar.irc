@@ -195,7 +195,7 @@ if (fexist($DS.SAVE_DIR/core.sav) == 1)
 
 
 /*
- * Load the rest of the core scripts
+ * Load the rest of the core scripts.
  */
 eval load $DS.HOME/core/functions.dsc
 eval load $DS.HOME/core/commands.dsc
@@ -213,6 +213,16 @@ eval load $DS.HOME/core/loader.dsc
 if (fexist($DS.RC) == 1)
 {
 	load $DS.RC
+}
+
+
+/*
+ * Check to make sure DS.HOME is set properly.
+ */
+if (fexist($DS.HOME/darkstar.irc) == -1)
+{
+	xecho -b WARNING! DS.HOME was not set properly
+	xecho -b Please have a look at the README file
 }
 
       
