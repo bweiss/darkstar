@@ -65,7 +65,7 @@ alias readlog (file default "$CONFIG.AWAY_LOGFILE", void)
 	{
 		less $file
 	}{
-		xecho -b Logfile [$file] does not exist.
+		xecho -b Logfile [$file] does not exist
 	}
 }
 
@@ -82,7 +82,7 @@ alias remlog (file default "$CONFIG.AWAY_LOGFILE", void)
 		@ unlink($file)
 		xecho -b Removed logfile [$file]
 	}{
-		xecho -b Logfile [$file] does not exist.
+		xecho -b Logfile [$file] does not exist
 	}	
 }
 
@@ -196,7 +196,7 @@ on #^timer 421 "*"
 
 		if (diff >= AWAY[LAST_INPUT])
 		{
-			//away -a Auto-away after $minutes minute${minutes > 1 ? [s] : []}.
+			//away -a Auto-away after $minutes minute${minutes > 1 ? [s] : []}
 		}
 	}
 }
