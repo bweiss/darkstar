@@ -212,18 +212,34 @@ alias uptime (void)
 # command will not be executed if the same command has been executed in
 # the last time seconds.
 #
-alias 1cmd {
-	@ :foo = encode($tolower($1-));
+# The time of the last execution of the command will be set to the current time
+# if it was executed, or if the last execution was less than "reset" seconds
+# ago.  This is useful for riding events which occur in waves.
+#
+alias 1cmd (sec,cmd) {
+	@ :foo = encode($tolower($cmd));
+	@ :time = time();
 	@ :eserv = 0 > servernum() ? [] : servernum();
-	if (time() - _ONECMD[$eserv][$foo] >= [$0]) {
-		@ _ONECMD[$eserv][$foo] = time();
-		$1-;
+	@ :reset = split(, $sec);
+	@ :sec = shift(reset);
+	@ :reset = shift(reset);
+	if (!sec) {
+		$cmd;
+		return;
+	} elsif (time - onecmd[$eserv][$foo][t] <= reset) {
+		@ _ONECMD[$eserv][$foo][e] = time + sec;
+		@ _ONECMD[$eserv][$foo][t] = time;
+	} elsif (time - onecmd[$eserv][$foo][t] >= sec) {
+		@ _ONECMD[$eserv][$foo][e] = time + sec;
+		@ _ONECMD[$eserv][$foo][t] = time;
+		$cmd;
 	};
-	if (time() != _ONECMD[$eserv] && (!rand(100))) {
-		@ _ONECMD[$eserv] = time();
+	if (time != _ONECMD[$eserv][lp] && !(++_ONECMD[$eserv][cnt] % 10)) {
+		@ _ONECMD[$eserv] = time;
 		foreach _ONECMD[$eserv] bar {
-			if (_ONECMD[$eserv][$bar] < time()) {
-				@ _ONECMD[$eserv][$bar] = [];
+			if (_ONECMD[$eserv][$bar][e] < time) {
+				@ _ONECMD[$eserv][$bar][t] = [];
+				@ _ONECMD[$eserv][$bar][e] = [];
 			};
 		};
 	};
@@ -272,8 +288,10 @@ fe (q push fq unshift) cmd op {
 		@ :sn = servernum();
 		@ :sn = sn < 0 ? [_] : sn;
 		if (1 < #) {
-			@ :bar = [$1-];
-			@ ${op}(_QCMD.${sn}.$0 \"$msar(gr/\\/\\\\/\"/\\\"/bar)\");
+#			@ :bar = [$1-];
+#			@ ${op}(_QCMD.${sn}.$0 \"$msar(gr/\\/\\\\/\"/\\\"/bar)\");
+			@ :foo = [$1-];
+			@ :foo = ${op}(_QCMD.${sn}.$0 \"$msar(gr/\\/\\\\/\"/\\\"/foo)\");
 		} else {
 			@ :foo = [];
 			if (1 == #) {
@@ -289,12 +307,16 @@ fe (q push fq unshift) cmd op {
 					break;
 				};
 			};
-			if (@foo) {
-				@ :bar = shift(_QCMD[$sn][$foo]);
-				$msar(gr/\\\\/\\/\\\"/\"/bar);
-			};
+			@ :bar = shift(_QCMD[$sn][$foo])
 		};
-		if (@bar) ^timer -ref _qcmd.$sn 5 qcmd;
+		if (functioncall()) {
+			return $msar(gr/\\\\/\\/\\\"/\"/bar);
+		} elsif (@bar) {
+			$msar(gr/\\\\/\\/\\\"/\"/bar);
+			^timer -ref _QCMD.$sn -update 5 qcmd;
+		} elsif (@foo) {
+			^timer -ref _QCMD.$sn 5 qcmd;
+		};
 	};
 };
 stack pop alias alias.tt;
