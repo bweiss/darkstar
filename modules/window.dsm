@@ -1,4 +1,4 @@
-#version 0.5
+#version 0.5.1
 /* $Id$ */
 /*
  * window.dsm - Window module for DarkStar/EPIC4
@@ -229,7 +229,7 @@ on #-window_create 426 "*"
 	^alias $0 window swap $0
 
 	if (STATUS.DOUBLE) {
-		^window double on
+		^window $0 double on
 	}
 }
 
