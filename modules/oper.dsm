@@ -1,4 +1,4 @@
-#version 0.5
+#version 0.5.1
 /* $Id$ */
 /*
  * oper.dsm - IRC Operator module for DarkStar/EPIC4
@@ -232,9 +232,9 @@ alias oper.challenge (serv, nick, void)
 		{
 			if ([$1])
 			{
-				@ :serv = servername($after(1 . $0))
-				xecho -b Sending challenge response to $serv
-				xeval -s $after(1 . $0) -- quote challenge +$1-
+				@ :servernum = after(1 . $0)
+				xecho -w $serverwin($servernum) -b Sending challenge response to $servername($servernum)
+				xeval -s $servernum -- quote challenge +$1-
 			}
 		}
 
