@@ -34,7 +34,7 @@ alias theme (theme, void)
 	switch ($themes.change($theme)) {
 		(0) {xecho -b Now using theme: $DS.THEME}
 		(1) {xecho -b Error: themes.change\(\): Not enough arguments}
-		(2) {xecho -b Error: themes.change\(\): Theme not found \($theme\)}
+		(2) {xecho -b Error: themes.change\(\): Theme not found: $theme}
 		(3) {xecho -b Error: themes.change\(\): Master theme file not found}
 		(*) {xecho -b Error: themes.change\(\): Unknown}
 	}
@@ -125,12 +125,15 @@ alias themes.display (void)
  */
 on #-hook 1 "CONFIG THEME *"
 {
-	if (DS[THEME] != [$2]) {
-		/* If our theme change fails, set THEME back to previous value */
+	if (CONFIG.THEME != [$2]) {
+		/*
+		 * Attempt to change to the new theme. If this fails,
+		 * set THEME back to the previous value.
+		 */
 		if (themes.change($CONFIG.THEME)) {
-			xecho -b Invalid theme.
-			xecho -b Value of THEME set back to $2
+			xecho -b Invalid theme: $CONFIG.THEME
 			^assign CONFIG.THEME $2
+			xecho -b Value of THEME set to $2
 		}
 	}
 }

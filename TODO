@@ -30,5 +30,8 @@ OTHER NOTES/IDEAS:
 
 * Honor the DISPLAY variable in format related /ON hooks?
 
+* Figure out a way to allow modules to prevent output from /DSET (and /FSET?)
+  from within /ON hooks.
+
 
 End of file.

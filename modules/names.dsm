@@ -1,4 +1,4 @@
-#version 0.5.1
+#version 0.5.2
 /* $Id$ */
 /*
  * names.dsm - DarkStar/EPIC4 module to display who's on a channel
@@ -54,7 +54,7 @@ alias scanv (chan default "$C", void) {names.main $chan v}
 
 /*
  * This does most of the real work. It is a bit more expensive than
- * I would like it to be, but it allows for greater customization.
+ * I would like it to be but allows for greater customization.
  */
 alias names.main (chan default "$C", mode default "*", void)
 {
@@ -136,7 +136,7 @@ alias names.main (chan default "$C", mode default "*", void)
 			{
 				/*
 				 * The call to $names.parse() doesn't actually
-				 * happen until the last line of the /FE code block
+				 * happen until the last line of the /FE code block.
 				 */
 				eval push line \\\$names.parse\(\$chan \$nick[$cnt]\)
 
@@ -233,8 +233,13 @@ on #-hook 428 "CONFIG NAMES_COL *"
 {
 	if (!isnumber($CONFIG.NAMES_COL b10) && CONFIG.NAMES_COL) {
 		xecho -b Value must be an integer
-		^assign CONFIG.NAMES_COL $2
-		xecho -b Value of NAMES_COL set back to $2
+		if ([$2] != []) {
+			^assign CONFIG.NAMES_COL $2
+			xecho -b Value of NAMES_COL set to $2
+		} else {
+			^assign -CONFIG.NAMES_COL
+			xecho -b Value of NAMES_COL set to <EMPTY>
+		}
 	}
 }
 

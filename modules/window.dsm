@@ -1,4 +1,4 @@
-#version 0.6
+#version 0.6.1
 /* $Id$ */
 /*
  * window.dsm - Window module for DarkStar/EPIC4
@@ -55,10 +55,10 @@ queue cleanup.window
 
 config.add    AUTO_BIND_CHANNELS
 config.add    AUTO_CREATE_WINDOWS 2
-config.add -b AUTO_QUERY_ON_MSG 0
+config.add -b AUTO_QUERY 0
 config.add -b BIND_ON_JOIN 0
 config.add -b MSG_WINDOW 0
-config.add    MSG_WINDOW_LEVEL msgs,opnotes,wallops
+config.add    MSG_WINDOW_LEVEL MSGS,OPNOTES,WALLOPS
 config.add    MSG_WINDOW_SIZE 5
 config.add -b UNBIND_ON_PART 0
 
@@ -100,7 +100,7 @@ config.add -b UNBIND_ON_PART 0
 
 /*
  * Force the loading of saved settings early so that
- * the /if commands in the STARTUP section can use them.
+ * the /IF commands in the STARTUP section can use them.
  */
 module.load_saved_settings
 
@@ -125,6 +125,10 @@ alias swap (winnum, void)
 	}
 }
 
+/*
+ * We use the "new_hide" verb instead of "new" and "hide" to keep
+ * the msg window from being resized when creating new windows.
+ */
 alias wb  (chan default "$C", void) {window bind $chan}
 alias wc  (void)                    {window new_hide swap last}
 alias wj  (...)                     {window new_hide swap last channel "$*"}
@@ -132,35 +136,26 @@ alias wk  (...)                     {window kill}
 alias wl  (...)                     {window last}
 alias wn  (...)                     {window next}
 alias wp  (...)                     {window previous}
+alias wq  (...)                     {window new_hide swap last query $nick}
 alias wub (...)                     {window unbind}
-
-alias wq  (nick, void)
-{
-	if (!nick) {
-		xecho -b Usage: /WQ <nick>
-		return
-	}
-	window new_hide swap last
-	query $nick
-}
 
 
 /****** INTERNAL ALIASES ******/
 
 alias window.msgwin_up (void)
 {
-	@:cwin = winnum()
+	@:win = winnum()
 	^window ref msgs
 	parsekey SCROLL_BACKWARD
-	^window ref $cwin
+	^window ref $win
 }
 
 alias window.msgwin_down (void)
 {
-	@:cwin = winnum()
+	@:win = winnum()
 	^window ref msgs
 	parsekey SCROLL_FORWARD
-	^window ref $cwin
+	^window ref $win
 }
 
 
@@ -187,6 +182,34 @@ on #-hook 426 "CONFIG MSG_WINDOW *"
 
 on #-hook 426 "CONFIG MSG_WINDOW_LEVEL *"
 {
+	^local good
+	^local bad
+	@:levels = [ACTIONS CRAP CTCP DCC MSGS NOTES NOTICES OPNOTES PUBLIC SNOTES USERLOG1 USERLOG2 USERLOG3 USERLOG4 WALLOPS WALLS]
+
+	for lvl in ($sar(ig/,/ /$CONFIG.MSG_WINDOW_LEVEL)) {
+		if (findw($lvl $levels) > -1) {
+			push good $lvl
+		} else {
+			push bad $lvl
+		}
+	}
+
+	if (bad) {
+		for lvl in ($bad) {
+			xecho -b Unknown level: $lvl
+		}
+		xecho -b Valid levels: $levels
+		if (good) {
+			@:newlevels = sar(ig/ /,/$good)
+		} else {
+			@:newlevels = *2-
+		}
+		^assign CONFIG.MSG_WINDOW_LEVEL $toupper($newlevels)
+		xecho -b Value of MSG_WINDOW_LEVEL set to $CONFIG.MSG_WINDOW_LEVEL
+	} else {
+		^assign CONFIG.MSG_WINDOW_LEVEL $toupper($CONFIG.MSG_WINDOW_LEVEL)
+	}
+
 	if (CONFIG.MSG_WINDOW) {
 		window msgs level $CONFIG.MSG_WINDOW_LEVEL
 	}
@@ -194,6 +217,14 @@ on #-hook 426 "CONFIG MSG_WINDOW_LEVEL *"
 
 on #-hook 426 "CONFIG MSG_WINDOW_SIZE *"
 {
+	@:size = CONFIG.MSG_WINDOW_SIZE
+	@:max_size = word(1 $geom()) - 4
+	if (!isnumber($size b10) || size < 1 || size > max_size) {
+		xecho -b Value must be an integer greater than zero and no larger than the largest possible window
+		^assign CONFIG.MSG_WINDOW_SIZE $2
+		xecho -b Value of MSG_WINDOW_SIZE set to $CONFIG.MSG_WINDOW_SIZE
+	}
+
 	if (CONFIG.MSG_WINDOW) {
 		window msgs size $CONFIG.MSG_WINDOW_SIZE
 	}
@@ -215,10 +246,27 @@ on #-leave 426 '$servernick() *'
 
 on #-msg 426 "*"
 {
-	if (CONFIG.AUTO_QUERY_ON_MSG) {
-		if (querywin($0) == -1) {
+	if (CONFIG.AUTO_QUERY)
+	{
+		@:item = matchitem(window.autoquery %!$userhost())
+		if (item > -1) {
+			if (getitem(window.autoquery $item) != [$0!$userhost()]) {
+				@:oldnick = before(-1 ! $getitem(window.autoquery $item))
+				@:win = querywin($oldnick $lastserver())
+				if (win > -1) {
+					window $win query $0
+				}
+				@ setitem(window.autoquery $item $0!$userhost())
+				xecho -b -w $win Query window for $oldnick changed to $0
+			}
+		}
+
+		@ setitem(window.autoquery $numitems(window.autoquery) $0!$userhost())
+
+		if (querywin($0 $lastserver()) == -1) {
 			window new_hide swap last
 			query $0
+			xecho -b New query window created for $0
 		}
 	}
 }

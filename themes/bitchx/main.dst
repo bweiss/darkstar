@@ -9,7 +9,7 @@
 
 status -q bitchx
 
-set BANNER 7ù16í7ù-1
+set BANNER 51ù57í51ù-1
 
 assign FORMAT.MODLIST_FOOTER %KÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 assign FORMAT.MODLIST_FOOTER1 $G Available modules: $numitems(modules), Loaded modules: $numitems(loaded_modules)
