@@ -1,0 +1,140 @@
+#version 0.1
+/*
+ * seen.dsm - Seen module for DarkStar/EPIC4
+ * Copyright (c) 2003 Brian Weiss
+ * See the 'COPYRIGHT' file for more information.
+ *
+ * This script uses serial number 460 for all /ON hooks.
+ */
+
+/****** CLEANUP QUEUE ******/
+
+queue cleanup.seen {
+	^alias -seen
+	for hook in (join leave mode public public_other topic) {
+		^on #$hook 460 -"*"
+	}
+	^on #timer 460 -"??:?0"
+	^on #public 460 -'% % $CONFIG.SEEN_PUBLIC_TRIGGER *'
+	^on #public_other 460 -'% % $CONFIG.SEEN_PUBLIC_TRIGGER *'
+}
+
+
+/****** CONFIG/FORMAT VARIABLES ******/
+
+config.add -b   SEEN_ALLOW_PUBLIC_CMDS 0
+eval config.add SEEN_DB_FILE $DS.USER_DIR/seen.db
+config.add      SEEN_PUBLIC_TRIGGER !seen
+
+
+/****** INIT ******/
+
+do {
+	if (fexist($CONFIG.SEEN_DB_FILE) != -1) {
+		@ :fd = open($CONFIG.SEEN_DB_FILE R)
+		if (fd != -1) {
+			while (!eof($fd)) {
+				@ setitem(seen.ts $numitems(seen.ts) $read($fd))
+			}
+		}
+	}
+}
+
+
+/****** USER ALIASES ******/
+
+alias seen {
+	if (match($0 -p -pub -public)) {
+		@ setitem(seen.pub $numitems(seen.pub) $1 ${[$2] ? [$2] : C})
+		seen.do_public
+	} else {
+		@ :nick = [$0]
+		@ :chan = [$1] ? [$1] : C
+		if ((:item = matchitem(seen.ts $nick $chan *)) > -1) {
+			@ :time = word(2 $getitem(seen.ts $item))
+			@ :diff = time() - time
+			@ :type = word(3 $getitem(seen.ts $item))
+			@ :extra = restw(4 $getitem(seen.ts $item))
+			echo $G $nick was last seen in $chan on $strftime($time %a %b %d %T %Z %Y) \($tdiff2($diff)\ ago)
+			echo $G Action: $stripcrap(ALL $fparse($type $nick $chan $extra))
+		}
+	}
+}
+
+
+/****** INTERNAL ALIASES ******/
+
+alias seen.updatedb (nick, chan, type, ...) {
+	if (!nick || !chan) {
+		return
+	}
+	if ((:item = matchitem(seen.ts $nick $chan *)) > -1) {
+		@ setitem(seen.ts $item $nick $chan $time() $type $*)
+	} else {
+		@ setitem(seen.ts $numitems(seen.ts) $nick $chan $time() $type $*)
+	}
+}
+
+alias seen.pubcmd (nick, chan, seen_nick) {
+	if (!nick || !chan || !seen_nick) {
+		return
+	}
+	if (CONFIG.SEEN_ALLOW_PUBLIC_CMDS && seen_nick != servernick()) {
+		if ((:foo = numwords($getmatches(seen.pub $nick *))) < 2) {
+			@ setitem(seen.pub $numitems(seen.pub) $seen_nick $chan)
+			timer ${foo ? [8] : [2]} seen.do_public
+		}
+	}
+}
+
+alias seen.do_public (void) {
+	@ :nick = word(0 $getitem(seen.pub 0))
+	@ :chan = word(1 $getitem(seen.pub 0))
+	@ :item = matchitem(seen.ts $nick $chan *)
+	if (CONFIG.SEEN_ALLOW_PUBLIC_CMDS && item > -1) {
+		@ :foo = getitem(seen.ts $item)
+		@ :time = word(2 $foo)
+		@ :diff = time() - time
+		@ :type = word(3 $foo)
+		@ :extra = restw(4 $foo)
+		defer msg $chan $nick was last seen in $chan on $strftime($time %a %b %d %T %Z %Y) \($tdiff2($diff)\ ago)
+		defer msg $chan Action: $stripcrap(ALL $fparse($type $nick $chan $extra))   
+	}
+	@ delitem(seen.pub 0)
+}
+
+alias seen.writedb (void) {
+	if (CONFIG.SEEN_FILE) {
+		@ unlink($CONFIG.SEEN_FILE)
+		@ :fd = open($CONFIG.SEEN_FILE W)
+		if (fd != -1) {
+			for cnt from 0 to ${numitems(seen.ts) - 1} {
+				@ write($fd $getitem(seen.ts $cnt))
+			}
+			@ close($fd)
+		}
+	}
+}
+
+
+/****** ON HOOKS ******/
+
+on #-join 460 "*"         {seen.updatedb $0 $1 JOIN $2-}
+on #-leave 460 "*"        {seen.updatedb $0 $1 LEAVE $2-}
+on #-mode 460 "*"         {seen.updatedb $0 $1 MODE $2-}
+on #-public 460 "*"       {seen.updatedb $0 $1 PUBLIC $2-}
+on #-public_other 460 "*" {seen.updatedb $0 $1 PUBLIC $2-}
+on #-topic 460 "*"        {seen.updatedb $0 $1 TOPIC $2-}
+on #-timer 460 "??:?0"    {seen.writedb}
+
+on #-public 460 '% % $CONFIG.SEEN_PUBLIC_TRIGGER *' {
+	seen.pubcmd $0 $1 $3
+	seen.updatedb $0 $1 PUBLIC $2-
+}
+on #-public_other 460 '% % $CONFIG.SEEN_PUBLIC_TRIGGER *' {
+	seen.pubcmd $0 $1 $3
+	seen.updatedb $0 $1 PUBLIC $2-
+}
+
+
+/* EOF */
