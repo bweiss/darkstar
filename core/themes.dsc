@@ -124,11 +124,10 @@ alias themes.display (void)
 {
 	xecho -b Current theme: $DS.THEME
 	xecho -b Available themes:
-	echo #   Theme
 	for cnt from 0 to ${numitems(themes) - 1}
 	{
 		@ :num = cnt + 1
-		echo $[3]num $getitem(themes $cnt)
+		echo  $[3]num $getitem(themes $cnt)
 	}
 }
 

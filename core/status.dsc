@@ -124,7 +124,7 @@ alias status.display (void)
 	{
 		@ :name = getitem(status $cnt)
 		@ :num = cnt + 1
-		echo $[3]num $name
+		echo  $[3]num $name
 	}
 }
 

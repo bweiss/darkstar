@@ -15,7 +15,7 @@ alias modules modlist
 
 alias loadedmodules (void)
 {
-	echo #   Module                    Version      Size (bytes)
+	echo  #   Module               Version      Size (bytes)
 	for cnt from 0 to ${numitems(loaded_modules) - 1}
 	{
 		@ :num = cnt + 1
@@ -23,7 +23,7 @@ alias loadedmodules (void)
 		@ :item = finditem(modules $modname)
 		@ :modver = getitem(module_version $item)
 		@ :modsize = fsize($getitem(module_files $item))
-		echo $[3]num $[25]modname [$[10]modver] [$[-10]modsize]
+		echo  $[3]num $[20]modname [$[10]modver] [$[-10]modsize]
 	}
 	xecho -b Type '/reloadmod [<module> ...]' to reload a module
 	xecho -b Type '/unloadmod [<module> ...]' to unload a module
@@ -61,7 +61,7 @@ alias modlist (void)
 {
 	loader.build_modlist
 
-	echo #   Module                    Version      Size (bytes)  Loaded  Auto-Load
+	echo  #   Module               Version      Size (bytes) Loaded Auto-Load
 	for cnt from 0 to ${numitems(modules) - 1}
 	{
 		@ :num = cnt + 1
@@ -70,7 +70,7 @@ alias modlist (void)
 		@ :version = getitem(module_version $cnt)
 		@ :auto_load = common($module / $CONFIG.AUTO_LOAD_MODULES) ? [*] : []
 		@ :loaded = finditem(loaded_modules $module) > -1 ? [*] : []
-		echo $[3]num $[25]module [$[10]version] [$[-10]fsize($file)]     $[8]loaded $[8]auto_load
+		echo  $[3]num $[20]module [$[10]version] [$[-10]fsize($file)]   $[8]loaded $auto_load
 	}
 	xecho -b Type '/dset AUTO_LOAD_MODULES' to modify the Auto-Load list
 	xecho -b Type '/loadmod [<module> ...]' to load a module
