@@ -61,12 +61,12 @@ for array in ($getarrays())
 /*
  * Important global variables
  */
-@ DS.VERSION = [0.2.3]
-@ DS.INTERNAL_VERSION = [20020511]
+@ DS.VERSION = [0.2.4]
+@ DS.INTERNAL_VERSION = [20020516]
 
 /* This will be incremented every time a change takes place to the core
    scripts (anything that requires /reload to update). */
-@ DS.COMMIT_ID = 35
+@ DS.COMMIT_ID = 36
 
 
 /*
@@ -148,7 +148,7 @@ eval load $DS.HOME/core/status.dsc
 
 /* Default settings for the core scripts. */
 config.add -b AUTO_LOAD_DEPENDENCIES 1
-config.add    AUTO_LOAD_MODULES away channel keepnick misc names nickcomp tabkey window
+config.add    AUTO_LOAD_MODULES away channel dcc keepnick misc names nickcomp tabkey window
 config.add -b AUTO_LOAD_PROMPT 1
 config.add    THEME darkstar
 config.add -b VERBOSE_SAVE 0

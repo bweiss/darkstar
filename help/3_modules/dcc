@@ -1,0 +1,17 @@
+Module: dcc
+Author: Brian Weiss <brian@epicsol.org>
+
+Description:
+   DCC related features and formatting.
+
+Config Variables:
+   DCC_AUTOGET             - Boolean. If true, all DCC SEND requests to you
+                             will be automatically accepted.
+
+Format Variables:
+   DCC_CHAT, SEND_DCC_CHAT
+
+Commands:
+   chat <nick>
+     - Alias to /dcc chat.
+

@@ -1,6 +1,14 @@
 DarkStar ChangeLog
 
 
+2002/05/16
+
+ * HEADS UP: I have added a 'dcc' module and moved all of the DCC related
+   stuff in misc.dsm over to it. This means that you must have the new dcc
+   module loaded in order to have the DCC_CHAT and SEND_DCC_CHAT format
+   variables. The new dcc module also adds DCC autoget, which is toggled
+   via the DCC_AUTOGET config variable.
+
 2002/05/15
 
  * [misc.dsm 0.4.1] WHOIS_IDENTIFIED now also works on DALnet.

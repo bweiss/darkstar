@@ -1,0 +1,69 @@
+#version 0.1
+/* $Id$ */
+/*
+ * dcc.dsm - DCC related module for DarkStar/EPIC4
+ *
+ * Written by Brian Weiss
+ * Copyright (c) 2002 Brian Weiss
+ * See the 'COPYRIGHT' file for more information.
+ *
+ * This script uses serial numbers 0 and 450 for /on hooks.
+ */
+
+queue cleanup.dcc
+{
+	^alias -chat
+	^on dcc_chat -"*"
+	^on send_dcc_chat -"*"
+	^on #dcc_request 450 -"% SEND *"
+}
+
+
+config.add DCC_AUTOGET 0
+
+format.add DCC_CHAT [$Z] DCC <$1> $2-
+format.add SEND_DCC_CHAT [$Z] SEND_DCC $1> $2-
+
+
+alias chat (nick, void)
+{
+	if (!nick) {
+		xecho -b Usage: /chat <nick>
+		return
+	}
+
+	dcc chat $nick
+}
+
+
+/*
+ * DCC autoget.
+ */
+^on #-dcc_request 450 -"% SEND *"
+{
+	if (CONFIG[DCC_AUTOGET]) {
+		dcc get $0 $2
+	}
+}
+
+
+/*
+ * FORMAT HOOKS
+ */
+
+on ^dcc_chat "*"
+{
+	if (FORMAT[DCC_CHAT]) {
+		echo $fparse(DCC_CHAT $*)
+	}
+}
+
+on ^send_dcc_chat "*"
+{
+	if (FORMAT[SEND_DCC_CHAT]) {
+		echo $fparse(SEND_DCC_CHAT $*)
+	}
+}
+
+
+/* EOF */
