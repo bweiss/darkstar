@@ -13,6 +13,7 @@
 queue cleanup.dcc
 {
 	^alias -chat
+	^alias -dcc
 	^on dcc_chat -"*"
 	^on send_dcc_chat -"*"
 	^on #dcc_request 450 -"% SEND *"
