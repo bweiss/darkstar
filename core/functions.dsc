@@ -177,21 +177,22 @@ alias getitems (array, offset, list)
 	@ function_return = retval;
 };
 
-alias getdsets (patt default "*")
+alias getdsets (args default "*")
 {
-	@ function_return = pattern("$patt" $sar(g/_DSET.//$aliasctl(assign match _DSET.)));
+	for patt in ($args) {
+		@ push(:ret $pattern("$patt" $sar(g/_DSET.//$aliasctl(assign match _DSET.))));
+	};
+	@ function_return = ret;
 };
 
-alias getfsets (patt default "*")
+alias getfsets (args default "*")
 {
-	@ function_return = pattern("$patt" $sar(g/_FSET.//$aliasctl(assign match _FSET.)));
+	for patt in ($args) {
+		@ push(:ret $pattern("$patt" $sar(g/_FSET.//$aliasctl(assign match _FSET.))));
+	};
+	@ function_return = ret;
 };
 
-alias isloaded (module, void)
-{
-	@ function_return = finditem(_loaded_modules $module) > -1 ? 1 : 0;
-};
-	
 #
 # Determines whether someone is currently online. It returns the
 # person's nick if they are online, or nothing if not.
@@ -211,11 +212,18 @@ alias is_on (nick, void)
 	wait for ison $nick;
 };
 
-alias loadedmods (void)
+alias isloaded (module, void)
 {
-	for ii from 1 to $numitems(_loaded_modules)
-	{
-		@ push(function_return $getitem(_loaded_modules ${ii-1}));
+	@ function_return = finditem(_loaded_modules $module) > -1 ? 1 : 0;
+};
+
+alias loadedmods (args default "*")
+{
+	for ii from 1 to $numitems(_loaded_modules) {
+		@ push(:tmp $getitem(_loaded_modules ${ii-1}));
+	};
+	for patt in ($args) {
+		@ push(function_return $pattern("$patt" $tmp));
 	};
 };
 
@@ -248,11 +256,13 @@ alias modinfo (module, flag)
 	};
 };
 
-alias mods (void)
+alias mods (args default "*")
 {
-	for ii from 1 to $numitems(_modules)
-	{
-		@ push(function_return $getitem(_modules ${ii-1}));
+	for ii from 1 to $numitems(_modules) {
+		@ push(:tmp $getitem(_modules ${ii-1}));
+	};
+	for patt in ($args) {
+		@ push(function_return $pattern("$patt" $tmp)):
 	};
 };
 

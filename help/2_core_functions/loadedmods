@@ -1,0 +1,24 @@
+Synopsis:
+   $loadedmods()
+   $loadedmods(<pattern>)
+
+Technical:
+   * If no argument is given, the return value is a word list of all
+     currently loaded modules.
+   * If an argument is given, the return value is a word list of all
+     currently loaded modules that match the pattern.
+   * Multiple patterns may be specified; the result is a concatenated list
+     of return values as if each pattern had been processed individually.
+     Specifically, any duplicates will NOT be removed.
+
+Returns:
+   A word list of the names of currently loaded modules matching the
+   pattern(s).
+
+Example:
+   $loadedmods(nick*)                 might return "nickmgr nickcomp"
+
+See Also:
+   ds:loadmod(1);  ds:unloadmod(1);  ds:modlist(1);  ds:modinfo(2);
+   ds:mods(2)
+

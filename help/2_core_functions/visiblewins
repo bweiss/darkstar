@@ -1,0 +1,9 @@
+Synopsis:
+   $visiblewins()
+
+Returns:
+   The refnums of all currently visible windows.
+
+See Also:
+   winrefs(6);  winvisible(6):  ds:winchannels(2)
+

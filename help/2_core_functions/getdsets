@@ -1,0 +1,23 @@
+Synopsis:
+   $getdsets()
+   $getdsets(<pattern>)
+
+Technical:
+   * If no argument is given, the return value is a word list of all
+     config variables.
+   * If an argument is given, the return value is a word list of all
+     config variables that match the given pattern.
+   * Multiple patterns may be specified; the result is a concatenated list
+     of return values as if each pattern had been processed individually.
+     Specifically, any duplicates will NOT be removed.
+
+Returns:
+   A word list of the names of DarkStar config variables (/DSET) matching
+   the pattern(s).
+
+Example:
+   $getdsets(*load*)  returns "AUTO_LOAD_MODULES LOAD_PROMPT SAVE_ON_UNLOAD"
+
+See Also:
+   set(4);  getsets(6);  ds:dset(1);  ds:fset(1);  ds:getfsets(2)
+

@@ -9,5 +9,5 @@
    given the current window is used.
 
 See Also:
-   winrefs(6)
+   winrefs(6);  winchan(6)
 

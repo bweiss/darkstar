@@ -34,3 +34,5 @@ THE CHANGELOG SINCE THE LAST RELEASE:
   caused by a missing call to $encode() in the 305 hook.
 * Add $chhops(), $nochhops(), and $nochvoices().
 * Rename $chanvoice() to $chvoices() for consistency.
+* Make $getdsets()/$getfsets() support multiple patterns like $getsets().
+* Make $loadedmods() and $mods() take pattern arguments like $getsets().

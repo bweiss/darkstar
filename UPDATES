@@ -2,6 +2,11 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://darkstar.epicsol.org/UPDATES
 
 
+*** News 2004/06/01 -- $loadedmods()/$mods() now take arguments
+	The $loadedmods() and $mods() functions provided by the core
+	core scripts are now able to take pattern arguments just like
+	the builtin $getsets() function.
+
 *** News 2004/05/31 -- New functions: (no)chhops/(no)chvoices
 	We have several new functions that allow you to get a list
 	of the current voiced or half-op users. They are called
