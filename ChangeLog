@@ -1,7 +1,11 @@
 Darkstar ChangeLog
 
 
-2/18/92
+2/21/02
+
+ * You can now pass multiple module names to /reloadmod.
+
+2/18/02
 
  * [tabkey.dsm] Added /set completion as well as scripted command completion
    (instead of the built in command_completion).

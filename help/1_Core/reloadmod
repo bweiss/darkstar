@@ -1,5 +1,5 @@
 Synopsis:
-   reloadmod <module>
+   reloadmod <module> [<module>] ...
 
 Description:
    This command is used to unload and re-load a module.

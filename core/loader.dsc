@@ -79,10 +79,13 @@ alias modlist (void)
 	xecho -b Type '/unloadmod [<module> ...]' to unload a module
 }
 
-alias reloadmod (module, void)
+alias reloadmod (modules)
 {
-	unloadmod $module
-	loadmod $module
+	for module in ($modules)
+	{
+		unloadmod $module
+		loadmod $module
+	}
 }
 
 alias unloadmod (modules)
