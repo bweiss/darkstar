@@ -1,7 +1,8 @@
 #
 # $Id$
 # functions.dsc - Miscellaneous functions
-# Copyright (c) 2002-2004 Brian Weiss (except where noted)
+# Copyright (c) 2002-2005 Brian Weiss
+# Copyright (c) 2005 David B. Kratter
 # See the 'COPYRIGHT' file for more information.
 #
 
@@ -356,5 +357,81 @@ alias winchannels (win default "$winnum()", void)
 			};
 		};
 	};
+};
+
+#
+# The following functions were all pulled from the 'builtins' script
+# written by David B. Kratter and distributed with EPIC5.
+#
+# These were originally builtin functions but were removed in EPIC5.
+#
+alias lastserver (void) {
+	return $serverctl(last_server);
+};
+
+alias winbound (winnum default 0, void) {
+	return $windowctl(get $windowctl(refnum $winnum) bind_channel);
+};
+  
+alias wincursorline (winnum default 0, void) {
+	if ((:cursorline = windowctl(get $windowctl(refnum $winnum) cursor)) > -1) {
+		return $cursorline;
+	};
+	return -1;
+};
+
+alias winlevel (winnum default 0, void) {
+	return $windowctl(get $windowctl(refnum $winnum) window_level);
+};
+  
+alias winnam (winnum default 0, void) {
+	return $windowctl(get $windowctl(refnum $winnum) name);
+};
+
+alias winnicklist (winnum default 0, void) {
+	return $windowctl(get $windowctl(refnum $winnum) nicklist);
+};
+  
+alias winnum (winnum default 0, void) {
+	if (:num = windowctl(get $windowctl(refnum $winnum) refnum)) {
+		return $num;
+	};
+	return -1;
+};
+
+alias winquery (winnum default 0, void) {
+	return $windowctl(get $windowctl(refnum $winnum) query);
+};
+  
+alias winrefs (void) {
+	return $windowctl(refnums);
+};
+
+alias winscrollbacksize (winnum default 0, void) {
+	if ((:scrollbacksize = windowctl(get $windowctl(refnum $winnum) display_buffer_size)) > -1) {
+		return $scrollbacksize;
+	};
+	return -1;
+};
+
+alias winserv (winnum default 0, void) {
+	if ((:serv = windowctl(get $windowctl(refnum $winnum) server)) > -3) {
+		return $serv;
+	};
+	return -1;
+};
+
+alias winstatsize (winnum default 0, void) {
+	if ((:statsize = windowctl(get $windowctl(refnum $winnum) double)) > -1) {
+		return ${statsize + 1};
+	};
+	return -1;
+};
+
+alias winvisible (winnum default 0, void) {
+	if ((:visible = windowctl(get $windowctl(refnum $winnum) visible)) > -1) {
+		return $visible;
+	};
+	return -1;
 };
 

@@ -30,3 +30,5 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Don't set the NAMES_SORT_BY_MODE config variable within themes.
 * Change the default value of AUTO_CREATE_WINDOWS to 0.
 * Fix /THEME -SAVE so it writes settings to unset variables with no value.
+* Add all the win* functions from the builtins script included with EPIC5.
+* Add aliases for /ADDSET and /DELSET (EPIC5 only)

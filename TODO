@@ -55,7 +55,7 @@ TODO:
     -:- #darkstar/epic  Channel is open.
     -:- #darkstar/epic  Your KNOCK has been delivered.
 
-  * Write a more powerful version of STATUS_NOTIFY (%F).
+  * Write a more flexible version of STATUS_NOTIFY (%F).
 
 
 OTHER NOTES/IDEAS:
@@ -68,10 +68,6 @@ OTHER NOTES/IDEAS:
   * Would some kind of generic caching system be useful? Features like
     REMEMBER_TOPICS and auto-query could use it instead of each having to
     handle caching things themselves.
-
-  * Placing a '^O' at the beginning of the STATUS_FORMAT* /SETs can accomplish
-    the same thing as /SET REVERSE_STATUS_LINE. This is the preferred method
-    as REVERSE_STATUS_LINE will probably go away in EPIC5.
 
 
 End of file.

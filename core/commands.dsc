@@ -1,9 +1,39 @@
 #
 # $Id$
 # commands.dsc - Miscellaneous commands
-# Copyright (c) 2002, 2003 Brian Weiss (except where noted)
+# Copyright (c) 2002-2005 Brian Weiss (except where noted)
 # See the 'COPYRIGHT' file for more information.
 #
+
+#
+# addset <variable> <type> [args]
+#
+# Adds a new /SET variable to the symbol table.
+#
+alias addset (var, type, args)
+{
+	if (!type)
+		return;
+
+	@ symbolctl(create $var);
+	@ symbolctl(set $var 1 builtin_variable type $type);
+	if (args)
+		@ symbolctl(set $var 1 builtin_variable script $args);
+};
+
+#
+# delset <variable>
+#
+# Removes a /SET variable from the symbol table.
+#
+alias delset (var, void)
+{
+	if (!var)
+		return;
+
+	@ symbolctl(delete $var builtin_variable);
+	@ symbolctl(check $var);
+};
 
 #
 # Displays miscellaneous information about the operating system,
