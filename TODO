@@ -14,9 +14,6 @@ FOR 0.3 RELEASE:
 
   * Rewrite all the query stuff to keep track of queries by server.
 
-  * $nochops() also returns voiced users so some themes may not want to use
-    it in their names headers/footers. Figure out a solution for this.
-
 
 AFTER 0.3 RELEASE:
 
