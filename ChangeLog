@@ -1,6 +1,18 @@
 Darkstar ChangeLog
 
 
+12/28/01
+
+ * Forgot to escape some parentheses in the darkstar status bar.
+
+ * Config variables were not being properly removed when modules were
+   unloaded. Oops.
+
+ * [window.dsm] Config variables renamed: AUTO_CREATE_MSG_WINDOW - > MSG_WINDOW
+   and AUTO_CREATE_MSG_WINDOW_ARGS -> MSG_WINDOW_ARGS. The msg window will
+   now also be created/killed when MSG_WINDOW is toggled.
+
+
 !! RELEASE: 0.1.2 (12/25/01) !!
 
 

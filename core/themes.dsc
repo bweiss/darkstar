@@ -167,7 +167,7 @@ alias themes.display (void)
 /*
  * Change themes on /DSET THEME.
  */
-on #-hook 1 "CONFIG THEME %"
+on #-hook 1 "CONFIG THEME *"
 {
 	if ([$2] != DS[THEME])
 	{

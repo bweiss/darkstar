@@ -6,7 +6,7 @@
  * LOADER.DSC - Module loader for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/25/01 (bmw)
+ * Last modified: 12/28/01 (bmw)
  */
 
 
@@ -295,7 +295,7 @@ alias loader.unload_module (module, void)
 		}
 
 		/* Remove all config and format variables */
-		for var in ($DSET[$module])
+		for var in ($DSET.MODULES[$module])
 		{
 			^assign -CONFIG.$var
 			^assign -DSET.CONFIG.$var
