@@ -6,7 +6,7 @@
  * CHANNEL.DSM - Channel related stuff for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/8/02 (bmw)
+ * Last modified: 1/9/02 (bmw)
  *
  * This script uses serial numbers 0 and 424 for all ON hooks.
  */
@@ -267,7 +267,7 @@ alias lk (reason default "$CONFIG.DEFAULT_KICK_REASON")
 	{
 		@ reason2 = reason
 
-		input "$INPUT_PROMPT\Kick all non-ops from $C? (y/N) "
+		input "Kick all non-ops from $C? (y/N) "
 		{
 			@ :reason = reason2
 			^assign -reason2
@@ -354,7 +354,7 @@ alias op (nicks)
 
 alias partall (void)
 {
-	input "$INPUT_PROMPT\Are you sure you want to part all your channels? (y/N) " if ([$0])
+	input "Are you sure you want to part all your channels? (y/N) " if ([$0])
 	{
 		switch ($tolower($left(1 $0)))
 		{
@@ -392,14 +392,9 @@ alias tban (chan default "$C", void)
 
 	^on #^368 424 "% % $chan"
 	{
-		^local bans,tmp
+		^local bans
 		^local chan $2
-
-		while (!tmp)
-		{
-			^assign tmp $"Which ban(s) to remove? (1, 2-5, ...) "
-			if (tmp == []) break
-		}
+		^local tmp $"Which ban(s) to remove? (1, 2-5, ...) "
 
 		for bannum in ($tmp)
 		{

@@ -56,7 +56,7 @@ alias status (args)
 	if (!sbar)
 	{
 		@ status.display()
-		input "$INPUT_PROMPT\Which status bar would you like to use? " if ([$0])
+		input "Which status bar would you like to use? " if ([$0])
 		{
 			if (isnumber($0) && [$0] > 0 && [$0] <= numitems(status))
 			{

@@ -6,7 +6,7 @@
  * LOADER.DSC - Module loader for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/2/02 (bmw)
+ * Last modified: 1/9/02 (bmw)
  */
 
 
@@ -27,19 +27,9 @@ alias loadmod (modules)
 
 	if (!modules)
 	{
-		^local mods
 		modlist
-
-		while (!mods)
-		{
-			^assign mods $"Modules to load? (1 2-4 ...) "
-			if (mods == [])
-			{
-				^assign mods q
-			}
-		}
-
-		unless (tolower($mods) == [q])
+		^local mods $"Modules to load? (1 2-4 ...) "
+		if (mods)
 		{
 			@ modules = loader.which_mods(modules $mods)
 		}
@@ -74,19 +64,9 @@ alias unloadmod (modules)
 {
 	if (!modules)
 	{
-		^local mods
 		@ loader.display_loaded()
-
-		while (!mods)
-		{
-			^assign mods $"Modules to unload? (1 2-4 ...) "
-			if (mods == [])
-			{
-				^assign mods q
-			}
-		}
-
-		unless (tolower($mods) == [q])
+		^local mods $"Modules to unload? (1 2-4 ...) "
+		if (mods)
 		{
 			@ modules = loader.which_mods(loaded_modules $mods)
 		}
@@ -145,15 +125,8 @@ alias loader.dependency (module, depmods)
 					xecho -b Module [$module] depends on [$depmod]. Auto-loading...
 					loadmod $depmod
 				}{
-					^local tmp
-					while (!tmp)
-					{
-						^assign tmp $"$INPUT_PROMPT Module [$module] depends on [$depmod] - Load it now? [Yn] "
-						if (tmp == [])
-						{
-							^assign tmp Y
-						}
-					}
+					^local tmp $"Module [$module] depends on [$depmod] - Load it now? [Yn] "
+					if (tmp == []) ^assign tmp Y
 
 					switch ($toupper($left(1 $tmp)))
 					{
@@ -434,14 +407,8 @@ if (CONFIG[AUTO_LOAD_PROMPT])
 
 	/* Prompt user */
 	modlist
-	while (!mods)
-	{
-		^assign mods $"Modules to load? ([A]uto / [N]one / 1 2-4 ...) [A] "
-		if (mods == [])
-		{
-			^assign mods A
-		}
-	}
+	^assign mods $"Modules to load? ([A]uto / [N]one / 1 2-4 ...) [A] "
+	if (mods == []) ^assign mods A
 
 	switch ($toupper($mods))
 	{

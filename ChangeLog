@@ -1,6 +1,11 @@
 Darkstar ChangeLog
 
 
+1/9/02
+
+ * Optimized all code that prompts the user to enter something. Apparently
+   the use of /while was unnecessary.
+
 1/8/02
 
  * Fixed some cleanup issues in both misc.dsm and channel.dsm

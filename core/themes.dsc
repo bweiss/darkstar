@@ -42,7 +42,7 @@ alias theme (theme, void)
 	if (!theme)
 	{
 		@ themes.display()
-		input "$INPUT_PROMPT\Which theme would you like to use? " if ([$0])
+		input "Which theme would you like to use? " if ([$0])
 		{
 			if (isnumber($0) && [$0] > 0 && [$0] <= numitems(themes))
 			{
