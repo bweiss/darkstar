@@ -6,7 +6,7 @@
  * STATUS.DSC - Statbar manager for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/15/01 (bmw)
+ * Last modified: 10/22/01 (bmw)
  */
 
 alias sbar status
@@ -104,12 +104,10 @@ alias status.buildlist (void)
 					@ setitem(status_files $numitems(status_files) $file)
 				}
 			}
-
-			return 1
-		}{
-			return 0
 		}
 	}
+
+	return
 }
 
 /*

@@ -1,6 +1,14 @@
 Darkstar ChangeLog
 
 
+10/22/01
+
+ * Fixed some small bugs that were causing the status/ and themes/ directories
+   in the user directory to not work. (discovered by whitefang)
+
+ * The "darkstar" statbar now resets the background color (via ^C-1) rather
+   than specifically setting it to black.
+
 10/21/01
 
  * [away.dsm] Auto-away and Auto-unset-away now both operate globally. Meaning

@@ -6,7 +6,7 @@
  * THEMES.DSC - Theme support for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/15/01 (bmw)
+ * Last modified: 10/22/01 (bmw)
  */
 
 /*
@@ -89,12 +89,10 @@ alias themes.buildlist (void)
 					@ setitem(theme_files $numitems(theme_files) $file)
 				}
 			}
-
-			return 1
 		}
 	}
 
-	return 0
+	return
 }
 
 /*
