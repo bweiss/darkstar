@@ -1,6 +1,18 @@
 Darkstar ChangeLog
 
 
+2/9/02
+
+ * Forgot to close a comment in loader.dsc above loader.dependency. Oops.
+
+2/8/02
+
+ * [channel.dsm] Removed the MAX_NICK_LENGTH config variable. Its use was
+   completely unnecessary.
+
+ * [away.dsm] Rewrote the way some things are handled internally. This
+   shouldn't cause any changes in behavior.
+
 1/21/02
 
  * [tabkey.dsm] Rewritten to support completion rules. What this means is

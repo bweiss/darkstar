@@ -1,4 +1,4 @@
-#version 1.0
+#version 1.1
 /*     _             _        _
  *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
  * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
@@ -7,7 +7,7 @@
  * AWAY.DSM - Away module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/20/02 (bmw)
+ * Last modified: 2/8/02 (bmw)
  *
  * This script uses serial number 421 for all /on hooks.
  */
@@ -25,7 +25,6 @@ queue cleanup.away
 	^on #notice 421 -"*"
 	^on #input 421 -"*"
 	^on #timer 421 -"*"
-	^on #timer 421 -"12:00"
 
 	@ delarray(sent_away)
 }
@@ -48,7 +47,7 @@ config.add -b SEND_AWAY_NOTICE 1
 
 
 /*
- * /READLOG
+ * /READLOG [filename]
  * Displays your away log to the current window using /LESS.
  */
 alias readlog (file default "$CONFIG.AWAY_LOGFILE", void)
@@ -105,23 +104,7 @@ on #-306 421 "*"
 		}
 	}
 
-	^on #^msg 421 "*"
-	{
-		if (A)
-		{
-			@ away.process_incoming(MSG $userhost() $*)
-		}
-	}
-
-	^on #^notice 421 "*"
-	{
-		if (A)
-		{
-			@ away.process_incoming(NOTICE $userhost() $*)
-		}
-	}
-
-	^assign AWAY.TIME $time()
+	@ AWAY.TIME = time()
 }
 
 /*
@@ -148,9 +131,6 @@ on #-305 421 "*"
 		}
 	}
 
-	^on #msg 421 -"*"
-	^on #notice 421 -"*"
-
 	@ delarray(sent_away)
 	^assign -AWAY.TIME
 
@@ -174,6 +154,26 @@ on #^input 421 "*"
 }
 
 /*
+ * Process incoming msgs and notices appropriately.
+ */
+on #-msg 421 "*"
+{
+	if (A)
+	{
+		@ away.log(MSG $userhost() $*)
+		@ away.send_notice($0)
+	}
+}
+
+on #-notice 421 "*"
+{
+	if (A)
+	{
+		@ away.log(NOTICE $userhost $*)
+	}
+}
+
+/*
  * Set ourselves away if auto-away is enabled and we have been idle longer
  * than $CONFIG.AUTO_AWAY_TIME.
  */
@@ -193,21 +193,39 @@ on #^timer 421 "*"
 
 
 /*
- * This handles the actual writing of messages to your logfile as well
- * as notifying users that you are away.
+ * This handles the actual writing of messages to your logfile.
+ * Returns 0 on success and > 0 on failure.
  */
-alias away.process_incoming (type, userhost, nick, msg)
+alias away.log (type, userhost, nick, msg)
 {
-	if (CONFIG[AWAY_LOG])
+	if (!type || !userhost || !nick || !msg)
 	{
-		@ :fd = open($CONFIG.AWAY_LOGFILE w)
-		@ write($fd [$strftime(%x %X)] $type [$nick!$userhost] $msg)
-		@ close($fd)
-
-		@ AWAY.NEWMSGS++
+		return 1
 	}
 
-	if (CONFIG[SEND_AWAY_NOTICE] && type == [MSG] && finditem(sent_away $nick) < 0)
+	if (CONFIG[AWAY_LOG])
+	{
+		@ :fd = open($CONFIG.AWAY_LOGFILE W)
+
+		if (fd != -1)
+		{
+			@ write($fd [$strftime(%x %X)] $type [$nick!$userhost] $msg)
+			@ close($fd)
+			@ AWAY.NEWMSGS++
+		}{
+			return 2
+		}
+	}
+
+	return 0
+}
+
+/*
+ * Notifies people that you are away if SEND_AWAY_NOTICE is true.
+ */
+alias away.send_notice (nick default "0", void)
+{
+	if (CONFIG[SEND_AWAY_NOTICE]  && finditem(sent_away $nick) < 0)
 	{
 		@ setitem(sent_away $numitems(sent_away) $nick)
 		notice $nick I am currently away. \($A\) [Gone since: $strftime($AWAY.TIME %c)] [Log/${CONFIG[AWAY_LOG] ? [ON] : [OFF]}]

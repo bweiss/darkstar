@@ -1,4 +1,4 @@
-#version 1.0
+#version 1.1
 /*     _             _        _
  *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
  * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
@@ -7,11 +7,11 @@
  * AUTOCYCLE.DSM - Auto-Cycle module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/20/02 (bmw)
+ * Last modified: 2/8/02 (bmw)
  *
  * This script uses serial number 425 for all /on hooks.
  *
- * Description: Automatically cycles op-less channels.
+ * Description: Automatically cycles empty and opless channels.
  *
  * NOTE: This feature has been known to be trouble. Especially when used on
  *       a client connected to multiple servers. Use at your own risk.
@@ -19,7 +19,6 @@
 
 queue cleanup.autocycle
 {
-	^alias -autocycle
 	^on #channel_signoff 425 -"*"
 	^on #channel_sync 425 -"*"
 	^on #leave 425 -"*"
@@ -31,7 +30,7 @@ queue cleanup.autocycle
 config.add -b AUTO_CYCLE 0
 
 
-alias autocycle (chan, void)
+alias autocycle.cycle (chan, void)
 {
 	if (CONFIG[AUTO_CYCLE] && matchitem(synced_channels $chan) > -1 && !ischanop($servernick() $chan) && numonchannel($chan) <= 2)
 	{
@@ -47,7 +46,7 @@ on #-channel_signoff 425 "*"
 {
 	unless ([$1] == servernick())
 	{
-		autocycle $0 $1
+		autocycle.cycle $0 $1
 	}
 }
 
@@ -62,7 +61,7 @@ on #-leave 425 "*"
 {
 	unless ([$0] == servernick())
 	{
-		autocycle $1
+		autocycle.cycle $1
 	}
 }
 

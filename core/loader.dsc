@@ -6,7 +6,7 @@
  * LOADER.DSC - Module loader for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/21/02 (bmw)
+ * Last modified: 2/9/02 (bmw)
  */
 
 
@@ -151,6 +151,7 @@ alias loader.build_modlist (void)
 /*
  * Handle module dependencies. This is meant to be called directly from
  * within modules.
+ */
 alias loader.dependency (depmods)
 {
 	@ :module = LOADER.PENDING_MODULE
