@@ -1,4 +1,4 @@
-#version 0.2.8
+#version 0.2.9
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -343,7 +343,7 @@ alias tabkey.cmd.unshift   { return $tabkey.method.variables(assign); }
 
 alias tabkey.cmd.window {
 	bless
-	@ :windowcmds        = [ADD BACK BALANCE BEEP_ALWAYS BIND CHANNEL CLEAR CREATE DELETE DESCRIBE DISCON DOUBLE ECHO FIXED FLUSH GOTO GROW HIDE HIDE_OTHERS HOLD_INTERVAL HOLD_MODE KILL KILL_OTHERS KILLSWAP LAST LASTLOG LASTLOG_LEVEL LEVEL LIST LOG LOGFILE MOVE NAME NEW NEW_HIDE NEXT NOSERV NOTIFIED NOTIFY NOTIFY_LEVEL NUMBER POP PREVIOUS PROMPT PUSH QUERY REFNUM REFNUM_OR_SWAP REFRESH REMOVE SCRATCH SCROLL SCROLLBACK SEARCH_BACK SEARCH_FORWARD SERVER SHOW SHOW_ALL SHRINK SIZE SKIP STACK STATUS_FORMAT STATUS_FORMAT1 STATUS_FORMAT2 STATUS_SPECIAL SWAP UNBIND]
+	@ :windowcmds = [ADD BACK BALANCE BEEP_ALWAYS BIND CHANNEL CLEAR CREATE DELETE DESCRIBE DISCON DOUBLE ECHO FIXED FLUSH GOTO GROW HIDE HIDE_OTHERS HOLD_INTERVAL HOLD_MODE KILL KILL_OTHERS KILLSWAP LAST LASTLOG LASTLOG_LEVEL LEVEL LIST LOG LOGFILE MOVE NAME NEW NEW_HIDE NEXT NOSERV NOTIFIED NOTIFY NOTIFY_LEVEL NUMBER POP PREVIOUS PROMPT PUSH QUERY REFNUM REFNUM_OR_SWAP REFRESH REMOVE SCRATCH SCROLL SCROLLBACK SEARCH_BACK SEARCH_FORWARD SERVER SHOW SHOW_ALL SHRINK SIZE SKIP STACK STATUS_FORMAT STATUS_FORMAT1 STATUS_FORMAT2 STATUS_SPECIAL SWAP UNBIND]
 	if (curword == 1) {
 		@ :cmd = [WINDOW]
 	} else {
@@ -400,7 +400,7 @@ alias tabkey.cmd.window {
 
 alias tabkey.method.arrays (array, void) {
 	bless
-	@ :list = []
+	^local list
 	for ii from 0 to ${numitems($array) - 1} {
 		push list $getitem($array $ii)
 	}
@@ -445,9 +445,9 @@ alias tabkey.method.nick {
 	if ((:foo = pattern("$0*" $chanusers()))) {
 		return $foo;
 	} else {
-		@ :chanusers = []
+		^local chanusers
 		fe ($mychannels()) chan {
-			@ push(chanusers $chanusers($chan))
+			push chanusers $chanusers($chan)
 		}
 		return $pattern("$0*" $sort($uniq($chanusers)));
 	}
@@ -486,7 +486,7 @@ alias tabkey.method.variables (type, void) {
 				} else {
 					@ :struct = [FSET]
 				}
-				@ :matches = []
+				^local matches
 				for var in ($aliasctl(assign match $struct\.$type\.$foo)) {
 					push matches $after(-1 . $var)
 				}
@@ -536,6 +536,12 @@ for hook in (dcc_chat send_dcc_chat) {
 }
 
 on #^dcc_request 420 "% CHAT *" {
+	for sref in ($serverrefs()) {
+		tabkey.addnicktohist $sref =$0
+	}
+}
+
+on #^send_ctcp 420 "PRIVMSG % DCC CHAT *" {
 	for sref in ($serverrefs()) {
 		tabkey.addnicktohist $sref =$0
 	}
