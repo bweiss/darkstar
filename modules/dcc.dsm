@@ -1,16 +1,17 @@
-#version 0.2.1
+#version 0.3
 /* $Id$ */
 /*
  * dcc.dsm - DCC related module for DarkStar/EPIC4
- * Copyright (c) 2002 Brian Weiss
+ * Copyright (c) 2002, 2003 Brian Weiss
  * See the 'COPYRIGHT' file for more information.
  *
- * This script uses serial numbers 0 and 450 for /on hooks.
+ * This script uses serial numbers 0 and 450 for /ON hooks.
  */
 
 /****** CLEANUP QUEUE ******/
 
-queue cleanup.dcc {
+queue cleanup.dcc
+{
 	^alias -chat
 	^on dcc_chat -"*"
 	^on send_dcc_chat -"*"
@@ -28,12 +29,28 @@ format.add SEND_DCC_CHAT => =$1= $2-
 
 /****** USER ALIASES ******/
 
-alias chat (nick, void) {
-	if (!nick) {
+alias chat (nick, void)
+{
+	if (!nick)
+	{
 		xecho -b Usage: /chat <nick>
 		return
 	}
+
 	//dcc chat $nick
+}
+
+/*
+ * Automatically close quoted filenames in a /DCC SEND.
+ * This hack was requested by larne, so you can blame him. ;-)
+ */
+alias dcc (...)
+{
+	if ([$0] == [SEND] && left(1 $2) == ["] && right(1 $2-) != ["]) {
+		//dcc $0 $1 $2-"
+	} else {
+		//dcc $*
+	}
 }
 
 
@@ -42,20 +59,24 @@ alias chat (nick, void) {
 /*
  * DCC auto-get.
  */
-on #-dcc_request 450 "% SEND *" {
-	if (CONFIG.DCC_AUTOGET) {
+on #-dcc_request 450 "% SEND *"
+{
+	if (CONFIG.DCC_AUTOGET)
+	{
 		xecho -b DCC AutoGet: Accepting SEND of $2 from $0
 		dcc get $0 $2
 	}
 }
 
-on ^dcc_chat "*" {
+on ^dcc_chat "*"
+{
 	if (FORMAT.DCC_CHAT) {
 		echo $fparse(DCC_CHAT $*)
 	}
 }
 
-on ^send_dcc_chat "*" {
+on ^send_dcc_chat "*"
+{
 	if (FORMAT.SEND_DCC_CHAT) {
 		echo $fparse(SEND_DCC_CHAT $*)
 	}
