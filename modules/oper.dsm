@@ -1,8 +1,8 @@
-#version 0.2
+#version 0.3
 /* $Id$ */
 /*
  * oper.dsm - IRC Operator module for DarkStar/EPIC4
- * Copyright (c) 2002 Brian Weiss
+ * Copyright (c) 2002, 2003 Brian Weiss
  * See the 'COPYRIGHT' file for more information.
  *
  * This script uses serial numbers 0 and 427 for all /ON hooks.
@@ -10,7 +10,8 @@
 
 /****** CLEANUP QUEUE ******/
 
-queue cleanup.oper {
+queue cleanup.oper
+{
 	^alias -operview
 	^alias -operwall
 	^on #381 427 -"*"
@@ -18,6 +19,8 @@ queue cleanup.oper {
 	^on #hook 427 -"CONFIG OPERVIEW_HIDDEN *"
 	^on #hook 427 -"CONFIG OPERVIEW_SIZE *"
 	^on wallop -"*"
+	^on #window_create 427 -"*"
+	^on #window_kill 427 -"*"
 	^on #window_kill 427 -"operview"
 	oper.operview.destroy
 }
@@ -44,7 +47,8 @@ module.load_saved_settings
 
 /****** USER ALIASES ******/
 
-alias operview {
+alias operview (...)
+{
 	if ([$0]) {
 		dset OPERVIEW $0
 	} else {
@@ -52,7 +56,8 @@ alias operview {
 	}
 }
 
-alias operwall (text) {
+alias operwall (text)
+{
 	if (text) {
 		//quote operwall :$text
 	} else {
@@ -63,28 +68,77 @@ alias operwall (text) {
 
 /****** INTERNAL ALIASES ******/
 
-alias oper.operview.create (void) {
-	if (winnum(operview) == -1) {
-		window new name operview level opnotes,snotes,wallops
-		if (CONFIG.OPERVIEW_HIDDEN) {
+alias oper.operview.create (void)
+{
+	if (winnum(operview) == -1)
+	{
+		window new name operview
+		oper.operview.fix
+	}
+}
+
+alias oper.operview.fix (void)
+{
+	if (winnum(operview) != -1)
+	{
+		window operview level $CONFIG.OPERVIEW_LEVEL
+		if (CONFIG.OPERVIEW_HIDDEN)
+		{
+			window operview hide
+
+			if (STATUS.DOUBLE) {
+				window operview double on
+			}
 			if ((:item = matchitem(single_status operview)) > -1) {
 				@ delitem(single_status $item)
 			}
-			if (STATUS.DOUBLE) {
-				window double on
+		}{
+			/*
+			 * Make sure that the operview window is visible but
+			 * never becomes the active window.
+			 */
+			if (!winvisible(operview)) {
+				window show operview
 			}
-			window hide
-		} else {
-			if (matchitem(single_status operview) < 0) {
+
+			if (winnam() == [operview])
+			{
+				^local visible
+				for wref in ($winrefs())
+				{
+					if (winvisible($wref)) {
+						push visible $wref
+					}
+				}
+
+				if (#visible == 1)
+				{
+					window previous
+					window show operview
+					window last
+				}{
+					for wref in ($visible)
+					{
+						if (!match($winnam($wref) operview msgs))
+						{
+							window refnum $wref
+							break
+						}
+					}
+				}
+			}
+
+			window operview double off fixed on size $CONFIG.OPERVIEW_SIZE
+
+			if (finditem(single_status operview) < 0) {
 				@ setitem(single_status $numitems(single_status) operview)
 			}
-			window double off fixed on size $CONFIG.OPERVIEW_SIZE
-			window last
 		}
 	}
 }
 
-alias oper.operview.destroy (void) {
+alias oper.operview.destroy (void)
+{
 	if (winnum(operview) != -1) {
 		window operview kill
 	}
@@ -96,11 +150,13 @@ alias oper.operview.destroy (void) {
 
 /****** ON HOOKS ******/
 
-on #^381 427 "*" {
+on #^381 427 "*"
+{
 	//mode $servernick() $CONFIG.OPER_UMODES
 }
 
-on #-hook 427 "CONFIG OPERVIEW *" {
+on #-hook 427 "CONFIG OPERVIEW *"
+{
 	if (CONFIG.OPERVIEW) {
 		oper.operview.create
 	} else {
@@ -108,17 +164,17 @@ on #-hook 427 "CONFIG OPERVIEW *" {
 	}
 }
 
-on #-hook 427 "CONFIG OPERVIEW_HIDDEN *" {
-	if ([$2] != CONFIG.OPERVIEW_HIDDEN) {
-		oper.operview.destroy
-		oper.operview.create
-	}
+on #-hook 427 "CONFIG OPERVIEW_HIDDEN *"
+{
+	oper.operview.fix
 }
 
-on #-hook 427 "CONFIG OPERVIEW_SIZE *" {
+on #-hook 427 "CONFIG OPERVIEW_SIZE *"
+{
 	@ :size = CONFIG.OPERVIEW_SIZE
 	@ :max_size = word(1 $geom()) - 4
-	if (!isnumber($size b10) || size < 1 || size > max_size) {
+	if (!isnumber($size b10) || size < 1 || size > max_size)
+	{
 		xecho -b Value must be an integer greater than 0 and no larger than $max_size
 		^assign CONFIG.OPERVIEW_SIZE $2
 		xecho -b Value of OPERVIEW_SIZE set to $CONFIG.OPERVIEW_SIZE
@@ -128,13 +184,25 @@ on #-hook 427 "CONFIG OPERVIEW_SIZE *" {
 	}
 }
 
-on ^wallop "*" {
+on ^wallop "*"
+{
 	if (FORMAT.WALLOP) {
 		echo $fparse(WALLOP $*)
 	}
 }
 
-on #-window_kill 427 "operview" {
+on #-window_create 427 "*"
+{
+	oper.operview.fix
+}
+
+on #-window_kill 427 "*"
+{
+	oper.operview.fix
+}
+
+on #-window_kill 427 "operview"
+{
     if (CONFIG.OPERVIEW) {
         dset OPERVIEW OFF
     }

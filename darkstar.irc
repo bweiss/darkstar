@@ -13,7 +13,8 @@
  *  See the 'COPYRIGHT' file for licensing information.
  */
 
-if (!epic() || V < 20020819) {
+if (!epic() || V < 20020819)
+{
 	echo
 	echo WARNING!
 	echo
@@ -61,7 +62,7 @@ for array in ($getarrays()) {
  * This will be incremented every time a change takes place in
  * the core scripts (this file and any *.dsc files in $DS.HOME/core/).
  */
-@ DS.CORE_ID = 90
+@ DS.CORE_ID = 91
 
 eval xecho -b Loading DarkStar $DS.VERSION
 
@@ -80,7 +81,8 @@ eval xecho -b Loading DarkStar $DS.VERSION
 /*
  * Check for a "user directory" and create it if necessary.
  */
-if (fexist($DS.USER_DIR) == -1) {
+if (fexist($DS.USER_DIR) == -1)
+{
 	xecho -b Creating user directory: $DS.USER_DIR
 	@ mkdir($DS.USER_DIR)
 	@ mkdir($DS.USER_DIR/modules)
@@ -153,7 +155,8 @@ if (fexist($DS.RC) != -1) {
 }
 
 /* One final sanity check. This should never happen. */
-if (fexist($DS.HOME/darkstar.irc) == -1) {
+if (fexist($DS.HOME/darkstar.irc) == -1)
+{
 	echo WARNING! We were unable to detect our location.
 	echo You may need to set the DARKSTAR_HOME environment variable.
 	echo Please have a look at the README file for more information.

@@ -1,4 +1,4 @@
-#version 0.1.1
+#version 0.1.2
 /* $Id$ */
 /*
  * nickmgr.dsm - Nick management module for DarkStar/EPIC4
@@ -10,8 +10,10 @@
 
 /****** CLEANUP QUEUE ******/
 
-queue cleanup.nickmgr {
+queue cleanup.nickmgr
+{
 	^alias -nick
+	^alias -nickscan
 	^on #hook 422 -"CONFIG NICK_MANAGER_SCAN_INTERVAL *"
 	^on #join 422 -"*"
 	^on #raw_irc 422 -"% NICK *"
@@ -29,11 +31,13 @@ config.add -b NICK_MANAGER_IGNORE_NETSPLITS 0
 config.add    NICK_MANAGER_IGNORE_TIMEOUT 900
 config.add    NICK_MANAGER_NICKLIST
 config.add    NICK_MANAGER_SCAN_INTERVAL 60
+config.add    NICK_MANAGER_SCAN_TIMEOUT 900
 
 
 /****** INIT ******/
 
-if (isloaded(keepnick)) {
+if (isloaded(keepnick))
+{
 	xecho -b Warning! The nickmgr and keepnick modules should not be used at the same time.
 	^assign ask $'Would you like to unload the keepnick module now? '
 	if (ask == [y]) {
@@ -51,23 +55,27 @@ module.load_saved_settings
 
 /****** USER ALIASES ******/
 
-alias nick (...) {
-	if (CONFIG.NICK_MANAGER_AUTO_ADD_NICKS && findw($0 $CONFIG.NICK_MANAGER_NICKLIST) == -1) {
-		push CONFIG.NICK_MANAGER_NICKLIST $0
+alias nick (...)
+{
+	if (CONFIG.NICK_MANAGER) {
+		if (CONFIG.NICK_MANAGER_AUTO_ADD_NICKS && findw($0 $CONFIG.NICK_MANAGER_NICKLIST) == -1) {
+			push CONFIG.NICK_MANAGER_NICKLIST $0
+		}
 	}
 	//nick $*
 }
 
-alias nickscan (void) {
-	nickmgr.scan
-}
+alias nickscan (void) { nickmgr.scan; }
 
 
 /****** INTERNAL ALIASES ******/
 
-alias nickmgr.clean_ignore_list (void) {
-	for array in ($getarrays(nickmgr.ignore.*)) {
-		for item in ($jot(${numitems($array)-1} 0)) {
+alias nickmgr.clean_ignore_list (void)
+{
+	for array in ($getarrays(nickmgr.ignore.*))
+	{
+		for item in ($jot(${numitems($array)-1} 0))
+		{
 			@ :ts = word(1 $getitem($array $item))
 			@ :diff = time() - ts
 			if (diff > CONFIG.NICK_MANAGER_IGNORE_TIMEOUT) {
@@ -77,11 +85,14 @@ alias nickmgr.clean_ignore_list (void) {
 	}
 }
 
-alias nickmgr.hook (nick, serv default "$servernum()", void) {
-	if (!nick) {
+alias nickmgr.hook (nick, serv default "$servernum()", void)
+{
+	if (!nick)
+	{
 		echo Error: nickmgr.hook: Not enough arguments
 		return
 	}
+
 	if (nickmgr.wantnick($nick)) {
 		nickmgr.nickchange $nick
 	}
@@ -92,12 +103,16 @@ alias nickmgr.hook (nick, serv default "$servernum()", void) {
  * signoffs that appear to be netsplits to be ignored, even by
  * the nickmgr.scan alias.
  */
-alias nickmgr.ignore (nick, serv default "$servernum()", void) {
-	if (!nick) {
+alias nickmgr.ignore (nick, serv default "$servernum()", void)
+{
+	if (!nick)
+	{
 		echo Error: nickmgr.ignore: Not enough arguments
 		return
 	}
+
 	nickmgr.clean_ignore_list
+
 	if ((:item = matchitem(nickmgr.ignore.$serv $nick *)) > -1) {
 		@ setitem(nickmgr.ignore.$serv $item $nick $time())
 	} else {
@@ -109,40 +124,64 @@ alias nickmgr.ignore (nick, serv default "$servernum()", void) {
  * This is a wrapper to DarkStar's $is_on() function that makes
  * it server specific.
  */
-alias nickmgr.is_on (nick, serv default "$servernum()", void) {
+alias nickmgr.is_on (nick, serv default "$servernum()", void)
+{
 	xeval -s $serv -- ^local tmp \$is_on($nick)
 	@ function_return = tmp
 }
 
-alias nickmgr.nickchange (nick, serv default "$servernum()", void) {
+alias nickmgr.nickchange (nick, serv default "$servernum()", void)
+{
 	if (!nick || serv < 0 || nick == servernick($serv)) {
 		return
 	}
-	xecho -b Nick Manager changing nick on server $serv to $nick
+	xecho -b Nick Manager: Changing nick on server $serv to $nick
 	xeval -s $serv -- nick \$nick
 }
 
 /*
  * This will check each nick in $CONFIG.NICK_MANAGER_NICKLIST, for each
- * server connection, until it either finds one available or gets to the
- * end of the list.
+ * server connection, until it either finds one available or until it gets
+ * to the end of the list or to a nick less desirable than the current nick.
+ *
+ * In an attempt to ensure that servers don't get flooded with ISON requests,
+ * due to lag, a global variable in the NICKMGR.SCAN structure will be
+ * created containing a timestamp of when the scan began. While this variable
+ * exists no scans will be allowed to take place for that server.
  */
-alias nickmgr.scan (void) {
+alias nickmgr.scan (void)
+{
 	@ :nlist = CONFIG.NICK_MANAGER_NICKLIST
 	if (!CONFIG.NICK_MANAGER || !nlist) {
 		return
 	}
+
 	nickmgr.clean_ignore_list
-	for serv in ($serverrefs()) {
-		if (serv > -1) {
-			for ii from 1 to $numwords($nlist) {
-				@ :nick = word(${ii-1} $nlist)
-				if (nickmgr.wantnick($nick $serv) && matchitem(nickmgr.ignore.$serv $nick *) < 0) {
-					if (!nickmgr.is_on($nick $serv)) {
-						nickmgr.nickchange $nick $serv
+
+	for serv in ($serverrefs())
+	{
+		if (serv > -1)
+		{
+			if (!NICKMGR.SCAN[$serv])
+			{
+				@ NICKMGR.SCAN.$serv = time()
+				for ii from 1 to $numwords($nlist)
+				{
+					@ :nick = word(${ii-1} $nlist)
+					if (!nickmgr.wantnick($nick $serv))
+					{
 						break
 					}
+					else if (matchitem(nickmgr.ignore.$serv $nick *) < 0)
+					{
+						if (!nickmgr.is_on($nick $serv))
+						{
+							nickmgr.nickchange $nick $serv
+							break
+						}
+					}
 				}
+				^assign -NICKMGR.SCAN.$serv
 			}
 		}
 	}
@@ -152,19 +191,21 @@ alias nickmgr.scan (void) {
  * Returns the specified nick if it is more desirable than our current
  * nick according to the value of $CONFIG.NICK_MANAGER_NICKLIST.
  */
-alias nickmgr.wantnick (nick, serv default "$servernum()", void) {
+alias nickmgr.wantnick (nick, serv default "$servernum()", void)
+{
 	if (!nick || nick == servernick($serv)) {
 		return
-	} else {
-		@ :list = CONFIG.NICK_MANAGER_NICKLIST
-		@ :index = findw($nick $list)
-		@ :c_index = findw($servernick($serv) $list)
-		if (index > -1) {
-			if (c_index == -1) {
-				@ function_return = nick
-			} else if (index < c_index) {
-				@ function_return = nick
-			}
+	}
+
+	@ :list = CONFIG.NICK_MANAGER_NICKLIST
+	@ :index = findw($nick $list)
+	@ :c_index = findw($servernick($serv) $list)
+	if (index > -1)
+	{
+		if (c_index == -1) {
+			@ function_return = nick
+		} else if (index < c_index) {
+			@ function_return = nick
 		}
 	}
 }
@@ -172,43 +213,63 @@ alias nickmgr.wantnick (nick, serv default "$servernum()", void) {
 
 /****** ON HOOKS ******/
 
-on #-hook 422 "CONFIG NICK_MANAGER_SCAN_INTERVAL *" {
-	if (!isnumber($CONFIG.NICK_MANAGER_SCAN_INTERVAL b10) || CONFIG.NICK_MANAGER_SCAN_INTERVAL < 10) {
+on #-hook 422 "CONFIG NICK_MANAGER_SCAN_INTERVAL *"
+{
+	if (!isnumber($CONFIG.NICK_MANAGER_SCAN_INTERVAL b10) || CONFIG.NICK_MANAGER_SCAN_INTERVAL < 10)
+	{
 		xecho -b Value must be an integer greater than or equal to 10
 		^assign CONFIG.NICK_MANAGER_SCAN_INTERVAL ${[$2] ? [$2] : 60}
 		xecho -b Value of NICK_MANAGER_SCAN_INTERVAL set to $CONFIG.NICK_MANAGER_SCAN_INTERVAL
 	}
+
+	/* Restart the scan timer. */
+	@ timerctl(DELETE nickmgr)
+	timer -ref nickmgr -rep -1 $CONFIG.NICK_MANAGER_SCAN_INTERVAL nickmgr.scan
 }
 
 /*
  * Remove ignored nicks when they rejoin.
  */
-on #-join 422 "*" {
+on #-join 422 "*"
+{
 	@ :serv = servernum()
 	if ((:item = matchitem(nickmgr.ignore.$serv $0)) > -1) {
 		@ delitem(nickmgr.ignore.$serv $item)
 	}
 }
 
-on #-raw_irc 422 "% NICK *" {
+on #-raw_irc 422 "% NICK *"
+{
 	@ :nick = before(1 ! $0)
 	nickmgr.hook $nick
 }
 
-on #-raw_irc 422 "% QUIT *" {
+on #-raw_irc 422 "% QUIT *"
+{
 	@ :nick = before(1 ! $0)
 	@ :reason = after(1 : $2-)
-	if (CONFIG.NICK_MANAGER_IGNORE_NETSPLITS && match("%.%.% %.%.%" "$reason")) {
+	if (CONFIG.NICK_MANAGER_IGNORE_NETSPLITS && match("%.%.% %.%.%" "$reason"))
+	{
 		nickmgr.clean_ignore_list
 		nickmgr.ignore $nick
-	} else {
+	}{
 		nickmgr.hook $nick
 	}
 }
 
-on #-timer 422 "*" {
+on #-timer 422 "*"
+{
 	if (!timerctl(REFNUM nickmgr)) {
 		timer -ref nickmgr -rep -1 $CONFIG.NICK_MANAGER_SCAN_INTERVAL nickmgr.scan
+	}
+
+	foreach NICKMGR.SCAN serv
+	{
+		@ :ts = NICKMGR.SCAN[$serv]
+		@ :diff = time() - ts
+		if (diff > CONFIG.NICK_MANAGER_SCAN_TIMEOUT) {
+			^assign -NICKMGR.SCAN.$serv
+		}
 	}
 }
 

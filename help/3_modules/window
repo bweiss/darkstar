@@ -17,6 +17,11 @@ Author: Brian Weiss <brian@epicsol.org>
                                 queries when a nick change is detected.
    BIND_ON_JOIN               - Boolean. Automatically bind channels
                                 when you join them.
+   JOIN_NEW_WINDOW            - Boolean. If true, a new window will be
+                                created automatically whenever you join a
+                                new channel.
+   JOIN_NEW_WINDOW_ARGS       - Extra arguments to be passed to /WINDOW
+                                when the new window is created.
    MSG_WINDOW                 - Boolean. Creates a new window called "msgs"
                                 in which all incoming private messages will
                                 be displayed.
@@ -27,6 +32,8 @@ Author: Brian Weiss <brian@epicsol.org>
                                 goes to the msg window.
    MSG_WINDOW_SIZE            - Size of the msg window. This only applies
                                 when MSG_WINDOW_HIDDEN is false.
+   PART_KILL_WINDOW           - Boolean. If true, leaving a channel will
+                                cause its window to be killed.
    UNBIND_ON_PART             - Boolean. Automatically unbind channels
                                 after you part them.
 

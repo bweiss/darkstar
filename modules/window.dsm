@@ -1,8 +1,8 @@
-#version 0.7.4
+#version 0.8
 /* $Id$ */
 /*
  * window.dsm - Window module for DarkStar/EPIC4
- * Copyright (c) 2002 Brian Weiss
+ * Copyright (c) 2002, 2003 Brian Weiss
  * See the 'COPYRIGHT' file for more information.
  *
  * This script uses serial number 426 for all /ON hooks.
@@ -10,7 +10,8 @@
 
 /****** CLEANUP QUEUE ******/
 
-queue cleanup.window {
+queue cleanup.window
+{
 	for alias in (swap wb wc wj wk wl wn wp wq wub) {
 		^alias -$alias
 	}
@@ -24,8 +25,8 @@ queue cleanup.window {
 	^on #leave 426 -'\$servernick() *'
 	^on #msg 426 -"*"
 	^on #window_create 426 -"*"
-	^on #window_kill 426 -"msgs"
 	^on #window_kill 426 -"*"
+	^on #window_kill 426 -"msgs"
 	for char in ($jot(0 9)) {
 		^bind ^[$char NOTHING
 	}
@@ -50,10 +51,13 @@ config.add    AUTO_CREATE_WINDOWS 2
 config.add -b AUTO_QUERY 0
 config.add -b AUTO_QUERY_UPDATE 1
 config.add -b BIND_ON_JOIN 0
+config.add -b JOIN_NEW_WINDOW 0
+config.add    JOIN_NEW_WINDOW_ARGS hide_others
 config.add -b MSG_WINDOW 0
 config.add -b MSG_WINDOW_HIDDEN 0
 config.add    MSG_WINDOW_LEVEL MSGS
 config.add    MSG_WINDOW_SIZE 5
+config.add -b PART_KILL_WINDOW 0
 config.add -b UNBIND_ON_PART 0
 
 
@@ -103,10 +107,12 @@ for wref in ($winrefs()) {
 
 /****** USER ALIASES ******/
 
-alias swap (winnum, void) {
-	if (winnum) {
+alias swap (winnum, void)
+{
+	if (winnum)
+	{
 		window swap $winnum
-	} else {
+	}{
 		input "What window should we swap to? " {
 			window swap $0
 		}
@@ -126,28 +132,76 @@ alias wub (...)                     {window unbind}
 
 /****** INTERNAL ALIASES ******/
 
-alias window.msgwin.create (void) {
-	if (winnum(msgs) == -1) {
-		window new name msgs level $CONFIG.MSG_WINDOW_LEVEL
-		if (CONFIG.MSG_WINDOW_HIDDEN) {
+alias window.msgwin.create (void)
+{
+	if (winnum(msgs) == -1)
+	{
+		window new name msgs
+		window.msgwin.fix
+	}
+}
+
+alias window.msgwin.fix (void)
+{
+	if (winnum(msgs) != -1)
+	{
+		window msgs level $CONFIG.MSG_WINDOW_LEVEL
+		if (CONFIG.MSG_WINDOW_HIDDEN)
+		{
+			window msgs hide
+			if (STATUS.DOUBLE) {
+				window msgs double on
+			}
 			if ((:item = matchitem(single_status msgs)) > -1) {
 				@ delitem(single_status $item)
 			}
-			if (STATUS.DOUBLE) {
-				window double on
+		}{
+			/*
+			 * Make sure that the msg window is visible but
+			 * never becomes the active window.
+			 */
+			if (!winvisible(msgs)) {
+				window show msgs
 			}
-			window hide
-		} else {
-			if (matchitem(single_status msgs) < 0) {
+
+			if (winnam() == [msgs])
+			{
+				^local visible
+				for wref in ($winrefs())
+				{
+					if (winvisible($wref)) {
+						push visible $wref
+					}
+				}
+
+				if (#visible == 1)
+				{
+					window previous
+					window show msgs
+					window last
+				}{
+					for wref in ($visible)
+					{
+						if (!match($winnam($wref) msgs operview))
+						{
+							window refnum $wref
+							break
+						}
+					}
+				}
+			}
+
+			window msgs double off fixed on skip on size $CONFIG.MSG_WINDOW_SIZE
+
+			if (finditem(single_status msgs) < 0) {
 				@ setitem(single_status $numitems(single_status) msgs)
 			}
-			window double off fixed on size $CONFIG.MSG_WINDOW_SIZE
-			window last
 		}
 	}
 }
 
-alias window.msgwin.destroy (void) {
+alias window.msgwin.destroy (void)
+{
 	if (winnum(msgs) != -1) {
 		window msgs kill
 	}
@@ -156,14 +210,16 @@ alias window.msgwin.destroy (void) {
 	}
 }
 
-alias window.msgwin.up (void) {
+alias window.msgwin.up (void)
+{
 	@ :win = winnum()
 	^window ref msgs
 	parsekey SCROLL_BACKWARD
 	^window ref $win
 }
 
-alias window.msgwin.down (void) {
+alias window.msgwin.down (void)
+{
 	@ :win = winnum()
 	^window ref msgs
 	parsekey SCROLL_FORWARD
@@ -173,7 +229,8 @@ alias window.msgwin.down (void) {
 
 /****** ON HOOKS ******/
 
-on #-hook 426 "CONFIG MSG_WINDOW *" {
+on #-hook 426 "CONFIG MSG_WINDOW *"
+{
 	if (CONFIG.MSG_WINDOW) {
 		window.msgwin.create
 	} else {
@@ -181,24 +238,25 @@ on #-hook 426 "CONFIG MSG_WINDOW *" {
 	}
 }
 
-on #-hook 426 "CONFIG MSG_WINDOW_HIDDEN *" {
-	if (CONFIG.MSG_WINDOW && [$2] != CONFIG.MSG_WINDOW_HIDDEN) {
-		window.msgwin.destroy
-		window.msgwin.create
-	}
+on #-hook 426 "CONFIG MSG_WINDOW_HIDDEN *"
+{
+	window.msgwin.fix
 }
 		
-on #-hook 426 "CONFIG MSG_WINDOW_LEVEL *" {
+on #-hook 426 "CONFIG MSG_WINDOW_LEVEL *"
+{
 	@ :bad = :good = []
 	@ :levels = [ACTIONS CRAP CTCP DCC MSGS NOTES NOTICES OPNOTES PUBLIC SNOTES USERLOG1 USERLOG2 USERLOG3 USERLOG4 WALLOPS WALLS]
-	for lvl in ($sar(ig/,/ /$CONFIG.MSG_WINDOW_LEVEL)) {
+	for lvl in ($sar(ig/,/ /$CONFIG.MSG_WINDOW_LEVEL))
+	{
 		if (findw($lvl $levels) > -1) {
 			push good $lvl
 		} else {
 			push bad $lvl
 		}
 	}
-	if (bad) {
+	if (bad)
+	{
 		for lvl in ($bad) {
 			xecho -b Unknown level: $lvl
 		}
@@ -210,7 +268,7 @@ on #-hook 426 "CONFIG MSG_WINDOW_LEVEL *" {
 		}
 		^assign CONFIG.MSG_WINDOW_LEVEL $toupper($newlevels)
 		xecho -b Value of MSG_WINDOW_LEVEL set to $CONFIG.MSG_WINDOW_LEVEL
-	} else {
+	}{
 		^assign CONFIG.MSG_WINDOW_LEVEL $toupper($CONFIG.MSG_WINDOW_LEVEL)
 	}
 	if (CONFIG.MSG_WINDOW) {
@@ -218,10 +276,12 @@ on #-hook 426 "CONFIG MSG_WINDOW_LEVEL *" {
 	}
 }
 
-on #-hook 426 "CONFIG MSG_WINDOW_SIZE *" {
+on #-hook 426 "CONFIG MSG_WINDOW_SIZE *"
+{
 	@ :size = CONFIG.MSG_WINDOW_SIZE
 	@ :max_size = word(1 $geom()) - 4
-	if (!isnumber($size b10) || size < 1 || size > max_size) {
+	if (!isnumber($size b10) || size < 1 || size > max_size)
+	{
 		xecho -b Value must be an integer greater than 0 and no larger than $max_size
 		^assign CONFIG.MSG_WINDOW_SIZE $2
 		xecho -b Value of MSG_WINDOW_SIZE set to $CONFIG.MSG_WINDOW_SIZE
@@ -231,74 +291,98 @@ on #-hook 426 "CONFIG MSG_WINDOW_SIZE *" {
 	}
 }
 
-on #-join 426 '$servernick() *' {
-	if (CONFIG.BIND_ON_JOIN) {
-		window bind $1
+on #-join 426 '$servernick() *'
+{
+	@ :curwin = winnum()
+	if (CONFIG.JOIN_NEW_WINDOW)
+	{
+		window new channel $1
+		if (CONFIG.BIND_ON_JOIN) {
+			window bind $1
+		}
+		window $CONFIG.JOIN_NEW_WINDOW_ARGS
+		window.msgwin.fix
 	}
 }
 
-on #-leave 426 '$servernick() *' {
+on #-leave 426 '$servernick() *'
+{
 	if (CONFIG.UNBIND_ON_PART) {
 		window unbind $1
 	}
+	if (CONFIG.PART_KILL_WINDOW) {
+		window $winchan($1) kill
+	}
 }
 
-on #-msg 426 "*" {
-	if ((:item = matchitem(window.queries.$lastserver() %!$userhost())) > -1) {
-		if (getitem(window.queries.$lastserver() $item) != [$0!$userhost()]) {
-			if (CONFIG.AUTO_QUERY_UPDATE) {
+on #-msg 426 "*"
+{
+	if ((:item = matchitem(window.queries.$lastserver() %!$userhost())) > -1)
+	{
+		if (getitem(window.queries.$lastserver() $item) != [$0!$userhost()])
+		{
+			if (CONFIG.AUTO_QUERY_UPDATE)
+			{
 				@ :oldnick = before(-1 ! $getitem(window.queries.$lastserver() $item))
-				if ((:win = querywin($oldnick $lastserver())) > -1) {
+				if ((:win = querywin($oldnick $lastserver())) > -1)
+				{
 					window $win query $0
 					xecho -b -w $win Query window for $oldnick changed to $0
 				}
 			}
 			@ setitem(window.queries.$lastserver() $item $0!$userhost())
 		}
-	} else {
+	}{
 		@ setitem(window.queries.$lastserver() $numitems(window.queries.$lastserver()) $0!$userhost())
 	}
-	if (CONFIG.AUTO_QUERY && querywin($0 $lastserver()) == -1) {
+
+	if (CONFIG.AUTO_QUERY && querywin($0 $lastserver()) == -1)
+	{
 		window new_hide swap last
 		query $0
 		xecho -b New query window created for $0
 	}
 }
 
-on #-window_create 426 "*" {
+on #-window_create 426 "*"
+{
 	/* Add shortcut alias for this window */
 	^alias $0 window swap $0
+
+	/* Automatically double the statbar if theme calls for it. */
 	if (STATUS.DOUBLE) {
 		^window $0 double on
 	}
+
+	/* Fix the msgwin in case the new window messed with it. */
+	window.msgwin.fix
 }
 
-/*
- * Turn off MSG_WINDOW if someone manually kills the 'msgs' window.
- */
-on #-window_kill 426 "msgs" {
-	if (CONFIG.MSG_WINDOW) {
-		dset MSG_WINDOW OFF
+on #-window_kill 426 "*"
+{
+	/* Remove this window's shortcut alias */
+	^alias -$0
+
+	/* Ensure that the msg window doesn't become hidden or the wrong size. */
+	if (CONFIG.MSG_WINDOW && !CONFIG.MSG_WINDOW_HIDDEN) {
+		window.msgwin.fix
 	}
 }
 
-on #-window_kill 426 "*" {
-	/* Remove this window's shortcut alias */
-	^alias -$0
-	/* Ensure that the msg window doesn't become hidden or the wrong size */
-	if (CONFIG.MSG_WINDOW && !CONFIG.MSG_WINDOW_HIDDEN) {
-		window previous
-		window show msgs
-		window size $CONFIG.MSG_WINDOW_SIZE
-		window last
+on #-window_kill 426 "msgs"
+{
+	if (CONFIG.MSG_WINDOW) {
+		dset MSG_WINDOW OFF
 	}
 }
 
 
 /****** STARTUP ******/
 
-if (CONFIG.AUTO_CREATE_WINDOWS) {
-	for cnt from 1 to $CONFIG.AUTO_CREATE_WINDOWS {
+if (CONFIG.AUTO_CREATE_WINDOWS)
+{
+	for cnt from 1 to $CONFIG.AUTO_CREATE_WINDOWS
+	{
 		@ :chan = word($cnt $CONFIG.AUTO_BIND_CHANNELS)
 		if (winnum($cnt) == -1) {
 			window new
