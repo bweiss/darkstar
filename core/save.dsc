@@ -50,8 +50,8 @@ alias save (args)
 	if (fexist($save_dir) == -1) {
 		xecho -b No save directory found. Creating $save_dir ...		
 		if (mkdir($save_dir) > 0) {
-			xecho -b Error: Unable to create directory $save_dir
-			xecho -b Aborting save...
+			echo Error: Unable to create directory $save_dir
+			echo Aborting save...
 			return
 		}
 	}
@@ -62,26 +62,26 @@ alias save (args)
 	for module in ($modules) {
 		switch ($save.write_config($save_dir $module)) {
 			(0) {if (CONFIG.SAVE_VERBOSE) {xecho -s -b Settings for [$module] saved to $save_dir/$module\.sav}}
-			(1) {xecho -b Error: save.write_config\(\): Not enough arguments \(Module: $module\)}
-			(2) {xecho -b Error: save.write_config\(\): Unable to open save file for writing \(Module: $module\)}
-			(*) {xecho -b Error: save.write_config\(\): Unknown \(Module: $module\)}
+			(1) {echo Error: save.write_config\(\): Not enough arguments \(Module: $module\)}
+			(2) {echo Error: save.write_config\(\): Unable to open save file for writing \(Module: $module\)}
+			(*) {echo Error: save.write_config\(\): Unknown \(Module: $module\)}
 		}
 	}
 
 	/* Save format settings (/FSET) */
 	switch ($save.write_formats($modules)) {
 		(0) {if (CONFIG.SAVE_VERBOSE) {xecho -s -b Format settings saved to $DS.USER_DIR/themes/custom/}}
-		(1) {xecho -b Error: save.write_formats\(\): Not enough arguments}
-		(2) {xecho -b Error: save.write_formats\(\): Unable to open master theme file for writing}
-		(3) {xecho -b Error: save.write_formats\(\): Unable to open one or more module theme files for writing}
-		(*) {xecho -b Error: save.write_formats\(\): Unknown error}
+		(1) {echo Error: save.write_formats\(\): Not enough arguments}
+		(2) {echo Error: save.write_formats\(\): Unable to open master theme file for writing}
+		(3) {echo Error: save.write_formats\(\): Unable to open one or more module theme files for writing}
+		(*) {echo Error: save.write_formats\(\): Unknown error}
 	}
 
 	/* Save the current status bar settings */
 	switch ($save.write_status()) {
 		(0) {if (CONFIG.SAVE_VERBOSE) {xecho -s -b Status settings saved to $DS.USER_DIR/status/custom}}
-		(1) {xecho -b Error: save.write_status\(\): Unable to open custom status file for writing}
-		(*) {xecho -b Error: save.write_status\(\): Unknown error}
+		(1) {echo Error: save.write_status\(\): Unable to open custom status file for writing}
+		(*) {echo Error: save.write_status\(\): Unknown error}
 	}
 
 	xecho -s -b Save completed $strftime(%a %b %d %T %Z %Y)

@@ -239,7 +239,7 @@ alias away.log (type, userhost, nick, ...)
 	}
 
 	if (!type || !userhost || !nick || !msg) {
-		xecho -b Error: away.log: Not enough arguments
+		echo Error: away.log: Not enough arguments
 		return
 	}
 

@@ -49,8 +49,8 @@ alias status (args)
 	} else {
 		switch ($status.change($sbar)) {
 			(0) {xecho -b Now using status: $sbar}
-			(1) {xecho -b Error: status.change\(\): Status bar not found: $sbar}
-			(*) {xecho -b Error: status.change\(\): Unknown}
+			(1) {echo Error: status.change\(\): Status bar not found: $sbar}
+			(*) {echo Error: status.change\(\): Unknown}
 		}
 	}
 }

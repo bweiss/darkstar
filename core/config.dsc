@@ -188,12 +188,12 @@ alias config.add_variable (type, ...)
 	}
 
 	if (!module) {
-		xecho -b Error: $type\.add must be called at load time
+		echo Error: $type\.add must be called at load time
 		return
 	}
 
 	if (![$0]) {
-		xecho -b Error: $type\.add: Not enough arguments \(Module: $module\)
+		echo Error: $type\.add: Not enough arguments \(Module: $module\)
 		return
 	}
 
@@ -207,7 +207,7 @@ alias config.add_variable (type, ...)
 	}
 
 	if (DSET[$type][$variable]) {
-		xecho -b Error: $type\.add: Duplicate config variable: $variable \(Module: $module\)
+		echo Error: $type\.add: Duplicate config variable: $variable \(Module: $module\)
 	} else {
 		push $struct\.MODULES.$module $variable
 		^assign $struct\.$type\.$variable 1

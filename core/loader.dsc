@@ -43,10 +43,10 @@ alias loadmod (modules)
 			/* Module failed to load */
 			@:progress = progress ## [x]
 			switch ($retcode) {
-				(1) {xecho -b Error: No modules found}
-				(2) {xecho -b Error: Module is already loaded \($module\)}
-				(3) {xecho -b Error: Module not found: $module}
-				(*) {xecho -b Error: Unknown \(module: $module\)}
+				(1) {echo Error: No modules found}
+				(2) {echo Error: Module is already loaded \($module\)}
+				(3) {echo Error: Module not found: $module}
+				(*) {echo Error: Unknown \(module: $module\)}
 			}
 		}
 	}
@@ -145,9 +145,9 @@ alias unloadmod (modules)
 			/* Module could not be unloaded */
 			@:progress = progress ## [x]
 			switch ($retcode) {
-				(1) {xecho -b Error: No modules are currently loaded}
-				(2) {xecho -b Error: Module is not loaded \($module\)}
-				(*) {xecho -b Error: Unknown \(module: $module\)}
+				(1) {echo Error: No modules are currently loaded}
+				(2) {echo Error: Module is not loaded \($module\)}
+				(*) {echo Error: Unknown \(module: $module\)}
 			}
 		}
 	}
@@ -251,7 +251,7 @@ alias loader.build_modlist (void)
 			@:name = before(-1 . $after(-1 / $file))
 
 			if (tolower($name) == [core]) {
-				xecho -b Error: loader.build_modlist: The name "core" is reserved
+				echo Error: loader.build_modlist: The name "core" is reserved
 				return
 			}
 
@@ -415,14 +415,14 @@ alias loader.which_mods (array, args)
 						push modules $getitem($array $item)
 					}
 				} else {
-					xecho -b Error: loader.which_mods\(\): Illegal range specified
+					echo Error: loader.which_mods\(\): Illegal range specified
 				}
 			}{
 				if (tmp <= numitems($array)) {
 					@:item = tmp - 1
 					push modules $getitem($array $item)
 				} else {
-					xecho -b Error: loader.which_mods\(\): Module not found: $tmp
+					echo Error: loader.which_mods\(\): Module not found: $tmp
 				}
 			}
 		}{
