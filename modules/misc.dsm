@@ -1,8 +1,8 @@
-#version 0.9.2
+#version 0.9.3
 /* $Id$ */
 /*
  * misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
- * Copyright (c) 2002 Brian Weiss
+ * Copyright (c) 2002, 2003 Brian Weiss
  * See the 'COPYRIGHT' file for more information.
  *
  * This script uses serial numbers 0 and 424 for /on hooks.
@@ -121,7 +121,7 @@ alias tig (void) {
 	for cnt from 0 to ${numitems(misc.tig) - 1} {
 		@ :line = getitem(misc.tig $cnt)
 		@ :num = cnt + 1
-		echo  $[3]num $[30]word(0 $line) $restw(1 $line)
+		echo $[3]num $[30]word(0 $line) $restw(1 $line)
 	}
 	^local tmp $"Which ignore(s) to remove? (1, 2-5, ...) "
 	for ignum in ($tmp) {
@@ -262,46 +262,52 @@ on ^318 "*" {
 	}
 }
 
+/*
+ * Okay, here is my second attempt (inspired by BlackJac) at line
+ * wrapping the list of channels returned for a WHOIS request.
+ * It is considerably faster than the old code.
+ *
+ * As before, it will fit as many channels per line as possible,
+ * _after_ being passed through $fparse(). If a single channel is
+ * larger than what can be displayed on one line, we give up and
+ * let EPIC handle it.
+ *
+ * NOTE: The WHOIS_CHANNELS variable will still be used for 
+ * the first line, and the WHOIS_CHANNELS_WRAP variable will
+ * be used to format all proceeding lines.
+ */
 on ^319 "*" {
 	if (FORMAT.WHOIS_CHANNELS_WRAP) {
-		/*
-		 * Okay, here we go... The following attempts to do some
-		 * intelligent line wrapping with the list of channels returned
-		 * for a WHOIS request. It will fit as many channels per line
-		 * as possible, _after_ being passed through $fparse(). If a
-		 * single channel is larger than what can be displayed on one
-		 * line, we give up and let EPIC handle it.
-		 *
-		 * NOTE: The WHOIS_CHANNELS variable will still be used for
-		 * the first line, and the WHOIS_CHANNELS_WRAP variable will
-		 * be used to format all proceeding lines.
-		 */
-		@ :format_var = [WHOIS_CHANNELS]
-		@ :channels = []
-		for chan in ($2-) {
-			if (!channels) {
-				push channels $chan
-			} else if (no_fit && strlen($stripcrap(ALL $fparse($format_var $0 $1 $channels))) >= word(0 $geom())) {
-				echo $fparse($format_var $0 $1 $channels)
-				@ :channels = chan
-				@ :no_fit = []
-			} else if (strlen($stripcrap(ALL $fparse($format_var $0 $1 $channels $chan))) >= word(0 $geom())) {
-				echo $fparse($format_var $0 $1 $channels)
-				@ :channels = chan
-				@ :format_var = [WHOIS_CHANNELS_WRAP]
-				@ :no_fit = 1
+		@ :channels = [$2-]
+		@ :fmt_var = [WHOIS_CHANNELS]
+		@ :line = []
+		@ :width = word(0 $geom())
+		while ($channels) {
+			@ :foo = stripcrap(ALL $fparse($fmt_var $0 $1 $channels))
+			if (strlen($foo) >= width) {
+				@ :bar = before(-1 " " $mid(0 $width $foo))
+				@ :bar = restw($numwords($stripcrap(ALL $fparse($fmt_var $0 $1))) $bar)
+				@ :bar = leftw($numwords($bar) $channels)
+				/* Add clear-color and highlight-off tags to the end of each
+				 * channel name to prevent color codes from extending to the
+				 * next channel. Bleh. */
+				@ :baz = []
+				for chan in ($bar) {
+					push baz $chan-1
+				}
+				@ :line = fparse($fmt_var $0 $1 $baz)
+				@ :channels = rest(${strlen($bar) + 2} $channels)
+				@ :fmt_var = [WHOIS_CHANNELS_WRAP]
 			} else {
-				push channels $chan
+				@ :line = fparse($fmt_var $0 $1 $channels)
+				@ :channels = []
 			}
-		}
-		if (channels) {
-			echo $fparse($format_var $0 $1 $channels)
+			for chan in ($channels)
+			echo $line
 		}
 	} else {
-		/*
-		 * Don't do anything special with the list of channels,
-		 * just output everything on a single line.
-		 */
+		/* Don't do anything special with the list of channels,
+		 * just output everything on a single line. */
 		if (FORMAT.WHOIS_CHANNELS) {
 			echo $fparse(WHOIS_CHANNELS $*)
 		}
