@@ -1,3 +1,10 @@
+*** News 2002/06/19 -- Changes to WHO in the darkstar and feedback themes
+	The WHO format variable in the darkstar and feedback themes was not
+	properly highlighting servers with 0 hops. In the process of fixing
+	this I was also able to greatly simplify things. Anyone with a custom
+	theme based off either of these themes should have a look at the
+	changes and adjust their theme(s) accordingly.
+
 *** News 2002/06/18 -- misc.dsm 0.7.4 - IGNORE_CTCP_FINGER fixed
 	There was a typo in the raw_irc hook added at load time for
 	IGNORE_CTCP_FINGER that caused FINGER requests to not be ignored
