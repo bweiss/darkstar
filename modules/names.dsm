@@ -1,9 +1,9 @@
 #version 0.1.2
 /*
- * NAMES.DSM - Module to display who's on a channel for Darkstar/EPIC4
+ * NAMES.DSM - Darkstar/EPIC4 module to display who's on a channel
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 2/17/02 (bmw)
+ * Last modified: 2/18/02 (bmw)
  *
  * This script uses serial numbers 0 and 428 for /on hooks.
  */
@@ -112,7 +112,7 @@ alias names.showusers (chan default "$C", mode default "*", void)
 		fe ($users) $tmp
 		{
 			^local foo
-			for (@ :cnt = [1], nick[$cnt], @ cnt++)
+			for (@ :cnt = 1, nick[$cnt], @ cnt++)
 			{
 				eval push foo \\\$names.parse\(\$chan \$nick[$cnt]\)
 			}
