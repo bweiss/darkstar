@@ -1,4 +1,4 @@
-#version 0.3.3
+#version 0.3.4
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -68,6 +68,9 @@
 #   supplied functions may forget to re-export them.  Context sensitive
 #   functions should be as simple as possible.
 #
+# NOTE:  The "first argument" description above is no longer true.  The
+#        fucntions argument list is to be treated as a single argument.
+#
 
 queue cleanup.tabkey {
 	^bind ^I toggle_insert_mode
@@ -104,20 +107,25 @@ alias tabkey.main {
 		@ TABKEY.LASTWORD = nextword
 		return
 	}
-	@ :matches = []
+	if (word =~ ["*"]) {
+		@ :word = shift(word)
+	} elsif (word =~ ["*]) {
+		@ :word #= ["]
+		@ :word = shift(word)
+	}
 	if (!index($cmdchars $L)) {
 		wait for @ :matches = tabkey.cmd($word)
 	} else {
 		wait for @ :matches = tabkey.default($word)
 	}
 	@ :prefix = prefix($matches)
-	@ :prefix = 0 > index("$chr($jot(32 1))" $prefix) ? prefix : ["$prefix"]
 	if (numwords($matches) > 1 && word == prefix) {
 		echo Completions for \"$word\": $matches
 		@ TABKEY.INDEX = 0
 		@ TABKEY.LASTMATCHES = matches
 		@ TABKEY.LASTWORD = word
 	} elsif (#matches && strlen($word) <= strlen($prefix)) {
+		@ :prefix = 0 > index("$chr($jot(32 1))" $prefix) ? prefix : ["$prefix"]
 		@ :line = mid(0 $wordind $L) ## [$prefix${1 < #matches ? [] : [ ]}]
 		parsekey erase_line
 		xtype -l $line
@@ -212,7 +220,7 @@ alias tabkey.cmd.config   { return $tabkey.nofallback($tabkey.method.variables(c
 alias tabkey.cmd.dcc (args) {
 	bless
 	switch ($curword) {
-		(1) {return $tabkey.nofallback($pattern("$shift(args)*" CHAT CLOSE CLOSEALL GET LIST RAW RENAME RESUME SEND))}
+		(1) {return $tabkey.nofallback($pattern("$args*" CHAT CLOSE CLOSEALL GET LIST RAW RENAME RESUME SEND))}
 	}
 }
 
@@ -420,7 +428,7 @@ alias tabkey.method.arrays (array, void) {
 		@ :ret = list
 	} else {
 		@ :foo = word
-		@ :ret = pattern("$shift(foo)*" $list)
+		@ :ret = pattern("$foo*" $list)
 	}
 	return $ret
 }
@@ -430,13 +438,18 @@ alias tabkey.method.commands {
 	return $ret
 }
 
-alias tabkey.method.chan (args) { return $pattern("$shift(args)*" $mychannels()); }
+alias tabkey.method.chan (args) { return $pattern("$args*" $mychannels()); }
 
 alias alias.foo alias $*;alias $sar(g/globi/glob/$sar(g/filei/file/$*))
-alias.foo tabkey.method.filei (args) {
-	@ :f0 = :f1 = globi("$shift(args)*")
+alias.foo tabkey.method.filei (f0) {
+	@ :f0 = sar(gr/\\/\\\\/f0)
+	@ :f0 = sar(gr/*/\\*/f0)
+	@ :f0 = sar(gr/?/\\?/f0)
+	@ :f0 = sar(gr/[/\\[/f0)
+	@ :f0 = sar(gr/]/\\]/f0)
+	@ :f0 = :f1 = globi("" $f0*)
 	while (numwords($f0) == 1 && f0 =~ [*/]) {
-		@ f0 = globi($f0*)
+		@ :f0 = globi("" $f0*)
 	}
 	return ${f0 ? f0 : f1}
 }
@@ -454,7 +467,6 @@ alias tabkey.method.mask {
 }
 
 alias tabkey.method.nick (args) {
-	@ :args = shift(args)
 	if (match("$args*" $chanusers())) {
 		return $pattern("$args*" $chanusers())
 	} else {
@@ -474,7 +486,7 @@ alias tabkey.method.nickchannotify {
 	return $remws(/ $tabkey.method.chan($*) $sort($uniq($tabkey.method.nick($*) $tabkey.method.notify($*))))
 }
 
-alias tabkey.method.notify (args) { return $pattern("$shift(args)*" $notify(on)); }
+alias tabkey.method.notify (args) { return $pattern("$args*" $notify(on)); }
 
 alias tabkey.method.variables (type, void) {
 	bless

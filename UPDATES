@@ -1,3 +1,14 @@
+*** News 2003/02/18 -- tabkey.dsm 0.3.4 - Improved filename handling
+	I have merged CrazyEddy's recent changes to tabkey.ce that provide
+	improved handling of "evil" filenames. Unfortunately this
+	requires EPIC4-1.1.10 commit_id 464 to work correctly. This means
+	that those of you still using an older client will not be able
+	to do filename completion with this module. If you do not wish
+	to upgrade your client but can't live without filename completion,
+	you can copy tabkey.dsm 0.3.3 from the 0.2.9 release to your
+	"user directory" and it will override the one in $DS.HOME.
+
+
 DarkStar 0.2.9 (20030212)
 
 
