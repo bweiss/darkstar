@@ -298,8 +298,7 @@ on ^318 "*"
 
 on ^319 "*"
 {
-	if (FORMAT.WHOIS_CHANNELS_WRAP)
-	{
+	if (FORMAT.WHOIS_CHANNELS_WRAP) {
 		/*
 		 * Okay, here we go... The following attempts to do some
 		 * intelligent line wrapping with the list of channels returned
@@ -312,8 +311,10 @@ on ^319 "*"
 		 * the first line, and the WHOIS_CHANNELS_WRAP variable will
 		 * be used for all proceeding lines.
 		 */
+
 		^local format_var WHOIS_CHANNELS
 		^local channels
+
 		for chan in ($2-) {
 			if (!channels) {
 				push channels $chan
@@ -330,6 +331,7 @@ on ^319 "*"
 				push channels $chan
 			}
 		}
+
 		if (channels) {
 			echo $fparse($format_var $0 $1 $channels)
 		}

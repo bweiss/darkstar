@@ -1,7 +1,7 @@
 #version 0.4
 /* $Id$ */
 /*
- * relay.dsm -  Relay module for DarkStar/EPIC4
+ * relay.dsm - Relay module for DarkStar/EPIC4
  *
  * Written by Brian Weiss
  * Copyright (c) 2002 Brian Weiss

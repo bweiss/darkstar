@@ -26,30 +26,5 @@ set WORD_BREAK ,;
 /* Use the new math parser */
 xdebug +new_math
 
-/* Debugging stuff */
-
-#eval switch ($getenv(TERM))
-#{
-#	(screen)
-#	{
-#		^bind META12-1 META34_CHARACTER
-#		^bind META34-~ PARSE_COMMAND toggle_debug
-#	}
-#	(*)
-#	{
-#		^bind -symbolic key_f10 PARSE_COMMAND toggle_debug
-#	}
-#}
-
-#alias toggle_debug (void)
-#{
-#	if (DEBUG)
-#	{
-#		set DEBUG 0
-#	}{
-#		set DEBUG 7
-#	}
-#}
-
 
 /* EOF */

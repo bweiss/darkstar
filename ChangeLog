@@ -1,10 +1,18 @@
 DarkStar ChangeLog
 
 
+2002/05/27
+
+ * Added a new module called debug and moved the debugging code
+   from sample.dsrc into it.
+
 2002/05/26
 
+ * Did some cleaning and organizing of code throughout the core scripts
+   and modules. I don't expect this to break anything, but it's possible.
+
  * The /unloadmod alias was still trying to call /loadedmodules, which
-   no longer exists. It now displays the list of the loaded modules itself.
+   no longer exists. It now displays a list of loaded modules itself.
 
 2002/05/25
 

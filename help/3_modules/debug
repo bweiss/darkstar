@@ -1,0 +1,15 @@
+Module: debug
+Author: Brian Weiss <brian@epicsol.org>
+
+Description:
+   Stuff to aid in debugging. At the moment this just attempts to bind
+   the F10 key to toggle /set DEBUG between levels 0 and 7.
+
+   If you get an error message like the following when you load this
+   module, please contact me.
+
+   *** Symbolic name [key_f10] is not supported in your TERM type.
+
+See Also:
+   set(4) debug
+
