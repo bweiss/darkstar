@@ -9,11 +9,10 @@ See the bottom of this file for a list of contributors.
 
 ABOUT
 
-DarkStar is a modular script pack for the EPIC4 IRC client versions 1.1
-and up. It is highly extensible and includes theme support, advanced tab
-completion, and a whole bunch of other goodies. The modular design offers
-many benefits (and a few drawbacks) and allows for a very high level of
-customization.
+DarkStar is a modular script pack for the EPIC4 IRC client. It is highly
+extensible and includes theme support, advanced tab completion, and a whole
+bunch of other goodies. The modular design offers many benefits (and a few
+drawbacks) and allows for a very high level of customization.
 
 Although still under heavy development, these scripts should be quite
 usable and already provide most of the features people are accustomed to.
@@ -26,13 +25,14 @@ loading.
 
 REQUIREMENTS
 
-The only requirement is EPIC4-1.1 or higher. This script pack will NOT
-work with EPIC4-1.0. You have been warned.
+The only requirement is EPIC4-1.1.7 or higher. This script pack
+will NOT work correctly with EPIC4-1.0. You have been warned.
 
 
 WHERE TO GET DARKSTAR AND EPIC4
 
-There is now an official DarkStar website, which can be found here:
+There is now an official DarkStar website. You can find it at one of
+the following locations.
 
   http://darkstar.epicsol.org/
   http://darkstar.nuthouse.org/  (mirror)
