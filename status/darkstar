@@ -2,7 +2,7 @@
  * Created by Brian Weiss <brian@epicsol.org> for Darkstar/EPIC4
  */
 
-eval xecho -r $chr(27)\(U
+eval xecho -r $chr(27)\(B
 
 set INPUT_PROMPT 36Àל37 
 set STATUS_AWAY 36[37A${AWAY[NEWMSGS] ? [36!37$AWAY.NEWMSGS] : []}36]37

@@ -1,5 +1,13 @@
 Darkstar ChangeLog
 
+10/8/01
+
+ * [tabkey.dsm] New config variable: TABKEY_NICKCOMP_SUFFIX. This will be
+   appended to the end of the nick, before the space, when an exact match is
+   found and the nick is the first word on the input line. (Requested by
+   whitefang and stshatter)
+
+
 [0.0.10]
 
  - [loader.dsc] The module list will no longer be displayed if AUTO_LOAD_PROMPT

@@ -281,7 +281,14 @@ alias tabkey.nick_routine (void)
 		
 		if (#findnick == 1)
 		{
-			@ :space = [ ]
+			^local space
+
+			if (#L == 1)
+			{
+				@ space = CONFIG[TABKEY_NICKCOMP_SUFFIX] ## [ ]
+			}{
+				@ space = []
+			}
 		
 			parsekey delete_to_previous_space
 			xtype -l $findnick$space

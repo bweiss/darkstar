@@ -203,7 +203,7 @@ if (!epic() || V < 20010401)
 	xecho -b Continue to use this script at your own risk.
 	xecho -b  
 	xecho -b If you would like to obtain EPIC4, you can visit the following URLs
-	xecho -b http://www.got.net/~brian/epic4 or ftp://ftp.epicsol.org/pub/epic
+	xecho -b ftp://ftp.epicsol.org/pub/epic/ or http://www.got.net/~brian/epic4/
 	xecho -b  
 }
 
