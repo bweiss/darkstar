@@ -31,6 +31,13 @@ queue cleanup.misc
 	@ delarray(away_users)
 }
 
+
+alias disco disconnect
+alias m msg
+alias q query
+alias ww whowas
+
+
 alias chat (nick, void)
 {
         if (nick)
@@ -70,10 +77,6 @@ alias dns (nicks)
 	}
 }
 
-alias disco disconnect
-
-alias m msg
-
 alias nslookup (address, void)
 {
 	if (address)
@@ -88,8 +91,6 @@ alias pingme (void)
 {
 	//ping $servernick()
 }
-
-alias q query
 
 alias umode (mode)
 {
@@ -121,8 +122,6 @@ alias wii (nick default "$servernick()", void)
 {
 	whois $nick $nick
 }
-
-alias ww whowas
 
 
 /*
@@ -169,41 +168,74 @@ on ^310 "*" #
 
 on ^311 "*"
 {
-	if (FORMAT[WHOIS_HEADER]) echo $fparse(WHOIS_HEADER)
-	if (FORMAT[WHOIS_NICK]) echo $fparse(WHOIS_NICK $1 $2 $3)
-	if (FORMAT[WHOIS_NAME]) echo $fparse(WHOIS_NAME $5-)
+	if (FORMAT[WHOIS_HEADER])
+	{
+		echo $fparse(WHOIS_HEADER)
+	}
+	if (FORMAT[WHOIS_NICK])
+	{
+		echo $fparse(WHOIS_NICK $1 $2 $3)
+	}
+	if (FORMAT[WHOIS_NAME])
+	{
+		echo $fparse(WHOIS_NAME $5-)
+	}
 }
 
 on ^312 "*"
 {
-	if (FORMAT[WHOIS_SERVER]) echo $fparse(WHOIS_SERVER $2-)
+	if (FORMAT[WHOIS_SERVER])
+	{
+		echo $fparse(WHOIS_SERVER $2-)
+	}
 }
 
 on ^313 "*"
 {
-	if (FORMAT[WHOIS_OPER]) echo $fparse(WHOIS_OPER $1)
+	if (FORMAT[WHOIS_OPER])
+	{
+		echo $fparse(WHOIS_OPER $1)
+	}
 }
 
 on ^314 "*"
 {
-	if (FORMAT[WHOWAS_NICK]) echo $fparse(WHOWAS_NICK $1 $2 $3)
-	if (FORMAT[WHOWAS_NAME]) echo $fparse(WHOWAS_NAME $5-)
+	if (FORMAT[WHOWAS_NICK])
+	{
+		echo $fparse(WHOWAS_NICK $1 $2 $3)
+	}
+	if (FORMAT[WHOWAS_NAME])
+	{
+		echo $fparse(WHOWAS_NAME $5-)
+	}
 }
 
 on ^317 "*"
 {
-	if (FORMAT[WHOIS_IDLE]) echo $fparse(WHOIS_IDLE $2)
-	if (FORMAT[WHOIS_SIGNON]) echo $fparse(WHOIS_SIGNON $strftime($3 %c))
+	if (FORMAT[WHOIS_IDLE])
+	{
+		echo $fparse(WHOIS_IDLE $2)
+	}
+	if (FORMAT[WHOIS_SIGNON])
+	{
+		echo $fparse(WHOIS_SIGNON $strftime($3 %c))
+	}
 }
 
 on ^318 "*"
 {
-	if (FORMAT[WHOIS_FOOTER]) echo $fparse(WHOIS_FOOTER $1-)
+	if (FORMAT[WHOIS_FOOTER])
+	{
+		echo $fparse(WHOIS_FOOTER $1-)
+	}
 }
 
 on ^319 "*"
 {
-	if (FORMAT[WHOIS_CHANNELS]) echo $fparse(WHOIS_CHANNELS $2-)
+	if (FORMAT[WHOIS_CHANNELS])
+	{
+		echo $fparse(WHOIS_CHANNELS $2-)
+	}
 }
 
 /*
@@ -216,52 +248,82 @@ on #^connect 424 "*" //mode $servernick() $CONFIG.DEFAULT_UMODES
  */
 on ^ctcp "*"
 {
-	if (FORMAT[CTCP]) echo $fparse(CTCP $*)
+	if (FORMAT[CTCP])
+	{
+		echo $fparse(CTCP $*)
+	}
 }
 
 on ^ctcp_reply "*"
 {
-	if (FORMAT[CTCP_REPLY]) echo $fparse(CTCP_REPLY $*)
+	if (FORMAT[CTCP_REPLY])
+	{
+		echo $fparse(CTCP_REPLY $*)
+	}
 }
 
 on ^dcc_chat "*"
 {
-	if (FORMAT[DCC_CHAT]) echo $fparse(DCC_CHAT $*)
+	if (FORMAT[DCC_CHAT])
+	{
+		echo $fparse(DCC_CHAT $*)
+	}
 }
 
 on ^mode '$servernick() $servernick() *'
 {
-	if (FORMAT[UMODE]) echo $fparse(UMODE $*)
+	if (FORMAT[UMODE])
+	{
+		echo $fparse(UMODE $*)
+	}
 }
 
 on ^msg "*"
 {
-	if (FORMAT[MSG]) echo $fparse(MSG $0 $userhost() $1-)
+	if (FORMAT[MSG])
+	{
+		echo $fparse(MSG $0 $userhost() $1-)
+	}
 }
 
 on ^notice "*"
 {
-	if (FORMAT[NOTICE]) echo $fparse(NOTICE $0 $userhost() $1-)
+	if (FORMAT[NOTICE])
+	{
+		echo $fparse(NOTICE $0 $userhost() $1-)
+	}
 }
 
 on ^send_ctcp "PRIVMSG *"
 {
-	if (FORMAT[SEND_CTCP]) echo $fparse(SEND_CTCP $*)
+	if (FORMAT[SEND_CTCP])
+	{
+		echo $fparse(SEND_CTCP $*)
+	}
 }
 
 on ^send_dcc_chat "*"
 {
-	if (FORMAT[SEND_DCC_CHAT]) echo $fparse(SEND_DCC_CHAT $*)
+	if (FORMAT[SEND_DCC_CHAT])
+	{
+		echo $fparse(SEND_DCC_CHAT $*)
+	}
 }
 
 on ^send_msg "*"
 {
-	if (FORMAT[SEND_MSG]) echo $fparse(SEND_MSG $*)
+	if (FORMAT[SEND_MSG])
+	{
+		echo $fparse(SEND_MSG $*)
+	}
 }
 
 on ^send_notice "*"
 {
-	if (FORMAT[SEND_NOTICE]) echo $fparse(SEND_NOTICE $*)
+	if (FORMAT[SEND_NOTICE])
+	{
+		echo $fparse(SEND_NOTICE $*)
+	}
 }
 
 /* /WHO written by Da5id (thanks) */

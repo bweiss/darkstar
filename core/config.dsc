@@ -6,7 +6,7 @@
  * CONFIG.DSC - Configuration manager for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 8/30/01 (bmw)
+ * Last modified: 10/14/01 (bmw)
  */
 
 alias conf dset
@@ -132,7 +132,10 @@ alias setcat (var, void)
 			echo $fparse(SET $toupper($var2) $($var))
 		}
 	}{
-		if (FORMAT[SET_NOVALUE]) echo $fparse(SET_NOVALUE $toupper($var2))
+		if (FORMAT[SET_NOVALUE])
+		{
+			echo $fparse(SET_NOVALUE $toupper($var2))
+		}
 	}
 	
 	return

@@ -482,12 +482,18 @@ alias channel.show_ov (nick, chan, void)
 
 on ^329 "*"
 {
-	if (FORMAT[CHANNEL_TS]) echo $fparse(CHANNEL_TS $*)
+	if (FORMAT[CHANNEL_TS])
+	{
+		echo $fparse(CHANNEL_TS $*)
+	}
 }
 
 on ^332 "*"
 {
-	if (FORMAT[TOPIC]) echo $fparse(TOPIC $*)
+	if (FORMAT[TOPIC])
+	{
+		echo $fparse(TOPIC $*)
+	}
 
 	@ :matches = getmatches(topics $1*)
 
@@ -499,7 +505,10 @@ on ^332 "*"
 
 on ^333 "*"
 {
-	if (FORMAT[TOPIC_SETBY]) echo $fparse(TOPIC_SETBY $*)
+	if (FORMAT[TOPIC_SETBY])
+	{
+		echo $fparse(TOPIC_SETBY $*)
+	}
 }
 
 
@@ -515,7 +524,10 @@ on ^368 "*"
 {
 	if ([$1] > 0)
 	{
-		if (FORMAT[BANS_HEADER]) echo $fparse(BANS_HEADER $*)
+		if (FORMAT[BANS_HEADER])
+		{
+			echo $fparse(BANS_HEADER $*)
+		}
 
 		if (FORMAT[BANS])
 		{
@@ -526,7 +538,10 @@ on ^368 "*"
 			}
 		}
 
-		if (FORMAT[BANS_FOOTER]) echo $fparse(BANS_FOOTER $*)
+		if (FORMAT[BANS_FOOTER])
+		{
+			echo $fparse(BANS_FOOTER $*)
+		}
 
 		@ delarray(banlist.$2)
 	}{
@@ -538,53 +553,83 @@ on ^369 ^"*"
 
 on ^channel_signoff "*"
 {
-	if (FORMAT[CHANNEL_SIGNOFF]) echo $fparse(CHANNEL_SIGNOFF $1 $0 $2-)
+	if (FORMAT[CHANNEL_SIGNOFF])
+	{
+		echo $fparse(CHANNEL_SIGNOFF $1 $0 $2-)
+	}
 }
 
 on ^channel_sync "*"
 {
-	if (FORMAT[CHANNEL_SYNC]) echo $fparse(CHANNEL_SYNC $0 $1)
+	if (FORMAT[CHANNEL_SYNC])
+	{
+		echo $fparse(CHANNEL_SYNC $0 $1)
+	}
 }
 
 on ^join "*"
 {
-	if (FORMAT[JOIN]) echo $fparse(JOIN $0 $2 $1)
+	if (FORMAT[JOIN])
+	{
+		echo $fparse(JOIN $0 $2 $1)
+	}
 }
 
 on ^leave "*"
 {
-	if (FORMAT[LEAVE]) echo $fparse(LEAVE $0 $2 $1 $3-)
+	if (FORMAT[LEAVE])
+	{
+		echo $fparse(LEAVE $0 $2 $1 $3-)
+	}
 }
 
 on ^mode "*"
 {
-	if (FORMAT[MODE]) echo $fparse(MODE $*)
+	if (FORMAT[MODE])
+	{
+		echo $fparse(MODE $*)
+	}
 }
 
 on ^public "*"
 {
-	if (FORMAT[PUBLIC]) echo $fparse(PUBLIC $channel.show_ov($0 $1) $1-)
+	if (FORMAT[PUBLIC])
+	{
+		echo $fparse(PUBLIC $channel.show_ov($0 $1) $1-)
+	}
 }
 
 on ^public_other "*"
 {
-	if (FORMAT[PUBLIC_OTHER]) echo $fparse(PUBLIC_OTHER $channel.show_ov($0 $1) $1-)
+	if (FORMAT[PUBLIC_OTHER])
+	{
+		echo $fparse(PUBLIC_OTHER $channel.show_ov($0 $1) $1-)
+	}
 }
 
 on ^send_public "*"
 {
 	if ([$0] == C)
 	{
-		if (FORMAT[SEND_PUBLIC]) echo $fparse(SEND_PUBLIC $0 $channel.show_ov($servernick() $0) $1-)
+		if (FORMAT[SEND_PUBLIC])
+		{
+			echo $fparse(SEND_PUBLIC $0 $channel.show_ov($servernick() $0) $1-)
+		}
 	}{
-		if (FORMAT[SEND_PUBLIC_OTHER]) echo $fparse(SEND_PUBLIC_OTHER $channel.show_ov($servernick() $0) $*)
+		if (FORMAT[SEND_PUBLIC_OTHER])
+		{
+			echo $fparse(SEND_PUBLIC_OTHER $channel.show_ov($servernick() $0) $*)
+		}
 	}
 }
 
 on ^topic "*"
 {
-	if (FORMAT[TOPIC_CHANGE]) echo $fparse(TOPIC_CHANGE $*)
-	
+	if (FORMAT[TOPIC_CHANGE])
+	{
+		echo $fparse(TOPIC_CHANGE $*)
+	}
+
 	@ :topic_itm = matchitem(topics $1*)
 	
 	if (topic_itm > -1)
@@ -609,7 +654,10 @@ on ^public '% % *\\[${CONFIG[AUTO_RESPONSE_STR]}\\]*'
 {
 	if (CONFIG[AUTO_RESPONSE])
 	{
-		if (FORMAT[PUBLIC_AR]) echo $fparse(PUBLIC_AR $channel.show_ov($0 $1) $1-)
+		if (FORMAT[PUBLIC_AR])
+		{
+			echo $fparse(PUBLIC_AR $channel.show_ov($0 $1) $1-)
+		}
 
 		if (CONFIG[AUTO_RESPONSE_BEEP])
 		{
@@ -623,7 +671,10 @@ on ^public '% % *\\[${CONFIG[AUTO_RESPONSE_STR]}\\]*'
 			}
 		}
 	}{
-		if (FORMAT[PUBLIC[) echo $fparse(PUBLIC $channel.show_ov($0 $1) $1-)
+		if (FORMAT[PUBLIC[)
+		{
+			echo $fparse(PUBLIC $channel.show_ov($0 $1) $1-)
+		}
 	}
 }
 
@@ -631,7 +682,10 @@ on ^public_other '% % *\\[${CONFIG[AUTO_RESPONSE_STR]}\\]*'
 {
 	if (CONFIG[AUTO_RESPONSE])
 	{
-		if (FORMAT[PUBLIC_OTHER_AR]) echo $fparse(PUBLIC_OTHER_AR $channel.show_ov($0 $1) $1-)
+		if (FORMAT[PUBLIC_OTHER_AR])
+		{
+			echo $fparse(PUBLIC_OTHER_AR $channel.show_ov($0 $1) $1-)
+		}
 
 		if (CONFIG[AUTO_RESPONSE_BEEP])
 		{
@@ -645,7 +699,10 @@ on ^public_other '% % *\\[${CONFIG[AUTO_RESPONSE_STR]}\\]*'
 			}
 		}
 	}{
-		if (FORMAT[PUBLIC_OTHER]) echo $fparse(PUBLIC_OTHER $channel.show_ov($0 $1) $1-)
+		if (FORMAT[PUBLIC_OTHER])
+		{
+			echo $fparse(PUBLIC_OTHER $channel.show_ov($0 $1) $1-)
+		}
 	}
 }
 
