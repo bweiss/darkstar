@@ -3,6 +3,11 @@ DarkStar ChangeLog
 
 2002/06/02
 
+ * When VERBOSE_LOAD is false, the /loadmod and /unloadmod aliases no
+   longer display the number of failed modules unless it is greater than 0.
+   The half second delay before resetting the input prompt to its normal
+   value was also removed.
+
  * Pass the return value of $winserv() to the calls to $servername()
    in the status bars that use it. This ensures we display the correct
    server for the current window when connected to multiple servers.
