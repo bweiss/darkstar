@@ -3,6 +3,9 @@ Darkstar ChangeLog
 
 1/13/02
 
+ * [tabkey.dsm] Added $: (nick of the last person to join a channel you're on)
+   to the list of nicks in tabkey.nick_routine().
+
  * Fixed a bug in config.dsc that was allowing boolean config variables to
    be set to literal values.
 

@@ -288,7 +288,7 @@ alias tabkey.nick_routine (void)
 	unless (lastc == [ ])
 	{
 		@ :lastw = word(${#L - 1} $L)
-		@ :findnick = pattern($lastw% $onchannel())
+		@ :findnick = pattern($lastw% $remw($: $onchannel()) $:)
 		
 		if (match($word(1 $L) $findnick))
 		{
