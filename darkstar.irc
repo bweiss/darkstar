@@ -62,11 +62,11 @@ for array in ($getarrays())
  * Important global variables
  */
 assign DS.VERSION 0.2.2
-assign DS.INTERNAL_VERSION 20020422
+assign DS.INTERNAL_VERSION 20020424
 
 /* This will be incremented every time a change takes place to the core
    scripts (anything that requires /reload to update). */
-assign DS.COMMIT_ID 30
+assign DS.COMMIT_ID 31
 
 
 /*

@@ -177,7 +177,7 @@ alias config.add
 	{
 		^local module core
 	}{
-		@ :module = after(-1 / $before(-1 . $word(1 $loadinfo())))
+		@ :module = after(-1 / $before(-1 . $tmp))
 	}
 
 	if (!module)
@@ -224,7 +224,7 @@ alias format.add (variable, value)
 	{
 		^local module core
 	}{
-		@ :module = after(-1 / $before(-1 . $word(1 $loadinfo())))
+		@ :module = after(-1 / $before(-1 . $tmp))
 	}
 
 	if (!module)
