@@ -1,6 +1,10 @@
 Darkstar ChangeLog
 
 
+1/1/02
+
+ * [window.dsm] Killing the msg window will now set MSG_WINDOW to OFF.
+
 12/29/01
 
  * Cleaned up the core scripts a bit.
