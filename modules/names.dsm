@@ -36,6 +36,7 @@ format.add NAMES_HEADER $G Users on $1: \(total/$2 - ops/$3 normal/$4\)
 format.add NAMES_HEADER1
 format.add NAMES_HEADER2
 format.add NAMES_LEFT $G
+format.add NAMES_MID
 format.add NAMES_NONOP $chr(32)$[9]1
 format.add NAMES_OP %c@%n$[9]1
 format.add NAMES_RIGHT
@@ -170,10 +171,22 @@ alias names.showusers (chan default "$C", mode default "*", void)
 				push line \$fparse(NAMES_LEFT)
 			}
 
-			/* The call to $names.parse() doesn't actually happen
-			   until the last line of this /fe block. */
-			for (@ :cnt = 1, nick[$cnt], @ cnt++) {
+			for (@ :cnt = 1, nick[$cnt], @ cnt++)
+			{
+				/*
+				 * The call to $names.parse() doesn't actually
+				 * happen until the last line of the /fe block.
+				 */
 				eval push line \\\$names.parse\(\$chan \$nick[$cnt]\)
+
+				/*
+				 * Insert NAMES_MID inbetween each nick, if it exists.
+				 */
+				unless (cnt == CONFIG.NAMES_COL - 1) {
+					if (FORMAT.NAMES_MID) {
+						push line \$FORMAT.NAMES_MID
+					}
+				}
 			}
 
 			if (FORMAT.NAMES_RIGHT) {
