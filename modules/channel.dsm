@@ -6,7 +6,7 @@
  * CHANNEL.DSM - Channel related stuff for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 8/27/01 (bmw)
+ * Last modified: 9/18/01 (bmw)
  *
  * This script uses serial number 424 for all ON hooks.
  */
@@ -368,13 +368,15 @@ alias tban (chan default "$C", void)
 				{
 					for cnt from $startban to $endban
 					{
-						@ :ban = getitem(tban ${cnt - 1})
+						@ :item = cnt - 1
+						@ :ban = getitem(tban $item)
 						//mode $word(1 $ban) -b $word(2 $ban)
 					}
 				}{
 					if ([$0] <= numitems(tban))
 					{
-						@ :ban = getitem(tban ${bannum - 1})
+						@ :item = bannum - 1
+						@ :ban = getitem(tban $item)
 						//mode $word(1 $ban) -b $word(2 $ban)
 					}
 				}
@@ -484,6 +486,8 @@ alias channel.show_ov (nick, chan, void)
 
 
 /* ON hooks */
+
+on ^329 "*" xecho -b $fparse(CHANNEL_TS $*)
 
 on ^332 "*"
 {

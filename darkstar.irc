@@ -25,8 +25,8 @@ eval for array in \($getarrays()\)
 /*
  * Important global variables
  */
-assign DS.VERSION 0.0.9
-assign DS.INTERNAL_VERSION 20010915
+assign DS.VERSION 0.0.10-RC
+assign DS.INTERNAL_VERSION 20011004
 
 
 /*
@@ -53,7 +53,7 @@ if (getenv(DARKSTAR_SAVEDIR))
 	^assign DS.SAVE_DIR ~/.epic4/.darkstar
 }
 
-eval assign DS.DEFAULTS_DIR $DS.HOME/defaults
+eval assign DS.DEFAULTS_DIR $DS.HOME/def
 eval assign DS.HELP_DIR $DS.HOME/help
 eval assign DS.MODULE_DIR $DS.HOME/modules
 eval assign DS.STATUS_DIR $DS.HOME/status
@@ -86,6 +86,7 @@ do
                                     		
 		switch ($type)
 		{
+			(dset)
 			(config)
 			{
 				if (word(1 $line) == [bool])
@@ -100,7 +101,9 @@ do
 				^assign DSET.CONFIG.$variable 1
 				^assign CONFIG.$variable $value
 			}
+
 			(fset)
+			(format)
 			{
 				@ push(FSET.CORE $variable)
 				^assign FSET.FORMAT.$variable 1

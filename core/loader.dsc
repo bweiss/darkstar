@@ -80,6 +80,7 @@ alias load_module (module, void)
 
 					switch ($type)
 					{
+						(dset)
 						(config)
 						{
 							if (word(1 $line) == [bool])
@@ -94,7 +95,9 @@ alias load_module (module, void)
 							^assign DSET.CONFIG.$variable 1
 							^assign CONFIG.$variable $value
 						}
+
 						(fset)
+						(format)
 						{
 							@ push(FSET.$module $variable)
 							^assign FSET.FORMAT.$variable 1

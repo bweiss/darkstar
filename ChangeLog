@@ -1,7 +1,13 @@
 Darkstar ChangeLog
 
-[current]
+[0.0.10]
 
+ - New status bar called "blue". Created by stshatter.
+ - Moved the defaults/ directory to def/.
+ - Now understands both dset/fset as well as config/format as keywords in the
+   *.def files.
+ - [channel.dsm] New format variable CHANNEL_TS for displaying channel
+   timestamps.
  - Both the "darkstar" and "epic4" status bars now change window double for
    ALL open windows instead of just the current one.
  - [tabkey.dsm] Now checks for $CMDCHARS instead of "/" (yes this was stupid).

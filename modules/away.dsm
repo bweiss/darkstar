@@ -6,7 +6,7 @@
  * AWAY.DSM - Away module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 8/29/01 (bmw)
+ * Last modified: 9/18/01 (bmw)
  *
  * This script uses serial number 421 for all ON hooks.
  */
@@ -18,8 +18,8 @@ queue cleanup.away
 		^alias -$alias
 	}
 
-      ^on #msg 421 -"*"
-      ^on #notice 421 -"*"
+	^on #msg 421 -"*"
+	^on #notice 421 -"*"
 	^on #input 421 -"*"
 	^on #timer 421 -"*"
 	^on #timer 421 -"12:00"
@@ -62,9 +62,6 @@ alias away (reason default "$CONFIG.DEFAULT_AWAY_REASON")
 			}
 		}
 
-		/*
-		 * Create the hooks needed for message and notice logging.
-		 */
 		^on #^msg 421 "*"
 		{
 			if (A)
@@ -117,9 +114,6 @@ alias back (reason default "$CONFIG.DEFAULT_BACK_REASON")
 			}
 		}
 
-		/*
-		 * Cleanup our logging hooks.
-		 */
 		^on #msg 421 -"*"
 		^on #notice 421 -"*"
 
