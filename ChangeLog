@@ -1,11 +1,19 @@
 Darkstar ChangeLog
 
 
-[10/12/01]
+[10/14/01]
+
+ * [misc.dsm] New format variable SEND_CTCP.
+
+ * [misc.dsm] New config variables SHOW_AWAY_ONCE and SHOW_AWAY_ONCE_TIMEOUT.
+   This will stop you from seeing multiple 301 numerics (whois away).
 
  * I removed %D (DCC status) from the "darkstar" status bar as it caused rapid
    screen redraws. These redraws were enough to saturate the bandwidth on
    dialup connections.
+
+
+[10/12/01]
 
  * Added /purge to functions.dsc (requested by whitefang).
 
