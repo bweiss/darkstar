@@ -8,8 +8,8 @@
 /****** USER ALIASES ******/
 
 alias config dset
-alias dset (...) {config.set_routine dset $*}
-alias fset (...) {config.set_routine fset $*}
+alias dset (...) {config.set_routine config $*}
+alias fset (...) {config.set_routine format $*}
 
 
 /****** FUNCTIONS ******/
@@ -28,8 +28,8 @@ alias fparse2 {eval return $(FORMAT.$0)}
  * removed when the module is unloaded. This ownership is transparent to
  * the user except that the variable(s) are removed with their module.
  */
-alias config.add {config.add_variable config $*}
-alias format.add {config.add_variable format $*}
+alias config.add {config.add_variable CONFIG $*}
+alias format.add {config.add_variable FORMAT $*}
 
 
 /****** INTERNAL ALIASES ******/
@@ -38,58 +38,40 @@ alias format.add {config.add_variable format $*}
  * This handles the display and modification of both config and format
  * variables. It is the biggest and most complex part of this script.
  */
-alias config.set_routine (type, variable, value)
-{
-	^local struct1,struct2
-	
-	/*
-	 * Figure out what kind of variables we're dealing with.
-	 */
-	switch ($toupper($type))
-	{
-		(DSET) {
-			^assign struct1 DSET
-			^assign struct2 CONFIG
-		}
-		(FSET) {
-			^assign struct1 FSET
-			^assign struct2 FORMAT
+alias config.set_routine (type, variable, value) {
+	switch ($toupper($type)) {
+		(CONFIG) { ^local struct DSET; }
+		(FORMAT) { ^local struct FSET; }
+		(*) {
+			echo Error: config.set_routine: Unknown type: $type
+			return
 		}
 	}
-	
-	if (!variable)
-	{
-		/*
-		 * No variable specified by user so we display everything.
-		 */
-		for var in ($aliasctl(assign match $struct1\.$struct2\.)) {
-			@:var = after(1 . $var)
-			@ config.setcat($var)
+	if (!variable) {
+		/* No variable specified by user so we display everything */
+		for var in ($aliasctl(assign match $struct\.$type\.)) {
+			^local var $after(1 . $var)
+			config.setcat $var
 		}
-	}{
-		@:var = strip(- $variable)
-		@:cur_value = aliasctl(assign get $struct1\.$struct2\.$var)
-		@:matches = aliasctl(assign match $struct1\.$struct2\.$var)
-		
+	} else {
+		^local var $strip(- $variable)
+		^local cur_value $aliasctl(assign get $struct\.$type\.$var)
+		^local matches $aliasctl(assign match $struct\.$type\.$var)
 		/*
 		 * If the number of matches found is greater than 1, output the
 		 * values for all matching variables. If only 1 match is found,
 		 * we then have to figure out exactly what to do with that variable.
 		 */
-		if (#matches > 1 && !cur_value)
-		{
+		if (#matches > 1 && !cur_value) {
 			xecho -s -b \"$toupper($var)\" is ambiguous
 			for var in ($matches) {
-				@:var = after(1 . $var)
-				@ config.setcat($var)
+				^local var $after(1 . $var)
+				config.setcat $var
 			}
-		}\
-		else if (#matches == 1 || cur_value)
-		{
-			@:var = after(1 . $word(0 $matches))
-			@:var2 = after(1 . $var)
-			@:old_value = aliasctl(assign get $var)
-
+		} else if (#matches == 1 || cur_value) {
+			^local var $after(1 . $word(0 $matches))
+			^local var2 $after(1 . $var)
+			^local old_value $aliasctl(assign get $var)
 			/*
 			 * If variable name is preceded by a "-" empty its value.
 			 * Otherwise, if a new value is supplied by the user, set
@@ -97,43 +79,34 @@ alias config.set_routine (type, variable, value)
 			 * If no new value is specified, output the variable's
 			 * current value.
 			 */
-			if (variable =~ [-%])
-			{
+			if (variable =~ [-%]) {
 				^assign -$var
 				xecho -s -b Value of $toupper($var2) set to <EMPTY>
-
 				/* Hook the changes so modules can act on it. */
 				if (toupper($type) == [DSET]) {
 					hook CONFIG $var2 $old_value
 				}
-			}\
-			else if (value != [])
-			{
-				if (struct2 == [CONFIG] && DSET[BOOL][$var2])
-				{
-					switch ($tolower($value)) {
-						(0) (1) (off) (on) {
+			} else if (value != []) {
+				if (match(CONFIG $type) && DSET[BOOL][$var2]) {
+					switch ($toupper($value)) {
+						(0) (1) (OFF) (ON) {
 							^assign $var $bool_to_num($value)
 							xecho -s -b Value of $toupper($var2) set to $toupper($bool_to_onoff($value))
 						}
-						(*) {
-							xecho -s -b Value must be either ON, OFF, 1, or 0
-						}
+						(*) { xecho -s -b Value must be either ON, OFF, 1, or 0; }
 					}
-				}{
+				} else {
 					^assign $var $value
 					xecho -s -b Value of $toupper($var2) set to $value
 				}
-
-				/* Hook the changes so modules can act on it. */
 				if (toupper($type) == [DSET]) {
 					hook CONFIG $var2 $old_value
 				}
-			}{
+			} else {
 				/* No new value specified. Display current value. */
-				@ config.setcat($var)
+				config.setcat $var
 			}
-		}{
+		} else {
 			xecho -s -b No matches for \"$toupper($var)\" found
 		}
 	}
@@ -144,11 +117,9 @@ alias config.set_routine (type, variable, value)
  * displaying of config/format variables and their values. It should
  * be called by the config.set_routine alias.
  */
-alias config.setcat (var, void)
-{
-	@:var2 = after(1 . $var)
-	eval if \($var != []\)
-	{
+alias config.setcat (var, void) {
+	^local var2 $after(1 . $var)
+	eval if \($var != []\) {
 		if (FORMAT.SET) {
 			if (before(. $var) == [CONFIG] && DSET[BOOL][$var2]) {
 				xecho -s $fparse(SET $toupper($var2) $toupper($bool_to_onoff($($var))))
@@ -156,13 +127,11 @@ alias config.setcat (var, void)
 				xecho -s $fparse(SET $toupper($var2) $($var))
 			}
 		}
-	}{
+	} else {
 		if (FORMAT.SET_NOVALUE) {
 			xecho -s $fparse(SET_NOVALUE $toupper($var2))
 		}
 	}
-
-	return
 }
 
 /*
@@ -170,34 +139,30 @@ alias config.setcat (var, void)
  * variables. It is an internal alias that should be called by the
  * config.add and format.add aliases.
  */
-alias config.add_variable (type, ...)
-{
-	/* Determine which *SET structure we're using. */
-	switch ($type)
-	{
-		(config) { @:struct = [DSET] }
-		(format) { @:struct = [FSET] }
+alias config.add_variable (type, ...) {
+	switch ($toupper($type)) {
+		(CONFIG) { ^local struct DSET; }
+		(FORMAT) { ^local struct FSET; }
+		(*) {
+			echo Error: conofig.add_variable: Invalid type: $type
+			return
+		}
 	}
-
-	/* Determine which module is currently loading. */
-	@:tmp = word(1 $loadinfo())
-	if (match(*darkstar.irc $tmp)) {
-		@:module = [core]
+	^local foo $word(1 $loadinfo())
+	if (match(*darkstar.irc $foo)) {
+		^local module core
 	} else {
-		@:module = after(-1 / $before(-1 . $tmp))
+		^local module $after(-1 / $before(-1 . $foo))
 	}
-
 	if (!module) {
-		echo Error: $type\.add must be called at load time
+		echo Error: $type\.ADD must be called at load time
 		return
 	}
-
 	if (![$0]) {
-		echo Error: $type\.add: Not enough arguments \(Module: $module\)
+		echo Error: $type\.ADD: Not enough arguments \(Module: $module\)
 		return
 	}
-
-	if (type == [config] && pattern($0* -boolean)) {
+	if (match(CONFIG $type) && pattern($0* -boolean)) {
 		^local variable $1
 		^local value $2-
 		^assign $struct\.BOOL.$variable 1
@@ -205,9 +170,8 @@ alias config.add_variable (type, ...)
 		^local variable $0
 		^local value $1-
 	}
-
-	if (DSET[$type][$variable]) {
-		echo Error: $type\.add: Duplicate config variable: $variable \(Module: $module\)
+	if (aliasctl(assign match $struct\.$type\.$variable)) {
+		echo Error: $type\.ADD: Duplicate $tolower($type) variable: $variable \(Module: $module\)
 	} else {
 		push $struct\.MODULES.$module $variable
 		^assign $struct\.$type\.$variable 1

@@ -9,8 +9,7 @@
  * Works just like the builtin $cparse() but outputs ANSI color
  * codes instead of ^C color codes. This was written by Ben Winslow.
  */
-alias ansicparse
-{
+alias ansicparse {
 	@:tmp = cparse($*)
 	@:tmp = sar(g/30/[30m/$tmp)
 	@:tmp = sar(g/31/[0\;31m/$tmp)
@@ -45,21 +44,19 @@ alias ansicparse
  * Convert between 1/0 and ON/OFF.
  * These are mostly used by /DSET.
  */
-alias bool_to_onoff (arg, void)
-{
+alias bool_to_onoff (arg, void) {
 	switch ($arg) {
-		(0) {@ function_return = [OFF]}
-		(1) {@ function_return = [ON]}
-		(*) {@ function_return = arg}
+		(0) {return OFF}
+		(1) {return ON}
+		(*) {return $arg}
 	}
 }
 
-alias bool_to_num (arg, void)
-{
-	switch ($tolower($arg)) {
-		(off) {@ function_return = 0}
-		(on)  {@ function_return = 1}
-		(*)   {@ function_return = arg}
+alias bool_to_num (arg, void) {
+	switch ($toupper($arg)) {
+		(OFF) {return 0}
+		(ON)  {return 1}
+		(*)   {return $arg}
 	}
 }
 
@@ -69,15 +66,9 @@ alias bool_to_num (arg, void)
  * mail script that was recently added to the EPIC4 distribution and
  * placed in the public domain by its author, wd.
  */
-alias fmtfsize (bytes, void)
-{
-	if (!bytes) {
-		return
-	}
-
+alias fmtfsize (bytes, void) {
 	^stack push set FLOATING_POINT_MATH
 	^set FLOATING_POINT_MATH ON
-
 	if (!bytes) {
 		@ function_return = [0b]
 	} else if (bytes < 1024) {
@@ -91,20 +82,11 @@ alias fmtfsize (bytes, void)
 	} else {
 		@ function_return = [$trunc(2 ${bytes / 1099511627776})tb]
 	}
-
 	^stack pop set FLOATING_POINT_MATH
 }
 
-/*
- * Returns true if specified module is loaded.
- */
-alias isloaded (module, void)
-{
-	if (finditem(loaded_modules $module) > -1) {
-		return 1
-	} else {
-		return 0
-	}
+alias isloaded (module, void) {
+	return ${finditem(loaded_modules $module) > -1 ? 1 : 0}
 }
 	
 /*
@@ -114,8 +96,7 @@ alias isloaded (module, void)
  * This was taken from the "guh" script distributed with EPIC.
  * It was written by Jeremy Nelson <jnelson@epicsol.org>.
  */
-alias is_on (nick, void)
-{
+alias is_on (nick, void) {
 	stack push on 303
 	^on ^303 * {
 		stack pop on 303
@@ -132,22 +113,18 @@ alias is_on (nick, void)
  *           v - Returns only the version.
  * If no flag is specified then 'a' is assumed.
  */
-alias modinfo (module, flag)
-{
-	@:item = finditem(modules $module)
-	if (item > -1) {
+alias modinfo (module, flag) {
+	if ((:item = finditem(modules $module)) > -1) {
 		switch ($tolower($flag)) {
 			(a) () {
-				@:retval = getitem(module_files $item)
-				push retval $getitem(module_versions $item)
-				@ function_return = retval
+				^local foo $getitem(module_files $item)
+				push foo $getitem(module_versions $item)
+				return $foo
 			}
-			(f) { @ function_return = getitem(module_files $item) }
-			(v) { @ function_return = getitem(module_versions $item) }
+			(f) { return $getitem(module_files $item); }
+			(v) { return $getitem(module_versions $item); }
 		}
 	}
-
-	/* Module not found. Return nothing. */
 	return
 }
 
@@ -163,17 +140,14 @@ alias modinfo (module, flag)
  *
  * $pipe(commands) will return the output from 'commands'.
  */
-alias pipe
-{
+alias pipe {
 	@ srand($time())
 	@:desc = [pipe] ## rand(999999)
 	^local retval
-
 	^on ^exec "$desc *" {
 		bless
 		push retval $1-
 	}
-
 	^exec -name $desc $*
 	^wait %$desc
 	^on exec -"$desc *"
@@ -184,17 +158,15 @@ alias pipe
 /*
  * Returns the refnums of all established server connections.
  */
-alias serverrefs (void)
-{
-	^local retval
+alias serverrefs (void) {
+	^local ret
 	for winref in ($winrefs()) {
-		@:sref = winserv($winref)
+		^local sref $winserv($winref)
 		if (!match($sref $retval)) {
-			push retval $sref
+			push ret $sref
 		}
 	}
-
-	@ function_return = retval
+	return $ret
 }
 
 /*
@@ -206,8 +178,7 @@ alias serverrefs (void)
  * queries the server rather than trying to pull the userhosts
  * from the client's cache.
  */
-alias uh
-{
+alias uh {
 	^local blahblah
 	wait for {
 		^userhost $* -cmd {
