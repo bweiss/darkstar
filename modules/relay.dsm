@@ -47,17 +47,17 @@ alias relay (type, ...)
 
 	switch ($tolower($type))
 	{
-		(c)   (ctcp)			{relay.show CTCP $*}
-		(cr)  (ctcp_reply)		{relay.show CTCP_REPLY $*}
-		(m)   (msg)				{relay.show MSG $*}
-		(n)   (notice)			{relay.show NOTICE $*}
-		(p)   (public)			{relay.show PUBLIC $*}
-		(po)  (public_other)		{relay.show PUBLIC_OTHER $*}
-		(sc)  (send_ctcp)			{relay.show SEND_CTCP $*}
-		(sm)  (send_msg)			{relay.show SEND_MSG $*}
-		(sn)  (send_notice)		{relay.show SEND_NOTICE $*}
-		(sp)  (send_public)		{relay.show SEND_PUBLIC $*}
-		(spo) (send_public_other)	{relay.show SEND_PUBLIC_OTHER $*}
+		(c)   (ctcp)			{relay.main CTCP $*}
+		(cr)  (ctcp_reply)		{relay.main CTCP_REPLY $*}
+		(m)   (msg)				{relay.main MSG $*}
+		(n)   (notice)			{relay.main NOTICE $*}
+		(p)   (public)			{relay.main PUBLIC $*}
+		(po)  (public_other)		{relay.main PUBLIC_OTHER $*}
+		(sc)  (send_ctcp)			{relay.main SEND_CTCP $*}
+		(sm)  (send_msg)			{relay.main SEND_MSG $*}
+		(sn)  (send_notice)		{relay.main SEND_NOTICE $*}
+		(sp)  (send_public)		{relay.main SEND_PUBLIC $*}
+		(spo) (send_public_other)	{relay.main SEND_PUBLIC_OTHER $*}
 	}
 }
 

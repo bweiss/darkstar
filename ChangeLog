@@ -1,6 +1,16 @@
 DarkStar ChangeLog
 
 
+2002/05/21
+
+ * [names.dsm 0.3.1] Added a new format variable called NAMES_MID.
+   If present, it will be inserted between the nicknames being displayed.
+   Requested by dh.
+
+ * [relay.dsm 0.3] Rewrote portions of the module and added several
+   new types, as well as a -clear option (/clearrelaybuf was removed).
+   See ds:relay(3) for details.
+
 2002/05/20
 
  * The relay module has been added to the default auto-load list.
