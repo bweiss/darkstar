@@ -76,7 +76,7 @@ for array in ($getarrays()) {
 # This will be incremented every time a change takes place in
 # the core scripts (this file and any *.dsc files in $DS.HOME/core/).
 #
-@ DS.CORE_ID = 118;
+@ DS.CORE_ID = 119;
 
 xecho -b -c Loading DarkStar $DS.VERSION;
 
@@ -200,6 +200,7 @@ if (CONFIG.LOAD_PROMPT)
 			for ii from 1 to $numitems(_modules) {
 				@ push(mods $getitem(_modules ${ii-1}));
 			};
+			loadmod $mods;
 		};
 		(*) {
 			@ mods = getitems(_modules -1 $ask);
