@@ -152,17 +152,19 @@ alias tabkey.main (void) {
 	 * EPIC versions before commit_id 613 did not consider a single space
 	 * by itself to be a word, so we need to check for it specifically. -bmw
 	 */
-	if (#matches && matches != [ ] && word == prefix) {
-		echo Completions for \"$word\": $matches
-		@ TABKEY.INDEX = 0
-		@ TABKEY.LASTLINE = L
-		@ TABKEY.LASTMATCHES = matches
-		@ TABKEY.LASTWORD = word
-	} elsif (#matches && matches != [ ] && strlen($word) <= strlen($prefix)) {
-		@ :prefix = 0 > index("$chr($jot(32 1))" $prefix) ? prefix : ["$prefix"]
-		@ :line = mid(0 $wordind $L)
-		parsekey erase_to_beg_of_line
-		xtype -l $line$prefix${1 < #matches ? [] : [ ]}
+	if (#matches && matches != [ ]) {
+		if (word == prefix) {
+			echo Completions for \"$word\": $matches
+			@ TABKEY.INDEX = 0
+			@ TABKEY.LASTLINE = L
+			@ TABKEY.LASTMATCHES = matches
+			@ TABKEY.LASTWORD = word
+		} elsif (strlen($word) <= strlen($prefix)) {
+			@ :prefix = 0 > index("$chr($jot(32 1))" $prefix) ? prefix : ["$prefix"]
+			@ :line = mid(0 $wordind $L)
+			parsekey erase_to_beg_of_line
+			xtype -l $line$prefix${1 < #matches ? [] : [ ]}
+		}
 	}
 	xdebug $oxd
 }
