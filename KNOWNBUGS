@@ -16,3 +16,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Keep the list of config/format variables belonging to each module (used by
   /SAVE) in arrays instead of assign variables. This will hopefully fix that
   pesky bug that was causing certain settings to not get saved.
+* Change the way msg windows are named from msgs/serv:<#> to msgs/<#>

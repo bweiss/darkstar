@@ -43,8 +43,9 @@ queue cleanup.window
 	};
 	^bind -symbolic key_f12 nothing;
 
-	for win in ($winrefs()) {
-		if (winnam($win) =~ [msgs/serv:*]) {
+	for win in ($winrefs())
+	{
+		if (winnam($win) =~ [msgs/*]) {
 			window.msgwin.destroy $win;
 		};
 	};
@@ -201,9 +202,9 @@ alias window.msgwin.create (serv, void)
 	{
 		@ :curwin = winnum();
 
-		if (winnum(msgs/serv:$serv) == -1)
+		if (winnum(msgs/$serv) == -1)
 		{
-			^window new name msgs/serv:$serv server $serv level msgs scrolladj off;
+			^window new name msgs/$serv server $serv level msgs scrolladj off;
 			if (:num = CONFIG.MSG_WINDOW_NUMBER) {
 				while (winnum($num) > -1) {
 					@ :num++;
@@ -212,16 +213,16 @@ alias window.msgwin.create (serv, void)
 			};
 			if (serv != winserv()) {
 				^window hide;
-				^window $winnum(msgs/serv:$serv) double off fixed on skip on swappable off;
+				^window $winnum(msgs/$serv) double off fixed on skip on swappable off;
 			} else {
-				^window show $winnum(msgs/serv:$serv);
+				^window show $winnum(msgs/$serv);
 				^window double off;
 				if (CONFIG.MSG_WINDOW_SIZE) {^window size $CONFIG.MSG_WINDOW_SIZE};
 				^window refnum $curwin;
-				^window $winnum(msgs/serv:$serv) fixed on skip on swappable off;
+				^window $winnum(msgs/$serv) fixed on skip on swappable off;
 			};
 
-			@ setitem(window.msgwins $numitems(window.msgwins) $winnum(msgs/serv:$serv));
+			@ setitem(window.msgwins $numitems(window.msgwins) $winnum(msgs/$serv));
 		};
 	};
 };
@@ -257,7 +258,7 @@ alias window.msgwin.purge (void)
 	{
 		@ :msgwin = getitem(window.msgwins ${ii-1});
 		if ((winnum($msgwin) != -1 && findw($winserv($msgwin) $servers) < 0) ||
-		    winserv($msgwin) != after(1 : $winnam($msgwin)))
+		    winserv($msgwin) != after(1 / $winnam($msgwin)))
 		{
 			window.msgwin.destroy $msgwin;
 		};
@@ -412,11 +413,11 @@ on #-server_lost 426 "*"
 {
 	if (CONFIG.MSG_WINDOW)
 	{
-		# It would be nice if window.msgwin.purge could be used here. Oh well.
+		# It would be nice if window.msgwin.purge could be used here.
 		for ii from 1 to $numitems(window.msgwins)
 		{
 			@ :win = getitem(window.msgwins ${ii-1});
-			if (winnam($win) == [msgs/serv:$0]) {
+			if (winnam($win) == [msgs/$0]) {
 				window.msgwin.destroy $win;
 			};
 		};
@@ -433,7 +434,7 @@ on #-switch_windows 426 "*"
 on #-window_beforekill 426 "*"
 {
 	#
-	# Move any channels belonging to this window to another window
+	# XXX - Move any channels belonging to this window to another window
 	# so that they do not end up in a msgwin.
 	#
 	if (CONFIG.MSG_WINDOW)
@@ -443,7 +444,7 @@ on #-window_beforekill 426 "*"
 		{
 			@ :serv = winserv($0);
 			for win in ($winrefs()) {
-				if (win != [$0] && winserv($win) == serv && !match(msgs/serv:* $winnam($win))) {
+				if (win != [$0] && winserv($win) == serv && !match(msgs/* $winnam($win))) {
 					@ push(:windows_this_server $win);
 				};
 			};

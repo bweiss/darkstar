@@ -2,5 +2,138 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://darkstar.epicsol.org/UPDATES
 
 
+*** News 2003/12/11 -- Module header formats have changed
+	The format of module headers has changed. Module header tags
+	are now specified in the form "# <tag>:<value> ...". This allows
+	for any number of tags to be supported although currently there
+	are only two: version and loader. There are two possible values
+	for the loader tag: std and pf. The default is "std" so module
+	authors can continue using the standard loader and won't have to
+	reformat their scripts.
+
+*** News 2003/12/11 -- ALL SCRIPTS NOW USE PRE-FORMATTED LOADER
+	As of this date all scripts, both core and modules, have been
+	rewritten so that they can be loaded with EPIC's pre-formatted
+	loader (epic4/doc/pf-loader) instead of the standard loader
+	normally used by /LOAD. As a result, all scripts should now load
+	about 30% faster.
+
+*** News 2003/12/11 -- window.dsm - Multi-server msg windows!
+	The window module now supports multi-server msg windows. Now, when
+	you connect to multiple servers and use the msg window feature,
+	it will automatically create a msg window for each server connection
+	and swap between them whenever you switch to a window that is
+	connected to a different server. Multi-server operview windows
+	coming soon!
+
+*** News 2003/12/07 -- New functions: $mods, $loadedmods()
+	These two functions are very straightforward. The $mods() function
+	returns a space separated list of currently available modules
+	and the $loadedmods() function returns a list of modules that are
+	currently loaded. They do NOT call _build_modlist to scan for new
+	modules.
+
+*** News 2003/12/07 -- theme.dsm - /THEME -SAVE
+	The /THEME command now has a -save option that will allow you to
+	easily create themes from the current settings. This is the
+	recommended way to create new themes, at least as a starting
+	point.
+
+*** News 2003/12/05 -- New command: /PURGEARRAY
+	This works just like the other PURGE* commands except that it
+	operates on arrays instead of ASSIGN variables. It will remove
+	entire structures just like its counterparts.
+
+*** News 2003/12/04 -- window.dsm - Auto-query changes
+	The auto-query code has had many improvements (thanks to persistent
+	pestering by larne) and should work much better now. During this
+	rewrite, the AUTO_QUERY config variable was renamed AUTO_QUERY_WINDOW
+	and a new config variable, named AUTO_QUERY_WINDOW_ARGS, was added.
+
+*** News 2003/12/04 -- formats.dsm - New format variables
+	I have applied a patch provided by larne that adds several new
+	format variables. They are SET_AMBIGUOUS, SET_CHANGE, SET_HEADER,
+	SET_FOOTER, TOPIC_HEADER[1|2], and TOPIC_FOOTER[1|2]. See the
+	included themes for examples.
+
+*** News 2003/12/02 -- New config variable: DOUBLE_STATUS
+	There is a new config variable named DOUBLE_STATUS. It is responsible
+	for toggling the DOUBLE status for all existing windows, as well
+	as new windows, except those that have FIXED ON and SWAPPABLE OFF.
+
+*** News 2003/12/02 -- theme.dsm - Arguments to TOPIC* formats changed
+	The arguments passed to some of the TOPIC* format variables have
+	changed. Please have a look at the included themes to see exactly
+	what is different.
+
+*** News 2003/11/30 -- nickmgr.dsm 0.2 - New command: /NICKMGR
+	A new command, named /NICKMGR, has been added to provide an easier
+	interface to modifying the NICKMGR_NICKLIST config variable. This
+	is just like the /AUTOLOAD command.
+
+*** News 2003/11/30 -- 005 aware aliases
+	Several aliases (including /MASSMODE, /TBAN, and /WALL) now attempt
+	to discover the max # of targets or modes to send in a single command
+	by looking at the data provided by the 005 numeric.
+
+*** News 2003/11/30 -- Format variables moved
+	All of the standard formats (JOIN, PART, MSG, PUBLIC, etc.) have
+	been moved from their respective modules to a new module named
+	formats.dsm. This includes everything from names.dsm. All themes
+	will have to be updated. The easiest way to do this is to manually
+	load your old theme files and then use /THEME -SAVE to write
+	a theme in the new format with these settings.
+
+*** News 2003/11/30 -- New function: $visiblewins()
+	This returns a list of the refnums of all currently visible windows.
+
+*** News 2003/11/30 -- New function: $getitems()
+	This function returns the values of a list of item numbers and/or
+	range of numbers (e.g. 3-7) from an array. It takes an offset
+	argument that will be added to each item number before it is
+	retrieved, thus allowing you to map the real item numbers to
+	any range of numbers. All non-numeric list arguments will simply
+	be returned as is. See core/functions.dsc for details.
+
+*** News 2003/11/30 -- New functions: $getdsets(), $getfsets()
+	These functions work just like the builtin $getsets() function.
+	They return a space separated list of the config or format
+	variables that match the given pattern.
+
+*** News 2003/11/30 -- New function: $chanvoice()
+	There is a new function, donated by |Rain|, named $chanvoice().
+	It returns a space separated list of nicks that are voiced in the
+	specified (or current) channel.
+
+*** News 2003/11/30 -- Add CrazyEddy's command queue system
+	I have added the majority of CrazyEddy's command queue system to
+	the core. This includes the /QCMD, /FQCMD, /Q1CMD, and /FQ1CMD
+	aliases. See core/commands.dsc for details about their use.
+
+*** News 2003/11/30 -- Major overhaul of the core scripts
+	Large parts of the core scripts have been rewritten and many things
+	have changed. The following is a partial list of these changes.
+
+	* The SAVE_VERBOSE, LOADMODULE_VERBOSE, and AUTO_LOAD_PROMPT
+	  (replaced by LOAD_PROMPT) config variables have been removed.
+
+	* The /SAVE command has been rewritten and now allows modules
+	  create special aliases (<modname>._save) that will be executed
+	  automatically whenever the settings for that module are saved.
+	  See modules/oper.dsm for an example of this in action.
+
+	* The theme system has been moved out of the core and into a module
+	  named theme.dsm. The status.dsc core script has also been removed
+	  and all the statbar stuff is now part of the theme system.
+
+	* The config.add and format.add aliases are now deprecated. Module
+	  authors should use the new addconfig and addformat aliases instead.
+
+	* A new command, named /AUTOLOAD, has been added to provide an easier
+	  interface for modifying the module auto-load list.
+
+	* The $bool_to_num() and $bool_to_onoff() functions have been renamed
+	  to $bool2num() and $bool2word().
+
 
 # End of file
