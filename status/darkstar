@@ -1,7 +1,6 @@
 /*
  * Created by Brian Weiss <brian@epicsol.org> for Darkstar/EPIC4
- *
- * Last modified: 12/25/01 (bmw)
+ * Last modified: 2/9/02 (bmw)
  */
 
 eval xecho -r $chr(27)\(U
@@ -9,14 +8,14 @@ eval xecho -r $chr(27)\(U
 set INPUT_PROMPT 36Àì37 
 set REVERSE_STATUS_LINE OFF
 set STATUS_AWAY 36[37A${AWAY[NEWMSGS] ? [36!37$AWAY.NEWMSGS] : []}36]37
-set STATUS_CHANNEL 36-[37$C$getchanmode()36]37
+set STATUS_CHANNEL 36-[37$C${chanmode() != [*] ? [36\(37+$chanmode()36\)37] : []}36]37
 set STATUS_CHANOP 36@37
 set STATUS_CLOCK %T
 set STATUS_DOES_EXPANDOS ON
 set STATUS_FORMAT 36[%W36é%W36]ÍÍ[37%R36]ÍÍ%Q36Í%>Í[%W36é%W36]
 set STATUS_FORMAT1 36,-1ÖÄ[37$Z36]Ä[37%R36]Ä[56%*36%=%@37%N%#36]37%C%B36Ä%Q36Ä37%F36Ä%>%A36Ä·
-set STATUS_FORMAT2 36,-1ÇÄ$getchanstats()%{2}S36Ä%>%M36Ä[37$J36]Ä½
-set STATUS_HOLD_LINES 36Ä(37h36!37%B36)37
+set STATUS_FORMAT2 36,-1ÇÄ%U%{2}S36Ä%>%M36Ä[37$J36]Ä½
+set STATUS_HOLD_LINES 36Ä\(37h36!37%B36\)37
 set STATUS_MAIL 36[37mail36!37%M36]37
 set STATUS_MODE 36\(37+%+36\)37
 set STATUS_NICKNAME $N
@@ -25,15 +24,16 @@ set STATUS_OPER 56*37
 set STATUS_QUERY 36\(37q36!37$Q36\)37
 set STATUS_SERVER 36[37%S36]37
 set STATUS_UMODE 36\(37+%#36\)37
+set STATUS_USER ${numonchannel() ? [36[37t36/37$numonchannel() o36/37$#chops() n36/37$#nochops()36]ÄÄ37] : []}
 set STATUS_VOICE 36+37
 set STATUS_WINDOW 56*37
 
 /*
- * Make sure all our windows (except the msg window) have double on. This is
- * an ugly ugly hack and I don't like it one bit. If the user has a split
- * window with a name other than "msgs" this will turn double on, which may
- * not be desirable. If anyone can think of a better way to do this I would
- * love to hear about it. -bmw
+ * XXX Make sure all our windows except the "msgs" window have double on.
+ * This is an ugly ugly hack and I don't like it one bit. If the user has
+ * a split window with a name other than "msgs" this will turn double on,
+ * which may not be desirable. If anyone can think of a better way to do
+ * this I would love to hear about it. -bmw
  */
 for refnum in ($winrefs())
 {
@@ -41,16 +41,6 @@ for refnum in ($winrefs())
 	{
         	^window $refnum double on
 	}
-}
-
-alias getchanmode (void)
-{
-	@ function_return = chanmode() != [*] ? [36\(37+$chanmode()36\)37] : []
-}
-
-alias getchanstats (void)
-{
-	@ function_return = numonchannel() ? [36[37t36/37$numonchannel() o36/37$#chops() n36/37$#nochops()36]ÄÄ37] : []
 }
 
 
