@@ -1,3 +1,16 @@
+*** News 2002/08/19 -- EPIC4-1.1.7 or higher now required
+	Due mostly to the recent changes to /DEFER and EPIC's key binding
+	system, versions of DarkStar after this date will now require
+	EPIC4-1.1.7 in order to operate correctly. It is recommended that
+	all users upgrade immediately so as to prevent any possible
+	backdoors caused by the changes to /DEFER.
+
+*** News 2002/07/25 -- nickcomp.dsm 1.0.3 - New config variable
+	There is a new config variable in the nickcomp module called
+	NICK_COMPLETION_THRESHOLD. It can be used to adjust the accuracy
+	of the nick completion. Please consult the ds:nickcomp(3) help
+	page for details.
+
 *** News 2002/07/09 -- New function: $uh()
 	I added the $uh() function from the guh script distributed with
 	EPIC4 (written by Jeremy Nelson). This works just like $userhost()
