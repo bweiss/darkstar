@@ -1,26 +1,25 @@
 Synopsis:
-   save [-d <directory>] [*|<module> ...]
+   save [-d <directory>] [-c|-f] [*|<module> ...]
 
 Description:
    This command saves all your config (/DSET), format (/FSET), and
-   status (/SET STATUS*) settings.
-   specified module(s) to your save directory (or <directory> if '-d' is
-   specified).
+   status (/SET STATUS*) settings for the specified module(s) to your
+   save directory (or <directory> if '-d' is present).
 
-    - If the '-d' option is given as the first argument an alternate
-      save directory for config settings may be specified. This does NOT
-      affect format and status settings.
+    - If the '-d' option is given as the first argument then the next
+      argument will be used as the save directory.
+    - If the '-c' or '-f' options are given then only the config or format
+      settings will be saved, depending on the option specified.
     - If "*" is given as a module name, the settings for all currently
       loaded modules, as well as the core scripts, will be saved.
     - If "core" is given as a module name, the settings for the core
       scripts will be saved.
 
-   Config variable settings are saved to files according to their module
-   name in the specified save directory. Format variables are also saved to
-   files according to their modules, but are instead placed in
-   $DS.USER_DIR/themes/custom/. The current status bar settings are written
-   to $DS.USER_DIR/status/custom.
+Other Notes:
+   As of DarkStar 0.3 modules can create special aliases that will be run
+   automatically whenever the settings for that module are saved. See
+   doc/modules.txt for more information.
 
 See Also:
-   ds:dset(1);  ds:fset(1);  ds:theme(1);
+   ds:dset(1);  ds:fset(1);
 

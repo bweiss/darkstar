@@ -3,6 +3,10 @@
    more <file> ...
 
 Description:
-   A basic file pager. Displays the contents of each <file> to the
-   current window.
+   An advanced file pager. Displays the contents of each <file> to the
+   current window. This will take into account things like linewrapping
+   and non-display characters so that the displayed text truly fits on
+   the screen. It also allows module authors to use it to break up any
+   output into screen-size chunks for later display (using Karll arrays).
+   See doc/less.txt for more information.
 

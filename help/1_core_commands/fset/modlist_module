@@ -1,0 +1,18 @@
+Synopsis:
+   fset modlist_module [<value>]
+
+Description:
+   Controls the appearance of the module list (/MODLIST).
+
+Parameters:
+   $1    Module index number
+   $2    Module name
+   $3    Module version
+   $4    Module file size
+   $5    Boolean value that tells you if the module is loaded
+   $6    Boolean value that tells you if the module is on the auto-load list
+
+See Also:
+   ds:fset(1);  ds:modlist(1);  ds:fset(1) modlist_footer;
+   ds:fset(1) modlist_header
+

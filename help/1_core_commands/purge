@@ -1,0 +1,9 @@
+Synopsis:
+   purge <structure>
+
+Description:
+   This command can be used to recursively delete ASSIGN variable structures.
+
+See Also:
+   assign(5);  ds:purgealias(1);  ds:purgearray(1)
+

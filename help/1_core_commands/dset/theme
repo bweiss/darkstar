@@ -1,9 +1,0 @@
-Synopsis:
-   dset theme [<theme>]
-
-Description:
-   Changes the current theme to <theme>.
-
-See Also:
-   ds:theme(1)
-

@@ -1,0 +1,9 @@
+Synopsis:
+   purgearray <structure>
+
+Description:
+   This command can be used to recursively delete Karll array structures.
+
+See Also:
+   Arrays(7);  ds:purge(1);  ds:purgealias(1)
+

@@ -1,0 +1,10 @@
+Synopsis:
+   dset save_on_unload [on|off|1|0]
+
+Description:
+   If true, module settings will automatically be saved whenever a
+   module is unloaded.
+
+See Also:
+   ds:dset(1)
+

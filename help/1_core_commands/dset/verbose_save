@@ -1,9 +1,0 @@
-Synopsis:
-   dset verbose_save [on|off|1|0]
-
-Description:
-   Determines the verbosity of the /SAVE command.
-
-See Also:
-   ds:save(1)
-

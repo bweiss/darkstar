@@ -8,5 +8,6 @@
 
 See Also:
    ds:loadmod(1);  ds:reloadmod(1);  ds:unloadmod(1);
-   ds:dset(1) auto_load_modules
+   ds:dset(1) auto_load_modules;  ds:fset(1) modlist_header;
+   ds:fset(1) modlist_footer;  ds:fset(1) modlist_module
 

@@ -1,0 +1,9 @@
+Synopsis:
+   purgealias <structure>
+
+Description:
+   This command can be used to recursively delete ALIAS structures.
+
+See Also:
+   alias(5);  ds:purge(1);  ds:purgearray(1)
+

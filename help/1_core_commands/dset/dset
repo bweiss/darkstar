@@ -11,8 +11,8 @@
    displayed.  The client will display all matching variables if the given
    is ambiguous.  If no variable name is given, all variables and their
    values are displayed.  If the variable name is preceded by a hyphen
-   (-), the variable is unset, giving it no value.
+   (-), the variable is unset, causing it to have an empty value.
 
 See Also:
-   set(4); ds:fset(1)
+   set(4);  ds:fset(1)
 

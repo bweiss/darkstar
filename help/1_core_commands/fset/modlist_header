@@ -1,0 +1,10 @@
+Synopsis:
+   fset modlist_header[1|2] [<value>]
+
+Description:
+   Controls the appearance of the module list header (/MODLIST).
+
+See Also:
+   ds:fset(1);  ds:modlist(1);  ds:fset(1) modlist_footer;
+   ds:fset(1) modlist_module
+

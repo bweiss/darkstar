@@ -1,5 +1,5 @@
 Synopsis:
-   dset auto_load_prompt [on|off|1|0]
+   dset load_prompt [on|off|1|0]
 
 Description:
    If true, the user will be prompted, on startup, to choose which modules
