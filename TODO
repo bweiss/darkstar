@@ -1,18 +1,75 @@
-WORKS IN PROGRESS:
+FOR 0.2.11 RELEASE:
 
-* Documentation
-* XDCC/fserve module
-* Userlist module
+  * [misc.dsm] Add support for the 338 numeric (WHOIS) on ratbox servers.
+    "338 fudd 216.254.103.18 : actually using host"
 
 
-PLANNED FOR FUTURE:
+FOR 0.3 RELEASE:
 
-* Channel protection module
-* Auto-join
-* URL grab module
-* Rewrite keepnick.dsm
-* Rewrite module loader to use wd's namespace stuff once it has been merged
-  into the main EPIC tree.
+ Core Scripts:
+
+  * Write a $numlines() function that will return the number of lines
+    that a given string will occupy after final display. This must take
+    into account the effects of /SET [CONTINUED_LINE|INDENT].
+
+  * Using the above mentioned $numlines() function, rewrite /LESS so that
+    it correctly handles linewrapped output.
+
+  * Move all (most?) aliases and assigns in the core scripts to the DS
+    or CORE structures and make sure that the module loader does not allow
+    any modules to use names that may interfere with the core scripts.
+    This includes the words: ds, core, config, format, module, dset, fset,
+    status (this may go away), and any others I'm forgetting.
+
+  * Move certain key bindings (most importantly, pgup/pgdn) out of
+    window.dsm and into the core.
+
+  * Merge all the statbar stuff into themes. There isn't enough reason to
+    keep these separate.
+
+  * Overhaul /SAVE.
+
+  * Add the option to have the module loader automatically purge non-existent
+    modules from the auto-load list. This could take the form of either a
+    /DSET option or the user could just be prompted every time.
+
+  * Add 005 handler.
+
+  * Add a DarkStar echo prefix? e.g. "*** DarkStar: Loaded module: foo 1.0"
+
+  * $STATUS.DOUBLE and the single_status array are part of a miserable hack
+    that needs to go away. Find some other way to do this.
+
+  * Add timestamping functionality to the core. This includes a TIMESTAMP
+    config variable, a format variable of the same name, and a $ts function
+    for use in themes.
+
+  * Rename the bool_to_* functions? $booltoword() and $booltonum()?
+
+ Modules:
+
+  * [memo.dsm] Add the ability to group memos.
+
+  * [channel.dsm] The REMEMBER_TOPICS feature should also store the nick
+    of the person that set the topic as well as the timestamp for it.
+
+  * [window.dsm] Rename the BIND_ON_JOIN and UNBIND_ON_PART config variables?
+
+  * Write a log management module. It should provide basic log management,
+    such as setting up automatic logging for various things (channels, nicks,
+    windows, etc.) as well as log rotation features.
+
+  * [dcc.dsm] Add more DCC related formats.
+
+  * [dcc.dsm] Figure out a good way to suppress the huge warning message
+    that is displayed when resuming DCC transfers.
+
+  * [misc.dsm] Add a server ping command (/SPING).
+
+
+AFTER 0.3 RELEASE:
+
+  * If possible, make all scripts safe for multi-server use.
 
 
 OTHER NOTES/IDEAS:
@@ -26,8 +83,6 @@ OTHER NOTES/IDEAS:
 
 * Figure out a way to allow modules to prevent output from /DSET (and /FSET?)
   from within /ON hooks.
-
-* Look into taking advantage of the 005 numeric.
 
 
 End of file.
