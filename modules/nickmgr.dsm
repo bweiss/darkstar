@@ -278,7 +278,15 @@ on #-timer 422 "*"
 
 /****** STARTUP ******/
 
-timer 10 nickmgr.scan
+/*
+ * Run nickmgr.scan once at startup if NICK_MANAGER_SCAN_INTERVAL is
+ * greater than or equal to 60. There is still a 10 second delay because
+ * we want to make sure that the module loader is finished loading all of
+ * its modules, as it can interfere with $is_on().
+ */
+if (CONFIG.NICK_MANAGER_SCAN_INTERVAL >= 60) {
+	timer 10 nickmgr.scan
+}
 
 eval timer -ref nickmgr -rep -1 $CONFIG.NICK_MANAGER_SCAN_INTERVAL nickmgr.scan
 
