@@ -9,11 +9,10 @@
 
 alias dhelp (...)
 {
-	@ :old_path = HELP_PATH
+	@:old_path = HELP_PATH
 	^set HELP_PATH $twiddle($DS.HELP_DIR)
 	
-	if (@ && HELP_PROMPT == [OFF])
-	{
+	if (@ && HELP_PROMPT == [OFF]) {
 		defer {
 			^on ^help ^"*"
 			//help

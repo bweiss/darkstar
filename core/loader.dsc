@@ -12,21 +12,19 @@
 alias loadmod (modules)
 {
 	loader.build_modlist
-	@ modules = loader.which_mods(modules $modules)
 
-	if (!modules)
-	{
+	if (!modules) {
 		modlist
 		^local mods $"Modules to load? (1 2-4 ...) "
 		if (mods) {
-			@ modules = loader.which_mods(modules $mods)
+			@:modules = loader.which_mods(modules $mods)
 		}
+	} else {
+		@:modules = loader.which_mods(modules $modules)
 	}
 
-	for module in ($modules)
-	{
-		switch ($loader.load_module($module))
-		{
+	for module in ($modules) {
+		switch ($loader.load_module($module)) {
 			(0) {xecho -b Module [$module] has been loaded}
 			(1) {xecho -b Error: No modules found}
 			(2) {xecho -b Error: Module [$module] is already loaded}
@@ -50,12 +48,13 @@ alias modlist (void)
 
 	for cnt from 0 to ${numitems(modules) - 1}
 	{
-		@ :num = cnt + 1
-		@ :file = getitem(module_files $cnt)
-		@ :module = getitem(modules $cnt)
-		@ :version = getitem(module_versions $cnt)
-		@ :auto_load = match($module $CONFIG.AUTO_LOAD_MODULES) ? 1 : 0
-		@ :loaded = finditem(loaded_modules $module) > -1 ? 1 : 0
+		@:num = cnt + 1
+		@:file = getitem(module_files $cnt)
+		@:module = getitem(modules $cnt)
+		@:version = getitem(module_versions $cnt)
+		@:auto_load = match($module $CONFIG.AUTO_LOAD_MODULES) ? 1 : 0
+		@:loaded = finditem(loaded_modules $module) > -1 ? 1 : 0
+
 		if (FORMAT.MODLIST_MODULE) {
 			echo $fparse(MODLIST_MODULE $num $module $version $fsize($file) $loaded $auto_load)
 		}
@@ -83,25 +82,88 @@ alias reloadmod (modules)
 
 alias unloadmod (modules)
 {
-	if (!modules)
-	{
+	if (!modules) {
 		loadedmodules
 		^local mods $"Modules to unload? (1 2-4 ...) "
 		if (mods) {
-			@ :modules = loader.which_mods(loaded_modules $mods)
+			@:modules = loader.which_mods(loaded_modules $mods)
 		}
-	}{
-		@ :modules = loader.which_mods(loaded_modules $modules)
+	} else {
+		@:modules = loader.which_mods(loaded_modules $modules)
 	}
 
-	for module in ($modules)
-	{
-		switch ($loader.unload_module($module))
-		{
+	for module in ($modules) {
+		switch ($loader.unload_module($module)) {
 			(0) {xecho -b Module [$module] has been unloaded}
 			(1) {xecho -b Error: No modules are currently loaded}
 			(2) {xecho -b Error: Module [$module] is not loaded}
 			(*) {xecho -b Error: Unknown}
+		}
+	}
+}
+
+
+/****** MODULE ALIASES ******/
+
+/*
+ * Handles module dependencies.
+ * This is meant to be called by a module at load time.
+ */
+alias module.dep (depmods)
+{
+	@:module = after(-1 / $before(-1 . $word(1 $loadinfo())))
+
+	if (!module) {
+		echo Error: module.dep: This command must be called at load time
+		return
+	}
+
+	if (!depmods) {
+		echo Error: module.dep: Not enough arguments \(Module: $module\)
+		return
+	}
+
+	for depmod in ($depmods)
+	{
+		if (finditem(loaded_modules $depmod) < 0)
+		{
+			if (finditem(modules $depmod) > -1)
+			{
+				if (CONFIG.AUTO_LOAD_DEPENDENCIES)
+				{
+					xecho -b Module [$module] depends on [$depmod]. Auto-loading...
+					loadmod $depmod
+				}{
+					^local tmp $"Module [$module] depends on [$depmod] - Load it now? [Yn] "
+					if (tmp == []) {
+						^assign tmp Y
+					}
+
+					switch ($toupper($left(1 $tmp))) {
+						(Y) {loadmod $depmod}
+						(*) {xecho -b Skipping dependency [$depmod]. Module may not work properly.}
+					}
+				}
+			}{
+				xecho -b Warning: Unable to load dependency. Module [$depmod] not found.
+			}
+		}
+	}
+}
+
+/*
+ * This allows modules to force saved settings to be loaded before the module
+ * is finished loading. Very useful for events happening at module load time
+ * that depend on certain config settings. This should not be used until
+ * after adding your config and format variables via {config|format}.add.
+ */
+alias module.load_saved_settings (void)
+{
+	@:module = after(-1 / $before(-1 . $word(1 $loadinfo())))
+	if (module) {
+		@:save_file = DS.SAVE_DIR ## [/] ## module ## [.sav]
+		if (fexist($save_file) == 1) {
+			^load $save_file
 		}
 	}
 }
@@ -123,22 +185,22 @@ alias loader.build_modlist (void)
 
 	for dir in ($DS.MODULE_DIR)
 	{
-		@ :dir = twiddle($dir)
+		@:dir = twiddle($dir)
 		for file in ($glob($dir\/\*.dsm))
 		{
-			@ :name = before(-1 . $after(-1 / $file))
+			@:name = before(-1 . $after(-1 / $file))
 
 			/* Get module version. */
-			@ :fd = open($file R)
-			@ :line = read($fd)
+			@:fd = open($file R)
+			@:line = read($fd)
 			@ close($fd)
 			if (match(#version $line)) {
-				@ :ver = word(1 $line)
-			}{
-				@ :ver = [-]
+				@:ver = word(1 $line)
+			} else {
+				@:ver = [-]
 			}
 
-			@ :item = matchitem(modules $name)
+			@:item = matchitem(modules $name)
 			if (item > -1) {
 				@ delitem(modules $item)
 				@ delitem(module_files $item)
@@ -169,7 +231,7 @@ alias loader.load_module (module, void)
 
 	/* Remove the extension if necessary. */
 	if (match(%.% $module)) {
-		@ :module = before(-1 . $module)
+		@:module = before(-1 . $module)
 	}
 
 	if (finditem(loaded_modules $module) > -1) {
@@ -177,13 +239,12 @@ alias loader.load_module (module, void)
 		return 2
 	}
 
-	@ :item = finditem(modules $module)
-
+	@:item = finditem(modules $module)
 	if (item > -1)
 	{
-		@ :file = getitem(module_files $item)
-		@ :save_file = DS.SAVE_DIR ## [/] ## module ## [.sav]
-		@ :theme_file = getitem(theme_dirs $finditem(themes $DS.THEME)) ## module
+		@:file = getitem(module_files $item)
+		@:save_file = DS.SAVE_DIR ## [/] ## module ## [.sav]
+		@:theme_file = getitem(theme_dirs $finditem(themes $DS.THEME)) ## module
 
 		/* Load the actual module. */
 		load $file
@@ -224,11 +285,10 @@ alias loader.unload_module (module, void)
 
 	/* Remove the extension if necessary. */
 	if (match(%.% $module)) {
-		@ :module = before(-1 . $module)
+		@:module = before(-1 . $module)
 	}
 
-	@ :item = finditem(loaded_modules $module)
-
+	@:item = finditem(loaded_modules $module)
 	if (item > -1)
 	{
 		/* Execute cleanup queue for module. */
@@ -290,24 +350,21 @@ alias loader.which_mods (array, args)
 		{
 			if (match(%-% $tmp))
 			{
-				@ :startmod = before(- $tmp)
-				@ :endmod = after(- $tmp)
-				if (startmod < endmod && startmod < numitems($array) && endmod <= numitems($array))
-				{
-					for cnt from $startmod to $endmod
-					{
-						@ :item = cnt - 1
+				@:startmod = before(- $tmp)
+				@:endmod = after(- $tmp)
+				if (startmod < endmod && startmod < numitems($array) && endmod <= numitems($array)) {
+					for cnt from $startmod to $endmod {
+						@:item = cnt - 1
 						push modules $getitem($array $item)
 					}
-				}{
+				} else {
 					xecho -b loader.which_mods(): Illegal range specified!
 				}
 			}{
-				if (tmp <= numitems($array))
-				{
-					@ :item = tmp - 1
+				if (tmp <= numitems($array)) {
+					@:item = tmp - 1
 					push modules $getitem($array $item)
-				}{
+				} else {
 					xecho -b loader.which_mods(): Module not found [$tmp]
 				}
 			}
@@ -320,74 +377,7 @@ alias loader.which_mods (array, args)
 }
 
 
-/*
- * Commands intended for use by modules but not necessarily limited to that
- * (loader.unload_mod calls module.rminfo).
- */
-
-/*
- * Handle module dependencies. This is meant to be called at module load time.
- */
-alias module.dep (depmods)
-{
-	@ :module = after(-1 / $before(-1 . $word(1 $loadinfo())))
-
-	if (!module) {
-		echo Error: module.dep: This command must be called at load time
-		return
-	}
-
-	if (!depmods) {
-		echo Error: module.dep: Not enough arguments \(Module: $module\)
-		return
-	}
-
-	for depmod in ($depmods)
-	{
-		if (finditem(loaded_modules $depmod) < 0)
-		{
-			if (finditem(modules $depmod) > -1)
-			{
-				if (CONFIG[AUTO_LOAD_DEPENDENCIES])
-				{
-					xecho -b Module [$module] depends on [$depmod]. Auto-loading...
-					loadmod $depmod
-				}{
-					^local tmp $"Module [$module] depends on [$depmod] - Load it now? [Yn] "
-					if (tmp == []) {
-						^assign tmp Y
-					}
-
-					switch ($toupper($left(1 $tmp)))
-					{
-						(Y) {loadmod $depmod}
-						(*) {xecho -b Skipping dependency [$depmod]. Module may not work properly.}
-					}
-				}
-			}{
-				xecho -b Warning: Unable to load dependency. Module [$depmod] not found.
-			}
-		}
-	}
-}
-
-/*
- * This allows modules to force saved settings to be loaded before the module
- * is finished loading. Very useful for events happening at module load time
- * that depend on certain config settings. This should not be used until
- * after adding your config and format variables via {config|format}.add.
- */
-alias module.load_saved_settings (void)
-{
-	@ :module = after(-1 / $before(-1 . $word(1 $loadinfo())))
-	if (module) {
-		@ :save_file = DS.SAVE_DIR ## [/] ## module ## [.sav]
-		if (fexist($save_file) == 1) {
-			^load $save_file
-		}
-	}
-}
-
+/****** STARTUP ******/
 
 /*
  * Load some modules at startup, if desired.
@@ -410,8 +400,7 @@ if (CONFIG.AUTO_LOAD_PROMPT)
 		@ :mods = [A]
 	}
 
-	switch ($toupper($mods))
-	{
+	switch ($toupper($mods)) {
 		(N) {#}
 		(A) {@ modules = CONFIG.AUTO_LOAD_MODULES}
 		(*) {@ modules = loader.which_mods(modules $mods)}
@@ -429,7 +418,7 @@ if (CONFIG.AUTO_LOAD_PROMPT)
 		loadmod $modules
 	}
 }\
-else if (CONFIG[AUTO_LOAD_MODULES])
+else if (CONFIG.AUTO_LOAD_MODULES)
 {
 	loadmod $CONFIG.AUTO_LOAD_MODULES
 }

@@ -13,33 +13,33 @@
  */
 alias ansicparse
 {
-	@ :tmp = cparse($*)
-	@ :tmp = sar(g/30/[30m/$tmp)
-	@ :tmp = sar(g/31/[0\;31m/$tmp)
-	@ :tmp = sar(g/32/[0\;32m/$tmp)
-	@ :tmp = sar(g/33/[0\;33m/$tmp)
-	@ :tmp = sar(g/34/[0\;34m/$tmp)
-	@ :tmp = sar(g/35/[0\;35m/$tmp)
-	@ :tmp = sar(g/36/[0\;36m/$tmp)
-	@ :tmp = sar(g/37/[0\;37m/$tmp)
-	@ :tmp = sar(g/40/[40m/$tmp)
-	@ :tmp = sar(g/41/[41m/$tmp)
-	@ :tmp = sar(g/42/[42m/$tmp)
-	@ :tmp = sar(g/43/[43m/$tmp)
-	@ :tmp = sar(g/44/[44m/$tmp)
-	@ :tmp = sar(g/45/[45m/$tmp)
-	@ :tmp = sar(g/46/[46m/$tmp)
-	@ :tmp = sar(g/47/[47m/$tmp)
-	@ :tmp = sar(g/50/[1\;30m/$tmp)
-	@ :tmp = sar(g/51/[1\;31m/$tmp)
-	@ :tmp = sar(g/52/[1\;32m/$tmp)
-	@ :tmp = sar(g/53/[1\;33m/$tmp)
-	@ :tmp = sar(g/54/[1\;34m/$tmp)
-	@ :tmp = sar(g/55/[1\;35m/$tmp)
-	@ :tmp = sar(g/56/[1\;36m/$tmp)
-	@ :tmp = sar(g/57/[1\;37m/$tmp)
-	@ :tmp = sar(g/-1/[0m/$tmp)
-	@ :tmp = sar(g//[0m/$tmp)
+	@:tmp = cparse($*)
+	@:tmp = sar(g/30/[30m/$tmp)
+	@:tmp = sar(g/31/[0\;31m/$tmp)
+	@:tmp = sar(g/32/[0\;32m/$tmp)
+	@:tmp = sar(g/33/[0\;33m/$tmp)
+	@:tmp = sar(g/34/[0\;34m/$tmp)
+	@:tmp = sar(g/35/[0\;35m/$tmp)
+	@:tmp = sar(g/36/[0\;36m/$tmp)
+	@:tmp = sar(g/37/[0\;37m/$tmp)
+	@:tmp = sar(g/40/[40m/$tmp)
+	@:tmp = sar(g/41/[41m/$tmp)
+	@:tmp = sar(g/42/[42m/$tmp)
+	@:tmp = sar(g/43/[43m/$tmp)
+	@:tmp = sar(g/44/[44m/$tmp)
+	@:tmp = sar(g/45/[45m/$tmp)
+	@:tmp = sar(g/46/[46m/$tmp)
+	@:tmp = sar(g/47/[47m/$tmp)
+	@:tmp = sar(g/50/[1\;30m/$tmp)
+	@:tmp = sar(g/51/[1\;31m/$tmp)
+	@:tmp = sar(g/52/[1\;32m/$tmp)
+	@:tmp = sar(g/53/[1\;33m/$tmp)
+	@:tmp = sar(g/54/[1\;34m/$tmp)
+	@:tmp = sar(g/55/[1\;35m/$tmp)
+	@:tmp = sar(g/56/[1\;36m/$tmp)
+	@:tmp = sar(g/57/[1\;37m/$tmp)
+	@:tmp = sar(g/-1/[0m/$tmp)
+	@:tmp = sar(g//[0m/$tmp)
 	return $tmp
 }
 
@@ -52,8 +52,7 @@ alias ansicparse
  */ 
 alias convert.num (arg, void)
 {
-	switch ($arg)
-	{
+	switch ($arg) {
 		(0) {return off}
 		(1) {return on}
 		(*) {return $arg}
@@ -62,11 +61,10 @@ alias convert.num (arg, void)
 
 alias convert.onoff (arg, void)
 {
-	switch ($tolower($arg))
-	{
+	switch ($tolower($arg)) {
 		(off) {return 0}
-		(on) {return 1}
-		(*) {return $arg}
+		(on)  {return 1}
+		(*)   {return $arg}
 	}
 }
 
@@ -75,10 +73,9 @@ alias convert.onoff (arg, void)
  */
 alias isloaded (module, void)
 {
-	if (finditem(loaded_modules $module) > -1)
-	{
+	if (finditem(loaded_modules $module) > -1) {
 		return 1
-	}{
+	} else {
 		return 0
 	}
 }
@@ -90,8 +87,7 @@ alias isloaded (module, void)
 alias is_on (nick, void)
 {
 	stack push on 303
-	^on ^303 *
-	{
+	^on ^303 * {
 		stack pop on 303
 		return $0
 	}
@@ -108,15 +104,12 @@ alias is_on (nick, void)
  */
 alias modinfo (module, flag)
 {
-	@ :item = finditem(modules $module)
-	if (item > -1)
-	{
-		switch ($tolower($flag))
-		{
-			(a) ()
-			{
-				@ :retval = getitem(module_files $item)
-				@ push(retval $getitem(module_versions $item))
+	@:item = finditem(modules $module)
+	if (item > -1) {
+		switch ($tolower($flag)) {
+			(a) () {
+				@:retval = getitem(module_files $item)
+				push retval $getitem(module_versions $item)
 				@ function_return = retval
 			}
 			(f) { @ function_return = getitem(module_files $item) }
@@ -124,6 +117,7 @@ alias modinfo (module, flag)
 		}
 	}
 
+	/* Module not found. Return nothing. */
 	return
 }
 
@@ -150,11 +144,10 @@ alias padleft (size, char, text)
 alias pipe
 {
 	@ srand($time())
-	@ :desc = [pipe] ## rand(999999)
+	@:desc = [pipe] ## rand(999999)
 	^local retval
 
-	^on ^exec "$desc *"
-	{
+	^on ^exec "$desc *" {
 		bless
 		push retval $1-
 	}
@@ -172,14 +165,13 @@ alias pipe
 alias serverrefs (void)
 {
 	^local retval
-	for winref in ($winrefs())
-	{
-		@ :sref = winserv($winref)
-		if (!match($sref $retval))
-		{
+	for winref in ($winrefs()) {
+		@:sref = winserv($winref)
+		if (!match($sref $retval)) {
 			push retval $sref
 		}
 	}
+
 	@ function_return = retval
 }
 

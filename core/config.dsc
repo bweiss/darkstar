@@ -7,45 +7,53 @@
  * See the 'COPYRIGHT' file for more information.
  */
 
+/****** USER ALIASES ******/
 
 alias config dset
-
-alias dset (...)
-{
-	@ config.set_routine(dset $*)
-}
-
-alias fset (...)
-{
-	@ config.set_routine(fset $*)
-}
+alias dset (...) {config.set_routine dset $*}
+alias fset (...) {config.set_routine fset $*}
 
 
-alias fparse
-{
-	eval return $cparse($(FORMAT.$0))
-}
+/****** FUNCTIONS ******/
 
-alias fparse2
-{
-	eval return $(FORMAT.$0)
-}
+alias fparse  {eval return $cparse($(FORMAT.$0))}
+alias fparse2 {eval return $(FORMAT.$0)}
 
 
+/****** MODULE ALIASES ******/
+
+/*
+ * These aliases add config and format variables into the system.
+ * They should only be called by modules at load time.
+ *
+ * The variable is "owned" by the calling module and will be automatically
+ * removed when the module is unloaded. This ownership is transparent to
+ * the user except that the variable(s) are removed with their module.
+ */
+alias config.add {config.add_variable config $*}
+alias format.add {config.add_variable format $*}
+
+
+/****** INTERNAL ALIASES ******/
+
+/*
+ * This handles the display and modification of both config and format
+ * variables. It is the biggest and most complex part of this script.
+ */
 alias config.set_routine (type, variable, value)
 {
 	^local struct1,struct2
 	
-	/* Figure out what kind of variables we're dealing with. */
+	/*
+	 * Figure out what kind of variables we're dealing with.
+	 */
 	switch ($toupper($type))
 	{
-		(DSET)
-		{
+		(DSET) {
 			^assign struct1 DSET
 			^assign struct2 CONFIG
 		}
-		(FSET)
-		{
+		(FSET) {
 			^assign struct1 FSET
 			^assign struct2 FORMAT
 		}
@@ -53,9 +61,10 @@ alias config.set_routine (type, variable, value)
 	
 	if (!variable)
 	{
-		/* No variable specified by user so display all. */
-		for var in ($aliasctl(assign match $struct1\.$struct2\.))
-		{
+		/*
+		 * No variable specified by user so we display everything.
+		 */
+		for var in ($aliasctl(assign match $struct1\.$struct2\.)) {
 			@ :var = after(1 . $var)
 			@ config.setcat($var)
 		}
@@ -72,8 +81,7 @@ alias config.set_routine (type, variable, value)
 		if (#matches > 1 && !cur_value)
 		{
 			xecho -s -b \"$toupper($var)\" is ambiguous
-			for var in ($matches)
-			{
+			for var in ($matches) {
 				@ :var = after(1 . $var)
 				@ config.setcat($var)
 			}
@@ -97,8 +105,7 @@ alias config.set_routine (type, variable, value)
 				xecho -s -b Value of $toupper($var2) set to <EMPTY>
 
 				/* Hook the changes so modules can act on it. */
-				if (toupper($type) == [DSET])
-				{
+				if (toupper($type) == [DSET]) {
 					hook CONFIG $var2 $old_value
 				}
 			}\
@@ -106,14 +113,14 @@ alias config.set_routine (type, variable, value)
 			{
 				if (struct2 == [CONFIG] && DSET[BOOL][$var2])
 				{
-					switch ($tolower($value))
-					{
-						(0) (1) (off) (on)
-						{
+					switch ($tolower($value)) {
+						(0) (1) (off) (on) {
 							^assign $var $convert.onoff($value)
 							xecho -s -b Value of $toupper($var2) set to $toupper($convert.num($value))
 						}
-						(*) {xecho -s -b Value must be either ON, OFF, 1, or 0}
+						(*) {
+							xecho -s -b Value must be either ON, OFF, 1, or 0
+						}
 					}
 				}{
 					^assign $var $value
@@ -121,8 +128,7 @@ alias config.set_routine (type, variable, value)
 				}
 
 				/* Hook the changes so modules can act on it. */
-				if (toupper($type) == [DSET])
-				{
+				if (toupper($type) == [DSET]) {
 					hook CONFIG $var2 $old_value
 				}
 			}{
@@ -133,30 +139,27 @@ alias config.set_routine (type, variable, value)
 			xecho -s -b No matches for \"$toupper($var)\" found
 		}
 	}
-
-	return
 }
 
 /*
- * This is a modified version of shade's setcat.
+ * This is a modified version of shade's setcat. It handles the actual
+ * displaying of config/format variables and their values. It should
+ * be called by config.set_routine.
  */
 alias config.setcat (var, void)
 {
 	@ :var2 = after(1 . $var)
 	eval if \($var != []\)
 	{
-		if (FORMAT[SET])
-		{
-			if (before(. $var) == [CONFIG] && DSET[BOOL][$var2])
-			{
+		if (FORMAT.SET) {
+			if (before(. $var) == [CONFIG] && DSET[BOOL][$var2]) {
 				xecho -s $fparse(SET $toupper($var2) $toupper($convert.num($($var))))
-			}{
+			} else {
 				xecho -s $fparse(SET $toupper($var2) $($var))
 			}
 		}
 	}{
-		if (FORMAT[SET_NOVALUE])
-		{
+		if (FORMAT.SET_NOVALUE) {
 			xecho -s $fparse(SET_NOVALUE $toupper($var2))
 		}
 	}
@@ -164,88 +167,53 @@ alias config.setcat (var, void)
 	return
 }
 
-
 /*
- * CONFIG.ADD [-boolean] <variable> [value]
- * Adds a config variable. This should be called by modules at load time.
+ * This does the actual work involved in adding config and format
+ * variables. It is an internal alias that should be called by the
+ * config.add and format.add aliases.
  */
-alias config.add
+alias config.add_variable (type, ...)
 {
+	/* Determine which *SET structure we're using. */
+	switch ($type)
+	{
+		(config) { @:struct = [DSET] }
+		(format) { @:struct = [FSET] }
+	}
+
 	/* Determine which module is currently loading. */
-	@ :tmp = word(1 $loadinfo())
-	if (match(*darkstar.irc $tmp))
-	{
-		^local module core
-	}{
-		@ :module = after(-1 / $before(-1 . $tmp))
+	@:tmp = word(1 $loadinfo())
+	if (match(*darkstar.irc $tmp)) {
+		@:module = [core]
+	} else {
+		@:module = after(-1 / $before(-1 . $tmp))
 	}
 
-	if (!module)
-	{
-		xecho -b Error: config.add must be called at load time
+	if (!module) {
+		xecho -b Error: $type\.add must be called at load time
 		return
 	}
 
-	if (![$0])
-	{
-		xecho -b Error: config.add: Not enough arguments \(Module: $module\)
+	if (![$0]) {
+		xecho -b Error: $type\.add: Not enough arguments \(Module: $module\)
 		return
 	}
 
-	if (pattern($0* -boolean))
-	{
+	if (type == [config] && pattern($0* -boolean)) {
 		^local variable $1
 		^local value $2-
-		^assign DSET.BOOL.$variable 1
-	}{
+		^assign $struct\.BOOL.$variable 1
+	} else {
 		^local variable $0
 		^local value $1-
 	}
 
-	if (DSET[CONFIG][$variable])
-	{
-		xecho -b Error: config.add: Duplicate config variable: $variable \(Module: $module\)
-	}{
-		@ push(DSET.MODULES.$module $variable)
-		^assign DSET.CONFIG.$variable 1
-		^assign CONFIG.$variable $value
-	}
-}
-
-/*
- * FORMAT.ADD <variable> [value]
- * Addes a format variable.
- */
-alias format.add (variable, value)
-{
-	/* Determine which module is currently loading. */
-	@ :tmp = word(1 $loadinfo())
-	if (match(*darkstar.irc $tmp))
-	{
-		^local module core
-	}{
-		@ :module = after(-1 / $before(-1 . $tmp))
-	}
-
-	if (!module)
-	{
-		xecho -b Error: format.add must be called at load time
-		return
-	}
-
-	if (!variable)
-	{
-		xecho -b Error: format.add: Not enough arguments \(Module: $module\)
-		return
-	}
-
-	if (FSET[FORMAT][$variable])
-	{
-		xecho -b Error: format.add: Duplicate format variable: $variable \(Module: $module\)
-	}{
-		@ push(FSET.MODULES.$module $variable)
-		^assign FSET.FORMAT.$variable 1
-		^assign FORMAT.$variable $value
+	if (DSET[$type][$variable]) {
+		xecho -b Error: $type\.add: Duplicate config variable: $variable \(Module: $module\)
+	} else {
+		push $struct\.MODULES.$module $variable
+		^assign $struct\.$type\.$variable 1
+		^assign $type\.$variable $value
 	}
 }
 

@@ -35,10 +35,8 @@ alias dinfo (void)
 	echo $G $divider
 
 	/* Display module information. */
-	foreach MODINFO module
-	{
-		for var in ($aliasctl(assign match MODINFO.$module\.))
-		{
+	foreach MODINFO module {
+		for var in ($aliasctl(assign match MODINFO.$module\.)) {
 			@ :modname = tolower($module)
 			/* This is pretty nasty but it works. */
 			eval ^local iline \$$var
@@ -46,9 +44,7 @@ alias dinfo (void)
 		}
 		@ :pig_in_a_pen = 1
 	}
-
-	if (pig_in_a_pen)
-	{
+	if (pig_in_a_pen) {
 		echo $G $divider
 	}
 }
@@ -66,15 +62,13 @@ alias more less
 alias less (file, void)
 {
 	@ :winnum = winnum()
-	if (file)
-	{
-		if (fexist($file) == 1)
-		{
+	if (file) {
+		if (fexist($file) == 1) {
 			_less $open($file R) ${winsize() - 1} $winnum
-		}{
+		} else {
 			xecho -b -w $winnum $file\: no such file.
 		}
-	}{
+	} else {
 		xecho -b -w $winnum Usage: /less <filename>
 	}
 }
@@ -83,29 +77,25 @@ alias _less (fd, count, winnum default 0, void)
 {
 	@ :line = 0
 
-	while (!eof($fd) && (line++ < count))
-	{
+	while (!eof($fd) && (line++ < count)) {
 		@ :ugh = read($fd)
-		if (!eof($fd))
-		{
+		if (!eof($fd)) {
 			xecho -w $winnum $ugh
 		}
 	}
 
-	if (!eof($fd))
-	{
+	if (!eof($fd)) {
 		@ LESS.FD = fd
 		@ LESS.NL = count
 		@ LESS.W  = winnum
-
-		input_char "Enter q to quit, or anything else to continue "
-		{
-			if ([$0] != [q]) {_less $LESS.FD $LESS.NL $LESS.W}
+		input_char "Enter q to quit, or anything else to continue " {
+			if ([$0] != [q]) {
+				_less $LESS.FD $LESS.NL $LESS.W
+			}
 		}
-	}{
+	} else {
 		@ close($fd)
-		for var in ($aliasctl(assign match LESS.))
-		{
+		for var in ($aliasctl(assign match LESS.)) {
 			^assign -$var
 		}
 	}
@@ -116,8 +106,7 @@ alias _less (fd, count, winnum default 0, void)
  */
 alias purge (arg, void)
 {
-	foreach $arg _purge
-	{
+	foreach $arg _purge {
 		purge $arg\[$_purge]
 	}
 	^assign -$arg
@@ -128,8 +117,7 @@ alias purge (arg, void)
  */
 alias purgealias (arg, void)
 {
-	foreach -$arg _purge
-	{
+	foreach -$arg _purge {
 		purgealias $arg\[$_purge]
 	}
 	^alias -$arg
@@ -142,8 +130,7 @@ alias reload (void)
 {
 	@ :home = DS.HOME
 	timer -del all
-	for cnt from 0 to ${numitems(loaded_modules) - 1}
-	{
+	for cnt from 0 to ${numitems(loaded_modules) - 1} {
 		queue -do cleanup.$getitem(loaded_modules $cnt)
 	}
 	^load $home/darkstar.irc
