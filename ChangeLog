@@ -2,8 +2,13 @@ Darkstar ChangeLog
 
 [current]
 
- - Finally stopped using $common() when checking PUBLIC_AWAY_CHANNELS. This
-   allows for channel names containing "/", a valid character in channel names.
+ - [status.dsc] /status now displays a list of available statbars and prompts
+   the user to choose one if no arguments are given.
+ - Global variable renaming: DS.VERSION -> DS.INTERNAL_VERSION,
+   DS.VER -> DS.VERSION. This wont affect end users.
+ - [away.dsm] Finally stopped using $common() when checking
+   PUBLIC_AWAY_CHANNELS. This allows for channel names containing "/", a
+   valid character in channel names.
  - New environment variable: DARKSTAR_SAVEDIR. The SAVE_DIRECTORY config
    variable has been removed entirely. Please use the previously mentioned
    environment variable to change the default save directory.

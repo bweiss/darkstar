@@ -25,8 +25,8 @@ eval for array in \($getarrays()\)
 /*
  * Important global variables
  */
-assign DS.VER 0.0.9
-assign DS.VERSION 20010915
+assign DS.VERSION 0.0.9
+assign DS.INTERNAL_VERSION 20010915
 
 
 /*
@@ -63,7 +63,7 @@ eval assign DS.STATUS_DIR $DS.HOME/status
  * Important /SET's
  * If you want to change these, it should be done via .dsrc
  */
-eval set CLIENT_INFORMATION Darkstar $DS.VER
+eval set CLIENT_INFORMATION Darkstar $DS.VERSION
 set -CONTINUED_LINE
 set CONTROL_C_COLOR ON
 set DISPLAY_PC_CHARACTERS 4

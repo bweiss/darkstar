@@ -6,7 +6,7 @@
  * CONFIG.DSC - Configuration manager for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 8/27/01 (bmw)
+ * Last modified: 8/30/01 (bmw)
  */
 
 alias conf dset
@@ -17,7 +17,9 @@ alias set_routine (type, variable, value)
 {
 	^local struct1,struct2
 	
-	/* Figure out what kind of variables we're dealing with */
+	/*
+	 * Figure out what kind of variables we're dealing with.
+	 */
 	switch ($toupper($type))
 	{
 		(DSET)
@@ -34,7 +36,9 @@ alias set_routine (type, variable, value)
 	
 	if (!variable)
 	{
-		/* No variable specified by user. Display all. */
+		/*
+		 * No variable specified by user. Display all.
+		 */
 		for var in ($aliasctl(assign match $struct1\.$struct2\.))
 		{
 			@ :var = after(1 . $var)

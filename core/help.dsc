@@ -5,7 +5,7 @@
  *
  * HELP.DSC - Help system for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
- *         whitefang
+ *         whitefang <thall@epicsol.org>
  *
  * Last modified: 8/27/01 (bmw)
  *
