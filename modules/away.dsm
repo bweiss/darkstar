@@ -146,7 +146,7 @@ on #-305 421 "*"
 on #-hook 421 "CONFIG AWAY_LOG_LEVEL *"
 {
 	@ CONFIG.AWAY_LOG_LEVEL = toupper($CONFIG.AWAY_LOG_LEVEL);
-	@ :levels = CONFIG.AWAY_LOG_LEVEL;
+	@ :levels = split(, $CONFIG.AWAY_LOG_LEVEL);
 
 	for lvl in ($levels)
 	{

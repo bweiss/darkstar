@@ -176,10 +176,17 @@ alias purgearray (struct, void)
 alias reload (void)
 {
 	@ :home = DS.HOME;
-	timer -del all;
+
 	for ii from 1 to $numitems(_loaded_modules) {
 		queue -do cleanup.$getitem(_loaded_modules ${ii-1});
 	};
+
+	dump all;
+	timer -del all;
+	for array in ($getarrays()) {
+		@ delarray($array);
+	};
+
 	^load -pf $home/darkstar.irc;
 };
 

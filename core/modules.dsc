@@ -38,15 +38,15 @@ alias autoload (args)
 	{
 		switch ($arg)
 		{
-			(-a) {@ :action = [add]}
-			(-d) {@ :action = [delete]}
+			(-a) {@ :action = [add]};
+			(-d) {@ :action = [delete]};
 			(*) {
 				if (action == [add] && findw($arg $modlist) == -1) {
 					@ push(:modlist $arg);
 				} else if (action == [delete]) {
 					@ :modlist = remw($arg $modlist);
 				};
-			}
+			};
 		};
 	};
 
@@ -100,9 +100,9 @@ alias loadmod (modules)
 			@ :progress #= [x];
 			switch ($retcode)
 			{
-				(1) {xecho -c Error: _load_module: Not enough arguments}
-				(2) {xecho -b -c Module is already loaded: $module}
-				(3) {xecho -b -c Module not found: $module}
+				(1) {xecho -c Error: _load_module: Not enough arguments};
+				(2) {xecho -b -c Module is already loaded: $module};
+				(3) {xecho -b -c Module not found: $module};
 			};
 		};
 
@@ -230,8 +230,8 @@ alias unloadmod (modules)
 			@ :progress #= [x];
 			switch ($retcode)
 			{
-				(1) {xecho -c Error: _unload_module: Not enough arguments}
-				(2) {xecho -b -c Module is not loaded: $module}
+				(1) {xecho -c Error: _unload_module: Not enough arguments};
+				(2) {xecho -b -c Module is not loaded: $module};
 			};
 		};
 
@@ -346,7 +346,7 @@ alias _scan_module_dir (dir, void)
 				{
 					(version:*) {
 						^assign _MODULE[$name][VERSION] $after(1 : $tag);
-					}
+					};
 					(loader:*) {
 						@ :loader = after(1 : $tag);
 						switch ($loader)
@@ -356,9 +356,9 @@ alias _scan_module_dir (dir, void)
 							}
 							(*) {
 								echo Warning: _scan_module_dir: Invalid loader tag: $loader;
-							}
+							};
 						};
-					}
+					};
 				};
 			};
 		};

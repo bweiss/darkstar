@@ -8,7 +8,7 @@
 #  DarkStar - A modular script pack for the EPIC4 IRC client.
 #  Copyright (c) 2002, 2003 Brian Weiss <brian@epicsol.org>
 #
-#  Designed for use with EPIC4-1.2.5 and up.
+#  Designed for use with EPIC4-1.2.6 and up.
 #  See the 'README' file for general information.
 #  See the 'COPYRIGHT' file for licensing information.
 #
@@ -21,12 +21,12 @@ if (word(2 $loadinfo()) != [pf])
 	return;
 };
 
-if (!epic() || V < 20031214)
+if (!epic() || V < 20031216)
 {
 	echo;
 	echo WARNING!;
 	echo;
-	echo This script pack is for use with EPIC4, version 1.2.5 and up.;
+	echo This script pack is for use with EPIC4, version 1.2.6 and up.;
 	echo Your client, $J, does not meet this requirement.;
 	echo Continue at your own risk.;
 	echo;
@@ -78,7 +78,7 @@ for array in ($getarrays()) {
 # This will be incremented every time a change takes place in
 # the core scripts (this file and any *.dsc files in $DS.HOME/core/).
 #
-@ DS.CORE_ID = 115;
+@ DS.CORE_ID = 116;
 
 xecho -b -c Loading DarkStar $DS.VERSION;
 
@@ -192,18 +192,18 @@ if (CONFIG.LOAD_PROMPT)
 				xecho -b No modules on the auto-load list;
 				xecho -b Type /AUTOLOAD or /DSET AUTO_LOAD_MODULES to add a module;
 			};
-		}
+		};
 		(\\*) {
 			for ii from 1 to $numitems(_modules) {
 				@ push(mods $getitem(_modules ${ii-1}));
 			};
-		}
+		};
 		(*) {
 			@ mods = getitems(_modules -1 $ask);
 			if (mods) {
 				loadmod $mods;
 			};
-		}
+		};
 	};
 
 	^window hold_slider $holdslider;
