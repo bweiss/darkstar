@@ -10,7 +10,7 @@ assign FORMAT.SEND_ACTION_USER * -> $1: $servernick() $2-
 assign FORMAT.SEND_CTCP $G Requesting a CTCP $3 from $2: $4-
 assign FORMAT.SEND_MSG [$Z] SEND_MSG $1> $2-
 assign FORMAT.SEND_NOTICE [$Z] SEND_NOTICE $1> $2-
-assign FORMAT.WHO $[10]1 $[9]2 $[3]3 [$7]${[$6] == servername() ? [%W] : []}$[14]after(1 . $6)%n $[-10]4@$5
+assign FORMAT.WHO $[10]1 $[9]2 $[3]3 [$7]${[$7] ? [%n] : [%W]}$[14]after(1 . $6)%n $[-10]4@$5
 assign FORMAT.WHO_FOOTER $G $1-
 assign -FORMAT.WHO_FOOTER1
 assign -FORMAT.WHO_FOOTER2
