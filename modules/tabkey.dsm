@@ -112,7 +112,7 @@ alias tabkey.main {
 		wait for @ :matches = tabkey.default($word)
 	}
 	@ :prefix = prefix($matches)
-	if (1 < numwords($matches) && word == prefix) {
+	if (numwords($matches) > 1 && word == prefix) {
 		echo Completions for \"$word\": $matches
 		@ TABKEY.INDEX = 0
 		@ TABKEY.LASTMATCHES = matches
@@ -473,13 +473,13 @@ alias tabkey.method.variables (type, void) {
 	if (curword == 1) {
 		if (left(1 $word) == [-]) {
 			@ :rm = 1
-			@ :foo = rest(1 $word)
+			@ :word2 = rest(1 $word)
 		} else {
-			@ :foo = word
+			@ :word2 = word
 		}
 		switch ($type) {
 			(ALIAS) (ASSIGN) {
-				@ :matches = aliasctl($type match $foo)
+				@ :matches = aliasctl($type match $word2)
 			}
 			(CONFIG) (FORMAT) {
 				if (type == [CONFIG]) {
@@ -488,21 +488,21 @@ alias tabkey.method.variables (type, void) {
 					@ :struct = [FSET]
 				}
 				^local matches
-				for var in ($aliasctl(assign match $struct\.$type\.$foo)) {
+				for var in ($aliasctl(assign match $struct\.$type\.$word2)) {
 					push matches $after(-1 . $var)
 				}
 			}
 			(SET) {
-				@ :matches = getsets($foo%)
+				@ :matches = getsets($word2%)
 			}
 		}
-		if (#matches == 1) {
-			@ :ret = rm ? [-$matches] : matches
-		} else if (#matches > 1) {
-			parsekey delete_to_previous_space
-			xtype -l ${rm ? [-] : []}$prefix($matches)
-			echo Completions for \"$foo\": $matches
-			@ :ret = [ ]
+		^local ret
+		if (rm) {
+			for ii in ($matches) {
+				push ret -$ii
+			}
+		} else {
+			@ :ret = matches
 		}
 	} else if (curword == 2 && word == [] && (left(1 $word(${curword - 1} $L)) != [-])) {
 		switch ($type) {
