@@ -48,10 +48,7 @@ alias relay (type, ...)
 	}
 
 	switch ($tolower($type)) {
-		(-m)  {
-			echo relay.show msg $*
-			relay.show msg $*
-		}
+		(-m)  {relay.show msg $*}
 		(-n)  {relay.show notice $*}
 		(-sm) {relay.show sent_msg $*}
 		(-sn) {relsn.show sent_notice $*}
