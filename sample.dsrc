@@ -1,5 +1,5 @@
 /*
- * This is a sample initilization file for Darkstar. By default it should be
+ * This is a sample rc file for Darkstar. By default, it should be
  * copied to ~/.dsrc
  *
  * If you wish to change its location/filename please set the environment
@@ -23,6 +23,8 @@ set NO_FAIL_DISCONNECT ON
 set SCROLLBACK 1024
 set WORD_BREAK ,;
 
+/* Use the new math parser */
+xdebug +new_math
 
 /* Debugging stuff */
 
