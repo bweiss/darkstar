@@ -11,6 +11,8 @@ Author: Brian Weiss <brian@epicsol.org>
                                 they are created.
    AUTO_CREATE_WINDOWS        - Number of windows you want to have when
                                 this module loads.
+   AUTO_QUERY_ON_MSG          - Boolean. Automatically create a new window
+                                and start a query for incoming private msgs.
    BIND_ON_JOIN               - Boolean. Automatically bind channels
                                 when you join them.
    MSG_WINDOW                 - Boolean. Creates a split screen "msg window".
@@ -49,6 +51,9 @@ Author: Brian Weiss <brian@epicsol.org>
 
    wp
      - Alias to '/window previous'
+
+   wq
+     - Creates a hidden window and starts a query for <nick> in it.
 
    wub
      - Unbinds the current window.

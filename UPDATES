@@ -1,5 +1,17 @@
 DarkStar 0.3
 
+*** News 2002/09/27 -- window.dsm 0.6 - New query related features + bug fixes
+	A new boolean config variable named AUTO_QUERY_ON_MSG has been added.
+	When true, all incoming msgs will cause a hidden window to be created
+	and a query to be started with the person who sent the msg.
+
+	An alias called /WQ has been added. It works just like the /WJ alias
+	except that it starts a query with its argument instead of joining
+	a channel.
+
+	Fixed a problem in /WJ that was causing the msg window to be resized
+	incorrectly.
+
 *** News 2002/09/17 -- oper.dsm 0.1.2 - New format variable: WALLOP
 	All incoming wallops will now be formatted according to the value
 	of the WALLOP format variable.

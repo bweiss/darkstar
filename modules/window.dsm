@@ -1,4 +1,4 @@
-#version 0.5.5
+#version 0.6
 /* $Id$ */
 /*
  * window.dsm - Window module for DarkStar/EPIC4
@@ -24,6 +24,7 @@ queue cleanup.window
 	^on #hook 426 -"CONFIG MSG_WINDOW_SIZE *"
 	^on #join 426 -'\$servernick() *'
 	^on #leave 426 -'\$servernick() *'
+	^on #msg 426 -"*"
 	^on #window_create 426 -"*"
 	^on #window_kill 426 -"msgs"
 	^on #window_kill 426 -"*"
@@ -54,6 +55,7 @@ queue cleanup.window
 
 config.add    AUTO_BIND_CHANNELS
 config.add    AUTO_CREATE_WINDOWS 2
+config.add -b AUTO_QUERY_ON_MSG 0
 config.add -b BIND_ON_JOIN 0
 config.add -b MSG_WINDOW 0
 config.add    MSG_WINDOW_LEVEL msgs,opnotes,wallops
@@ -125,12 +127,22 @@ alias swap (winnum, void)
 
 alias wb  (chan default "$C", void) {window bind $chan}
 alias wc  (void)                    {window new_hide swap last}
-alias wj  (...)                     {window new channel "$*" hide}
+alias wj  (...)                     {window new_hide swap last channel "$*"}
 alias wk  (...)                     {window kill}
 alias wl  (...)                     {window last}
 alias wn  (...)                     {window next}
 alias wp  (...)                     {window previous}
 alias wub (...)                     {window unbind}
+
+alias wq  (nick, void)
+{
+	if (!nick) {
+		xecho -b Usage: /WQ <nick>
+		return
+	}
+	window new_hide swap last
+	query $nick
+}
 
 
 /****** INTERNAL ALIASES ******/
@@ -155,7 +167,7 @@ alias window.msgwin_down (void)
 /****** ON HOOKS ******/
 
 /*
- * Kill or create msg window on /dset MSG_WINDOW
+ * Kill or create msg window on /DSET MSG_WINDOW
  */
 on #-hook 426 "CONFIG MSG_WINDOW *"
 {
@@ -201,9 +213,19 @@ on #-leave 426 '$servernick() *'
 	}
 }
 
+on #-msg 426 "*"
+{
+	if (CONFIG.AUTO_QUERY_ON_MSG) {
+		if (querywin($0) == -1) {
+			window new_hide swap last
+			query $0
+		}
+	}
+}
+
 on #-window_create 426 "*"
 {
-	/* Add a shortcut alias for this window. */
+	/* Add a shortcut alias for this window */
 	^alias $0 window swap $0
 
 	if (STATUS.DOUBLE) {
@@ -212,7 +234,7 @@ on #-window_create 426 "*"
 }
 
 /*
- * Turn off MSG_WINDOW if someone manually kills the msgs window.
+ * Turn off MSG_WINDOW if someone manually kills the 'msgs' window.
  */
 on #-window_kill 426 "msgs"
 {
@@ -223,10 +245,10 @@ on #-window_kill 426 "msgs"
 
 on #-window_kill 426 "*"
 {
-	/* Remove shortcut alias for this window. */
+	/* Remove shortcut alias for this window */
 	^alias -$0
 
-	/* Reset the msgs window. */
+	/* Reset the msgs window */
 	if (CONFIG.MSG_WINDOW) {
 		window previous
 		window show msgs

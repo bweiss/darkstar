@@ -10,6 +10,9 @@ PLANNED FOR FUTURE:
 * Channel protection module
 * Auto-join
 * URL grab module
+* Rewrite the tabkey module's completion procedures to complete based on
+  cursor position rather than the last word on the input line.
+* Add completion rules for /WINDOW to the tabkey module.
 
 
 OTHER NOTES/IDEAS:
