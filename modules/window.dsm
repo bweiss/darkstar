@@ -35,7 +35,7 @@ queue cleanup.window
 	for char in ($jot(0 9)) {
 		^bind ^[$char nothing
 	}
-	for keyb in (^[^I ^[^[[5~ ^[^[[6~) {
+	for keyb in (^[^I ^[[1~ ^[[4~ ^[^[[5~ ^[^[[6~) {
 		^bind $keyb nothing
 	}
 	^bind -symbolic key_f12 nothing
@@ -81,6 +81,10 @@ config.add -b UNBIND_ON_PART 0
 ^bind ^[8 parse_command ^window swap 8
 ^bind ^[9 parse_command ^window swap 9
 ^bind ^[0 parse_command ^window swap 10
+
+/* Home/End on some terminals */
+^bind ^[[1~ scroll_start
+^bind ^[[4~ scroll_end
 
 /* Esc + PgUp/PgDn */
 ^bind ^[^[[5~ parse_command window.last.scroll backward
