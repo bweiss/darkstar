@@ -12,8 +12,7 @@ DarkStar ChangeLog
 
  * The output from /modlist is now configurable via format variables.
    The following variables were added to the core: MODLIST_FOOTER[1|2],
-   MODLIST_HEADER[1|2], MODLIST_MODULE. All themes currently use the
-   defualt values but this will likely change in the near future.
+   MODLIST_HEADER[1|2], MODLIST_MODULE.
 
  * [names.dsm 0.4] New behavior for the NAMES_COL config variable. If its
    value is left empty or set to 0 then there will be an infinite number
