@@ -7,6 +7,8 @@ Darkstar ChangeLog
    dependencies will be specified in its .def file. The keyword is "dep" and
    should be followed by a white-space separated list of modules.
 
+   New config variable: AUTO_LOAD_DEPENDENCIES
+
  * [window.dsm] Killing the msg window will now set MSG_WINDOW to OFF.
 
 12/29/01
