@@ -1,4 +1,4 @@
-#version 0.4.3
+#version 0.4.4
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -75,7 +75,8 @@
 
 /****** CLEANUP QUEUE ******/
 
-queue cleanup.tabkey {
+queue cleanup.tabkey
+{
 	^bind ^I toggle_insert_mode
 	^on #msg 420 -"*"
 	^on #send_msg 420 -"*"
@@ -99,25 +100,28 @@ bind ^I parse_command tabkey.main
 
 /****** INTERNAL ALIASES *******/
 
-alias tabkey.main (void) {
+alias tabkey.main (void)
+{
 	@ :oxd = xdebug(extractw)
 	xdebug extractw
+	@ :curpos = curpos()
 	/*
 	 * EPIC4 versions before commit_id 610 require an extra space in the
 	 * call to $indextoword() in order for this to work properly. -bmw
 	 */
 	if (info(i) >= 610) {
-		@ :curword = indextoword($curpos() $L)
+		@ :curword = indextoword($curpos $L)
 	} else {
-		@ :curword = indextoword($curpos() $L )
+		@ :curword = indextoword($curpos $L )
 	}
 	@ :wordind = wordtoindex($curword $L)
 	@ :cmdind = 0
-	if (32 >= (127 & ascii($mid(${curpos() - 1} 1 $L )))) {
+#	if (32 >= (127 & ascii($mid(${curpos() - 1} 1 $L )))) {
+	if (32 >= (127 & ascii($mid(${curpos - 1} 1 $L)))) {
 		@ curword++
-		@ wordind = curpos()
+		@ wordind = curpos
 	}
-	@ :word = mid($wordind ${curpos() - wordind} $L)
+	@ :word = mid($wordind ${curpos-wordind} $L)
 	/*
 	 * Attempt to cycle through the list of matches if the tabkey is
 	 * pressed a second time with no change. -bmw
@@ -169,14 +173,15 @@ alias tabkey.main (void) {
 	xdebug $oxd
 }
 
-alias tabkey.cmd (...) {
+alias tabkey.cmd (...)
+{
 	bless
 	@ :ret = :cmd = []
 	@ :pass  = chr($jot($ascii(AZ)))
 	@ :pass #= chr($jot($ascii(az)))
 	@ :pass #= chr($jot($ascii(09)))
 	@ :args = wordtoindex($cmdind $L)
-	@ :args = mid($args $curpos() $L)
+	@ :args = mid($args $curpos $L)
 	/* 
 	 * Make absolutely sure we remove $CMDCHARS from the beginning of the
 	 * the string. This is needed whenever $CMDCHARS contains one of the
@@ -212,7 +217,8 @@ alias tabkey.cmd (...) {
 	return $ret
 }
 
-alias tabkey.default (...) {
+alias tabkey.default (...)
+{
 	bless
 	if (L == []) {
 		@ function_return = tabkey.cmd.msg($*)
@@ -228,7 +234,8 @@ alias tabkey.default (...) {
 	}
 }
 
-alias tabkey.msg_handler (serv, nick, void) {
+alias tabkey.msg_handler (serv, nick, void)
+{
 	if (serv == [] || !nick) {
 		echo Error: tabkey.msg_handler: Not enough arguments
 		return
@@ -248,42 +255,53 @@ alias tabkey.msg_handler (serv, nick, void) {
  * the completion routine returns nothing. See aliases below
  * for examples. -bmw
  */
-alias tabkey.nofallback (...) {
+alias tabkey.nofallback (...)
+{
 	@ function_return = [$*] == [] ? [ ] : [$*]
 }
 
 # Used for things like /eval and /repeat where what you are completing
 # is another command.  depth is the arg number where the command begins.
 # This is not well cpu optimised.  See examples below.
-alias tabkey.recurse (depth, ...) {
+alias tabkey.recurse (depth, ...)
+{
 	bless
+	@ :curpos += wordtoindex($cmdind $L)
+	@ :curpos -= wordtoindex(${cmdind+depth} $L)
 	@ :cmdind += depth
 	@ :curword -= depth
 	@ function_return = 0 > curword ? [] : tabkey.cmd($*)
 	@ :curword += depth
 	@ :cmdind -= depth
+	@ :curpos += wordtoindex(${cmdind+depth} $L)
+	@ :curpos -= wordtoindex($cmdind $L)
 }
 
 
 # Context sensitive completion goes here.
 
-alias tabkey.cmd.alias (...) {
+alias tabkey.cmd.alias (...)
+{
 	@ function_return = tabkey.nofallback($tabkey.method.variable(alias))
 }
 
-alias tabkey.cmd.assign (...) {
+alias tabkey.cmd.assign (...)
+{
 	@ function_return = tabkey.nofallback($tabkey.method.variable(assign))
 }
 
-alias tabkey.cmd.channel (...) {
+alias tabkey.cmd.channel (...)
+{
 	@ function_return = tabkey.nofallback($tabkey.method.chan($*))
 }
 
-alias tabkey.cmd.config (...) {
+alias tabkey.cmd.config (...)
+{
 	@ function_return = tabkey.nofallback($tabkey.method.variable(config))
 }
 
-alias tabkey.cmd.dcc (args) {
+alias tabkey.cmd.dcc (args)
+{
 	bless
 	switch ($curword) {
 		(1) {
@@ -293,7 +311,8 @@ alias tabkey.cmd.dcc (args) {
 }
 
 alias tabkey.cmd.dcc.resume tabkey.cmd.dcc.send
-alias tabkey.cmd.dcc.send (...) {
+alias tabkey.cmd.dcc.send (...)
+{
 	bless
 	switch ($curword) {
 		(0) {echo This should never happen.;call;local}
@@ -303,7 +322,8 @@ alias tabkey.cmd.dcc.send (...) {
 	}
 }
 
-alias tabkey.cmd.dhelp (...) {
+alias tabkey.cmd.dhelp (...)
+{
 	@ :foo = HELP_PATH
 	^set HELP_PATH $DS.HELP_DIR
 	wait for @ :retval = tabkey.cmd.help($*)
@@ -311,23 +331,28 @@ alias tabkey.cmd.dhelp (...) {
 	@ function_return = tabkey.nofallback($retval)
 }
 
-alias tabkey.cmd.do (void) {
+alias tabkey.cmd.do (void)
+{
 	tabkey.recurse 1
 }
 
-alias tabkey.cmd.dset (...) {
+alias tabkey.cmd.dset (...)
+{
 	@ function_return = tabkey.nofallback($tabkey.method.variable(config))
 }
 
-alias tabkey.cmd.eval (void) {
+alias tabkey.cmd.eval (void)
+{
 	tabkey.recurse 1
 }
 
-alias tabkey.cmd.exec (...) {
+alias tabkey.cmd.exec (...)
+{
 	@ function_return = tabkey.nofallback($tabkey.method.file($*))
 }
 
-alias tabkey.cmd.foreach (...) {
+alias tabkey.cmd.foreach (...)
+{
 	bless
 	if (curword == 1 && left(1 $word) == [-]) {
 		@ :retval = tabkey.method.variable(alias)
@@ -337,21 +362,28 @@ alias tabkey.cmd.foreach (...) {
 	@ function_return = tabkey.nofallback($retval)
 }
 
-alias tabkey.cmd.fset (...) {
+alias tabkey.cmd.fset (...)
+{
 	@ function_return = tabkey.nofallback($tabkey.method.variable(format))
 }
 
-alias tabkey.cmd.help (...) {
+alias tabkey.cmd.help (...)
+{
 	bless
 	@ :matches = []
-	@ :path = restw(1 $left($curpos() $L))
-	if (wordind == curpos()) {@ push(path *)}
-	@ matches = globi($unsplit(/ $getset(HELP_PATH) $path*))
+#	@ :path = restw(1 $left($curpos() $L))
+#	if (wordind == curpos()) {@ push(path *)}
+#	@ matches = globi($unsplit(/ $getset(HELP_PATH) $path*))
+	@ :path = restw(1 $left($curpos $L))
+	if (wordind == curpos) {@ push(path *)}
+	repeat $#path @ push(path $shift(path)*)
+	@ matches = globi($unsplit(/ $getset(HELP_PATH) $path))
 	repeat $#matches @ push(matches $rightw(1 $remws(/ $split(/ $shift(matches)))))
 	@ function_return = tabkey.nofallback($remw(CVS $matches))
 }
 
-alias tabkey.cmd.ignore (...) {
+alias tabkey.cmd.ignore (...)
+{
 	bless
 	if (curword == 1) {
 		@ :retval = tabkey.method.mask($*)
@@ -362,28 +394,34 @@ alias tabkey.cmd.ignore (...) {
 }
 
 alias tabkey.cmd.j tabkey.cmd.join
-alias tabkey.cmd.join (...) {
+alias tabkey.cmd.join (...)
+{
 	@ function_return = tabkey.nofallback($tabkey.method.chan($*))
 }
 
 alias tabkey.cmd.l tabkey.cmd.leave
-alias tabkey.cmd.leave (...) {
+alias tabkey.cmd.leave (...)
+{
 	@ function_return = tabkey.nofallback($tabkey.method.chan($*))
 }
 
-alias tabkey.cmd.less (...) {
+alias tabkey.cmd.less (...)
+{
 	@ function_return = tabkey.nofallback($tabkey.method.file($*))
 }
 
-alias tabkey.cmd.load (...) {
+alias tabkey.cmd.load (...)
+{
 	@ function_return = tabkey.nofallback($tabkey.method.file($*))
 }
 
-alias tabkey.cmd.loadmod (...) {
+alias tabkey.cmd.loadmod (...)
+{
 	@ function_return = tabkey.nofallback($tabkey.method.array(modules $*))
 }
 
-alias tabkey.cmd.mode (...) {
+alias tabkey.cmd.mode (...)
+{
 	bless
 	if (curword == 1) {
 		@ :retval = tabkey.method.chan($*)
@@ -394,7 +432,8 @@ alias tabkey.cmd.mode (...) {
 }
 
 alias tabkey.cmd.m tabkey.cmd.msg
-alias tabkey.cmd.msg (...) {
+alias tabkey.cmd.msg (...)
+{
 	bless
 	if (curword == 1) {
 		@ :retval = pattern("$word*" $sort($uniq($TABKEY.MSGHIST[$winserv()] $tabkey.method.nickchan($*))))
@@ -426,56 +465,69 @@ alias tabkey.cmd.msg (...) {
 
 alias tabkey.cmd.part tabkey.cmd.leave
 
-alias tabkey.cmd.pop (...) {
+alias tabkey.cmd.pop (...)
+{
 	@ function_return = tabkey.nofallback($tabkey.method.variable(assign))
 }
 
-alias tabkey.cmd.push (...) {
+alias tabkey.cmd.push (...)
+{
 	@ function_return = tabkey.nofallback($tabkey.method.variable(assign))
 }
 
 alias tabkey.cmd.q tabkey.cmd.query
-alias tabkey.cmd.query (...) {
+alias tabkey.cmd.query (...)
+{
 	@ function_return = pattern("$0*" $sort($uniq($TABKEY.MSGHIST[$winserv()] $tabkey.method.nickchan($*))))
 }
 
-alias tabkey.cmd.reloadmod (...) {
+alias tabkey.cmd.reloadmod (...)
+{
 	@ function_return = tabkey.nofallback($tabkey.method.array(loaded_modules $*))
 }
 
-alias tabkey.cmd.repeat (void) {
+alias tabkey.cmd.repeat (void)
+{
 	tabkey.recurse 2
 }
 
-alias tabkey.cmd.save (...) {
+alias tabkey.cmd.save (...)
+{
 	@ function_return = tabkey.nofallback($tabkey.method.array(loaded_modules $*))
 }
 
-alias tabkey.cmd.set (...) {
+alias tabkey.cmd.set (...)
+{
 	@ function_return = tabkey.nofallback($tabkey.method.variable(set))
 }
 
-alias tabkey.cmd.shift (...) {
+alias tabkey.cmd.shift (...)
+{
 	@ function_return = tabkey.nofallback($tabkey.method.variable(assign))
 }
 
-alias tabkey.cmd.status (...) {
+alias tabkey.cmd.status (...)
+{
 	@ function_return = tabkey.nofallback($tabkey.method.array(status $*))
 }
 
-alias tabkey.cmd.theme (...) {
+alias tabkey.cmd.theme (...)
+{
 	@ function_return = tabkey.nofallback($tabkey.method.array(themes $*))
 }
 
-alias tabkey.cmd.unloadmod (...) {
+alias tabkey.cmd.unloadmod (...)
+{
 	@ function_return = tabkey.nofallback($tabkey.method.array(loaded_modules $*))
 }
 
-alias tabkey.cmd.unshift (...) {
+alias tabkey.cmd.unshift (...)
+{
 	@ function_return = tabkey.nofallback($tabkey.method.variable(assign))
 }
 
-alias tabkey.cmd.window (...) {
+alias tabkey.cmd.window (...)
+{
 	bless
 	@ :windowcmds = [ADD BACK BALANCE BEEP_ALWAYS BIND CHANNEL CLEAR CREATE DELETE DESCRIBE DISCON DOUBLE ECHO FIXED FLUSH GOTO GROW HIDE HIDE_OTHERS HOLD_INTERVAL HOLD_MODE KILL KILL_OTHERS KILLSWAP LAST LASTLOG LASTLOG_LEVEL LEVEL LIST LOG LOGFILE MOVE NAME NEW NEW_HIDE NEXT NOSERV NOTIFIED NOTIFY NOTIFY_LEVEL NUMBER POP PREVIOUS PROMPT PUSH QUERY REFNUM REFNUM_OR_SWAP REFRESH REMOVE SCRATCH SCROLL SCROLLBACK SEARCH_BACK SEARCH_FORWARD SERVER SHOW SHOW_ALL SHRINK SIZE SKIP STACK STATUS_FORMAT STATUS_FORMAT1 STATUS_FORMAT2 STATUS_SPECIAL SWAP UNBIND]
 	if (curword == 1) {
@@ -532,7 +584,8 @@ alias tabkey.cmd.window (...) {
 
 # Methods.
 
-alias tabkey.method.array (array, ...) {
+alias tabkey.method.array (array, ...)
+{
 	bless
 	^local list
 	for ii from 0 to ${numitems($array) - 1} {
@@ -546,16 +599,20 @@ alias tabkey.method.array (array, ...) {
 	}
 }
 
-alias tabkey.method.commands (...) {
+alias tabkey.method.commands (...)
+{
 	@ function_return = sort($uniq($getcommands($**) $aliasctl(alias match $*) $aliasctl(alias match $**)))
 }
 
-alias tabkey.method.chan (...) {
+alias tabkey.method.chan (...)
+{
 	@ function_return = pattern("$sar(g/\\/\\\\/$*)*" $mychannels())
 }
 
+stack push alias alias.foo
 alias alias.foo alias $*;alias $sar(g/globi/glob/$sar(g/filei/file/$*))
-alias.foo tabkey.method.filei (f0) {
+alias.foo tabkey.method.filei (f0)
+{
 	@ :f0 = sar(gr/\\/\\\\/f0)
 	@ :f0 = sar(gr/*/\\*/f0)
 	@ :f0 = sar(gr/?/\\?/f0)
@@ -568,8 +625,10 @@ alias.foo tabkey.method.filei (f0) {
 	@ function_return = f0 ? f0 : f1
 }
 alias -alias.foo
+stack pop alias alias.foo
 
-alias tabkey.method.mask (...) {
+alias tabkey.method.mask (...)
+{
 	@ :uhost = userhost($0)
 	if (uhost == [<UNKNOWN>@<UNKNOWN>]) {
 		@ :uhost = uh($0)
@@ -577,32 +636,35 @@ alias tabkey.method.mask (...) {
 	@ function_return = uhost == [<UNKNOWN>@<UNKNOWN>] ? [] : mask(3 $uhost)
 }
 
-alias tabkey.method.nick (...) {
+alias tabkey.method.nick (...)
+{
 	@ :args = sar(g/\\/\\\\/$*)
 	if (match("$args*" $chanusers())) {
 		@ function_return = pattern("$args*" $chanusers())
 	} else {
-		^local chanusers
-		fe ($mychannels()) chan {
-			push chanusers $chanusers($chan)
-		}
+		@ :chanusers = mychannels()
+		repeat $#chanusers @ push(chanusers $chanusers($shift(chanusers)))
 		@ function_return = pattern("$args*" $sort($uniq($chanusers)))
 	}
 }
 
-alias tabkey.method.nickchan (...) {
+alias tabkey.method.nickchan (...)
+{
 	@ function_return = remws(/ $tabkey.method.chan($*) $tabkey.method.nick($*))
 }
 
-alias tabkey.method.nickchannotify (...) {
+alias tabkey.method.nickchannotify (...)
+{
 	@ function_return = remws(/ $tabkey.method.chan($*) $sort($uniq($tabkey.method.nick($*) $tabkey.method.notify($*))))
 }
 
-alias tabkey.method.notify (...) {
+alias tabkey.method.notify (...)
+{
 	@ function_return $pattern("$sar(g/\\/\\\\/$*)*" $notify(on))
 }
 
-alias tabkey.method.variable (type, void) {
+alias tabkey.method.variable (type, void)
+{
 	bless
 	if (!type) {
 		return
@@ -661,27 +723,32 @@ alias tabkey.method.variable (type, void) {
 /*
  * Add the nicks of users that you're chatting with to the msg history.
  */
-for hook in (msg send_msg) {
+for hook in (msg send_msg)
+{
 	on #^$hook 420 "*" {
 		tabkey.msg_handler $servernum() $0
 	}
 }
 
-for hook in (dcc_chat send_dcc_chat) {
-	on #^$hook 420 "*" {
+for hook in (dcc_chat send_dcc_chat)
+{
+	on #^$hook 420 "*"
+	{
 		for serv in ($serverrefs()) {
 			tabkey.msg_handler $serv =$0
 		}
 	}
 }
 
-on #^dcc_request 420 "% CHAT *" {
+on #^dcc_request 420 "% CHAT *"
+{
 	for serv in ($serverrefs()) {
 		tabkey.msg_handler $serv =$0
 	}
 }
 
-on #^send_ctcp 420 "PRIVMSG % DCC CHAT *" {
+on #^send_ctcp 420 "PRIVMSG % DCC CHAT *"
+{
 	for serv in ($serverrefs()) {
 		tabkey.msg_handler $serv =$1
 	}
