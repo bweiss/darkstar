@@ -3,6 +3,9 @@ Darkstar ChangeLog
 
 [10/15/01]
 
+ * Removed the "blue" status bar. This, and others, will be distributed
+   separately from now on.
+
  * Added a def/ directory in DS.USER. I accidentally left this out when I
    added user directory support. This is required in order for user directory
    modules to create /dset and /fset variables. Supporting this involved
