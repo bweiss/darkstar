@@ -6,7 +6,7 @@
  * AWAY.DSM - Away module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/21/01 (bmw)
+ * Last modified: 10/22/01 (bmw)
  *
  * This script uses serial number 421 for all ON hooks.
  */
@@ -98,7 +98,7 @@ on #-306 421 "*"
 	{
 		if (A)
 		{
-			@ away.process_incoming(MSG $*)
+			@ away.process_incoming(MSG $userhost() $*)
 		}
 	}
 
@@ -106,7 +106,7 @@ on #-306 421 "*"
 	{
 		if (A)
 		{
-			@ away.process_incoming(NOTICE $*)
+			@ away.process_incoming(NOTICE $userhost() $*)
 		}
 	}
 
@@ -185,12 +185,12 @@ on #^timer 421 "*"
  * This handles the actual writing of messages to your logfile as well
  * as notifying users that you are away.
  */
-alias away.process_incoming (type, nick, msg)
+alias away.process_incoming (type, userhost, nick, msg)
 {
 	if (CONFIG[AWAY_LOG])
 	{
 		@ :fd = open($CONFIG.AWAY_LOGFILE w)
-		@ write($fd [$strftime(%x %X)] $type [$nick!$userhost()] $msg)
+		@ write($fd [$strftime(%x %X)] $type [$nick!$userhost] $msg)
 		@ close($fd)
 
 		@ AWAY.NEWMSGS++
