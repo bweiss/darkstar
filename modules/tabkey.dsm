@@ -331,7 +331,7 @@ alias tabkey.proc.nick (list)
 
 alias tabkey.proc.config (void)
 {
-	tabkey.set_routine config
+	tabkey.set_proc config
 }
 
 alias tabkey.proc.format (void)
