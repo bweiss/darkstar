@@ -180,10 +180,6 @@ alias config.add
 		^assign value $1-
 	}
 
-echo module: $module
-echo variable: $variable
-echo value: $value
-
 	if (DSET[CONFIG][$variable])
 	{
 		xecho -b loader.addconfig: Duplicate config variable: $variable \(Module: $module\)
@@ -203,10 +199,6 @@ alias format.add (variable, value)
 		xecho -b loader.addformat: Not enough arguments \(Module: $module\)
 		return
 	}
-
-echo module: $module
-echo variable: $variable
-echo value: $value
 
 	if (FSET[FORMAT][$variable])
 	{
