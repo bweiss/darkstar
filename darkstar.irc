@@ -26,8 +26,8 @@ eval for array in \($getarrays()\)
 /*
  * Important global variables
  */
-assign DS.VERSION 0.0.11
-assign DS.INTERNAL_VERSION 20011015
+assign DS.VERSION 0.0.12
+assign DS.INTERNAL_VERSION 20011018
 
 
 /*

@@ -1,6 +1,9 @@
 Darkstar ChangeLog
 
 
+!! RELEASE: 0.0.12 (10/18/01) !!
+
+
 [10/18/01]
 
  * Added $fparse2() to config.dsc. Works exactly the same as $fparse() except
