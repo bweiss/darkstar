@@ -20,8 +20,9 @@ alias loadmod (modules)
 	}
 
 	@:modules = loader.which_mods(modules $modules)
+	@:verbose = CONFIG.LOADMODULE_VERBOSE
 
-	if (!CONFIG.LOADMODULE_VERBOSE) {
+	if (!verbose) {
 		^local progress
 		^local pass
 		@:oldprompt = INPUT_PROMPT
@@ -32,7 +33,7 @@ alias loadmod (modules)
 		@:retcode = loader.load_module($module)
 		if (!retcode) {
 			/* Module loaded successfully. */
-			if (CONFIG.LOADMODULE_VERBOSE) {
+			if (verbose) {
 				@:modver = modinfo($module v)
 				xecho -b Loaded module: $module ${modver != [-] ? modver : []}
 			} else {
@@ -52,7 +53,7 @@ alias loadmod (modules)
 		}
 	}
 
-	if (!CONFIG.LOADMODULE_VERBOSE) {
+	if (!verbose) {
 		^set INPUT_PROMPT $oldprompt
 		xecho -b Loaded $#pass module${#pass == 1 ? [] : [s]}${#pass > 0 ? [ \($pass\)] : []}
 	}
@@ -117,8 +118,9 @@ alias unloadmod (modules)
 	}
 
 	@:modules = loader.which_mods(loaded_modules $modules)
+	@:verbose = CONFIG.LOADMODULE_VERBOSE
 
-	if (!CONFIG.LOADMODULE_VERBOSE) {
+	if (!verbose) {
 		^local progress
 		^local pass
 		@:oldprompt = INPUT_PROMPT
@@ -133,7 +135,7 @@ alias unloadmod (modules)
 		@:retcode = loader.unload_module($module)
 		if (!retcode) {
 			/* Module unloaded successfully. */
-			if (CONFIG.LOADMODULE_VERBOSE) {
+			if (verbose) {
 				xecho -b Unloaded module: $module
 			} else {
 				@:progress = progress ## [.]
@@ -151,7 +153,7 @@ alias unloadmod (modules)
 		}
 	}
 
-	if (!CONFIG.LOADMODULE_VERBOSE) {
+	if (!verbose) {
 		^set INPUT_PROMPT $oldprompt
 		xecho -b Unloaded $#pass module${#pass == 1 ? [] : [s]}${#pass > 0 ? [ \($pass\)] : []}
 	}
