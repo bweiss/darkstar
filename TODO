@@ -7,14 +7,10 @@ WORKS IN PROGRESS:
 
 PLANNED FOR FUTURE:
 
-* misc.dsm: Fix /wall and hopefully get rid of /wall2
 * Advanced logging module
 * Channel protection module
 * Auto-join
 * URL grab module
-* Make the module list (/modlist, /loadedmods) theme-able. Also add
-  a divider between the official modules and modules located in the
-  user directory.
 
 
 OTHER NOTES/IDEAS:

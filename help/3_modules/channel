@@ -160,6 +160,6 @@ Author: Brian Weiss <brian@epicsol.org>
        It's possible this will not work on all servers.
 
    wall2 <text>
-     - Sends a notice to all ops on the current channel using
-       "/notice #@channel". This definitely doesn't work on all servers.
+     - Sends a notice to all ops on the current channel, one at a time.
+       This should work on all servers, but is much less efficient.
 
