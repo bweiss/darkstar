@@ -18,11 +18,35 @@ Author: Brian Weiss <brian@epicsol.org>
                                   your server allows.
 
 Format Variables:
-   ACTION_CHANNEL, ACTION_CHANNEL_OTHER, BANS, BANS_FOOTER[1|2],
-   BANS_HEADER[1|2], CHANNEL_SIGNOFF, CHANNEL_SYNC, CHANNEL_TS, JOIN,
-   KICK, LEAVE, MODE, PUBLIC, PUBLIC_AR, PUBLIC_OTHER, PUBLIC_OTHER_AR,
-   SEND_ACTION_CHANNEL, SEND_ACTION_CHANNEL_OTHER, SEND_PUBLIC,
-   SEND_PUBLIC_OTHER, TOPIC, TOPIC_CHANGE, TOPIC_SETBY
+   ACTION_CHANNEL               - Actions sent to the current channel.
+   ACTION_CHANNEL_OTHER         - Actions sent to a non-current channel.
+   BANS                         - Output from the channel ban list numerics.
+   BANS_FOOTER[1|2]             - Channel ban list footers.
+   BANS_HEADER[1|2]             - Channel ban list headers.
+   CHANNEL_NICK                 - Nickchange in one or more of your
+                                  channels. This displays once per channel
+                                  that it relates to, and is window-aware.
+   CHANNEL_SIGNOFF              - Signoffs. Works like CHANNEL_NICK.
+   CHANNEL_SYNC                 - Channel sync.
+   CHANNEL_TS                   - Channel timestamp.
+   JOIN                         - Channel joins.
+   KICK                         - Channel kicks.
+   LEAVE                        - Channel parts.
+   MODE                         - Channel mode changes.
+   PUBLIC                       - Publics in a current channel.
+   PUBLIC_AR                    - Publics in a current channel that trigger
+                                  auto-response.
+   PUBLIC_OTHER                 - Publics in a non-current channel.
+   PUBLIC_OTHER_AR              - Publics in a non-current channel that
+                                  trigger auto-response.
+   SEND_ACTION_CHANNEL          - Actions sent to a current channel.
+   SEND_ACTION_CHANNEL_OTHER    - Actions sent to a non-current channel.
+   SEND_PUBLIC                  - Publics sent to a current channel.
+   SEND_PUBLIC_OTHER            - Publics sent to a non-current channel.
+   TOPIC                        - Topic display.
+   TOPIC_CHANGE                 - Topic change.
+   TOPIC_SETBY                  - Information about who set the topic
+                                  and when.
 
 Commands:
    alldeop <nick> ...

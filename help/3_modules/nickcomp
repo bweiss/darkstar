@@ -13,7 +13,9 @@ Original author: shade <shade@chemlab.org>
                              channel will be attempted.
 
 Format Variables:
-   NICK_COMPLETION
+   NICK_COMPLETION         - Formatting for nick completion. This does NOT
+                             get passed through $cparse(), so cparse color
+                             codes will not work.
 
 History:
    This was taken from my BitchX/EPIC4 script called playdough.

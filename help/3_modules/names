@@ -12,8 +12,15 @@ Author: Brian Weiss <brian@epicsol.org>
                          before everyone else.
 
 Format Variables:
-   NAMES_FOOTER[1|2], NAMES_HEADER[1|2], NAMES_LEFT, NAMES_MID, NAMES_NONOP,
-   NAMES_OP, NAMES_RIGHT, NAMES_VOICE
+   NAMES_FOOTER[1|2]   - Footers for names output.
+   NAMES_HEADER[1|2]   - Headers for names output.
+   NAMES_LEFT          - String to preceed each line of output.
+   NAMES_MID           - String to be inserted between each nick
+                         in the names output.
+   NAMES_NONOP         - Formatting for users not oped or voiced.
+   NAMES_OP            - Formatting for users that are oped.
+   NAMES_RIGHT         - String to be appended to the end of each line.
+   NAMES_VOICE         - Formatting for users that are voiced.
 
 Commands:
    names [channel]

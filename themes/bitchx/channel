@@ -9,6 +9,7 @@ assign -FORMAT.BANS_FOOTER2
 assign FORMAT.BANS_HEADER #  Channel    SetBy        Sec  Ban
 assign -FORMAT.BANS_HEADER1
 assign -FORMAT.BANS_HEADER2
+assign -FORMAT.CHANNEL_NICK
 assign FORMAT.CHANNEL_SIGNOFF $G SignOff %W$2%n: $1 %K\(%n$3-%K\)%n
 assign FORMAT.CHANNEL_SYNC $G %WBitchX%n: Join to $1 synched in $2 secs!!
 assign FORMAT.CHANNEL_TS $G Channel $2 was created at $strftime($3 %%a %%b %%d %%T %%Y)

@@ -16,11 +16,43 @@ Author: Brian Weiss <brian@epicsol.org>
                              away_users array.
 
 Format Variables:
-   ACTION_USER, CTCP, CTCP_REPLY, MSG, NOTICE, SEND_ACTION_USER, SEND_CTCP,
-   SEND_MSG, SEND_NOTICE, WHO, WHO_FOOTER[1|2], WHO_HEADER[1|2], WHOIS_AWAY,
-   WHOIS_CHANNELS, WHOIS_CHANNELS_WRAP, WHOIS_FOOTER[1|2], WHOIS_HEADER[1|2],
-   WHOIS_IDENTIFIED, WHOIS_IDLE, WHOIS_NAME, WHOIS_NICK, WHOIS_OPER,
-   WHOIS_SERVER, WHOIS_SIGNON, WHOWAS_NAME, WHOWAS_NICK, UMODE
+   ACTION_USER             - Actions sent to a specific user, namely, you.
+   CTCP                    - CTCP requests.
+   CTCP_REPLY              - CTCP replies.
+   MSG                     - Private messages.
+   NOTICE                  - Notics.
+   SEND_ACTION_USER        - Actions sent to a specific user.
+   SEND_CTCP               - Sent CTCPs.
+   SEND_MSG                - Sent private messages.
+   SEND_NOTICE             - Sent notices.
+   WHO                     - Output from a WHO request.
+   WHO_FOOTER[1|2]         - WHO output footers.
+   WHO_HEADER[1|2]         - WHO output headers.
+   WHOIS_AWAY              - Output from a WHOIS request. User is away.
+   WHOIS_CHANNELS          - Output from a WHOIS request. User's channels.
+   WHOIS_CHANNELS_WRAP     - Same as WHOIS_CHANNELS, but attempts to do
+                             some intelligent line wrapping with the user's
+                             channels, if a value for the variable exists.
+                             The WHOIS_CHANNELS variable will still be used
+                             for the first line, and WHOIS_CHANNELS_WRAP
+                             for all the remaining lines.
+   WHOIS_FOOTER[1|2]       - WHOIS output footers.
+   WHOIS_HEADER[1|2]       - WHOIS output headers.
+   WHOIS_IDENTIFIED        - Output from a WHOIS request. Use is
+                             identified. This is used with services on
+                             some networks. Currently, DALnet and OPN
+                             are known to work with this.
+   WHOIS_IDLE              - Output from a WHOIS request. User's idle time.
+   WHOIS_NAME              - Output from a WHOIS request. User's real name.
+   WHOIS_NICK              - Output from a WHOIS request. User's nickname.
+   WHOIS_OPER              - Output from a WHOIS request. User is an
+                             IRC operator.
+   WHOIS_SERVER            - Output from a WHOIS request. User's server.
+   WHOIS_SIGNON            - Output from a WHOIS request. Users's signon
+                             time.
+   WHOWAS_NAME             - Output from a WHOWAS request. User's real name.
+   WHOWAS_NICK             - Output from a WHOWAS request. User's nickname.
+   UMODE                   - User mode change.
 
 Commands:
    colors

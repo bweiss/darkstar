@@ -401,7 +401,7 @@ if (CONFIG.AUTO_LOAD_PROMPT)
 	modlist
 	^local mods $"Modules to load? ([A]uto / [N]one / 1 2-4 ...) [A] "
 	if (mods == []) {
-		@ :mods = [A]
+		@:mods = [A]
 	}
 
 	switch ($toupper($mods)) {

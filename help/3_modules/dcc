@@ -9,7 +9,8 @@ Author: Brian Weiss <brian@epicsol.org>
                              will be automatically accepted.
 
 Format Variables:
-   DCC_CHAT, SEND_DCC_CHAT
+   DCC_CHAT                - Messages received over a DCC CHAT connection.
+   SEND_DCC_CHAT           - Messages sent over a DCC CHAT connection.
 
 Commands:
    chat <nick>

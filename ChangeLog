@@ -1,6 +1,20 @@
 DarkStar ChangeLog
 
 
+2002/05/30
+
+ * The format variables for the various modules now have descriptions in
+   their help pages.
+
+ * [channel.dsm 0.5.2] Added a CHANNEL_NICK format variable. The difference
+   between this and the NICKNAME variable (from misc.dsm) is that you must
+   be on a channel for this to be used, and it will be triggered for each
+   channel the nick change relates to. If both this variable and the
+   NICKNAME format variable are present, CHANNEL_NICK will be used when
+   on channels.
+
+ * [misc.dsm 0.7.3] Added a NICKNAME format variable.
+
 2002/05/27
 
  * Added a new module called debug and moved the debugging code

@@ -4,6 +4,7 @@ assign FORMAT.ACTION_USER %W*%n> %c$1%n $3-
 assign FORMAT.CTCP $G %CCTCP $3%n from %c$1%n %W\(%p$before(@ $userhost())%W\@%p$after(@ $userhost())%W)%n
 assign FORMAT.CTCP_REPLY $G %CCTCP $3%n reply from %c$1%n: $4-
 assign FORMAT.MSG *%c$1%n* $3-  %W\(%p$before(@ $2)%W@%p$after(@ $2)%W\)%n [%K$Z%n]
+assign FORMAT.NICKNAME $G %c$1%n is now known as %c$2%n
 assign FORMAT.NOTICE %W-%G$1%W-%n $3-
 assign FORMAT.SEND_ACTION_USER <%C$1%n> %W*%n %C$servernick()%n $2-
 assign -FORMAT.SEND_CTCP 
@@ -35,6 +36,13 @@ assign FORMAT.WHOIS_SIGNON $G %BSignOn%n    : $strftime($4 %%a %%b %%d %%T %%Y) 
 assign -FORMAT.WHOWAS_NAME
 assign FORMAT.WHOWAS_NICK $G %c$[9]2%n : %p$3%n%W@%n%p$4%K%n \($6-\)
 assign FORMAT.UMODE $G Mode change \"$3-\" for user $2 by $1
+
+/*
+ * Get rid of CHANNEL_NICK so that we get proper ScrollZ behavior.
+ */
+if (FORMAT.CHANNEL_NICK) {
+	^assign -FORMAT.CHANNEL_NICK
+}
 
 
 /* EOF */
