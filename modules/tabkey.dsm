@@ -1,4 +1,4 @@
-# version:0.6 loader:pf
+# version:0.6.1 loader:pf
 # $Id$
 #
 # tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -94,22 +94,23 @@ addconfig    TABKEY_NICKCOMP_SUFFIX ,;
 # current input line.
 #
 @ bindctl(function TABKEY_COMPLETION create "tabkey.main");
-@ bindctl(function TABKEY_COMPLETION_FORWARD create "tabkey.main +");
-@ bindctl(function TABKEY_COMPLETION_BACKWARD create "tabkey.main -");
+@ bindctl(function TABKEY_COMPLETION_FORWARD create "tabkey.main 1");
+@ bindctl(function TABKEY_COMPLETION_BACKWARD create "tabkey.main -1");
 
 #
-# tabkey.main [+|-]
+# tabkey.main [-1|0|1]
 #
 # This is the main alias that will be called by the bind functions
 # created with $bindctl() above. Match cycling can be enabled by
-# passing either '+' or '-' as the first argument ('+' for forward
-# cycling, '-' for backward cycling). If no argument is given then
-# matches will not be cycled.
+# passing either '1' or '-1' as the first argument ('1' for forward
+# cycling, '-1' for backward cycling). If no argument (or '0') is
+# specified then matches will not be cycled.
 #
 alias tabkey.main (cycle, void)
 {
-	@ :oxd = xdebug(extractw);
-	xdebug extractw;
+	@ :xd_newmath = xdebug(new_math);
+	@ :xd_extractw = xdebug(extractw);
+	xdebug new_math extractw;
 	@ :curpos = curpos();
 	@ :curword = indextoword($curpos $L);
 	@ :wordind = wordtoindex($curword $L);
@@ -128,11 +129,11 @@ alias tabkey.main (cycle, void)
 	{
 		# Adjust the index if we change directions.
 		if (TABKEY.LAST_CYCLE_DIRECTION && cycle != TABKEY.LAST_CYCLE_DIRECTION)
-			repeat 2 @ TABKEY.INDEX${repeat(2 $cycle)};
+			repeat 2 @ TABKEY.INDEX += cycle;
 
-		if (cycle == [+] && (TABKEY.INDEX == #TABKEY.LAST_MATCHES || TABKEY.INDEX < 0)) {
+		if (cycle > 0 && (TABKEY.INDEX == #TABKEY.LAST_MATCHES || TABKEY.INDEX < 0)) {
 			@ TABKEY.INDEX = 0;
-		} else if (cycle == [-] && (TABKEY.INDEX == [] || TABKEY.INDEX < 0)) {
+		} else if (cycle < 0 && (TABKEY.INDEX == [] || TABKEY.INDEX < 0)) {
 			@ TABKEY.INDEX = #TABKEY.LAST_MATCHES - 1;
 		};
 
@@ -140,15 +141,10 @@ alias tabkey.main (cycle, void)
 		parsekey delete_to_previous_space;
 		xtype -l $nextword;
 
-		if (cycle == [+]) {
-			@ TABKEY.INDEX++;
-		} else {
-			@ TABKEY.INDEX--;
-		};
-
+		@ TABKEY.INDEX += cycle;
 		@ TABKEY.LAST_LINE = L;
 		@ TABKEY.LAST_CYCLE_DIRECTION = cycle;
-		xdebug $oxd;
+		xdebug $xd_newmath $xd_extractw;
 		return;
 	};
 
@@ -192,7 +188,7 @@ alias tabkey.main (cycle, void)
 		};
 	};
 
-	xdebug $oxd;
+	xdebug $xd_newmath $xd_extractw;
 };
 
 alias tabkey.cmd (...)
