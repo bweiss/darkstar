@@ -1,0 +1,34 @@
+Module: relay
+Author: Brian Weiss <brian@epicsol.org>
+
+Description:
+   Relays your last sent/received msgs and notices.
+
+Config Variables:
+   RELAY_BUFFER_SIZE       - This determines the number of items that
+                             will be stored for each type.
+
+Commands:
+   clearrelaybuf
+     - Clears all the arrays containing your msgs and notices.
+
+   relay -<m|n|sm|sn> <target> [<item number>|ask]
+     - Relays a specific type of msg to <target>. Takes an optional
+       item number argument that defaults to "ask" (which prompts the
+       user to choose an item from a list). The types are as follows:
+       m - msg    n - notice    sm - sent_msg    sn - sent_notice
+
+   relm [<target>] [<item number>|ask]
+     - Relays received messages. Takes optional <target> and <item num>
+       arguments. If no item number is specified, it will default to
+       the last message in the buffer (unlike /relay).
+
+   reln [<target>] [<item number>|ask]
+     - Relays received notices.
+
+   relsm [<target>] [<item number>|ask]
+     - Relays sent messages.
+
+   relsn [<target>] [<item number>|ask]
+     - Relays sent notices.
+

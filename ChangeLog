@@ -3,6 +3,9 @@ DarkStar ChangeLog
 
 2002/05/17
 
+ * Added a relay module, finally. This should make several people
+   very happy. :-)
+
  * Added a ScrollZ-like theme (named 'scrollz' of course) as well
    as a status bar to match.
 
