@@ -172,14 +172,12 @@ alias serverrefs (void) {
 }
 
 alias tld {
-	if (functioncall()) {
-		return $TLD.$0
-	} else if ([$0]) {
-		@ :name = TLD[$0]
-		if (name) {
-			xecho -b Top-Level domain "$0" is "$name"
+	if ([$0]) {
+		if (functioncall()) {
+			@ function_return = TLD.$0 ? TLD.$0 : [unknown]
 		} else {
-			xecho -b Top-Level domain "$0" is unknown
+			@ :name = TLD.$0 ? TLD.$0 : [unknown]
+			xecho -b Top-level domain "$0" is "$name"
 		}
 	}
 }
