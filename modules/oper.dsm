@@ -1,4 +1,4 @@
-#version 0.5.1
+#version 0.5.2
 /* $Id$ */
 /*
  * oper.dsm - IRC Operator module for DarkStar/EPIC4
@@ -31,6 +31,10 @@ queue cleanup.oper
 	^on #window_kill 427 -"operview"
 
 	oper.operview.destroy
+
+	if (OPER.CHALLENGE.ACTIVE) {
+		oper.challenge.cleanup $OPER.CHALLENGE.ACTIVE
+	}
 }
 
 
@@ -153,7 +157,8 @@ alias oper.add_tabcomp (void)
 		{
 			@ :tmp = [-ADD -DELETE -LIST]
 			push tmp $tabkey.method.nick($*)
-			@ function_return = pattern("$word*" $tmp)
+			@ :matches = pattern("$0*" $tmp)
+			@ function_return = matches ? matches : [ ]
 		}\
 		else if (curword == 2)
 		{
@@ -176,7 +181,8 @@ alias oper.add_tabcomp (void)
 				/* Disable completion */
 				@ :servernames = [ ]
 			}
-			@ function_return = servernames
+			@ :matches = pattern("$0*" $servernames)
+			@ function_return = matches ? matches : [ ]
 		}\
 		else if (curword == 4)
 		{
@@ -260,6 +266,11 @@ alias oper.challenge (serv, nick, void)
 			}
 		}
 
+		^on #-server_notice 427 "$serv *PK authentication is not enabled*"
+		{
+			oper.challenge.cleanup $0
+		}
+
 		/* Start the party... */
 		@ OPER.CHALLENGE.ACTIVE = serv
 		xecho -b Initiating challenge-response with $serv for $nick
@@ -305,6 +316,7 @@ alias oper.challenge.cleanup (serv, void)
 	^on exec -"challenge.$servernum($serv) *"
 	^on exec_exit -"challenge.$servernum($serv) *"
 	^on exec_prompt -"challenge.$servernum($serv) Enter passphrase for challenge*"
+	^on #server_notice 427 -"$serv *PK authentication is not enabled*"
 	^assign -OPER.CHALLENGE.ACTIVE
 }
 
