@@ -2,6 +2,9 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://darkstar.epicsol.org/UPDATES
 
 
+DarkStar 0.2.12 (20031116)
+
+
 *** News 2003/11/10 -- oper.dsm 0.5 - Password support for challenge-response
 	We now support password protected keys for challenge-response opering!
 	Also, failed oper attempts (either with /OPER or /CHALLENGE) will
