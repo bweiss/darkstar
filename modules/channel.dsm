@@ -1,4 +1,4 @@
-#version 0.4
+#version 0.4.1
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
@@ -629,9 +629,9 @@ on ^368 "*"
 
 		if (FORMAT.BANS)
 		{
-			@ :endcnt = numitems(banlist.$2) - 1
+			@ :endcnt = numitems(channel.banlist.$2) - 1
 			for cnt from 0 to $endcnt {
-				echo $fparse(BANS ${cnt + 1} $getitem(banlist.$2 $cnt))
+				echo $fparse(BANS ${cnt + 1} $getitem(channel.banlist.$2 $cnt))
 			}
 		}
 
