@@ -1,4 +1,4 @@
-#version 0.1
+#version 0.1.1
 /* $Id$ */
 /*
  * relay.dsm -  Relay module for DarkStar/EPIC4
@@ -55,22 +55,22 @@ alias relay (type, target, inum default "ask")
 	}
 }
 
-alias relm (target default "$C", inum)
+alias relm (target default "$T", inum)
 {
 	relay.show msg $target $inum
 }
 
-alias reln (target default "$C", inum)
+alias reln (target default "$T", inum)
 {
 	relay.show notice $target $inum
 }
 
-alias relsm (target default "$C", inum)
+alias relsm (target default "$T", inum)
 {
 	relay.show sent_msg $target $inum
 }
 
-alias relsn (target default "$C", inum)
+alias relsn (target default "$T", inum)
 {
 	relay.show sent_notice $target $inum
 }
