@@ -6,7 +6,7 @@
  * LOADER.DSC - Module loader for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/7/01 (bmw)
+ * Last modified: 10/11/01 (bmw)
  */
 
 alias listmods modlist
@@ -23,6 +23,27 @@ alias loadmod (module, void)
 			xecho -b Error loading module [$module]
 		}
 	}{
+		if (isnumber($module))
+		{
+			@ loader.build_modlist()
+
+			if (module > 0 && module <= numitems(modules))
+			{
+				@ :item = module - 1
+				@ :mod = getitem(modules $item)
+
+				if (loader.load_module($mod))
+				{
+					xecho -b Module [$mod] has been successfully loaded
+				}{
+					xecho -b Error loading module [$mod]
+				}
+			}
+
+			return
+		}
+
+
 		^local mods
 
 		modlist
@@ -74,6 +95,24 @@ alias unloadmod (module, void)
 			xecho -b Error unloading module [$module]
 		}
 	}{
+		if (isnumber($module))
+		{
+			if (module > 0 && module <= numitems(loaded_modules))
+			{
+				@ :item = module - 1
+				@ :mod = getitem(modules $item)
+
+				if (loader.load_module($mod))
+				{
+					xecho -b Module [$mod] has been successfully loade
+				}{
+					xecho -b Error loading module [$mod]
+				}
+			}
+
+			return
+		}
+
 		^local mods
 
 		@ display_loaded()
@@ -107,10 +146,14 @@ alias loader.build_modlist (void)
 {
 	@ delarray(modules)
 
-	for fname in ($glob($DS.MODULE_DIR\/\*.dsm))
+	for dir in ($DS.MODULES)
 	{
-		@ :module = before(. $after(-1 / $fname))
-		@ setitem(modules $numitems(modules) $module)
+		@ :dir = twiddle($dir)
+		for file in ($glob($dir\/\*.dsm))
+		{
+			@ :name = before(. $after(-1 / $file))
+			@ setitem(modules $numitems(modules) $name $file)
+		}
 	}
 
 	return
@@ -124,7 +167,7 @@ alias loader.display_loaded (void)
 	for cnt from 0 to $endcnt
 	{
 		@ :num = cnt + 1
-		echo $[3]num $getitem(loaded_modules $cnt)
+		echo $[3]num $word(0 $getitem(loaded_modules $cnt))
 	}
 
 	return
@@ -137,10 +180,11 @@ alias loader.display_modlist (void)
 	for cnt from 0 to $endcnt
 	{
 		@ :num = cnt + 1
-		@ :module = getitem(modules $cnt)
+		@ :module = word(0 $getitem(modules $cnt))
+		@ :file = word(1 $getitem(modules $cnt))
 		@ :auto_load = common($module / $CONFIG.AUTO_LOAD_MODULES) ? [*] : []
 		@ :loaded = finditem(loaded_modules $module) > -1 ? [*] : []
-		echo $[3]num $[25]module $[-12]fsize($DS.MODULE_DIR/$module\.dsm)     $[8]loaded $[8]auto_load
+		echo $[3]num $[25]module $[-12]fsize($file)     $[8]loaded $[8]auto_load
 	}
 	xecho -b Type '/dset AUTO_LOAD' to modify the Auto-Load list
 	xecho -b Type '/loadmod [module]' to load a module
@@ -154,10 +198,12 @@ alias loader.load_module (module, void)
 {
 	if (numitems(modules))
 	{
-		if (finditem(modules $module) > -1 && finditem(loaded_modules $module) < 0)
+		@ :file = word(1 $getitem(modules $matchitem(modules $module*)))
+
+		if (matchitem(modules $module*) > -1 && finditem(loaded_modules $module) < 0)
 		{
-			^local defaults_file $DS.DEFAULTS_DIR/$module\.def
-			^local savefile $DS.SAVE_DIR/$module\.sav
+			^local defaults_file $DS.DEF/$module\.def
+			^local savefile $DS.SAVE/$module\.sav
 
 			if (fexist($defaults_file) == 1)
 			{
@@ -210,7 +256,7 @@ alias loader.load_module (module, void)
 			}
 
 			/* Load the bugger */
-			load $DS.MODULE_DIR/$module\.dsm
+			load $file
 			@ setitem(loaded_modules $numitems(loaded_modules) $module)
 
 			return 1

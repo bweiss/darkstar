@@ -7,7 +7,7 @@
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *         whitefang <thall@epicsol.org>
  *
- * Last modified: 8/27/01 (bmw)
+ * Last modified: 10/11/01 (bmw)
  *
  * This was originally written by whitefang. He deserves all the credit.
  */
@@ -16,7 +16,7 @@ alias dhelp (...)
 {
 	@ :old_path = HELP_PATH
 	
-	^set HELP_PATH $twiddle($DS.HELP_DIR)
+	^set HELP_PATH $twiddle($DS.HELP)
 	
 	if (@ && HELP_PROMPT == [OFF])
 	{

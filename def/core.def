@@ -1,6 +1,7 @@
 config      AUTO_LOAD_MODULES away channel keepnick misc names nickcomp tabkey window
 config bool AUTO_LOAD_PROMPT 1
 config      DEFAULT_THEME darkstar
+config      USER_DIRECTORY ~/.darkstar
 config bool VERBOSE_SAVE 0
 format SET Current value of $1 is $2-
 format SET_NOVALUE No value for $1 has been set

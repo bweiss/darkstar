@@ -6,7 +6,7 @@
  * THEMES.DSC - Theme support for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/7/01 (bmw)
+ * Last modified: 10/11/01 (bmw)
  */
 
 /*
@@ -22,11 +22,16 @@ alias theme (theme, void)
 	 */
 	@ delarray(themes)
 
-	for file in ($glob($DS.THEMES_DIR\/\*.dst))
+	for dir in ($DS.THEMES)
 	{
-		@ :theme_name = before(. $after(-1 / $file))
-		@ setitem(themes $numitems(themes) $theme_name)
+		@ :dir = twiddle($dir)
+		for file in ($glob($dir\/\*.dst))
+		{
+			@ :name = before(. $after(-1 / $file))
+			@ setitem(themes $numitems(themes) $name $file)
+		}
 	}
+
 
 	if (theme)
 	{
@@ -43,10 +48,10 @@ alias theme (theme, void)
 		for cnt from 0 to ${numitems(themes) - 1}
 		{
 			@ :num = cnt + 1
-			echo $[3]num $getitem(themes $cnt)
+			echo $[3]num $word(0 $getitem(themes $cnt))
 		}
 
-		input "Which theme would you like to use? " if ([$0])
+		input "$INPUT_PROMPT\Which theme would you like to use? " if ([$0])
 		{
 			if (isnumber($0) && [$0] > 0 && [$0] <= numitems(themes))
 			{
@@ -57,7 +62,7 @@ alias theme (theme, void)
 					xecho -b Error loading theme.
 				}
 			} \
-			elsif (finditem(themes $0) > -1)
+			elsif (matchitem(themes $0*) > -1)
 			{
 				if (theme.change($0))
 				{
@@ -74,9 +79,11 @@ alias theme (theme, void)
 
 alias theme.change (theme, void)
 {
-	if (finditem(themes $theme) > -1 && theme != DS.THEME)
+	@ :item = matchitem(themes $theme*)
+
+	if (items > -1 && theme != DS.THEME)
 	{
-		@ :theme_file = twiddle($DS.THEMES_DIR/$theme\.dst)
+		@ :theme_file = word(1 $getitem(themes $item))
 
 		if (fexist($theme_file) == 1)
 		{

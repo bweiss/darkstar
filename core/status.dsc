@@ -6,7 +6,7 @@
  * STATUS.DSC - Statbar manager for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 8/30/01 (bmw)
+ * Last modified: 10/11/01 (bmw)
  */
 
 alias sbar status
@@ -22,65 +22,71 @@ alias statbar status
  */
 alias status (sbar, void)
 {
-	^local sfiles
-
 	/*
 	 * Build our list of available statbars and store them in $sfiles.
 	 * Directories are ignored.
 	 */
-	for file in ($glob($DS.STATUS_DIR\/\*))
-	{
-		@ :lastc = mid(${strlen($file) - 1} 1 $file)
+	@ delarray(status)
 
-		unless (lastc == [/])
+	for dir in ($DS.STATUS)
+	{
+		@ :dir = twiddle($dir)
+		for file in ($glob($dir\/\*))
 		{
-			@ push(sfiles $after(-1 / $file))
+			@ :lastc = mid(${strlen($file) - 1} 1 $file)
+			unless (lastc == [/])
+			{
+				@ :name = after(-1 / $file)
+				@ setitem(status $numitems(status) $name $file)
+			}
 		}
 	}
 
-	if (sbar && match($sbar $sfiles))
+	if (sbar && !isnumber($sbar))
 	{
-		@ change_status($sbar)
+		@ :item = matchitem(status $sbar*)
+		@ :file = word(1 $getitem(status $item))
+		@ status.change($file)
+	} \
+	elsif (isnumber($sbar) && sbar > 0 && sbar <= numitems(status))
+	{
+		@ :item = sbar - 1
+		@ status.change($word(1 $getitem(status $item)))
 	}{
-		^local cnt 1
-
 		xecho -b Available status bars:
-		for file in ($sfiles)
+		for cnt from 0 to ${numitems(status) - 1}
 		{
-			xecho -b [$[-3]cnt] $file
-			@ cnt++
+			@ :num = cnt + 1
+			xecho -b [$[-3]num] $word(1 $getitem(status $cnt))
 		}
 
-		@ STATUS.SFILES = sfiles
-
-		input "Which status bar would you like to use? "
+		input "$INPUT_PROMPT\Which status bar would you like to use? "
 		{
-			if (isdigit($0) && [$0] > 0 && [$0] <= #STATUS.SFILES)
+			if (isnumber($0) && [$0] > 0 && [$0] <= numitems(status))
 			{
-				@ change_status($word(${[$0] - 1} $STATUS.SFILES))
+				@ :item = [$0] - 1
+				@ status.change($word(1 $getitem(status $item)))
 			} \
-			elsif (match($0 $STATUS.SFILES))
+			elsif (matchitem(status $0*))
 			{
-				@ change_status($0)
+				@ :file = word(1 $getitem(status $matchitem(status $0*)))
+				@ status.change($file)
 			}
-
-			^assign -STATUS.SFILES
 		}
 	}
 }
 
 /*
- * change_status() - Everything involved with actually changing the status.
- * Takes a filename as its only argument. Must be a valid file in
- * $DS.STATUS_DIR.
+ * status.change() - Everything involved with actually changing the status.
+ * Takes a filename as its only argument.
  */
-alias change_status (file, void)
+alias status.change (file, void)
 {
-	if (file)
+	if (fexist($file) == 1)
 	{
-		load $DS.STATUS_DIR/$file
+		load $file
 		parsekey refresh_screen
-		xecho -b Now using status: $file
+		xecho -b Now using status: $after(-1 / $file)
 		return 1
 	}{
 		return 0

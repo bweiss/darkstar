@@ -40,25 +40,36 @@ if (getenv(DARKSTAR_HOME))
 	^assign DS.HOME ~/darkstar
 }
 
+if (getenv(DARKSTAR_USER))
+{
+	@ DS.USER = getenv(DARKSTAR_USER)
+}{
+	^assign DS.USER ~/.darkstar
+}
+
 if (getenv(DARKSTAR_RC))
 {
-	@ DS.RCFILE = getenv(DARKSTAR_RC)
+	@ DS.RC = getenv(DARKSTAR_RC)
 }{
-	^assign DS.RCFILE ~/.epic4/.dsrc
+	^assign DS.RC ~/.dsrc
 }
 
-if (getenv(DARKSTAR_SAVEDIR))
+eval assign DS.DEF $DS.HOME/def
+eval assign DS.HELP $DS.HOME/help
+eval assign DS.MODULES $DS.HOME/modules $DS.USER/modules
+eval assign DS.STATUS $DS.HOME/status $DS.USER/status
+eval assign DS.THEMES $DS.HOME/themes $DS.USER/themes
+eval assign DS.SAVE $DS.USER/save
+
+if (fexist($DS.USER) == -1)
 {
-	@ DS.SAVE_DIR = getenv(DARKSTAR_SAVEDIR)
-}{
-	^assign DS.SAVE_DIR ~/.epic4/.darkstar
+	xecho -b Creating user directory: $DS.USER
+	@ mkdir($DS.USER)
+	@ mkdir($DS.USER/modules)
+	@ mkdir($DS.USER/status)
+	@ mkdir($DS.USER/themes)
+	@ mkdir($DS.USER/save)
 }
-
-eval assign DS.DEFAULTS_DIR $DS.HOME/def
-eval assign DS.HELP_DIR $DS.HOME/help
-eval assign DS.MODULE_DIR $DS.HOME/modules
-eval assign DS.STATUS_DIR $DS.HOME/status
-eval assign DS.THEMES_DIR $DS.HOME/themes
 
 
 /* 
@@ -78,7 +89,7 @@ set INDENT ON
  */
 do
 {
-	^local file $DS.DEFAULTS_DIR/core.def
+	^local file $DS.DEF/core.def
 
 	if (fexist($file) != -1)
 	{
@@ -129,9 +140,9 @@ do
 /*
  * Load saved core settings.
  */
-if (fexist($DS.SAVE_DIR/core.sav) == 1)
+if (fexist($DS.SAVE/core.sav) == 1)
 {
-	load $DS.SAVE_DIR/core.sav
+	load $DS.SAVE/core.sav
 }
 
 
@@ -150,9 +161,9 @@ eval load $DS.HOME/core/loader.dsc
 /*
  * Load rcfile if found.
  */
-if (fexist($DS.RCFILE) == 1)
+if (fexist($DS.RC) == 1)
 {
-	load $DS.RCFILE
+	load $DS.RC
 }
 
       

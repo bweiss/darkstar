@@ -1,6 +1,23 @@
 Darkstar ChangeLog
 
-10/8/01
+
+[10/12/01]
+
+ * Now supports what I call a "user directory." This is just a place where
+   you can store your own modules, statbars, and themes, as well as saved
+   settings. This involved changes to most of the core scripts.
+
+ * Darkstar will now automatically create the "user directory"
+   (env. var. DARKSTAR_USER or ~/.darkstar by default) if it is not found.
+   The following subdirectories are also created:
+	modules/        save/           status/         themes/
+
+[10/11/01]
+
+ * /LOADMOD and /UNLOADMOD can now take either module names or an integer as
+   an argument. (requested by whitefang)
+
+[10/8/01]
 
  * [tabkey.dsm] New config variable: TABKEY_NICKCOMP_SUFFIX. This will be
    appended to the end of the nick, before the space, when an exact match is
@@ -9,6 +26,8 @@ Darkstar ChangeLog
 
  * New format for the ChangeLog, as you can see. :-)
 
+
+--
 
 [0.0.10]
 

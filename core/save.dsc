@@ -6,12 +6,12 @@
  * SAVE.DSC - Save /CONFIG and /FSET settings for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/5/01 (bmw)
+ * Last modified: 10/11/01 (bmw)
  */
 
 /*
  * /SAVE [-d <directory>] [*|modules]
- * Saves all settings for specified module(s) to either $DS.SAVE_DIR or a
+ * Saves all settings for specified module(s) to either $DS.SAVE or a
  * directory specified with the -d option. If no modules are specified,
  * "*" (ALL) is assumed and the settings for every currently loaded module
  * will be saved.
@@ -32,7 +32,7 @@ alias save (args)
 		}
 		(*)
 		{
-			@ savedir = twiddle($DS.SAVE_DIR)
+			@ savedir = twiddle($DS.SAVE)
 		}
 	}
 	

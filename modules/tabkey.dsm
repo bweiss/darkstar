@@ -288,7 +288,7 @@ alias tabkey.nick_routine (void)
 			{
 				@ space = CONFIG[TABKEY_NICKCOMP_SUFFIX] ## [ ]
 			}{
-				@ space = []
+				@ space = [ ]
 			}
 		
 			parsekey delete_to_previous_space
