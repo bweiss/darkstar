@@ -31,7 +31,7 @@ set STATUS_OPER *
 set STATUS_OVERWRITE  \(OT\)
 set STATUS_QUERY  \(Query: $Q\)
 set STATUS_SCROLLBACK  \(Scroll\)
-set STATUS_SERVER [$left(24 $servername())]
+set STATUS_SERVER [$left(24 $servername($winserv()))]
 set STATUS_TRUNCATE_RHS ON
 set STATUS_UMODE \(+%#\)
 set STATUS_USER ${numonchannel() ? [[t/$numonchannel() o/$#chops() n/$#nochops()]  ] : []}
