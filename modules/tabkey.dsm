@@ -113,7 +113,7 @@ alias tabkey.process_tabkey (void)
 	if (!L)
 	{
 		/*
-		 * This is the only hardcoded routine. An unfortunate side effect
+		 * This is the only hardcoded rule. An unfortunate side effect
 		 * of "*" matching nothing.
 		 */
 		@ tabkey.msg_routine()
