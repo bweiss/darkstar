@@ -428,7 +428,9 @@ if (CONFIG[AUTO_LOAD_MODULES])
 
 					theme $CONFIG.DEFAULT_THEME
 				}
+
 				(N) { /* Do nothing */ }
+
 				(*)
 				{ 
 					for module in ($loader.which_mods(load $*))

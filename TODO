@@ -6,7 +6,6 @@
 * Flood protection module
 * Auto-join
 * XDCC module (fserve would be better)
-* Server aware nick completion in tabkey.dsm
 * Tabkey completion:
   <wd> i.e. for ctcp you might have 'a.completion.add(ctcp %[,]c,N %'ping,
        version,time,utc,userinfo,clientinfo')

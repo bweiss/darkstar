@@ -6,12 +6,32 @@
  * CONFIG.DSC - Configuration manager for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/15/01 (bmw)
+ * Last modified: 10/25/01 (bmw)
  */
 
 alias conf dset
-
 alias config dset
+
+
+alias dset (...)
+{
+	@ set_routine(dset $*)
+}
+
+alias fset (...)
+{
+	@ set_routine(fset $*)
+}
+
+alias fparse
+{
+	eval return $cparse($(FORMAT.$0))
+}
+
+alias fparse2
+{
+	eval return $(FORMAT.$0)
+}
 
 alias set_routine (type, variable, value)
 {
@@ -99,26 +119,6 @@ alias set_routine (type, variable, value)
 	}
 
 	return
-}
-
-alias dset (...)
-{
-	@ set_routine(dset $*)
-}
-
-alias fset (...)
-{
-	@ set_routine(fset $*)
-}
-
-alias fparse
-{
-	eval return $cparse($(FORMAT.$0))
-}
-
-alias fparse2
-{
-	eval return $(FORMAT.$0)
 }
 
 /*

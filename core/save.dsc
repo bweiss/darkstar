@@ -6,7 +6,7 @@
  * SAVE.DSC - Save /CONFIG and /FSET settings for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/11/01 (bmw)
+ * Last modified: 10/25/01 (bmw)
  */
 
 /*
@@ -101,9 +101,7 @@ alias save_settings (savedir, module, void)
 	}
 
 	^local savefile $savedir/$module\.sav
-
 	@ unlink($savefile)
-		
 	@ :fd = open($savefile W)
 		
 	if (fd != -1)
