@@ -1,13 +1,16 @@
 Darkstar ChangeLog
 
 
-[10/21/01]
+10/21/01
+
+ * [away.dsm] Auto-away and Auto-unset-away now both operate globally. Meaning
+   they will set/unset away on all servers you are connected to. (whitefang)
 
  * [tabkey.dsm] Rewrite of tabkey.msg_routine() to be server-aware. This means
    you will now have separate nick histories for each server you are connected
    to. (requested by whitefang)
 
-[10/19/01]
+10/19/01
 
  * [functions.dsc] Added the $isloaded() function for determining whether
    a specific module is loaded or not. The $padright() function was also
@@ -17,14 +20,14 @@ Darkstar ChangeLog
 !! RELEASE: 0.0.12 (10/18/01) !!
 
 
-[10/18/01]
+10/18/01
 
  * Added $fparse2() to config.dsc. Works exactly the same as $fparse() except
    it does not pass its arguments through $cparse(). For the moment this is
    only being used by nickcomp.dsm. As a result, I am no longer replacing
    "^C-1" with "^C".
 
-[10/17/01]
+10/17/01
 
  * [keepnick.dsm] Fixed a bug discovered by whitefang and hop. Bad things
    can happen if you remove a /notify entry from within the notify_signoff
@@ -55,7 +58,7 @@ Darkstar ChangeLog
    that it will contain commands not functions. I added a /less written by
    hop and I moved /purge from functions.dsc to commands.dsc.
 
-[10/16/01]
+10/16/01
 
  * [channel.dsm] Removed the join alias.
 
@@ -67,7 +70,7 @@ Darkstar ChangeLog
 !! RELEASE: 0.0.11 (10/15/01) !!
 
 
-[10/15/01]
+10/15/01
 
  * Some changes to how we keep track of modules, statbars, and themes. The
    name and filenames are now kept in separate arrays. This fixes a potential
@@ -89,7 +92,7 @@ Darkstar ChangeLog
    modules to create /dset and /fset variables. Supporting this involved
    some changes in the way the module loader keeps track of modules.
 
-[10/14/01]
+10/14/01
 
  * [status.dsc] /status now supports the "-q" option which causes it to
    be quiet about the statbar change.
@@ -110,7 +113,7 @@ Darkstar ChangeLog
    screen redraws. These redraws were enough to saturate the bandwidth on
    dialup connections.
 
-[10/12/01]
+10/12/01
 
  * Added /purge to functions.dsc (requested by whitefang).
 
@@ -140,12 +143,12 @@ Darkstar ChangeLog
    The following subdirectories are also created:
 	modules/        save/           status/         themes/
 
-[10/11/01]
+10/11/01
 
  * /LOADMOD and /UNLOADMOD can now take either module names or an integer as
    an argument. (requested by whitefang)
 
-[10/8/01]
+10/8/01
 
  * [tabkey.dsm] New config variable: TABKEY_NICKCOMP_SUFFIX. This will be
    appended to the end of the nick, before the space, when an exact match is

@@ -6,7 +6,7 @@
  * AWAY.DSM - Away module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/17/01 (bmw)
+ * Last modified: 10/21/01 (bmw)
  *
  * This script uses serial number 421 for all ON hooks.
  */
@@ -158,7 +158,7 @@ on #^input 421 "*"
 	
 	if (A && CONFIG[AUTO_UNSET_AWAY])
 	{
-		back
+		//away -a
 	}
 }
 
@@ -175,7 +175,7 @@ on #^timer 421 "*"
 
 		if (diff >= AWAY[LAST_INPUT])
 		{
-			away Auto-away after $minutes minute${minutes > 1 ? [s] : []}.
+			//away -a Auto-away after $minutes minute${minutes > 1 ? [s] : []}.
 		}
 	}
 }
