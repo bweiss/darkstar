@@ -1,4 +1,4 @@
-#version 0.6.2
+#version 0.6.3
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key module for Darkstar/EPIC4
@@ -16,7 +16,8 @@ queue cleanup.tabkey
 	^on #send_msg 420 -"*"
 	^on #dcc_chat 420 -"*"
 	^on #send_dcc_chat 420 -"*"
-	^on #dcc_connect 420 -"% CHAT *"
+	^on #dcc_request 420 -"% CHAT *"
+	^on #send_ctcp 420 -"PRIVMSG % DCC CHAT *"
 
 	^alias -cleartab
 
@@ -38,16 +39,8 @@ bind ^I parse_command tabkey.process_tabkey
 
 alias cleartab (void)
 {
-	for var in ($aliasctl(assign match TABKEY.NICKS.))
-	{
-		^assign -$var
-	}
-
-	for var in ($aliasctl(assign match TABKEY.INDEX.))
-	{
-		^assign -$var
-	}
-
+	purge TABKEY.NICKS
+	purge TABKEY.INDEX
 	xecho -b Tabkey history cleared
 }
 
@@ -94,13 +87,19 @@ alias tabkey.addrule
 }
 
 /*
- * tabkey.addnick <nick> <window refnum>
+ * tabkey.addnick <nick> <server refnum>
  *
- * Adds <nick> to the msg history for <window refnum>. This will keep
+ * Adds <nick> to the msg history for <server refnum>. This will keep
  * separate lists for each server you are connected to.
  */
 alias tabkey.addnick (nick, server, void)
 {
+	if (!nick || !server)
+	{
+		xecho -b Error: tabkey.addnick: Not enough arguments
+		return
+	}
+
 	if (match($nick $TABKEY.NICKS[$server]))
 	{
 		@ TABKEY.NICKS.$server = remw($nick $TABKEY.NICKS[$server])
@@ -455,9 +454,14 @@ for hook in (dcc_chat send_dcc_chat)
 	}
 }
 
-on #^dcc_connect 420 "% CHAT *"
+on #^dcc_request 420 "% CHAT *"
 {
 	tabkey.addnick =$0 $servernum()
+}
+
+on #^send_ctcp 420 "PRIVMSG % DCC CHAT *"
+{
+	tabkey.addnick =$1 $servernum()
 }
 
 

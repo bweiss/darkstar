@@ -3,6 +3,13 @@ Darkstar ChangeLog
 
 20020405
 
+ * [tabkey.dsm 0.6.3] Fixed a bug where nicks were not being properly added
+   to the msg history when establishing a DCC CHAT connection. The error
+   msg is as follows. (discovered by blakangel)
+
+   ASSIGN names may not contain '-' (You asked for [TABKEY.NICKS.-1])
+   ASSIGN names may not contain '-' (You asked for [TABKEY.INDEX.-1])
+
  * [nickcomp.dsm 1.0.1] If nick completion was turned off, lines typed at
    the input_prompt matching "%: *" would just get thrown away. This should
    no longer be the case.
