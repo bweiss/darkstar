@@ -1,7 +1,7 @@
 README file for Darkstar/EPIC4
 Author: Brian Weiss <brian@epicsol.org>
 
-Last modified: 12/22/01
+Last modified: 12/25/01
 
 
 ABOUT
@@ -45,7 +45,7 @@ A snapshot of my current tree (as well as EPIC) is also available via CVS:
 Once you have done a checkout you can just do the following to update it.
 
   cd darkstar/
-  cvs update
+  cvs update -dP
 
 
 GETTING STARTED
