@@ -84,7 +84,8 @@ alias config.set_routine (type, variable, value)
 		{
 			@ :var = after(1 . $word(0 $matches))
 			@ :var2 = after(1 . $var)
-			
+			@ :old_value = aliasctl(assign get $var)
+
 			/*
 			 * If variable name is preceded by a "-" empty its value.
 			 * Otherwise, if a new value is supplied by the user, set
@@ -100,7 +101,7 @@ alias config.set_routine (type, variable, value)
 				/* Hook the changes so modules can act on it. */
 				if (toupper($type) == [DSET])
 				{
-					hook CONFIG $var2
+					hook CONFIG $var2 $old_value
 				}
 			} \
 			elsif (value != [])
@@ -124,7 +125,7 @@ alias config.set_routine (type, variable, value)
 				/* Hook the changes so modules can act on it. */
 				if (toupper($type) == [DSET])
 				{
-					hook CONFIG $var2 $value
+					hook CONFIG $var2 $old_value
 				}
 			}{
 				/* No new value specified. Display current value. */

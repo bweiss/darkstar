@@ -3,12 +3,20 @@ Darkstar ChangeLog
 
 2/17/02
 
+ * HEADS UP: Changes to the CONFIG/FORMAT HOOK events. The old value of
+   the variable being changed is now passed to these HOOK events instead
+   of the new value. This is because the new value can already be accessed
+   by the actual variable holding the value. This new behavior should be
+   much more useful as modules can now easily reset the config or format
+   variable to its previous value if the new value is undesirable.
+
  * Loading and unloading modules now triggers a HOOK event so that other
    modules can act on it. This was added mostly to allow other modules to
-   add completion rules when the tabkey module is loaded.
+   add completion rules when the tabkey module is loaded but could be used
+   for any number of things.
 
  * [tabkey.dsm] Rewrite. It should now be possible to add completion procedures
-   that the completion rules will automatically be able to use. See the
+   that will automatically be available for use in completion rules. See the
    comments throughout the code for details.
 
 2/9/02

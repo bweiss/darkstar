@@ -1,4 +1,4 @@
-#version 0.1
+#version 0.1.1
 /*     _             _        _
  *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
  * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
@@ -7,7 +7,7 @@
  * NAMES.DSM - Module to display who's on a channel for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 2/11/02 (bmw)
+ * Last modified: 2/17/02 (bmw)
  *
  * This script uses serial numbers 0 and 428 for /on hooks.
  */
@@ -146,8 +146,8 @@ on #-hook 428 "CONFIG NAMES_COL *"
 	if (!isnumber($CONFIG.NAMES_COL b10))
 	{
 		xecho -b Value must be an integer
-		^assign CONFIG.NAMES_COL 4
-		xecho -b Value of NAMES_COL set to 4
+		^assign CONFIG.NAMES_COL $2
+		xecho -b Value of NAMES_COL set back to $2
 	}
 }
 
