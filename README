@@ -9,8 +9,8 @@ See the bottom of this file for a list of contributors.
 
 ABOUT
 
-Darkstar is a modular script pack for EPIC4 aimed at being highly extensible
-and well written. It consists of two main parts.
+Darkstar is a modular script pack for EPIC4-1.1.x, aimed at being highly
+extensible and well written. It consists of two main parts.
 
 1. A set of core scripts which provides a module loader, config manager,
 help browser, some generally useful commands and functions, and a way to
@@ -31,14 +31,20 @@ interested in contributing (or just adding things for yourself), please
 don't hesitate to contact me.
 
 
+REQUIREMENTS
+
+Only EPIC4-1.1.2 or higher. This script pack will NOT work with EPIC4-1.0,
+you have been warned.
+
+
 WHERE TO GET DARKSTAR AND EPIC4
 
 Recent versions of both Darkstar and EPIC4 can be found at the
 following URLs:
 
-  http://www.got.net/~brian/epic4/scripts/darkstar/
+  http://www.epicsol.org/~brian/darkstar/
+  http://www.got.net/~brian/epic4/
   http://www.epicsol.org/
-  http://www.epicsol.org/~brian/
 
 A snapshot of my current tree (as well as EPIC) is also available via CVS:
 
@@ -52,7 +58,7 @@ A snapshot of my current tree (as well as EPIC) is also available via CVS:
 
 Once you have done a checkout you can just do the following to update it.
 
-  cd darkstar/
+  cd darkstar/     (or epic4)
   cvs update -dP
 
 

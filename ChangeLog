@@ -1,6 +1,13 @@
 Darkstar ChangeLog
 
 
+20020405
+
+ * [nickcomp.dsm 1.0.1] If nick completion was turned off, lines typed at
+   the input_prompt matching "%: *" would just get thrown away. This should
+   no longer be the case.
+
+
 !! RELEASE: 0.2.1 (20020403) !!
 
 

@@ -1,4 +1,4 @@
-#version 1.0
+#version 1.0.1
 /* $Id$ */
 /*
  * nickcomp.dsm - Nick completion module for Darkstar/EPIC4
@@ -38,6 +38,8 @@ on ^input "%: *"
 	{
 		@ :complete = nickcomp.getnick($before($CONFIG.NICK_COMPLETION_CHAR $*))
 		sendline ${complete ? fparse2(NICK_COMPLETION $complete $1-) : [$*]}
+	}{
+		sendline $*
 	}
 }
 
