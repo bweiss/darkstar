@@ -1,4 +1,4 @@
-#version 0.6.6
+#version 0.6.7
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key module for DarkStar/EPIC4
@@ -10,6 +10,8 @@
  * This script uses serial number 420 for all /on hooks.
  */
 
+/****** CLEANUP QUEUE ******/
+
 queue cleanup.tabkey
 {
 	^on #msg 420 -"*"
@@ -18,24 +20,31 @@ queue cleanup.tabkey
 	^on #send_dcc_chat 420 -"*"
 	^on #dcc_request 420 -"% CHAT *"
 	^on #send_ctcp 420 -"PRIVMSG % DCC CHAT *"
-
 	^alias -cleartab
-
-	@ delarray(tabkey.rules)
-	@ delarray(tabkey.rinfo)
-
 	^bind ^I toggle_insert_mode
 }
 
 
+/****** CONFIG/FORMAT VARIABLES ******/
+
 config.add TABKEY_NICK_HISTORY 6
 config.add TABKEY_NICKCOMP_SUFFIX ,
 
+
+/****** INIT ******/
+
+/*
+ * Add a module info line for display with /dinfo.
+ */
 assign MODINFO.TABKEY.1 Completion rules: $numitems(tabkey.rules)
 
-
+/*
+ * Call tabkey.process_tabkey whenever the Tab key is pressed.
+ */
 bind ^I parse_command tabkey.process_tabkey
 
+
+/****** USER ALIASES ******/
 
 alias cleartab (void)
 {
@@ -44,6 +53,8 @@ alias cleartab (void)
 	xecho -b Tabkey history cleared
 }
 
+
+/****** INTERNAL ALIASES ******/
 
 /*
  * tabkey.addrule <pattern> <procedure> [word list]
@@ -56,13 +67,12 @@ alias cleartab (void)
  */
 alias tabkey.addrule
 {
-	@ :pattern = word(0 $*)
-	^local pattern \"$pattern\"
-	@ :proc = word(1 $*)
-	@ :list = word(2 $*)
+	@:pattern = word(0 $*)
+	@:pattern = ["] ## pattern ## ["]
+	@:proc = word(1 $*)
+	@:list = word(2 $*)
 
-	if (!pattern || !proc)
-	{
+	if (!pattern || !proc) {
 		xecho -b Error: tabkey.addrule: Not enough arguments
 		return
 	}
@@ -71,17 +81,15 @@ alias tabkey.addrule
 	 * We check for > 0 here instead of > -1 because rule 0 (pattern: "")
 	 * would match rules with patterns like "*", and we don't want that.
 	 */
-	if (matchitem(tabkey.rules $pattern) > 0)
-	{
+	if (matchitem(tabkey.rules $pattern) > 0) {
 		xecho -b Error: tabkey.addrule: Pattern $pattern already exists in current rules
 		return
 	}
 
-	if (aliasctl(alias match tabkey.proc.$proc))
-	{
+	if (aliasctl(alias match tabkey.proc.$proc)) {
 		@ setitem(tabkey.rules $numitems(tabkey.rules) $pattern)
 		@ setitem(tabkey.rinfo $numitems(tabkey.rinfo) $proc${list ? [ $list] : []})
-	}{
+	} else {
 		xecho -b Error: tabkey.addrule: Invalid completion procedure [$proc]
 	}
 }
@@ -94,19 +102,16 @@ alias tabkey.addrule
  */
 alias tabkey.addnick (server, nick, void)
 {
-	if (server == [] || !nick)
-	{
+	if (server == [] || !nick) {
 		xecho -b Error: tabkey.addnick: Not enough arguments
 		return
 	}
 
-	if (match($nick $TABKEY.NICKS[$server]))
-	{
+	if (match($nick $TABKEY.NICKS[$server])) {
 		@ TABKEY.NICKS.$server = remw($nick $TABKEY.NICKS[$server])
 	}
 
-	if (numwords($TABKEY.NICKS[$server]) == CONFIG[TABKEY_NICK_HISTORY])
-	{
+	if (numwords($TABKEY.NICKS[$server]) == CONFIG.TABKEY_NICK_HISTORY) {
 		shift TABKEY.NICKS.$server
 	}
 
@@ -117,53 +122,44 @@ alias tabkey.addnick (server, nick, void)
 alias tabkey.display_rules (void)
 {
 	echo #   Pattern                    Procedure    Word List
-	for cnt from 0 to ${numitems(tabkey.rules) - 1}
-	{
-		@ :pattern = getitem(tabkey.rules $cnt)
-		@ :proc = word(0 $getitem(tabkey.rinfo $cnt))
-		@ :list = restw(1 $getitem(tabkey.rinfo $cnt))
-		@ :num = cnt + 1
+	for cnt from 0 to ${numitems(tabkey.rules) - 1} {
+		@:pattern = getitem(tabkey.rules $cnt)
+		@:proc = word(0 $getitem(tabkey.rinfo $cnt))
+		@:list = restw(1 $getitem(tabkey.rinfo $cnt))
+		@:num = cnt + 1
 		echo $[3]num $[26]pattern $[12]proc ${list ? list : []}
 	}
 }
 
 /*
- * tabkey.rmrule <pattern>
- *
  * Removes a rule that matches <pattern>. Just like everywhere else, the
  * pattern should be encased in double quotes.
  */
-alias tabkey.rmrule (...)
+alias tabkey.rmrule (pattern)
 {
-	@ :item = matchitem(tabkey.rules $*)
-	if (item > 0)
-	{
+	@:item = matchitem(tabkey.rules $pattern)
+	if (item > 0) {
 		@ delitem(tabkey.rules $item)
 		@ delitem(tabkey.rinfo $item)
 	}
 }
 
 /*
- * tabkey.show_matches <list>
- *
  * Beeps the terminal and displays the <list> of matches when the tabkey is
  * pressed a second time. This is intended to be used by the completion
  * procedures since almost all of them want it.
  */
 alias tabkey.show_matches (list)
 {
-	if (!list)
-	{
+	if (!list) {
 		return
 	}
 
 	beep
 
-	if (L == TABKEY[LAST_INPUT] && strlen($L) == strlen($TABKEY.LAST_INPUT))
-	{
+	if (L == TABKEY.LAST_INPUT && strlen($L) == strlen($TABKEY.LAST_INPUT)) {
 		xecho -b Matches:
-		for tmp in ($list)
-		{
+		for tmp in ($list) {
 			echo $tmp
 		}
 	}
@@ -174,11 +170,10 @@ alias tabkey.show_matches (list)
  */
 alias tabkey.process_tabkey (void)
 {
-	@ :item = rmatchitem(tabkey.rules "$L")
-	if (item > -1)
-	{
-		@ :rinfo = getitem(tabkey.rinfo $item)
-		@ :proc = word(0 $rinfo)
+	@:item = rmatchitem(tabkey.rules "$L")
+	if (item > -1) {
+		@:rinfo = getitem(tabkey.rinfo $item)
+		@:proc = word(0 $rinfo)
 		eval ^local list $restw(1 $rinfo)
 		tabkey.proc.$proc $list
 		@ TABKEY.LAST_INPUT = L
@@ -197,27 +192,22 @@ alias tabkey.process_tabkey (void)
 alias tabkey.array_proc (array, void)
 {
 	^local items
-	for cnt from 0 to ${numitems($array) - 1}
-	{
+	for cnt from 0 to ${numitems($array) - 1} {
 		@ push(items $getitem($array $cnt))
 	}
 
-	@ :lastc = mid(${strlen($L) - 1} 1 $L)
-	if (lastc == [ ])
-	{
-		@ :matches = items
-	}{
-		@ :lastw = word(${#L - 1} $L)
-		@ :matches = pattern($lastw% $items)
+	@:lastc = mid(${strlen($L) - 1} 1 $L)
+	if (lastc == [ ]) {
+		@:matches = items
+	} else {
+		@:lastw = word(${#L - 1} $L)
+		@:matches = pattern($lastw% $items)
 	}
 
-	if (#matches == 1)
-	{
+	if (#matches == 1) {
 		parsekey delete_to_previous_space
 		xtype -l $matches${[ ]}
-	}\
-	else if (#matches > 1)
-	{
+	} else if (#matches > 1) {
 		parsekey delete_to_previous_space
 		xtype -l $prefix($matches)
 		tabkey.show_matches $matches
@@ -226,29 +216,24 @@ alias tabkey.array_proc (array, void)
 
 alias tabkey.proc.channel (list)
 {
-	if (!list)
-	{
-		@ :list = mychannels()
+	if (!list) {
+		@:list = mychannels()
 	}
 
-	@ :lastc = mid(${strlen($L) - 1} 1 $L)
-	if (lastc == [ ])
-	{
-		@ :matches = list
-	}{
-		@ :lastw = word(${#L - 1} $L)
+	@:lastc = mid(${strlen($L) - 1} 1 $L)
+	if (lastc == [ ]) {
+		@:matches = list
+	} else {
+		@:lastw = word(${#L - 1} $L)
 		/* This allows us to complete channels with "\" in them. */
-		@ :lastw = sar(g/\\/\\\\\/$lastw)
-		@ :matches = pattern($lastw% $list)
+		@:lastw = sar(g/\\/\\\\\/$lastw)
+		@:matches = pattern($lastw% $list)
 	}
 
-	if (#matches == 1)
-	{
+	if (#matches == 1) {
 		parsekey delete_to_previous_space
 		xtype -l $matches${[ ]}
-	}\
-	else if (#matches > 1)
-	{
+	} else if (#matches > 1) {
 		parsekey delete_to_previous_space
 		xtype -l $prefix($matches)
 		tabkey.show_matches $matches
@@ -257,23 +242,18 @@ alias tabkey.proc.channel (list)
 
 alias tabkey.proc.command (void)
 {
-	if (strlen($L) == 1)
-	{
+	if (strlen($L) == 1) {
 		parsekey command_completion
-	}{
-		@ :matches = getcommands($rest(1 $L)%)
-		if (!matches)
-		{
-			@ :matches = aliasctl(alias match $rest(1 $L))
+	} else {
+		@:matches = getcommands($rest(1 $L)%)
+		if (!matches) {
+			@:matches = aliasctl(alias match $rest(1 $L))
 		}
 
-		if (#matches == 1)
-		{
+		if (#matches == 1) {
 			parsekey erase_line
 			xtype -l /$matches${[ ]}
-		}\
-		else if (#matches > 1)
-		{
+		} else if (#matches > 1) {
 			parsekey erase_line
 			xtype -l /$prefix($matches)
 			tabkey.show_matches $matches
@@ -283,20 +263,15 @@ alias tabkey.proc.command (void)
 
 alias tabkey.proc.file (void)
 {
-	@ :lastc = mid(${strlen($L) - 1} 1 $L)
-	unless (lastc == [ ])
-	{
-		@ :lastw = twiddle($word(${#L - 1} $L))
-		@ :matches = pattern($lastw% $glob($lastw*))
-		
-		if (#matches == 1)
-		{
-			@ :lastc = mid(${strlen($matches) - 1} 1 $matches)
+	@:lastc = mid(${strlen($L) - 1} 1 $L)
+	unless (lastc == [ ]) {
+		@:lastw = twiddle($word(${#L - 1} $L))
+		@:matches = pattern($lastw% $glob($lastw*))
+		if (#matches == 1) {
+			@:lastc = mid(${strlen($matches) - 1} 1 $matches)
 			parsekey delete_to_previous_space
 			xtype -l $matches${lastc == [/] ? [] : [ ]}
-		}\
-		else if (#matches > 1)
-		{
+		} else if (#matches > 1) {
 			parsekey delete_to_previous_space
 			xtype -l $prefix($matches)
 			tabkey.show_matches $matches
@@ -304,125 +279,91 @@ alias tabkey.proc.file (void)
 	}
 }
 
-alias tabkey.proc.lmods (void)
-{
-	tabkey.array_proc loaded_modules
-}
-
-alias tabkey.proc.mods (void)
-{
-	tabkey.array_proc modules
-}
+alias tabkey.proc.lmods (void)	{tabkey.array_proc loaded_modules}
+alias tabkey.proc.mods (void)		{tabkey.array_proc modules}
 
 alias tabkey.proc.msg (void)
 {
-	@ :nicks = TABKEY.NICKS[$winserv()]
-	@ :index = TABKEY.INDEX[$winserv()]
-	@ :msg_cmd = CMDCHARS ## [msg]
-	@ :trailing = restw(2 $L)
+	@:nicks = TABKEY.NICKS[$winserv()]
+	@:index = TABKEY.INDEX[$winserv()]
+	@:msg_cmd = CMDCHARS ## [msg]
+	@:trailing = restw(2 $L)
 
-	if (nicks)
-	{
-		if (index > 0)
-		{
-			@ :nick = word(${index - 1} $nicks)
+	if (nicks) {
+		if (index > 0) {
+			@:nick = word(${index - 1} $nicks)
 			@ TABKEY.INDEX.$winserv() = index - 1
-		}{
-			@ :nick = word(${numwords($nicks) - 1} $nicks)
+		} else {
+			@:nick = word(${numwords($nicks) - 1} $nicks)
 			@ TABKEY.INDEX.$winserv() = numwords($nicks) - 1
 		}
-
 		parsekey erase_line
 		xtype -l $msg_cmd $nick $trailing
-	}{
+	} else {
 		@ TABKEY.INDEX.$winserv() = [-1]
 	}
 }
 
 alias tabkey.proc.nick (list)
 {
-	if (!list)
-	{
-		@ :list = onchannel()
+	if (!list) {
+		@:list = onchannel()
 	}
 
-	@ :lastc = mid(${strlen($L) - 1} 1 $L)
-	if (lastc == [ ])
-	{
-		@ :matches = list
-	}{
-		@ :lastw = word(${#L - 1} $L)
+	@:lastc = mid(${strlen($L) - 1} 1 $L)
+	if (lastc == [ ]) {
+		@:matches = list
+	} else {
+		@:lastw = word(${#L - 1} $L)
 		/* This allows us to complete nicks with "\" in them. */
-		@ :lastw = sar(g/\\/\\\\\/$lastw)
-		if (#L < 2)
-		{
-			@ :suffix = CONFIG[TABKEY_NICKCOMP_SUFFIX] ## [ ]
-		}{
-			@ :suffix = [ ]
+		@:lastw = sar(g/\\/\\\\\/$lastw)
+		if (#L < 2) {
+			@:suffix = CONFIG.TABKEY_NICKCOMP_SUFFIX ## [ ]
+		} else {
+			@:suffix = [ ]
 		}
-		@ :matches = pattern($lastw% $list)
+		@:matches = pattern($lastw% $list)
 	}
 
-	if (#matches == 1)
-	{
+	if (#matches == 1) {
 		parsekey delete_to_previous_space
 		xtype -l $matches$suffix
-	}\
-	else if (#matches > 1)
-	{
+	} else if (#matches > 1) {
 		parsekey delete_to_previous_space
 		xtype -l $prefix($matches)
 		tabkey.show_matches $matches
 	}
 }
 
-alias tabkey.proc.config (void)
-{
-	tabkey.set_proc config
-}
-
-alias tabkey.proc.format (void)
-{
-	tabkey.set_proc format
-}
-
-alias tabkey.proc.set (void)
-{
-	tabkey.set_proc set
-}
-
+alias tabkey.proc.config (void)	{tabkey.set_proc config}
+alias tabkey.proc.format (void)	{tabkey.set_proc format}
+alias tabkey.proc.set (void)		{tabkey.set_proc set}
 alias tabkey.set_proc (type, void)
 {
-	@ :lastc = mid(${strlen($L) - 1} 1 $L)
+	@:lastc = mid(${strlen($L) - 1} 1 $L)
 	unless (lastc == [ ])
 	{
 		/* Deal with the removal of variables correctly. */
-		if (left(1 $word(1 $L)) == [-])
-		{
-			@ :rmflag = 1
-			@ :word1 = strip(- $word(1 $L))
+		if (left(1 $word(1 $L)) == [-]) {
+			@:rmflag = 1
+			@:word1 = strip(- $word(1 $L))
 		}{
-			@ :word1 = word(1 $L)
+			@:word1 = word(1 $L)
 		}
 		
-		if (tolower($type) == [set])
-		{
-			@ :matches = getsets($word1%)
-		}{
+		if (tolower($type) == [set]) {
+			@:matches = getsets($word1%)
+		} else {
 			^local matches
-			for var in ($aliasctl(assign match $type\.$word1))
-			{
-				@ push(matches $after(1 . $var))
+			for var in ($aliasctl(assign match $type\.$word1)) {
+				push matches $after(1 . $var)
 			}
 		}
 		
-		if (#matches == 1)
-		{
+		if (#matches == 1) {
 			parsekey delete_to_previous_space
 			xtype -l ${rmflag ? [-] : []}$matches${[ ]}
-		}\
-		else if (#matches > 1)
-		{
+		} else if (#matches > 1) {
 			parsekey delete_to_previous_space
 			xtype -l ${rmflag ? [-] : []}$prefix($matches)
 			tabkey.show_matches $matches
@@ -436,23 +377,22 @@ alias tabkey.proc.theme (void)
 }
 
 
+/****** ON HOOKS ******/
+
 /*
  * Add the nicks of people you are chatting with to the msg history.
  */
 for hook in (msg send_msg)
-{ 
-	on #^$hook 420 "*"
-	{
+{
+	on #^$hook 420 "*" {
 		tabkey.addnick $servernum() $0
 	}
 }
 
 for hook in (dcc_chat send_dcc_chat)
 {
-	on #^$hook 420 "*"
-	{
-		for sref in ($serverrefs())
-		{
+	on #^$hook 420 "*" {
+		for sref in ($serverrefs()) {
 			tabkey.addnick $sref =$0
 		}
 	}
@@ -460,20 +400,20 @@ for hook in (dcc_chat send_dcc_chat)
 
 on #^dcc_request 420 "% CHAT *"
 {
-	for sref in ($serverrefs())
-	{
+	for sref in ($serverrefs()) {
 		tabkey.addnick $sref =$0
 	}
 }
 
 on #^send_ctcp 420 "PRIVMSG % DCC CHAT *"
 {
-	for sref in ($serverrefs())
-	{
+	for sref in ($serverrefs()) {
 		tabkey.addnick $sref =$1
 	}
 }
 
+
+/****** STARTUP ******/
 
 /*
  * DEFAULT COMPLETION RULES

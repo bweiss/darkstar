@@ -1,4 +1,4 @@
-#version 0.4
+#version 0.4.1
 /* $Id$ */
 /*
  * window.dsm - Window module for DarkStar/EPIC4
@@ -14,8 +14,7 @@
 
 queue cleanup.window
 {
-	for alias in (swap wb wc wj wk wl wn wp wub)
-	{
+	for alias in (swap wb wc wj wk wl wn wp wub) {
 		^alias -$alias
 	}
 
@@ -27,26 +26,15 @@ queue cleanup.window
 	^on #window_kill 426 -"msgs"
 	^on #window_kill 426 -"*"
 
-	if (winnum(msgs) != -1)
-	{
-		^window msgs kill
-	}
-
-	for char in ($jot(0 9))
-	{
+	for char in ($jot(0 9)) {
 		^bind META1-$char NOTHING
 	}
-
-	for char in (n p h c k $jot(0 9))
-	{
+	for char in (n p h c k $jot(0 9)) {
 		^bind META8-$char NOTHING
 	}
-
-	for keyb in (META1-^I META5-~ META6-~ META10-~ META11-~ META12-~ META13-~)
-	{
+	for keyb in (META1-^I META5-~ META6-~ META10-~ META11-~ META12-~ META13-~) {
 		^bind $keyb NOTHING
 	}
-
 	^bind ^W NEXT_WINDOW
 	^bind ^X META2_CHARACTER
 	^bind META2-1 META32_CHARACTER
@@ -56,9 +44,11 @@ queue cleanup.window
 	^bind META2-5 META30_CHARACTER
 	^bind META2-6 META31_CHARACTER
 
-	for item in ($getrmatches(single_status msgs))
-	{
+	for item in ($getrmatches(single_status msgs)) {
 		@ delitem(single_status $item)
+	}
+	if (winnum(msgs) != -1) {
+		^window msgs kill
 	}
 }
 
@@ -75,15 +65,17 @@ config.add    MSG_WINDOW_SIZE 5
 config.add -b UNBIND_ON_PART 0
 
 
+/****** INIT ******/
+
 /*
  * Add "msgs" to the single_status array to prevent the msg window
  * from having double turned on.
  */
 @ setitem(single_status $numitems(single_status) msgs)
 
-
-/****** KEY BINDINGS ******/
-
+/*
+ * Key bindings.
+ */
 ^bind ^W META8_CHARACTER
 ^bind ^X SWITCH_CHANNELS
 ^bind META1-^I parse_command ^window next
@@ -127,7 +119,6 @@ config.add -b UNBIND_ON_PART 0
 ^bind -symbolic key_f11 TOGGLE_INSERT_MODE
 ^bind -symbolic key_f12 PARSE_COMMAND if (winnum(msgs) != -1) {window msgs clear}
 
-
 /*
  * Force the loading of saved settings early
  * so the following /if commands can use them.
@@ -139,18 +130,13 @@ module.load_saved_settings
  */
 if (CONFIG.AUTO_CREATE_WINDOWS)
 {
-	for cnt from 0 to $CONFIG.AUTO_CREATE_WINDOWS
-	{
-		@ :autobind_chan = word($cnt $CONFIG.AUTO_BIND_CHANNELS)
-		@ :win = cnt + 1
-
-		if (winnum($win) == -1)
-		{
+	for cnt from 0 to $CONFIG.AUTO_CREATE_WINDOWS {
+		@:autobind_chan = word($cnt $CONFIG.AUTO_BIND_CHANNELS)
+		@:win = cnt + 1
+		if (winnum($win) == -1) {
 			window new $CONFIG.AUTO_CREATE_WINDOW_ARGS
 		}
-		
-		if (autobind_chan)
-		{
+		if (autobind_chan) {
 			window $win bind $autobind_chan
 		}
 	}
@@ -207,37 +193,18 @@ alias wj (chan)
 	}
 }
 
-alias wk (void)
-{
-	window kill
-}
-
-alias wl (void)
-{
-	window last
-}
-
-alias wn (void)
-{
-	window next
-}
-
-alias wp (void)
-{
-	window previous
-}
-
-alias wub (void)
-{
-	window unbind
-}
+alias wk  {window kill}
+alias wl  {window last}
+alias wn  {window next}
+alias wp  {window previous}
+alias wub {window unbind}
 
 
 /****** INTERNAL ALIASES ******/
 
 alias window.msgwin_up (void)
 {
-	@ :cwin = winnum()
+	@:cwin = winnum()
 	^window ref msgs
 	parsekey SCROLL_BACKWARD
 	^window ref $cwin
@@ -245,7 +212,7 @@ alias window.msgwin_up (void)
 
 alias window.msgwin_down (void)
 {
-	@ :cwin = winnum()
+	@:cwin = winnum()
 	^window ref msgs
 	parsekey SCROLL_FORWARD
 	^window ref $cwin

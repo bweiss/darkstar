@@ -1,4 +1,4 @@
-#version 0.1
+#version 0.1.1
 /* $Id$ */
 /*
  * oper.dsm - IRC Operator module for DarkStar/EPIC4
@@ -10,24 +10,33 @@
  * This script uses serial number 427 for all /on hooks.
  */
 
+/****** CLEANUP QUEUE ******/
+
 queue cleanup.oper
 {
 	^alias -operwall
 	^on #381 427 -"*"
 }
 
+
+/****** CONFIG/FORMAT VARIABLES ******/
+
 config.add OPER_UMODES wzsky
 
 
+/****** USER ALIASES ******/
+
 alias operwall (text)
 {
-	if (text)
-	{
+	if (text) {
 		//quote operwall :$text
-	}{
+	} else {
 		xecho -b Usage: /operwall <text>
 	}
 }
+
+
+/****** ON HOOKS ******/
 
 on #^381 427 "*"
 {

@@ -1,4 +1,4 @@
-#version 0.5
+#version 0.5.1
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
@@ -14,19 +14,15 @@
 
 queue cleanup.channel
 {
-	for alias in (alldeop alldop allop ban bankick banlist bans bk cmode cycle deop dop devoice dvoice i invite j join k kb key kick kickban l leave lk massmode mdeop mdop mdevoice mdvoice mme mop msay mvoice oldtopic op part partall setoldtopic t tban tempban unban unkey untopic voice wall wall2)
-	{
+	for alias in (alldeop alldop allop ban bankick banlist bans bk cmode cycle deop dop devoice dvoice i invite j join k kb key kick kickban l leave lk massmode mdeop mdop mdevoice mdvoice mme mop msay mvoice oldtopic op part partall setoldtopic t tban tempban unban unkey untopic voice wall wall2) {
 		^alias -$alias
 	}
-
+	for hook in (332 333 367 368 369 action channel_signoff channel_sync join kick leave mode public public_other send_public topic) {
+		^on $hook -"*"
+	}
 	^on public -'% % *\\\\\[\$CONFIG.AUTO_RESPONSE_STR\\\\\]*'
 	^on public_other -'% % *\\\\\[\$CONFIG.AUTO_RESPONSE_STR\\\\\]*'
 	^on send_action -'\\\\\[#* &* +*\\\\\] *'
-
-	for hook in (332 333 367 368 369 action channel_signoff channel_sync join kick leave mode public public_other send_public topic)
-	{
-		^on $hook -"*"
-	}
 }
 
 
@@ -79,8 +75,7 @@ alias alldeop (nicks)
 		return
 	}
 
-	for chan in ($mychannels())
-	{
+	for chan in ($mychannels()) {
 		for nick in ($nicks) {
 			if (ischanop($servernick() $chan) && ischanop($nick $chan)) {
 				//mode $chan -o $nick
@@ -92,12 +87,11 @@ alias alldeop (nicks)
 alias allop (nicks)
 {
 	if (!nicks) {
-		xecho -b Usage: /allop <nick1> [nick2] [nick3] ...
+		xecho -b Usage: /allop <nick> ...
 		return
 	}
 
-	for chan in ($mychannels())
-	{
+	for chan in ($mychannels()) {
 		for nick in ($nicks) {
 			if (ischanop($servernick() $chan) && onchannel($nick $chan) && !ischanop($nick $chan)) {
 				//mode $chan +o $nick
@@ -115,8 +109,7 @@ alias ban (targets)
 		return
 	}
 
-	for target in ($targets)
-	{
+	for target in ($targets) {
 		if (onchannel($target $C)) {
 			push bans $mask($CONFIG.BANTYPE $userhost($target))
 		} else {
@@ -157,7 +150,7 @@ alias cmode (mode, ...)
 
 alias cycle (chan default "$C", void)
 {
-	@ :key = key($chan)
+	@:key = key($chan)
 	//part $chan
 	wait
 	//join $chan $key
@@ -167,7 +160,7 @@ alias dop deop
 alias deop (nicks)
 {
 	if (!nicks) {
-		xecho -b Usage: /deop <nick1> [nick2] ...
+		xecho -b Usage: /deop <nick> ...
 		return
 	}
 
@@ -178,7 +171,7 @@ alias dvoice devoice
 alias devoice (nicks)
 {
 	if (!nicks) {
-		xecho -b Usage: /devoice <nick1> [nick2] ...
+		xecho -b Usage: /devoice <nick> ...
 		return
 	}
 
@@ -287,10 +280,9 @@ alias lk (reason default "$CONFIG.DEFAULT_KICK_REASON")
 
 	^local ask $"Kick all non-ops from $C? "
 
-	if (toupper($left(1 $ask)) == [Y])
-	{
+	if (toupper($left(1 $ask)) == [Y]) {
 		for user in ($channel()) {
-			@ :nick = mid(2 $strlen($user) $user)
+			@:nick = mid(2 $strlen($user) $user)
 			if (match(.. $left(2 $user))) {
 				//kick $C $nick $reason
 			} else if (match(.? $left(2 $user))) {
@@ -315,10 +307,9 @@ alias massmode (chan, action, mode, ...)
 	fe ($*) $tmp
 	{
 		^local nicks
-		for (@ :cnt = 1, mode[$cnt], @ :cnt++) {
+		for (@:cnt = 1, mode[$cnt], @:cnt++) {
 			eval push nicks \$mode[$cnt]
 		}
-
 		//mode $chan $action$repeat($#nicks $mode) $nicks
 	}
 }
@@ -338,10 +329,10 @@ alias mdevoice (chan default "$C", void)
 alias mme
 {
 	if (pattern($0* -all)) {
-		@ :all_servers = 1
-		@ :text = [$1-]
+		@:all_servers = 1
+		@:text = [$1-]
 	} else {
-		@ :text = [$*]
+		@:text = [$*]
 	}
 
 	if (!text) {
@@ -370,10 +361,10 @@ alias mop (chan default "$C", void)
 alias msay
 {
 	if (pattern($0* -all)) {
-		@ :all_servers = 1
-		@ :text = [$1-]
+		@:all_servers = 1
+		@:text = [$1-]
 	} else {
-		@ :text = [$*]
+		@:text = [$*]
 	}
 
 	if (!text) {
@@ -401,7 +392,7 @@ alias mvoice (chan default "$C", void)
 
 alias oldtopic (chan default "$C", void)
 {
-	@ :oldtopic = gettmatch(channel.oldtopics $chan*)
+	@:oldtopic = gettmatch(channel.oldtopics $chan*)
 	if (oldtopic) {
 		xecho -b Last topic for $chan: $restw(1 $oldtopic)
 	} else {
@@ -412,7 +403,7 @@ alias oldtopic (chan default "$C", void)
 alias op (nicks)
 {
 	if (!nicks) {
-		xecho -b Usage: /op <nick1> [nick2] [...]
+		xecho -b Usage: /op <nick> ...
 		return
 	}
 
@@ -433,7 +424,7 @@ alias partall (void)
 
 alias setoldtopic (chan default "$C", void)
 {
-	@ :oldtopic = gettmatch(channel.oldtopics $chan*)
+	@:oldtopic = gettmatch(channel.oldtopics $chan*)
 	if (oldtopic) {
 		//topic $oldtopic
 	} else {
@@ -447,8 +438,7 @@ alias tban (chan default "$C", void)
 {
 	@ delarray(channel.tban)
 
-	^on #^367 424 "% $chan *"
-	{
+	^on #^367 424 "% $chan *" {
 		@ setitem(channel.tban $numitems(channel.tban) $*)
 	}
 
@@ -458,10 +448,9 @@ alias tban (chan default "$C", void)
 		^local chan $2
 		^local tmp $"Which ban(s) to remove? (1, 2-5, ...) "
 
-		for bannum in ($tmp)
-		{
-			@ :startban = before(- $bannum)
-			@ :endban = after(- $bannum)
+		for bannum in ($tmp) {
+			@:startban = before(- $bannum)
+			@:endban = after(- $bannum)
 			if (startban < endban && startban < numitems(channel.tban) && endban <= numitems(channel.tban)) {
 				for cnt from $startban to $endban {
 					push bans $word(2 $getitem(channel.tban ${cnt - 1}))
@@ -479,10 +468,9 @@ alias tban (chan default "$C", void)
 		fe ($bans) $tmp
 		{
 			^local masks
-			for (@ :cnt = 1, mode[$cnt], @ :cnt++) {
+			for (@:cnt = 1, mode[$cnt], @:cnt++) {
 				eval push masks \$mode[$cnt]
 			}
-
 			//mode $chan -$repeat($#masks b) $masks
 		}
 
@@ -536,13 +524,17 @@ alias untopic (chan default "$C", void)
 alias voice (nicks)
 {
 	if (!nicks) {
-		xecho -b Usage: /voice <nick1> [nick2] [...]
+		xecho -b Usage: /voice <nick> ...
 		return
 	}
 
 	massmode $C + v $nicks
 }
 
+/*
+ * Sends a notice to all +o nicks in the current channel,
+ * seven at a time.
+ */
 alias wall (text)
 {
 	if (!text) {
@@ -553,10 +545,13 @@ alias wall (text)
 	fe ($filter($N $chops())) o1 o2 o3 o4 o5 o6 o7 {
 		^notice $o1,$o2,$o3,$o4,$o5,$o6,$o7 [wall/$C] $text
 	}
-
 	xecho -l walls -- * > [wall/$C] $text
 }
 
+/*
+ * This is the same as /wall but only sends one nick per command
+ * sent to the server.
+ */
 alias wall2 (text)
 {
 	if (!text) {
@@ -564,7 +559,12 @@ alias wall2 (text)
 		return
 	}
 
-	^notice $sar(g/#/#@/$C) [wall/$C] $text
+#	^notice $sar(g/#/#@/$C) [wall/$C] $text
+#	xecho -l walls -- * > [wall/$C] $text
+
+	for nick in ($filter($N $chops())) {
+		^notice $nick [wall/$C] $text
+	}
 	xecho -l walls -- * > [wall/$C] $text
 }
 
@@ -595,7 +595,6 @@ on ^333 "*"
 	}
 }
 
-
 /*
  * Ban list stuff (367 368 369)
  */
@@ -608,23 +607,20 @@ on ^368 "*"
 {
 	if ([$1] > 0)
 	{
-		for var in (BANS_HEADER BANS_HEADER1 BANS_HEADER2)
-		{
+		for var in (BANS_HEADER BANS_HEADER1 BANS_HEADER2) {
 			if (FORMAT[$var]) {
 				echo $fparse($var $*)
 			}
 		}
 
-		if (FORMAT.BANS)
-		{
-			@ :endcnt = numitems(channel.banlist.$2) - 1
+		if (FORMAT.BANS) {
+			@:endcnt = numitems(channel.banlist.$2) - 1
 			for cnt from 0 to $endcnt {
 				echo $fparse(BANS ${cnt + 1} $getitem(channel.banlist.$2 $cnt))
 			}
 		}
 
-		for var in (BANS_FOOTER BANS_FOOTER1 BANS_FOOTER2)
-		{
+		for var in (BANS_FOOTER BANS_FOOTER1 BANS_FOOTER2) {
 			if (FORMAT[$var]) {
 				echo $fparse($var $*)
 			}
@@ -790,14 +786,12 @@ on ^topic "*"
 		}
 	}
 
-	@ :topic_itm = matchitem(channel.topics $1*)
-	if (topic_itm > -1)
-	{
-		@ :oldtopic_itm = matchitem(channel.oldtopics $1*)
+	@:topic_itm = matchitem(channel.topics $1*)
+	if (topic_itm > -1) {
+		@:oldtopic_itm = matchitem(channel.oldtopics $1*)
 		if (oldtopic_itm > -1) {
 			@ delitem(channel.oldtopics $oldtopic_itm)
 		}
-
 		@ setitem(channel.oldtopics $numitems(channel.oldtopics) $getitem(channel.topics $topic_itm))
 		@ delitem(channel.topics $topic_itm)
 	}

@@ -1,4 +1,4 @@
-#version 0.1
+#version 0.1.1
 /* $Id$ */
 /*
  * dcc.dsm - DCC related module for DarkStar/EPIC4
@@ -10,6 +10,8 @@
  * This script uses serial numbers 0 and 450 for /on hooks.
  */
 
+/****** CLEANUP QUEUE ******/
+
 queue cleanup.dcc
 {
 	^alias -chat
@@ -19,11 +21,15 @@ queue cleanup.dcc
 }
 
 
+/****** CONFIG/FORMAT VARIABLES ******/
+
 config.add -b DCC_AUTOGET 0
 
 format.add DCC_CHAT [$Z] DCC <$1> $2-
 format.add SEND_DCC_CHAT [$Z] SEND_DCC $1> $2-
 
+
+/****** USER ALIASES ******/
 
 alias chat (nick, void)
 {
@@ -36,32 +42,29 @@ alias chat (nick, void)
 }
 
 
+/****** ON HOOKS ******/
+
 /*
- * DCC autoget.
+ * DCC auto-get.
  */
 on #-dcc_request 450 "% SEND *"
 {
-	if (CONFIG[DCC_AUTOGET]) {
+	if (CONFIG.DCC_AUTOGET) {
 		xecho -b DCC AutoGet: Accepting SEND of $2 from $0
 		dcc get $0 $2
 	}
 }
 
-
-/*
- * FORMAT HOOKS
- */
-
 on ^dcc_chat "*"
 {
-	if (FORMAT[DCC_CHAT]) {
+	if (FORMAT.DCC_CHAT) {
 		echo $fparse(DCC_CHAT $*)
 	}
 }
 
 on ^send_dcc_chat "*"
 {
-	if (FORMAT[SEND_DCC_CHAT]) {
+	if (FORMAT.SEND_DCC_CHAT) {
 		echo $fparse(SEND_DCC_CHAT $*)
 	}
 }

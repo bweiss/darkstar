@@ -1,21 +1,28 @@
-#version 1.0.1
+#version 1.0.2
 /* $Id$ */
 /*
  * nickcomp.dsm - Nick completion module for DarkStar/EPIC4
  *
- * Written by shade and modified for DarkStar by Brian Weiss.
+ * Written by shade <shade@chemlab.org>
+ * Modified for DarkStar by Brian Weiss <brian@epicsol.org>
  *
  * This script uses serial number 0 for all /on hooks.
  *
  * Most of this was taken from the nick completion module that shade wrote
  * for my BitchX/EPIC4 script called playdough. He deserves most of the
- * credit. Please send bug reports to me, not shade. -bmw
+ * credit, but I am the one maintaining it. Please send bug reports to me,
+ * not shade. -Brian
  */
+
+/****** CLEANUP QUEUE ******/
 
 queue cleanup.nickcomp
 {
 	^on input -"%: *"
 }
+
+
+/****** CONFIG/FORMAT VARIABLES ******/
 
 config.add -b NICK_COMPLETION 1
 config.add    NICK_COMPLETION_CHAR :
@@ -23,22 +30,25 @@ config.add    NICK_COMPLETION_CHAR :
 format.add NICK_COMPLETION $1: $2-
 
 
+/****** INTERNAL ALIASES ******/
+
 alias nickcomp.getnick
 {
-	for patt in (%$0% ?$0? %$0 ?$0 $0% $0? $0)
-	{
-		@ :findnick = pattern($patt $onchannel($C))
+	for patt in (%$0% ?$0? %$0 ?$0 $0% $0? $0) {
+		@:findnick = pattern($patt $onchannel($C))
 		@ function_return = findnick ? word(0 $findnick) : function_return
 	}
 }
 
+
+/****** ON HOOKS ******/
+
 on ^input "%: *"
 {
-	if (CONFIG[NICK_COMPLETION])
-	{
-		@ :complete = nickcomp.getnick($before($CONFIG.NICK_COMPLETION_CHAR $*))
+	if (CONFIG.NICK_COMPLETION) {
+		@:complete = nickcomp.getnick($before($CONFIG.NICK_COMPLETION_CHAR $*))
 		sendline ${complete ? fparse2(NICK_COMPLETION $complete $1-) : [$*]}
-	}{
+	} else {
 		sendline $*
 	}
 }

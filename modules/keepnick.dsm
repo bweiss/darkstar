@@ -1,4 +1,4 @@
-#version 0.2
+#version 0.2.1
 /* $Id$ */
 /*
  * keepnick.dsm - Keepnick/Getnick module for DarkStar/EPIC4
@@ -10,40 +10,41 @@
  * This script uses serial numbers 422 and 423 for /on hooks.
  */
 
+/****** CLEANUP QUEUE ******/
+
 queue cleanup.keepnick
 {
 	^alias -getnick
-	@ keepnick.getnick_cleanup()
+	keepnick.getnick_cleanup
 	^on #timer 423 -"*"
 }
 
+
+/****** CONFIG/FORMAT VARIABLES ******/
 
 config.add -b KEEPNICK 0
 config.add    KEEPNICK_NICK <your_nick>
 
 
+/****** USER ALIASES ******/
+
 alias getnick (nick, void)
 {
 	if (nick && nick != servernick())
 	{
-		switch ($nick)
-		{
-			(-)
-			{
-				if (_GETNICK)
-				{
-					@ keepnick.getnick_cleanup()
+		switch ($nick) {
+			(-) {
+				if (_GETNICK) {
+					keepnick.getnick_cleanup
 					xecho -b Getnick has been disabled
-				}{
+				} else {
 					xecho -b Getnick is not active
 				}
 			}
 
-			(*)
-			{
-				if (_GETNICK)
-				{
-					@ keepnick.getnick_cleanup()
+			(*) {
+				if (_GETNICK) {
+					keepnick.getnick_cleanup
 				}
 
 				xecho -b Getnick attempting to gain nick [$nick]
@@ -54,26 +55,21 @@ alias getnick (nick, void)
 				{
 					xecho -b Changing nick to [$_GETNICK]
 					//nick $_GETNICK
-					@ keepnick.getnick_cleanup()
+					keepnick.getnick_cleanup
 				}{
-					^on #-notify_signoff 422 '\$_GETNICK'
-					{
+					^on #-notify_signoff 422 '\$_GETNICK' {
 						xecho -b Changing nick to [$0]
 						//nick $0
-						@ keepnick.getnick_cleanup()
+						keepnick.getnick_cleanup
 					}
 
-					^on #-timer 422 "*"
-					{
-						if (CONFIG[KEEPNICK] && servernick() == CONFIG[KEEPNICK_NICK])
-						{
+					^on #-timer 422 "*" {
+						if (CONFIG.KEEPNICK && servernick() == CONFIG.KEEPNICK_NICK) {
 							getnick -
-						}\
-						else if (S && servernick() != [<not registered yet>] && !is_on($_GETNICK))
-						{
+						} else if (S && servernick() != [<not registered yet>] && !is_on($_GETNICK)) {
 							xecho -b Changing nick to [$_GETNICK]
 							//nick $_GETNICK
-							@ keepnick.getnick_cleanup()
+							keepnick.getnick_cleanup
 						}
 					}
 
@@ -82,16 +78,17 @@ alias getnick (nick, void)
 			}
 		}
 	}{
-		if (nick == servernick())
-		{
+		if (nick == servernick()) {
 			xecho -b Your current nick is already [$nick]
-		}{
+		} else {
 			xecho -b Getnick is *${_GETNICK ? [active] : [inactive]}* [$_GETNICK]
 			xecho -b Usage: /getnick <nick|->
 		}
 	}
 }
 
+
+/****** INTERNAL ALIASES ******/
 
 alias keepnick.getnick_cleanup (void)
 {
@@ -100,14 +97,14 @@ alias keepnick.getnick_cleanup (void)
 	defer ^notify -$_GETNICK
 	^assign -_GETNICK
 	^assign -MODINFO.KEEPNICK.GETNICK
-
-	return
 }
+
+
+/****** ON HOOKS ******/
 
 on #-timer 423 "*"
 {
-	if (S && CONFIG[KEEPNICK] && servernick() != [<not registered yet>] && !_GETNICK && servernick() != CONFIG[KEEPNICK_NICK])
-	{
+	if (S && CONFIG.KEEPNICK && servernick() != [<not registered yet>] && !_GETNICK && servernick() != CONFIG.KEEPNICK_NICK) {
 		xecho -b Oops! We're using the wrong nick! Running getnick...
 		getnick $CONFIG.KEEPNICK_NICK
 	}

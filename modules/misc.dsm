@@ -1,4 +1,4 @@
-#version 0.7.1
+#version 0.7.2
 /* $Id$ */
 /*
  * misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
@@ -14,16 +14,12 @@
 
 queue cleanup.misc
 {
-	for alias in (dns disco m nslookup ping q tig umode ver whois wi wii ww)
-	{
+	for alias in (dns disco m nslookup ping q tig umode ver whois wi wii ww) {
 		^alias -$alias
 	}
-
-	for hook in (301 307 $jot(310 315) $jot(317 320) ctcp ctcp_reply msg notice send_msg send_notice)
-	{
+	for hook in (301 307 $jot(310 315) $jot(317 320) ctcp ctcp_reply msg notice send_msg send_notice) {
 		^on $hook -"*"
 	}
-
 	^on action -'% \$servernick() *'
 	^on #connect 424 -"*"
 	^on mode -'\$servernick() \$servernick() *' 
@@ -79,15 +75,18 @@ format.add WHOWAS_NICK $G $2 %c\(%n$3%c@%n$4%c\)%n
 format.add UMODE $G Mode change \"$3-\" for user $2 by $1
 
 
+/****** INIT ******/
+
 /*
  * Force loading of our saved settings now. At the moment this is just
  * here for IGNORE_CTCP_FINGER.
  */
 module.load_saved_settings
 
-
-if (CONFIG.IGNORE_CTCP_FINGER)
-{
+/*
+ * Add the raw_irc hook needed to ignore CTCP FINGER requests.
+ */
+if (CONFIG.IGNORE_CTCP_FINGER) {
 	^on ^raw_irc "% PRIVMSG % :AFINGERA" {
 		xecho -b CTCP FINGER request received from $before(1 ! $0), ignoring...
 	}
@@ -100,18 +99,15 @@ alias disco disconnect
 
 alias dns (nicks)
 {
-	if (!nicks)
-	{
+	if (!nicks) {
 		xecho -b Usage: /dns <nick> ...
 		return
 	}
 
-	for nick in ($nicks)
-	{
-		if (is_on($nick))
-		{
-			@ :address = after(-1 @ $userhost($nick))
-		}{
+	for nick in ($nicks) {
+		if (is_on($nick)) {
+			@:address = after(-1 @ $userhost($nick))
+		} else {
 			xecho -b User $nick is not online
 		}
 		xecho -b $nick!$userhost($nick) is ${convert($address) ? convert($address) : [unknown]}
@@ -122,15 +118,13 @@ alias m msg
 
 alias nslookup
 {
-	if (![$*])
-	{
+	if (![$*]) {
 		xecho -b Usage: /nslookup <address> ...
 		return
 	}
 
-	for addr in ($*)
-	{
-		@ :tmp = convert($addr)
+	for addr in ($*) {
+		@:tmp = convert($addr)
 		xecho -b $addr is ${tmp ? tmp : [unknown]}
 	}
 }
@@ -154,18 +148,17 @@ alias tig (void)
 	/* Display ignore list. */
 	xecho -b Ignorance list:
 	for cnt from 0 to ${numitems(misc.tig) - 1} {
-		@ :line = getitem(misc.tig $cnt)
-		@ :num = cnt + 1
+		@:line = getitem(misc.tig $cnt)
+		@:num = cnt + 1
 		echo  $[3]num $[30]word(0 $line) $restw(1 $line)
 	}
 
 	^local tmp $"Which ignore(s) to remove? (1, 2-5, ...) "
 
 	/* Remove any of the ignores that the user specified above. */
-	for ignum in ($tmp)
-	{
-		@ :start = before(- $ignum)
-		@ :end = after(- $ignum)
+	for ignum in ($tmp) {
+		@:start = before(- $ignum)
+		@:end = after(- $ignum)
 		if (start < end && start < numitems(misc.tig) && end <= numitems(misc.tig)) {
 			for cnt from $start to $end {
 				//ignore $word(0 $getitem(misc.tig ${cnt - 1})) NONE
@@ -189,11 +182,10 @@ alias ver (nick default "$servernick()", void)
 alias wi whois
 alias whois (args)
 {
-	@ :item = matchitem(misc.away_users $word(0 $args)*)
+	@:item = matchitem(misc.away_users $word(0 $args)*)
 	if (item > -1) {
 		@ delitem(misc.away_users $item)
 	}
-
 	//whois $args
 }
 
@@ -209,15 +201,13 @@ alias ww whowas
 
 on ^301 "*"
 {
-	if (FORMAT.WHOIS_AWAY)
-	{
-		if (CONFIG.SHOW_AWAY_ONCE)
-		{
+	if (FORMAT.WHOIS_AWAY) {
+		if (CONFIG.SHOW_AWAY_ONCE) {
 			if (matchitem(misc.away_users $0*) == -1) {
 				echo $fparse(WHOIS_AWAY $*)
 				@ setitem(misc.away_users $numitems(misc.away_users) $0 $time())
 			}
-		}{
+		} else {
 			echo $fparse(WHOIS_AWAY $*)
 		}
 	}
@@ -310,6 +300,18 @@ on ^319 "*"
 {
 	if (FORMAT.WHOIS_CHANNELS_WRAP)
 	{
+		/*
+		 * Okay, here we go... The following attempts to do some
+		 * intelligent line wrapping with the list of channels returned
+		 * for a WHOIS request. It will fit as many channels per line
+		 * as possible, _after_ being passed through $fparse(). If a
+		 * single channel is larger than what can be displayed on one
+		 * line, we give up and let EPIC handle it.
+		 *
+		 * NOTE: The WHOIS_CHANNELS variable will still be used for
+		 * the first line, and the WHOIS_CHANNELS_WRAP variable will
+		 * be used for all proceeding lines.
+		 */
 		^local format_var WHOIS_CHANNELS
 		^local channels
 		for chan in ($2-) {
@@ -331,9 +333,14 @@ on ^319 "*"
 		if (channels) {
 			echo $fparse($format_var $0 $1 $channels)
 		}
-	}\
-	else if (FORMAT.WHOIS_CHANNELS) {
-		echo $fparse(WHOIS_CHANNELS $*)
+	}{
+		/*
+		 * Don't do anything special with the list of channels,
+		 * just output everything on a single line.
+		 */
+		if (FORMAT.WHOIS_CHANNELS) {
+			echo $fparse(WHOIS_CHANNELS $*)
+		}
 	}
 }
 
@@ -358,7 +365,6 @@ on ^369 "*"
  * Default user modes
  */
 on #^connect 424 "*" //mode $servernick() $CONFIG.DEFAULT_UMODES
-
 
 on ^action '% $servernick() *'
 {
@@ -437,8 +443,8 @@ on #-timer 424 "*"
 {
 	^local delete
 	for cnt from 0 to ${numitems(misc.away_users) - 1} {
-		@ :ts = word(1 $getitem(misc.away_users $cnt))
-		if ((time() - ts) > CONFIG[SHOW_AWAY_ONCE_TIMEOUT]) {
+		@:ts = word(1 $getitem(misc.away_users $cnt))
+		if ((time() - ts) > CONFIG.SHOW_AWAY_ONCE_TIMEOUT) {
 			@ push(delete $cnt)
 		}
 	}
@@ -450,15 +456,14 @@ on #-timer 424 "*"
 
 on ^who "* % % % % *"
 {
-	if (!MISC.WHO_HEADER_DONE)
-	{
+	if (!MISC.WHO_HEADER_DONE) {
 		for var in (WHO_HEADER WHO_HEADER1 WHO_HEADER2) {
 			if (FORMAT[$var]) {
 				echo $fparse($var $*)
 			}
 		}
 		/* This is removed by the 315 numeric (WHO_FOOTER) */
-		^assign MISC.WHO_HEADER_DONE 1
+		@ MISC.WHO_HEADER_DONE = 1
 	}
 
 	if (FORMAT.WHO) {
@@ -467,16 +472,15 @@ on ^who "* % % % % *"
 }
 
 /*
- * Add or remove the /on hook needed for IGNORE_CTCP_FINGER.
+ * Add or remove the raw_irc hook for IGNORE_CTCP_FINGER.
  */
 on #-hook 426 "CONFIG IGNORE_CTCP_FINGER *"
 {
-	if (CONFIG.IGNORE_CTCP_FINGER)
-	{
+	if (CONFIG.IGNORE_CTCP_FINGER) {
 		^on ^raw_irc "% PRIVMSG % :FINGER" {
 			xecho -b CTCP FINGER request received from $before(1 ! $0), ignoring...
 		}
-	}{
+	} else {
 		^on raw_irc -"% PRIVMSG % :FINGER"
 	}
 }

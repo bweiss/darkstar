@@ -14,8 +14,7 @@
 
 queue cleanup.names
 {
-	for alias in (names sc scan scann scano scanv)
-	{
+	for alias in (names sc scan scann scano scanv) {
 		^alias -$alias
 	}
 	^on 353 -"*"
@@ -85,12 +84,12 @@ alias names.main (chan default "$C", mode default "*", void)
 	switch ($tolower($mode))
 	{
 		(n) {
-			@ :desc = [normal users]
-			@ :users = nochops($chan)
+			@:desc = [normal users]
+			@:users = nochops($chan)
 		}
 		(o) {
-			@ :desc = [channel operators]
-			@ :users = chops($chan)
+			@:desc = [channel operators]
+			@:users = chops($chan)
 		}
 		(v) {
 			^local desc voiced users
@@ -101,7 +100,7 @@ alias names.main (chan default "$C", mode default "*", void)
 			}
 		}
 		(*) {
-			@ :desc = [users]
+			@:desc = [users]
 			if (CONFIG.NAMES_SORT_BY_MODE) {
 				push users $chops($chan)
 				push users $nochops($chan)
@@ -151,7 +150,7 @@ alias names.main (chan default "$C", mode default "*", void)
 				push line \$fparse(NAMES_LEFT $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
 			}
 
-			for (@ :cnt = 1, cnt <= numwords($tmp), @ cnt++)
+			for (@:cnt = 1, cnt <= numwords($tmp), @:cnt++)
 			{
 				/*
 				 * The call to $names.parse() doesn't actually
@@ -173,7 +172,7 @@ alias names.main (chan default "$C", mode default "*", void)
 							push line \$FORMAT.NAMES_MID
 						}
 					} else {
-						@ :foo = cnt + 1
+						@:foo = cnt + 1
 						if (nick[$foo]) {
 							push line \$FORMAT.NAMES_MID
 						}
@@ -248,8 +247,7 @@ on ^366 "*"
  */
 on #-hook 428 "CONFIG NAMES_COL *"
 {
-	if (!isnumber($CONFIG.NAMES_COL b10) && CONFIG.NAMES_COL)
-	{
+	if (!isnumber($CONFIG.NAMES_COL b10) && CONFIG.NAMES_COL) {
 		xecho -b Value must be an integer
 		^assign CONFIG.NAMES_COL $2
 		xecho -b Value of NAMES_COL set back to $2
