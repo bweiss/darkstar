@@ -1,0 +1,64 @@
+/*     _             _        _
+ *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
+ * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
+ * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
+ *
+ * SCAN.DSM - /SCAN module for Darkstar/EPIC4
+ * Author: Brian Weiss <brian@got.net> - 2001
+ */
+
+/*
+queue cleanup.scan
+{
+	for alias in ($aliasctl(alias match scan.))
+	{
+		^alias -$alias
+	}
+	
+	^alias -sc
+	^alias -scan
+	^assign -SCAN.CHAN
+}
+*/
+
+alias sc scan
+
+alias scan (chan default "$C", void)
+{
+	if (match($chan $mychannels()))
+	{
+		if (FORMAT[SCAN_HEADER])
+		{
+			xecho -b $fparse(SCAN_HEADER $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
+		}
+
+		fe ($onchannel($chan)) n1 n2 n3 n4 n5 n6
+		{
+			xecho -b $fparse(SCAN $chan $n1 $n2 $n3 $n4 $n5 $n6)
+		}
+
+		if (FORMAT[SCAN_FOOTER])
+		{
+			xecho -b $fparse(SCAN_FOOTER $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
+		}
+	}
+}
+
+on ^353 "*"
+{
+	^assign SCAN.CHAN $2
+}
+
+on ^366 "*"
+{
+	scan $SCAN.CHAN
+	^assign -SCAN.CHAN
+}
+
+alias scan.getov (chan, nick, void)
+{
+	@ function_return = ischanop($nick $chan) ? fparse(SCAN_OP) : (ischanvoice($nick $chan) == 1 ? fparse(SCAN_VOICE) : [ ])
+}
+
+
+/* bmw '01 */

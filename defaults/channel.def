@@ -1,0 +1,24 @@
+config:AUTO_RESPONSE:0
+config:AUTO_RESPONSE_BEEP:0
+config:AUTO_RESPONSE_STR:
+config:BANTYPE:3
+config:DEFAULT_KICK_REASON:No soup for you!
+config:MAX_NICK_LENGTH:9
+config:SHOW_OPVOICE_IN_PUBLICS:0
+fset:BANS:$[3]1 $[12]5  $strftime($6 %x@%X)  $4
+fset:BANS_FOOTER:$G Total bans on $3: $2
+fset:BANS_HEADER:#   SetBy         When               Ban
+fset:CHANNEL_SIGNOFF:SignOff $1: $2 \($3-%n\) [$tolower($Z)]
+fset:CHANNEL_SYNC:Channel $1 synced in $2 seconds
+fset:JOIN:$1 \($2\) has joined $3 at $Z
+fset:LEAVE:$1 \($2\) has left $3 at $Z
+fset:MODE:Mode change \"$3-\" on channel $2 by $1
+fset:PUBLIC:<$1> $3-
+fset:PUBLIC_AR:<%W$1%n> $3-
+fset:PUBLIC_OTHER:<$1:$2> $3-
+fset:PUBLIC_OTHER_AR:<%W$1%n:$2> $3-
+fset:SEND_PUBLIC:<$2> $3-
+fset:SEND_PUBLIC_OTHER:<$1:$2> $3-
+fset:TOPIC:Topic for $2: $3-
+fset:TOPIC_CHANGE:$1 has changed the topic on channel $2 to $3-
+fset:TOPIC_SETBY:The topic was set by $3 on $getstrftime($4)

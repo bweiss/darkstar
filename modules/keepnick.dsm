@@ -1,0 +1,111 @@
+/*     _             _        _
+ *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
+ * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
+ * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
+ *
+ * KEEPNICK.DSM - Keepnick/Getnick module for Darkstar/EPIC4
+ * Author: Brian Weiss <brian@got.net> - 2001
+ *
+ * This script uses serial numbers 422 and 423 for all ON hooks.
+ */
+
+/*
+queue cleanup.keepnick
+{
+	^alias -getnick
+	^alias -getnick.cleanup
+	@ getnick.cleanup()
+	^on #timer 423 -"*"
+}
+*/
+
+alias getnick (nick, void)
+{
+	if (nick && nick != servernick())
+	{
+		switch ($nick)
+		{
+			(-)
+			{
+				if (_GETNICK)
+				{
+					@ getnick.cleanup()
+					xecho -b Getnick has been disabled.
+				}{
+					xecho -b Getnick is not active.
+				}
+			}
+			(*)
+			{
+				if (_GETNICK)
+				{
+					@ getnick.cleanup()
+				}
+
+				@ _GETNICK = nick
+
+				xecho -b Getnick attempting to gain nick [$_GETNICK]
+
+				^notify $_GETNICK
+
+				^on #-notify_signoff 422 '$_GETNICK'
+				{
+					xecho -b Changing nick to [$0]
+					//nick $0
+					@ getnick.cleanup()
+				}
+
+				^on #-timer 422 "*"
+				{
+					if (servernick() == CONFIG[KEEPNICK_NICK])
+					{
+						getnick -
+					} \
+					elsif (S && servernick() != [<not registered yet>] && !is_on($_GETNICK))
+					{
+						xecho -b Changing nick to [$_GETNICK]
+						//nick $_GETNICK
+						@ getnick.cleanup()
+					}
+				}
+
+				if (!is_on($_GETNICK))
+				{
+					xecho -b Changing nick to [$_GETNICK]
+					//nick $_GETNICK
+					@ getnick.cleanup()
+				}
+			}
+		}
+	}{
+		if (nick == servernick())
+		{
+			xecho -b Your current nick is already [$nick]
+		}{
+			xecho -b Getnick is *${_GETNICK ? [active] : [inactive]}* [$_GETNICK]
+			xecho -b Usage: /getnick <nick|->
+		}
+	}
+}
+
+alias getnick.cleanup (void)
+{
+	^on #-notify_signoff 422 -'$_GETNICK'
+	^on #-timer 422 -"*"
+	^notify -$_GETNICK
+	^assign -_GETNICK
+
+	return
+}
+
+on #-timer 423 "*"
+{
+	if (S && CONFIG[KEEPNICK] && servernick() != [<not registered yet>] && !_GETNICK && servernick() != CONFIG[KEEPNICK_NICK])
+	{
+		xecho -b Oops! We're using the wrong nick! Running getnick...
+		getnick $CONFIG.KEEPNICK_NICK
+	}
+}
+
+
+/* bmw '00 */

@@ -1,0 +1,168 @@
+Darkstar ChangeLog
+
+
+[0.0.8]
+
+ - [config.dsc/functions.dsc] Moved $fparse() and $setcat() from functions.dsc
+   to config.dsc.
+ - [channel.dsm] New fset: TOPIC_CHANGE. Added two new aliases: /oldtopic
+   (displays old topic) and /setoldtopic (sets topic to old topic). (Requested
+   by BlackJac).
+ - Slight change to the license. See the 'COPYRIGHT' file for details.
+ - [channel.dsm] Now supports showing op/voice in publics.
+   New fset: SHOW_OPVOICE_IN_PUBLICS.
+ - [darkstar.irc] Fixed a bug where cleanup queue's weren't being removed
+   during a /reload.
+ - Broke up fsets.dsm into channel.dsm (channel related stuff) and misc.dsm.
+   autoresponse.dsm was also merged into channel.dsm
+ - [functions.dsc] Removed $getsamechars() as it is no longer needed. The
+   built-in function $prefix() performs the same task.
+ - Reverted every occurrence of "$(K)$(K)" back to "//" since EPIC always
+   treats "//" as special regardless of $CMDCHARS.
+ - [misc.dsm] Added /dns and /nslookup. (Requested by myke)
+ - [darkstar.irc] Now allows the use of the following environment variables:
+   DARKSTAR_HOME, DARKSTAR_RC, DARKSTAR_SAVE_DIR. Their purpose should be
+   pretty obvious. This replaces the "Config Section" in darkstar.irc and
+   should no longer be edited. The new default directory is ~/darkstar.
+   Also made the $get_core_settings() function run a little faster.
+ - [keepnick.dsm] Getnick will now disable itself if it discovers that you
+   are already using the nick it wants. Also fixed a big that would cause
+   getnick to be stuck on.
+ - [save.dsc] Was not saving core script settings *oops*. It does now.
+ - Moved core/fsets.dsc to modules/fsets.dsm. The banlist hooks and da5id's
+   who hook were also moved from fsets.dsm to misc.dsm.
+ - [away.dsm] Now keeps track of how many new msgs you have.
+ - [tabkey.dsm] Lots of changes and new completion triggers. Added /cleartab
+   to clear the tabkey nick history. (requested by tokage).
+ - [scan.dsm] Fixed a small bug that would cause /scan not to work on channels
+   that had "/" in them. Fixed by replacing $common() with $match().
+   (discovered by kasper)
+
+
+[0.0.7]
+
+ - [away.dsm] Forgot to convert some global variables to the new style. Also
+   fixed a bug where /readlog would attempt to open your logfile regardless
+   of whether it existed or not. (discovered by myke)
+ - [functions.dsc] Added function $getsamechars() for returning all the
+   characters that are the same between two words leading up to the point
+   where they first differ.
+ - [tabkey.dsm] Now includes support for nick completion and file completion.
+   The current triggers are /m, /msg, /dcc, and /load. Everything else triggers
+   the nick completion. Eventually I would like to be able to add/remove
+   tabkey triggers on the fly.
+ - All core script files have been renamed from *.ds to *.dsc
+ - [loader.dsc] Added a /reloadmod command. Just performs /unloadmod and
+   /loadmod for you.
+ - [away.dsm] Now prompts you to read your msglog when setting yourself back.
+ - [functions.dsc] Fixed a bug in $getsamechars() which was causing it to
+   return matching characters after failing on previous characters.
+ - Help system added! The code for /dhelp is located in core/help.dsc and was
+   provided by WhiteDrgn (thanks!). It uses EPIC's built-in help system so
+   not much code had to be added. No actual help files just yet.. but expect
+   some in the next release.
+ - [save.dsc] Fixed a bug that was causing some module settings not to be
+   saved.
+ - Moved $getov() out of functions.dsc and into scan.dsm as $scan.getov()
+
+
+[0.0.6]
+
+ - Added global variable $DS.RCFILE (default: ~/.epic4/.dsrc) and the file
+   sample.dsrc
+ - Added /reload to darkstar.irc
+ - [misc.dsm] /join no longer requires a leading # for channels names. If
+   a '#' or '&' is preceding the channel name, nothing will be done and it
+   will be passed to //join. If neither '#' nor '&' are found the script will
+   automatically add a '#' to the beginning of the channel name and pass it on
+   to //join. (requested by myke)
+ - [misc.dsm] /lk now asks you if you're sure you want to kick all non-ops.
+ - [misc.dsm] Added /invite and /i.
+ - [autocycle.dsm] Cleaned things up a bit.
+ - Fixed a small bug in statbar.2 where channels without modes would have an
+   extra ']' on the statbar.
+ - Moved all the /scan stuff out of core/fset.ds and into a module (scan.dsm)
+ - MAJOR CHANGES TO CORE: All /dset's (/config) and /fset's are now completely
+   modular, yet do not appear as such to the user. Specifying a module # when
+   using /config is no longer necessary and saved settings are now safe from
+   being overwritten. Many changes to the rest of the core script (and even
+   modules) had to made in order to implement this. /dset and /fset are now
+   located in 'core/config.ds' and the on hooks for /fset have been moved to
+   'core/fsets.ds'. Changes to the format of the defaults files also had to be
+   made. Please see the 'README' file for details.
+ - Replaced all occurrences of "//" with "$(K)$(K)" to allow users to change
+   $CMDCHARS without breaking anything.
+
+
+[0.0.5]
+
+ - Fixed small bug in autocycle.dsm (found by RoboHak)
+ - Fixed numerous bugs in /loadmod and /unloadmod (original problem discovered
+   by defiler)
+ - Syntax changes to /deop, /devoice, and /op. When specifying multiple nicks
+   white space must now be used to separate the nicks rather than commas.
+ - The "Insert" and "Delete" keys now scroll the msg window up/down. Thanks
+   to adm for this. (The F12 key now clears the msg window)
+ - Added /tempban to modules/misc.dsm
+ - Shaved about 1600 bytes off core/loader.ds getting rid of some of the
+   duplicate code for /loadmod, /unloadmod, and the auto-loader.
+
+
+[0.0.4]
+
+ - More speed improvements
+ - Added /untopic to misc.dsm
+ - Fixed a bug in statbar.ds where the statbar wouldn't completely update
+   after being changed.
+ - Many improvements to the module loader (core/loader.ds). /loadmod and
+   /unloadmod now behave like /tban if given no arguments.
+ - Changes to core/save.ds. /save now takes arguments for saving specific
+   settings (-a, -c, -f, -m).
+ - Lots of small changes not worth mentioning.
+ - New /fsets: CHANNEL_NICK, CTCP, CTCP_REPLY, MODE, and UMODE.
+ - Fixed a bug found in both /config and /fset where specifying an exact
+   variable would result in the variable not being found.
+
+
+[0.0.3]
+
+ - Removed $isnum() and $ischan() from functions.ds. Use $isnumber() and
+   $ischannel() now.
+ - Made some speed improvements to /scan
+ - Fixed a bug in /config where you couldn't see/change options for the
+   last module. (found by Tilt)
+ - Major re-write of both /fset and /config. Also removed $add_config_var()
+   and $add_fset() as they are no longer needed.
+ - Wrote a /save (core/save.ds).
+ - New function: $setcat()  Performs the old duties of $_configcat() and
+   $_fsetcat().
+ - Moved functions $getov(), $getstrftime(), and $fparse() to
+   core/functions.ds
+ - Now using /queue to allow modules to specify exactly what needs to be
+   cleaned up during unloading. You can now use /unloadmod *yay*
+
+
+[0.0.2]
+
+ - Added a config manager (core/config.ds)
+ - /fset is now part of the core script and is located in the core/ directory.
+   Several bugs in /fset were also fixed.
+ - All modules and core scripts updated to use new /config.
+ - Added a defaults/ directory and $DS.DEFAULTS_DIR for loading default
+   settings. Module settings (/config) are loaded automatically by
+   $load_module() but default formats must be loaded by the module itself.
+ - All module filename extensions must now be .dsm
+ - Added core/save.ds for saving /config and /fset settings. (/save)
+ - Added /key and /unkey to misc.dsm
+ - /cycle now supports the existence of channel keys.
+ - Moved the status bar stuff into the core of the script (core/statbar.ds)
+   Status bars are now stored in $DS.STATBAR_DIR (statbars/)
+ - Many improvements to the loader.
+
+
+[0.0.1]
+
+ - Initial beta or whatever you wanna call it.
+
+
+#EOF.

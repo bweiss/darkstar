@@ -1,0 +1,104 @@
+Darkstar README
+Author: Brian Weiss <brian@got.net>
+	fudd @ EFnet IRC
+
+Last modification: 4/23/01
+
+Darkstar and EPIC4 can be obtained from http://www.got.net/~brian/
+
+Official EPIC Website: http://www.epicsol.org/
+
+
+Darkstar is a modular script written for use with EPIC4, specifically,
+version 1.0. The idea behind this script was to create something that was
+very powerful for other scripters, yet at the same time easy for normal
+people to use. I believe I have accomplished just such a thing. The modularity
+of the script allows the addition/removal of features at any time. This lets
+you to make the script as lightweight or as bloated as you want. I tried to
+make the core of the script as fast and small as possible and I think I've
+done a pretty good job. Hopefully you'll find this script as useful as I do.
+
+
+GETTING STARTED
+
+The first thing that needs to be done in order to use Darkstar is to tell
+the script where everything is located. This can be done through the setting
+of the following environment variables...
+
+  DARKSTAR_HOME - Darkstar home directory (default ~/darkstar)
+  DARKSTAR_RC - Location of the Darkstar startup file (default ~/.epic4/.dsrc)
+  DARKSTAR_SAVE_DIR - Location of save directory (default ~/.epic4/.ds_save)
+
+This can be accomplished in the following ways (depending on your shell) ...
+
+  (sh, bash, zsh, etc)
+
+  export DARKSTAR_HOME=~/.epic4/darkstar
+
+  (*csh)
+
+  setenv DARKSTAR_HOME ~/.epic4/darkstar
+
+Nothing else is required to begin using Darkstar. However, I would recommend
+having a look at sample.dsrc in the main directory. This file will be loaded
+by default if DARKSTAR_RC is not set. If you're going to make changes to this
+file, I would recommend moving it out of the Darkstar home directory so that
+it does not get overwritten during upgrades. (If you move this file, you
+must make DARKSTAR_RC point to its new location or it will continue to load
+sample.dsrc).
+
+*NOTE* The save directory should also be somewhere outside of Darkstar's main
+directory to avoid it being overwritten during upgrades.
+
+At this point you can just type /load /path/to/darkstar/darkstar.irc to
+begin using the script. The available modules will be displayed and you
+will be prompted about which ones to load. Just pushing enter will load all
+modules on the Auto-Load list (/dset AUTO_LOAD_MODULES).
+
+If you would like to load Darkstar automatically on client startup, you can
+place the following code in ~/.ircrc ...
+
+  if (epic() && !bitchx())
+  {
+	^load /path/to/darkstar/darkstar.irc
+  }
+
+Once the script is loaded you can use /dhelp for further assistance.
+
+That's it! I hope you enjoy my script and please feel free to contact me with
+bug reports/suggestions.
+
+
+FILES
+
+COPYRIGHT		- The license file.
+README			- This file.
+TODO			- To-do list.
+ChangeLog		- The changelog.
+
+darkstar.irc		- The main script. This is what you actually /load
+			  to start using DarkStar.
+sample.dsrc		- Sample .dsrc file
+
+core/config.dsc		- Configuration manager (/dset and /fset)
+core/functions.dsc	- Functions module writers might find useful.
+core/help.dsc		- Help system
+core/loader.dsc		- The module loader
+core/save.dsc		- The /save system
+core/statbar.dsc	- Status bar manager
+
+defaults/*.def		- Default settings
+
+modules/*.dsm		- The modules themselves.
+
+
+
+I would like to briefly thank the following people for contributing in some
+way to this script: hop, panasync, RoboHak, shade, BlackJac, adm, dialtone,
+		    nutbar, WhiteDrgn, Tilt, defiler, ww, myke, and Dragoon.
+
+If you think I forgot your name on this list, just drop me an email.
+
+  - bmw
+
+#EOF

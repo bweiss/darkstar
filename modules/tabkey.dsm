@@ -1,0 +1,382 @@
+/*     _             _        _
+ *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
+ * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
+ * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
+ *
+ * TABKEY.DSM - Tab key module for Darkstar/EPIC4
+ * Author: Brian Weiss <brian@got.net> - 2001
+ *
+ * This script uses serial number 420 for all ON hooks.
+ */
+
+/*
+queue cleanup.tabkey
+{
+	for alias in ($aliasctl(alias match tabkey.))
+	{
+		^alias -$alias
+	}
+	
+	@ delarray(tabkey_nicks)
+
+	^on #msg 420 -"*"
+	^on #send_msg 420 -"*"
+	^on #dcc_chat 420 -"*"
+	^on #send_dcc_chat 420 -"*"
+	^on #dcc_connect 420 -"% CHAT *"
+
+	^assign -TABKEY.LASTNICK
+}
+*/
+
+bind ^I parse_command tabkey.process_tabkey
+
+@ delarray(tabkey_nicks)
+
+alias cleartab (void)
+{
+	@ delarray(tabkey_nicks)
+	^assign -TABKEY.LASTNICK
+
+	xecho -b Clearing tabkey history...
+}
+
+alias tabkey.process_tabkey (void)
+{
+	if (L)
+	{
+		if (mid(0 1 $L) == [/])
+		{
+			switch ($rest(1 $L))
+			{
+				(channel %)
+				(j %)
+				(join %)
+				(l %)
+				(leave %)
+				(mode %)
+				(part %)
+				{
+					@ tabkey.chancomp_routine()
+				}			
+				(dcc % % %)
+				(load %)
+				{
+					@ tabkey.filecomp_routine()
+				}
+				(loadmod %)
+				{
+					@ tabkey.module_routine(modules)
+				}
+				(reloadmod %)
+				(unloadmod %)
+				{
+					@ tabkey.module_routine(loaded_modules)
+				}
+				(m % *)
+				(msg % *)
+				{
+					@ tabkey.msg_routine()
+				}
+				(dcc % %)
+				(mode % %)
+				{
+					@ tabkey.nickcomp_routine()
+				}
+				(config %)
+				(dset %)
+				{
+					@ tabkey.set_routine(CONFIG)
+				}
+				(fset %)
+				{
+					@ tabkey.set_routine(FORMAT)
+				}
+				(*)
+				{
+					@ tabkey.nickcomp_routine()
+				}
+			}
+		}{
+			@ tabkey.nickcomp_routine()
+		}
+	}{
+		@ tabkey.msg_routine()
+	}
+}	
+	
+alias tabkey.add_nick (nick, void)
+{
+	if (numwords($getmatches(tabkey_nicks $nick)))
+	{
+		for nickitm in ($getmatches(tabkey_nicks $nick))
+		{
+			@ delitem(tabkey_nicks $nickitm)
+		}
+	}
+
+	if (numitems(tabkey_nicks) == CONFIG[TABKEY_NICK_HISTORY])
+	{
+		@ delitem(tabkey_nicks 0)
+	}
+
+	@ setitem(tabkey_nicks $numitems(tabkey_nicks) $nick)
+	@ TABKEY.LASTNICK = [-1]
+
+	return
+}
+
+alias tabkey.chancomp_routine (void)
+{
+	@ :lastc = mid(${strlen($L) - 1} 1 $L)
+	
+	unless (lastc == [ ])
+	{
+		@ :lastw = word(${#L - 1} $L)
+		@ :findchan = pattern($lastw% $mychannels())
+		
+		if (match($lastw $findchan))
+		{
+			xecho -b Matches:
+			echo $findchan
+		}
+		
+		if (#findchan == 1)
+		{
+			@ :space = [ ]
+			
+			parsekey delete_to_previous_space
+			xtype -l $findchan$space
+		} \
+		elsif (#findchan > 1)
+		{
+			parsekey delete_to_previous_space
+			xtype -l $prefix($findchan)
+			
+			@ :lastw = word(${#L - 1} $L)
+			
+			if (!match($lastw $findchan))
+			{
+				xecho -b Matches:
+				echo $findchan
+			}
+		}
+	}
+	
+	return
+}
+
+alias tabkey.filecomp_routine (void)
+{
+	@ :lastc = mid(${strlen($L) - 1} 1 $L)
+
+	unless (lastc == [ ])
+	{
+		@ :lastw = word(${#L - 1} $L)
+		@ :findfile = pattern($lastw% $glob($lastw*))
+		
+		if (#findfile == 1)
+		{
+			@ :lastc = mid(${strlen($findfile) - 1} 1 $findfile)
+ 			@ :space = [ ]
+			
+			parsekey delete_to_previous_space
+			xtype -l $findfile${lastc == [/] ? [] : [ ]}
+		} \
+		elsif (#findfile > 1)
+		{
+			parsekey delete_to_previous_space
+			xtype -l $prefix($findfile)
+		}
+	}
+	
+	return
+}
+
+alias tabkey.module_routine (array, void)
+{
+	@ :lastc = mid(${strlen($L) - 1} 1 $L)
+	
+	unless (lastc == [ ])
+	{
+		^local modules
+		
+		for cnt from 1 to $numitems($array)
+		{
+			@ :itm = cnt - 1
+			@ push(modules $getitem($array $itm))
+		}
+		
+		@ :lastw = word(${#L - 1} $L)
+		@ :findmod = pattern($lastw% $modules)
+
+		if (match($word(1 $L) $findmod))
+		{
+			xecho -b Matches:
+			echo $findmod
+		}
+		
+		if (#findmod == 1)
+		{
+			@ :space = [ ]
+			
+			parsekey delete_to_previous_space
+			xtype -l $findmod$space
+		} \
+		elsif (#findmod > 1)
+		{
+			parsekey delete_to_previous_space
+			xtype -l $prefix($findmod)
+
+			if (!match($word(1 $L) $findmod))
+			{
+				xecho -b Matches:
+				echo $findmod
+			}
+		}
+	}
+
+	return
+}
+
+alias tabkey.msg_routine (void)
+{
+	@ :itm = numitems(tabkey_nicks) - 1
+	@ :msgcmd = CMDCHARS ## [msg]
+	@ :trailing = restw(2 $L)
+	
+	if (numitems(tabkey_nicks))
+	{
+		if (TABKEY[LASTNICK] >= 0)
+		{
+			parsekey erase_line
+			xtype -l $msgcmd $getitem(tabkey_nicks $TABKEY.LASTNICK) $trailing
+			@ TABKEY.LASTNICK = TABKEY.LASTNICK - 1
+		}{
+			parsekey erase_line
+			xtype -l $msgcmd $getitem(tabkey_nicks $itm) $trailing
+			@ TABKEY.LASTNICK = itm - 1
+		}
+	}{
+		@ TABKEY.LASTNICK = [-1]
+	}
+
+	return
+}
+
+alias tabkey.nickcomp_routine (void)
+{
+	@ :lastc = mid(${strlen($L) - 1} 1 $L)
+	
+	unless (lastc == [ ])
+	{
+		@ :lastw = word(${#L - 1} $L)
+		@ :findnick = pattern($lastw% $onchannel())
+		
+		if (match($word(1 $L) $findnick))
+		{
+			xecho -b Matches:
+			echo $findnick
+		}
+		
+		if (#findnick == 1)
+		{
+			@ :space = [ ]
+		
+			parsekey delete_to_previous_space
+			xtype -l $findnick$space
+		} \
+		elsif (#findnick > 1)
+		{
+			parsekey delete_to_previous_space
+			xtype -l $prefix($findnick)
+
+			if (!match($word(1 $L) $findnick))
+			{
+				xecho -b Matches:
+				echo $findnick
+			}
+		}
+	}
+
+	return
+}
+
+alias tabkey.set_routine (type, void)
+{
+	@ :lastc = mid(${strlen($L) - 1} 1 $L)
+	
+	unless (lastc == [ ])
+	{
+		^local newvars,rmflag,word1
+		
+		if (left(1 $word(1 $L)) == [-])
+		{
+			^assign rmflag 1
+			@ word1 = strip(- $word(1 $L))
+		}{
+			@ word1 = word(1 $L)
+		}
+		
+		@ :cur_value = aliasctl(assign get $type\.$word1)
+		@ :findvar = aliasctl(assign match $type\.$word1)
+		
+		for var in ($findvar)
+		{
+			@ push(newvars $after(1 . $var))
+		}
+		
+		if (cur_value)
+		{
+			xecho -b Matches:
+			echo $newvars
+		}
+		
+		if (#newvars == 1)
+		{
+			@ :space = [ ]
+			
+			parsekey delete_to_previous_space
+			xtype -l ${rmflag ? [-] : []}$newvars$space
+		} \
+		elsif (#newvars > 1)
+		{
+			parsekey delete_to_previous_space
+			xtype -l ${rmflag ? [-] : []}$prefix($newvars)
+
+			@ :cur_value = aliasctl(assign get $type\.$word(1 $L))
+
+			if (!cur_value)
+			{
+				xecho -b Matches:
+				echo $newvars
+			}
+		}
+	}
+	
+	return
+}
+
+for hook in (msg send_msg)
+{ 
+	on #^$hook 420 "*"
+	{
+		@ tabkey.add_nick($0)
+	}
+}
+
+for hook in (dcc_chat send_dcc_chat)
+{
+	on #^$hook 420 "*"
+	{
+		@ tabkey.add_nick(=$0)
+	}
+}
+
+on #^dcc_connect 420 "% CHAT *"
+{
+	@ tabkey.add_nick(=$0)
+}
+
+
+/* bmw '01 */

@@ -1,0 +1,200 @@
+/*     _             _        _
+ *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
+ * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
+ * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
+ *
+ * WINDOW.DSM - Window module for Darkstar/EPIC4
+ * Author: Brian Weiss <brian@got.net> - 2001
+ *
+ * This script uses serial number 426 for all ON hooks.
+ */
+
+/*
+queue cleanup.window
+{
+	for alias in ($aliasctl(alias match window.))
+	{
+		^alias -$alias
+	}
+
+	for alias in (swap wb wc wj wk wl wn wp wub)
+	{
+		^alias -$alias
+	}
+
+	^on #leave 426 '\\\$servernick() *'
+}
+*/
+
+if (CONFIG[AUTO_CREATE_WINDOWS])
+{
+	for cnt from 0 to $CONFIG.AUTO_CREATE_WINDOWS
+	{
+		@ :autobind_chan = word($cnt $CONFIG.AUTO_BIND_CHANNELS)
+		@ :ugh = cnt + 1
+
+		if (winnum($ugh) == -1)
+		{
+			window new $CONFIG.AUTO_CREATE_WINDOW_ARGS
+		}
+		
+		if (autobind_chan)
+		{
+			window $ugh bind $autobind_chan
+		}
+	}
+}
+
+if (CONFIG[AUTO_CREATE_MSG_WINDOW])
+{
+	if (winnum(msgs) == -1)
+	{
+		window new name msgs $CONFIG.AUTO_CREATE_MSG_WINDOW_ARGS
+	}
+}
+
+
+
+alias swap (winnum, void)
+{
+	if (winnum)
+	{
+		window swap $winnum
+	}{
+		input "$INPUT_PROMPT\What window should we swap to? "
+		{
+			window swap $0
+		}
+	}
+}
+
+alias wb (chan default "$C", void)
+{
+	window bind $chan
+}
+
+alias wc (void)
+{
+	window new_hide
+}
+
+alias wj (chan)
+{
+	if (chan)
+	{
+		window new_hide
+		window swap last
+		//join $chan
+		
+		if (CONFIG[AUTO_BIND_ON_WINDOW_JOIN])
+		{
+			window bind $word(0 $chan)
+		}
+	}{
+		xecho -b Usage: /wj <channel>
+	}
+}
+
+alias wk (void)
+{
+	window kill
+}
+
+alias wl (void)
+{
+	window last
+}
+
+alias wn (void)
+{
+	window next
+}
+
+alias wp (void)
+{
+	window previous
+}
+
+alias wub (void)
+{
+	window unbind
+}
+
+on #^join 426 '$servernick() *'
+{
+	if (CONFIG[AUTO_BIND_ON_JOIN])
+	{
+		window bind $1
+	}
+}
+
+on #^leave 426 '$servernick() *'
+{
+	if (CONFIG[AUTO_UNBIND_ON_PART])
+	{
+		window unbind $1
+	}
+}
+
+alias window.msgwin_up (void)
+{
+	@ :cwin = winnum()
+	^window ref msgs
+	parsekey SCROLL_BACKWARD
+	^window ref $cwin
+}
+
+alias window.msgwin_down (void)
+{
+	@ :cwin = winnum()
+	^window ref msgs
+	parsekey SCROLL_FORWARD
+	^window ref $cwin
+}
+
+
+^bind META1-^I parse_command ^window next
+^bind ^W META8_CHARACTER
+^bind ^X SWITCH_CHANNELS
+^bind META8-n PARSE_COMMAND ^window next
+^bind META8-p PARSE_COMMAND ^window previous
+^bind META8-h PARSE_COMMAND ^window hide
+^bind META8-c PARSE_COMMAND ^window new double on
+^bind META8-k PARSE_COMMAND ^window kill
+^bind META8-1 PARSE_COMMAND ^window swap 1
+^bind META8-2 PARSE_COMMAND ^window swap 2
+^bind META8-3 PARSE_COMMAND ^window swap 3
+^bind META8-4 PARSE_COMMAND ^window swap 4
+^bind META8-5 PARSE_COMMAND ^window swap 5
+^bind META8-6 PARSE_COMMAND ^window swap 6
+^bind META8-7 PARSE_COMMAND ^window swap 7
+^bind META8-8 PARSE_COMMAND ^window swap 8
+^bind META8-9 PARSE_COMMAND ^window swap 9
+^bind META8-0 PARSE_COMMAND ^window swap 10
+^bind META1-1 PARSE_COMMAND ^window swap 1
+^bind META1-2 PARSE_COMMAND ^window swap 2
+^bind META1-3 PARSE_COMMAND ^window swap 3
+^bind META1-4 PARSE_COMMAND ^window swap 4
+^bind META1-5 PARSE_COMMAND ^window swap 5
+^bind META1-6 PARSE_COMMAND ^window swap 6
+^bind META1-7 PARSE_COMMAND ^window swap 7
+^bind META1-8 PARSE_COMMAND ^window swap 8
+^bind META1-9 PARSE_COMMAND ^window swap 9
+^bind META1-0 PARSE_COMMAND ^window swap 10
+^bind META2-5 META5_CHARACTER
+^bind META2-6 META6_CHARACTER
+^bind META5-~ SCROLL_BACKWARD
+^bind META6-~ SCROLL_FORWARD
+^bind META2-1 META10_CHARACTER
+^bind META2-2 META12_CHARACTER
+^bind META2-4 META11_CHARACTER
+^bind META2-3 META13_CHARACTER
+^bind META10-~ SCROLL_START
+^bind META11-~ SCROLL_END
+^bind META12-~ PARSE_COMMAND window.msgwin_up
+^bind META13-~ PARSE_COMMAND window.msgwin_down
+^bind -symbolic key_f11 TOGGLE_INSERT_MODE
+^bind -symbolic key_f12 PARSE_COMMAND window msgs clear
+
+
+/* bmw '01 */

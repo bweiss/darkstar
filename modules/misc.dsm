@@ -1,0 +1,167 @@
+/*     _             _        _
+ *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
+ * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
+ * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
+ *
+ * MISC.DSM - The 'miscellaneous stuff' module for Darkstar/EPIC4
+ * Author: Brian Weiss <brian@got.net> - 2001
+ *
+ * This script uses serial number 424 for all ON hooks.
+ */
+
+/*
+queue cleanup.misc
+{
+	for alias in (chat colors dns disco m nslookup pingme q umode uptime ver wi wii ww)
+	{
+		^alias -$alias
+	}
+
+	^on #connect 424 -"*"
+
+	for hook in (301 $jot(310 314) $jot(317 319) ctcp ctcp_reply dcc_chat msg notice send_dcc_chat send_msg send_notice)
+	{
+		^on $hook -"*"
+	}
+	
+	^on mode -'\$servernick\(\) \$servernick\(\) *' 
+	^on who -"* % % % % *"
+}
+*/
+
+alias chat (nick, void)
+{
+        if (nick)
+        {
+                dcc chat $nick
+        }{
+                xecho -b Usage: /chat <nick>
+                xecho -b   - Attempts a DCC chat with <nick>
+        }
+}
+
+alias colors (void)
+{
+	xecho -b Ctrl-C color codes:
+	echo 0\0 1\1 2\2 3\3 4\4 5\5 6\6 7\7 8\8 9\9 10\10 11\11 12\12 13\13 14\14 15\15 16\16
+}
+
+alias dns (nicks)
+{
+	if (nicks)
+	{
+		for nick in ($nicks)
+		{
+			^local address
+			
+			if (is_on($nick))
+			{
+				@ address = after(-1 @ $userhost($nick))
+			}{
+				xecho -b User $nick is not online
+			}
+		
+			xecho -b $nick!$userhost($nick) is ${convert($address) ? convert($address) : [unknown]}
+		}
+	}{
+		xecho -b Usage: /dns <nick> [nick2] [nick3] ...
+	}
+}
+
+alias disco disconnect
+
+alias m msg
+
+alias nslookup (address, void)
+{
+	if (address)
+	{
+		xecho -b $address is ${convert($address) ? convert($address) : [unknown]}
+	}{
+		xecho -b Usage: /nslookup <address>
+	}
+}
+
+alias pingme (void)
+{
+	//ping $servernick()
+}
+
+alias q query
+
+alias umode (mode)
+{
+	//mode $servernick() $mode
+}
+
+alias uptime (void)
+{
+	xecho -b ircII $J $uname() - $CLIENT_INFORMATION
+	xecho -b Uptime: $tdiff(${time() - F})
+}
+
+alias ver (nick default "$servernick()", void)
+{
+	ctcp $nick version
+}
+
+alias wi (nick default "$servernick()", void)
+{
+	whois $nick
+}
+
+alias wii (nick default "$servernick()", void)
+{
+	//whois $nick $nick
+}
+
+alias ww whowas
+
+
+/* ON hooks */
+
+/* Whois/Whowas */
+on ^301 "*" echo $fparse(WHOIS_AWAY $*)
+on ^310 ^"*"
+on ^311 "*"
+{
+	echo $fparse(WHOIS_NICK $1 $2 $3)
+	echo $fparse(WHOIS_NAME $5-)
+}
+on ^312 "*" echo $fparse(WHOIS_SERVER $2-)
+on ^313 "*" echo $fparse(WHOIS_OPER $1)
+on ^314 "*"
+{
+	echo $fparse(WHOWAS_NICK $1 $2 $3)
+	echo $fparse(WHOWAS_NAME $5-)
+}
+on ^317 "*"
+{
+	echo $fparse(WHOIS_IDLE $2)
+	echo $fparse(WHOIS_SIGNON $strftime($3 %c))
+}
+on ^318 ^"*"
+on ^319 "*" echo $fparse(WHOIS_CHANNELS $2-)
+
+/* Default user modes */
+on #^connect 424 "*" //mode $servernick() $CONFIG.DEFAULT_UMODES
+
+/* Other fset hooks */
+on ^ctcp "*" xecho -b $fparse(CTCP $*)
+on ^ctcp_reply "*" xecho -b $fparse(CTCP_REPLY $*)
+on ^dcc_chat "*" echo $fparse(DCC_CHAT $*)
+on ^mode '$servernick() $servernick() *' xecho -b $fparse(UMODE $*)
+on ^msg "*" echo $fparse(MSG $0 $userhost() $1-)
+on ^notice "*" echo $fparse(NOTICE $0 $userhost() $1-)
+on ^send_dcc_chat "*" echo $fparse(SEND_DCC_CHAT $*)
+on ^send_msg "*" echo $fparse(SEND_MSG $0 $1-)
+on ^send_notice "*" echo $fparse(SEND_NOTICE $*)
+
+/* /WHO written by Da5id (thanks) */
+on ^who "* % % % % *"
+{
+	echo $cparse(%c$[10]0%n $[9]1 $[3]2 %W$6%n${([$5]=~[*$after(. $S)*]) ? [%R$[14]after(1 . $5)%n] : [%c$[14]after(1 . $5)%n]} $[-10]3%W@%n$4)
+}
+
+
+/* bmw '01 */

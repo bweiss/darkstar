@@ -1,0 +1,72 @@
+/*     _             _        _
+ *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
+ * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
+ * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
+ *
+ * AUTOCYCLE.DSM - Auto-Cycle module for Darkstar/EPIC4
+ * Author: Brian Weiss <brian@got.net> - 2001
+ *
+ * This script uses serial number 425 for all ON hooks.
+ *
+ * Description: Automatically cycles op-less channels.
+ *
+ * NOTE: This feature has been known to be trouble. Especially when used on
+ *       a client connected to multiple servers. Use at your own risk.
+ */
+
+/*
+queue cleanup.autocycle
+{
+	^alias -autocycle
+	^on #channel_signoff 425 -"*"
+	^on #channel_sync 425 -"*"
+	^on #leave 425 -"*"
+	^on #leave 425 -'\\\$servernick() *'
+	@ delarray(synced_channels)
+}
+*/
+
+alias autocycle (channel, void)
+{
+	if (CONFIG[AUTO_CYCLE_OPLESS] && getmatches(synced_channels $channel) != [] && !ischanop($servernick() $channel) && numonchannel($channel) <= 2)
+	{
+		echo Auto-cycling $channel to gain ops
+		quote part $channel
+		quote join $channel
+	}
+}
+
+on #-channel_signoff 425 "*"
+{
+	unless ([$1] == servernick())
+	{
+		autocycle $0 $1
+	}
+}
+
+/* Store the names of synced channels so we can make sure not to prematurely
+   cycle. */
+on #-channel_sync 425 "*"
+{
+	@ setitem(synced_channels $numitems(synced_channels) $0)
+}
+
+on #-leave 425 "*"
+{
+	unless ([$0] == servernick())
+	{
+		autocycle $1
+	}
+}
+
+/* Cleanup the synced_channels array */
+on #-leave 425 '$servernick() *'
+{
+	for itm in ($getmatches(synced_channels $1))
+	{
+		@ delitem(synced_channels $itm)
+	}
+}
+
+
+/* bmw '00 */

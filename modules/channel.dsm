@@ -1,0 +1,630 @@
+/*     _             _        _
+ *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
+ * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
+ * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
+ *
+ * CHANNEL.DSM - Channel related stuff for Darkstar/EPIC4
+ * Author: Brian Weiss <brian@got.net> - 2001
+ *
+ * This script uses serial number 424 for all ON hooks.
+ */
+
+/*
+queue cleanup.channel
+{
+	for alias in ($aliasctl(alias match channel.))
+	{
+		^alias -$alias
+	}
+	
+	for alias in (alldeop alldop allop ban bankick banlist bans bk cmode cycle deop dop devoice dvoice i invite j join k kb key kick kickban l lk massmode mdeop mdop mdevoice mdvoice mop mvoice oldtopic op partall setoldtopic t tban tempban unban unkey untopic voice wall wall2)
+	{
+		^alias -$alias
+	}
+
+	@ delarray(oldtopics)
+	@ delarray(tban)
+	
+	^on public -'% % *\\\\\\\\[\\\${CONFIG[AUTO_RESPONSE_STR]}\\\\\\\\]*'
+	^on public_other -'% % *\\\\\\\\[\\\${CONFIG[AUTO_RESPONSE_STR]}\\\\\\\\]*'
+
+	for hook in (332 333 367 368 369 channel_signoff channel_sync join leave mode public public_other send_public topic)
+	{
+		^on $hook -"*"
+	}
+}
+*/
+
+alias alldeop (nicks)
+{
+	if (nicks)
+	{
+		for chan in ($mychannels())
+		{
+			for nick in ($nicks)
+			{
+				if (ischanop($servernick() $chan) && common($nick / $onchannel($chan)) && ischanop($nick $chan))
+				{
+					//mode $chan -o $nick
+				}
+			}
+		}
+	}{
+		xecho -b Usage: /alldeop <nick1> [nick2] [nick3] ...
+	}
+}
+
+alias alldop alldeop
+
+alias allop (nicks)
+{
+	if (nicks)
+	{
+		for chan in ($mychannels())
+		{
+			for nick in ($nicks)
+			{
+				if (ischanop($servernick() $chan) && common($nick / $onchannel($chan)) && !ischanop($nick $chan))
+				{
+					//mode $chan +o $nick
+				}
+			}
+		}
+	}{
+		xecho -b Usage: /allop <nick1> [nick2] [nick3] ...
+	}
+}
+
+alias ban (what, void)
+{
+	if (what && ischanop($N $C))
+	{
+		if (common($onchannel() / $what))
+		{
+			//mode $C +b $mask($CONFIG.BANTYPE $userhost($what))
+		}{
+			//mode $C +b $what
+		}
+	}{
+		xecho -b Usage: /ban <nick|ban>
+	}
+}
+
+alias bankick (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
+{
+	if (nick && ischanop($N $C) && common($onchannel() / $nick))
+	{
+		//mode $C +b $mask($CONFIG.BANTYPE $userhost($nick))
+		//kick $C $nick $reason
+	}{
+		xecho -b Usage: /bankick <nick> [reason]
+		xecho -b   - You must be oped and <nick> must be on the current channel.
+	}
+}
+
+alias banlist (chan default "$C", void)
+{
+	//mode $chan +b
+}
+
+alias bans banlist
+
+alias bk bankick
+
+alias cmode (mode, ...)
+{
+	//mode $C $mode $*
+}
+
+alias cycle (chan default "$C", void)
+{
+	@ :key = key()
+	quote part $chan
+	quote join $chan $key
+}
+
+alias deop (nicks)
+{
+	if (nicks)
+	{
+		massmode $C - o $nicks
+	}{
+		xecho -b Usage: /deop <nick1> [nick2] ...
+	}
+}
+
+alias dop deop
+
+alias devoice (nicks)
+{
+	if (nicks)
+	{
+		massmode $C - v $nicks
+	}{
+		xecho -b Usage: /devoice <nick1> [nick2] ...
+	}
+}
+
+alias dvoice devoice
+
+alias i invite
+
+alias invite (nick, channel default "$C", void)
+{
+	if (nick)
+	{
+		//invite $nick $channel
+	}{
+		xecho -b Usage: /invite <nick> [channel]
+	}
+}
+
+alias j join
+
+alias join (channel, key, void)
+{
+	if (channel)
+	{
+		if (!match(#* $channel) && !match(&* $channel))
+		{
+			//join #$channel $key
+		}{
+			//join $channel $key
+		}
+	}{
+		xecho -b Usage: /join <#channel> [key]
+	}
+}
+
+alias k kick
+
+alias kb kickban
+
+alias key (key, void)
+{
+	if (key)
+	{
+		//mode $C +k $key
+	}{
+		xecho -b Usage: /key <key>
+	}
+}
+
+alias kick (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
+{
+	if (nick && ischanop($N $C) && common($onchannel() / $nick))
+	{
+		//kick $C $nick $reason
+	}{
+		xecho -b Usage: /kick <nick> [reason]
+		xecho -b   - You must be oped and <nick> must be on the current channel.
+	}
+}
+
+alias kickban (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
+{
+	if (nick && ischanop($N $C) && common($onchannel() / $nick))
+	{
+		//kick $C $nick $reason
+		//mode $C +b $mask($CONFIG.BANTYPE $userhost($nick))
+	}{
+		xecho -b Usage: /kickban <nick> [reason]
+		xecho -b   - You must be oped and <nick> must be on the current channel.
+	}
+}
+
+alias l leave
+
+alias leave (channel)
+{
+	//part $channel
+}
+
+/* 
+ * Your standard /LK. Kicks everyone but +o and +v people out of the current
+ * channel.
+ */
+alias lk (reason default "$CONFIG.DEFAULT_KICK_REASON")
+{
+	if (ischanop($N $C))
+	{
+		@ reason2 = reason
+
+		input "$INPUT_PROMPT\Kick all non-ops from $C? (y/N) "
+		{
+			@ :reason = reason2
+			^assign -reason2
+
+			switch ($toupper($0))
+			{
+				(Y)
+				{
+					for user in ($channel())
+					{
+						@ :nick = mid(2 $CONFIG.MAX_NICK_LENGTH $user)
+
+						if (match(.. $left(2 $user)))
+						{
+							//kick $C $nick $reason
+						} \
+						elsif (match(.? $left(2 $user)))
+						{
+							//kick $C $nick $reason
+						}
+					}
+				}
+			}
+		}
+	}{
+		xecho -b Sorry, you gotta be +o to kick people.
+	}
+}
+
+alias massmode (chan, action, mode, what)
+{
+	if (action && mode)
+	{
+		fe ($what) a1 a2 a3 a4
+		{
+			//mode $chan $action $repeat(4 $mode) $a1 $a2 $a3 $a4
+		}
+	}{
+		xecho -b Usage: /massmode <channel> <+|-> <mode> [extra parameters]
+	}
+}
+
+alias mdeop (chan default "$C", void)
+{
+	massmode $chan - o $remw($servernick() $chops($chan))
+}
+
+alias mdevoice (chan default "$C", void)
+{
+	massmode $chan - v $remw($servernick() $onchannel($chan))
+}
+
+alias mdop mdeop
+
+alias mdvoice mdevoice
+
+alias mop (chan default "$C", void)
+{
+	massmode $chan + o $remw($servernick() $nochops($chan))
+}
+
+alias mvoice (chan default "$C", void)
+{
+	massmode $chan + v $remw($servernick() $onchannel($chan))
+}
+
+alias oldtopic (chan default "$C", void)
+{
+	@ :oldtopic = gettmatch(oldtopics $chan*)
+	
+	if (oldtopic)
+	{
+		xecho -b Last topic for $chan: $restw(1 $oldtopic)
+	}{
+		xecho -b There is no old topic for $chan
+	}
+}
+			
+alias op (nicks)
+{
+	if (nicks)
+	{
+		massmode $C + o $nicks
+	}{
+		xecho -b Usage: /op <nick1> [nick2] [...]
+	}
+}
+
+alias partall (void)
+{
+	input "$INPUT_PROMPT\Are you sure you want to part all your channels? (y/N) " if ([$0])
+	{
+		switch ($tolower($left(1 $0)))
+		{
+			(y)
+			{
+				for chan in ($mychannels())
+				{
+					quote part $chan
+				}
+			}
+		}
+	}
+}
+
+alias setoldtopic (chan default "$C", void)
+{
+	@ :oldtopic = gettmatch(oldtopics $chan*)
+	
+	if (oldtopic)
+	{
+		//topic $oldtopic
+	}{
+		xecho -b There is no old topic for $chan
+	}
+}
+
+alias t topic
+
+alias tban (chan default "$C", void)
+{
+	@ delarray(tban)
+	@ TBAN.CHAN = chan
+
+	^on #^367 424 "% $chan *"
+	{
+		@ setitem(tban $numitems(tban) $*)
+	}
+
+	^on #^368 424 "% % $chan"
+	{
+		input "Which ban(s) to remove? (1, 2-5, ...) " if ([$0])
+		{
+			for bannum in ($*)
+			{
+				@ :startban = before(- $bannum)
+				@ :endban = after(- $bannum)
+
+				if (startban < endban && startban < numitems(tban) && endban <= numitems(tban))
+				{
+					for cnt from $startban to $endban
+					{
+						@ :ban = getitem(tban ${cnt - 1})
+						//mode $word(1 $ban) -b $word(2 $ban)
+					}
+				}{
+					if ([$0] <= numitems(tban))
+					{
+						@ :ban = getitem(tban ${bannum - 1})
+						//mode $word(1 $ban) -b $word(2 $ban)
+					}
+				}
+			}
+		}
+
+		^on #^367 424 -"% $TBAN.CHAN *"
+		^on #^368 424 -"% % $TBAN.CHAN"
+		^assign -TBAN.CHAN
+	}
+
+	//mode $chan +b
+}
+
+alias tempban (time, what, void)
+{
+	if (time && what && ischanop($N $C))
+	{
+		if (common($onchannel() / $what))
+		{
+			//mode $C +b $mask($CONFIG.BANTYPE $userhost($what))
+			timer $time //mode $C -b $mask($CONFIG.BANTYPE $userhost($what))
+		}{
+			//mode $C +b $what
+			timer $time //mode $C -b $what
+		}
+	}{
+		xecho -b Usage: /tempban <seconds> <nick|ban>
+	}
+}
+
+alias unban (bans)
+{
+	if (bans)
+	{
+		for ban in ($bans)
+		{
+			//mode $C -b $ban
+		}
+	}{
+		xecho -b Usage: /unban <ban1> [ban2] [ban3] ...
+	}
+}
+
+alias unkey (void)
+{
+	if (match(*k* $chanmode()))
+	{
+		//mode $C -k
+	}{
+		xecho -b No key on channel $C
+	}
+}
+
+alias untopic (chan default "$C", void)
+{
+	//topic -$chan
+}
+
+alias voice (nicks)
+{
+	if (nicks)
+	{
+		massmode $C + v $nicks
+	}{
+		xecho -b Usage: /voice <nick1> [nick2] [...]
+	}
+}
+
+alias wall (text)
+{
+	if (text)
+	{
+		fe ($filter($N $chops())) o1 o2 o3 o4 o5 o6 o7
+		{
+			^notice $o1,$o2,$o3,$o4,$o5,$o6,$o7 [wall/$C] $text
+		}
+		xecho -l walls -- * > [wall/$C] $text
+	}{
+		xecho -b Usage: /wall <text>
+	}
+}
+
+alias wall2 (text)
+{
+	if (text)
+	{
+		^notice $tr(/#/#@/$C) [wall/$C] $text
+		xecho -l walls -- * > [wall/$C] $text
+	}{
+		xecho -b Usage: /wall2 <text>
+	}
+}
+
+
+/* Functions */
+
+alias channel.show_ov (nick, chan, void)
+{
+	if (CONFIG[SHOW_OPVOICE_IN_PUBLICS])
+	{
+		@ function_return = ischanop($nick $chan) ? [@] ## nick : ischanvoice($nick $chan) ? [+] ## nick : nick
+	}{
+		@ function_return = nick
+	}
+}
+
+
+/* ON hooks */
+
+on ^332 "*"
+{
+	xecho -b $fparse(TOPIC $*)
+
+	@ :matches = getmatches(topics $1*)
+
+	if (matches == [])
+	{
+		@ setitem(topics $numitems(topics) $1-)
+	}
+}
+
+on ^333 "*" xecho -b $fparse(TOPIC_SETBY $*)
+
+
+/* Ban list stuff (367 368 369) */
+
+on ^367 "*"
+{
+	@ setitem(banlist.$1 $numitems(banlist.$1) $*)
+}
+
+on ^368 "*"
+{
+	if ([$1] > 0)
+	{
+		if (FORMAT[BANS_HEADER])
+		{
+			echo $fparse(BANS_HEADER $*)
+		}
+
+		@ :endcnt = numitems(banlist.$2) - 1
+		for cnt from 0 to $endcnt
+		{
+			echo $fparse(BANS ${cnt + 1} $getitem(banlist.$2 $cnt))
+		}
+
+		if (FORMAT[BANS_FOOTER])
+		{
+			echo $fparse(BANS_FOOTER $*)
+		}
+
+		@ delarray(banlist.$2)
+	}{
+		xecho -b There are no bans on $2
+	}
+}
+
+on ^369 ^"*"
+
+on ^channel_signoff "*" xecho -b $fparse(CHANNEL_SIGNOFF $1 $0 $2-)
+on ^channel_sync "*" xecho -b $fparse(CHANNEL_SYNC $0 $1)
+on ^join "*" xecho -b $fparse(JOIN $0 $2 $1)
+on ^leave "*" xecho -b $fparse(LEAVE $0 $2 $1 $3-)
+on ^mode "*" xecho -b $fparse(MODE $*)
+on ^public "*" echo $fparse(PUBLIC $channel.show_ov($0 $1) $1-)
+on ^public_other "*" echo $fparse(PUBLIC_OTHER $channel.show_ov($0 $1) $1-)
+
+on ^send_public "*"
+{
+	if ([$0] == C)
+	{
+		echo $fparse(SEND_PUBLIC $0 $channel.show_ov($servernick() $0) $1-)
+	}{
+		echo $fparse(SEND_PUBLIC_OTHER $channel.show_ov($servernick() $0) $*)
+	}
+}
+
+on ^topic "*"
+{
+	xecho -b $fparse(TOPIC_CHANGE $*)
+	
+	@ :topic_itm = matchitem(topics $1*)
+	
+	if (topic_itm > -1)
+	{
+		@ :oldtopic_itm = matchitem(oldtopics $1*)
+		
+		if (oldtopic_itm > -1)
+		{
+			@ delitem(oldtopics $oldtopic_itm)
+		}
+		
+		@ setitem(oldtopics $numitems(oldtopics) $getitem(topics $topic_itm))
+		@ delitem(topics $topic_itm)
+	}
+
+	@ setitem(topics $numitems(topics) $1-)
+}
+
+/* Auto-response */
+
+on ^public '% % *\\[${CONFIG[AUTO_RESPONSE_STR]}\\]*'
+{
+	if (CONFIG[AUTO_RESPONSE])
+	{
+		echo $fparse(PUBLIC_AR $channel.show_ov($0 $1) $1-)
+
+		if (CONFIG[AUTO_RESPONSE_BEEP])
+		{
+			if (BEEP == [OFF])
+			{
+				^set BEEP ON
+				//beep
+				^set BEEP OFF
+			}{
+				//beep
+			}
+		}
+	}{
+		echo $fparse(PUBLIC $channel.show_ov($0 $1) $1-)
+	}
+}
+
+on ^public_other '% % *\\[${CONFIG[AUTO_RESPONSE_STR]}\\]*'
+{
+	if (CONFIG[AUTO_RESPONSE])
+	{
+		echo $fparse(PUBLIC_OTHER_AR $channel.show_ov($0 $1)$*)
+
+		if (CONFIG[AUTO_RESPONSE_BEEP])
+		{
+			if (BEEP == [OFF])
+			{
+				^set BEEP ON
+				//beep
+				^set BEEP OFF
+			}{
+				//beep
+			}
+		}
+	}{
+		echo $fparse(PUBLIC_OTHER $channel.show_ov($0 $1)$*)
+	}
+}
+
+
+/* bmw '01 */

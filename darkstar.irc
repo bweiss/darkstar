@@ -1,0 +1,157 @@
+/*
+ *      _               _          _
+ *   __| |  __ _  _ __ | | __ ___ | |_   __ _  _ __
+ *  / _` | / _` || '__|| |/ // __|| __| / _` || '__|
+ * | (_| || (_| || |   |   < \__ \| |_ | (_| || |
+ *  \__,_| \__,_||_|   |_|\_\|___/ \__| \__,_||_|
+ *
+ *  Darkstar by Brian Weiss <brian@got.net>
+ *
+ *  For use with EPIC4-1.0 and higher.
+ *  See the 'README' file for general information.
+ *  See the 'COPYRIGHT' file for licensing information.
+ */
+
+
+/* Important global variables */
+
+assign DS.VER 0.0.8
+assign DS.VERSION 20010424
+
+
+/* Find out where everything is */
+
+if (getenv(DARKSTAR_HOME))
+{
+	@ DS.HOME = getenv(DARKSTAR_HOME)
+}{
+	^assign DS.HOME ~/darkstar
+}
+
+if (getenv(DARKSTAR_RC))
+{
+	@ DS.RCFILE = getenv(DARKSTAR_RC)
+}{
+	^assign DS.RCFILE $DS.HOME/sample.dsrc
+}
+
+if (getenv(DARKSTAR_SAVE_DIR))
+{
+	@ DS.SAVE_DIR = getenv(DARKSTAR_SAVE_DIR)
+}{
+	^assign DS.SAVE_DIR ~/.epic4/.ds_save
+}
+
+eval assign DS.DEFAULTS_DIR $DS.HOME/defaults
+eval assign DS.HELP_DIR $DS.HOME/help
+eval assign DS.MODULE_DIR $DS.HOME/modules
+eval assign DS.STATBAR_DIR $DS.HOME/statbars
+
+
+/* Important /SET's */
+
+eval set CLIENT_INFORMATION Darkstar $DS.VER
+set CONTROL_C_COLOR ON
+set DISPLAY_PC_CHARACTERS 4
+set HIGH_BIT_ESCAPE 0
+
+
+if (fexist($DS.RCFILE) == 1)
+{
+	load $DS.RCFILE
+}
+
+
+alias get_core_settings (void)
+{
+	@ :fd = open($DS.DEFAULTS_DIR/core.def R)
+	
+	while (!eof($fd))
+	{
+		@ :line = read($fd)
+		@ :type = before(1 : $line)
+		@ :variable = after(1 : $before(2 : $word(0 $line)))
+		@ :value = after(2 : $line)
+		
+		switch ($type)
+		{
+			(config)
+			{
+				@ push(DSET.CORE $variable)
+				^assign DSET.CONFIG.$variable 1
+				^assign CONFIG.$variable $value
+			}
+			(fset)
+			{
+				@ push(FSET.CORE $variable)
+				^assign FSET.FORMAT.$variable 1
+				^assign FORMAT.$variable $value
+			}
+		}
+	}
+	
+	@ close($fd)
+}
+
+@ get_core_settings()
+alias -get_core_settings
+
+if (fexist($DS.SAVE_DIR/core.sav) == 1)
+{
+	load $DS.SAVE_DIR/core.sav
+}
+
+
+/* Load the rest of the core script */
+
+eval load $DS.HOME/core/functions.dsc
+eval load $DS.HOME/core/config.dsc
+eval load $DS.HOME/core/save.dsc
+eval load $DS.HOME/core/statbar.dsc
+eval load $DS.HOME/core/loader.dsc
+eval load $DS.HOME/core/help.dsc
+
+
+alias reload (void)
+{
+	@ :home = DS.HOME
+	
+	dump all
+	timer -del all
+
+	for cnt from 1 to $numitems(loaded_modules)
+	{
+		@ :itm = cnt - 1
+		queue -flush cleanup.$getitem(loaded_modules $itm)
+	}
+	
+	for array in ($getarrays())
+	{
+		@ delarray($array)
+	}
+
+	^load $home/darkstar.irc
+}
+
+alias sv (whom default "$C", void)
+{
+        msg $whom ircII $J $uname() - $CLIENT_INFORMATION
+}
+
+
+/* Warn if client doesn't meet specifications */
+
+if (!epic() || V < 20010401)
+{
+	xecho -b  
+	xecho -b WARNING! This script was intended for use with EPIC4-1.0 or higher.
+	xecho -b Your client $J does not meet this requirement.
+	xecho -b Continue to use this script at your own risk.
+	xecho -b  
+	xecho -b If you would like to obtain EPIC4, you can visit the following URLs
+	xecho -b http://www.got.net/~brian/epic4 or ftp://ftp.epicsol.org/pub/epic
+	xecho -b  
+}
+
+
+/* bmw '01 */

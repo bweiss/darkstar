@@ -1,0 +1,13 @@
+
+ Commands
+
+/dset [variable] [value]		Aliases: /conf, /config
+/fset [variable] [value]
+/loadmod [module]
+/modlist				Aliases: /listmods, /modules
+/reload
+/reloadmod [module]
+/save [savedir]
+/statbar <#>				Aliases: /sbar
+/unloadmod [module]
+

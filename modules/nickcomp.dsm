@@ -1,0 +1,43 @@
+/*     _             _        _
+ *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
+ * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
+ * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
+ *
+ *
+ * NICKCOMP.DSM - Nick completion module for Darkstar/EPIC4
+ * Author: Brian Weiss <brian@got.net> - 2001
+ *         shade <shade@chemlab.org>
+ *
+ * Most of this was taken from the nick completion module that shade wrote
+ * for my BitchX/EPIC4 script called playdough. He deserves most of the
+ * credit. Please send bug reports to me, do not bother shade.
+ */
+
+/*
+queue cleanup.nickcomp
+{
+	^alias -nickcomp.getnick
+	^on input -"%: *"
+}
+*/
+
+alias nickcomp.getnick
+{
+	for patt in (%$0% ?$0? %$0 ?$0 $0% $0? $0)
+	{
+		@ :findnick = pattern($patt $onchannel($C))
+		@ function_return = findnick ? word(0 $findnick) : function_return
+	}
+}
+
+on ^input "%: *"
+{
+	if (CONFIG[NICK_COMPLETION])
+	{
+		@ :complete = nickcomp.getnick($before(: $*))
+		sendline ${complete ? [$complete$CONFIG.NICK_COMPLETION_CHAR $1-] : [$*]}
+	}
+}
+
+
+/* bmw '01 */

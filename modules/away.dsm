@@ -1,0 +1,275 @@
+/*     _             _        _
+ *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
+ * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
+ * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
+ *
+ * AWAY.DSM - Away module for Darkstar/EPIC4
+ * Author: Brian Weiss <brian@got.net> - 2001
+ *
+ * This script uses serial number 421 for all ON hooks.
+ */
+
+/*
+queue cleanup.away
+{
+	for alias in ($aliasctl(alias match away.))
+	{
+		^alias -$alias
+	}
+	
+	for alias in (away back readlog remlog)
+	{
+		^alias -$alias
+	}
+
+	^on #input 421 -"*"
+	^on #timer 421 -"*"
+	^on #timer 421 -"12:00"
+
+	@ delarray(sent_away)
+}
+*/
+
+@ TS.LAST_INPUT = time()
+@ delarray(sent_away)
+
+alias away (reason default "$CONFIG.DEFAULT_AWAY_REASON")
+{
+	if (!_AWAY)
+	{
+		if (CONFIG[AWAY_LOG])
+		{
+			@ :fd = open($CONFIG.AWAY_LOGFILE w)
+			@ write($fd [MsgLog Started $strftime(%c)])
+			@ close($fd)
+		}
+
+		if (CONFIG[PUBLIC_AWAY])
+		{
+			if (CONFIG[PUBLIC_AWAY_CHANNELS])
+			{
+				for chan in ($common($CONFIG.PUBLIC_AWAY_CHANNELS / $mychannels()))
+				{
+					describe $chan is away: $reason [Log/${CONFIG[AWAY_LOG] ? [ON] : [OFF]}]
+				}
+			}{
+				for chan in ($mychannels())
+				{
+					describe $chan is away: $reason [Log/${CONFIG[AWAY_LOG] ? [ON] : [OFF]}]
+				}
+			}
+		}
+
+		@ away.add_logging()
+		^assign _AWAY $time() \"$reason\"
+		//away $reason
+	}{
+		xecho -b You are already away!
+	}
+}
+
+alias back (reason default "$CONFIG.DEFAULT_BACK_REASON")
+{
+	if (_AWAY)
+	{
+		if (CONFIG[AWAY_LOG])
+		{
+			@ :fd = open($CONFIG.AWAY_LOGFILE w)
+			@ write($fd [MsgLog Stopped $strftime(%c)])
+			@ close($fd)
+		}
+
+		if (CONFIG[PUBLIC_AWAY])
+		{
+			if (CONFIG[PUBLIC_AWAY_CHANNELS])
+			{
+				for chan in ($common($CONFIG.PUBLIC_AWAY_CHANNELS / $mychannels()))
+				{
+					describe $chan is back: $reason [Gone since: $strftime($word(0 $_AWAY) %c)]
+				}
+			}{
+				for chan in ($mychannels())
+				{
+					describe $chan is back: $reason [Gone since: $strftime($word(0 $_AWAY) %c)]
+				}
+			}
+		}
+
+		@ away.cleanup_logging()
+		@ delarray(sent_away)
+		^assign -_AWAY
+		//away
+
+		if (AWAY[NEWMSGS])
+		{
+			xecho -b You have $AWAY.NEWMSGS new message${AWAY[NEWMSGS] > 1 ? [s] : []}.
+		}
+		
+		@ away.prompt_readlog()
+	}{
+		xecho -b You are not set away.
+	}
+}
+
+/*
+ * This was taken from archon's 'more' script distributed with EPIC
+ * http://www.epicsol.org/
+ */
+alias readlog (void)
+{
+	if (fexist($CONFIG.AWAY_LOGFILE) == 1)
+	{
+		@ done = 0
+		@ line = 0
+		@ fd = open($CONFIG.AWAY_LOGFILE r)
+		@ rows = winsize() - 1
+
+		while (!eof($fd) && (pause != [q]))
+		{
+			while (line++ != rows)
+			{
+				@ ugh = read($fd)
+				if (eof($fd))
+				{
+					@ done = 1
+					@ line = rows
+				}{
+					echo $ugh
+				}
+			}
+
+			if (!done)
+			{
+				^assign pause $"Enter q to quit, or anything else to continue "
+				@ line = 0
+			}
+		}
+
+		@ close($fd)	
+		@ fd = line = done = rows = pause = ugh = []
+	}{
+		xecho -b Logfile [$CONFIG.AWAY_LOGFILE] does not exist.
+	}
+}
+
+alias remlog (void)
+{
+	^assign -AWAY.NEWMSGS
+
+	if (fexist($CONFIG.AWAY_LOGFILE))
+	{
+		@ unlink($CONFIG.AWAY_LOGFILE)
+		xecho -b Removed logfile [$CONFIG.AWAY_LOGFILE]
+	}{
+		xecho -b Logfile [$CONFIG.AWAY_LOGFILE] does not exist.
+	}
+	
+	if (_AWAY && CONFIG[AWAY_LOG])
+	{
+		@ :fd = open($CONFIG.AWAY_LOGFILE w)
+		@ write($fd [MsgLog Started $strftime(%c)])
+		@ close($fd)
+	}
+}
+
+on #^input 421 "*"
+{
+	@ TS.LAST_INPUT = time()
+	
+	if (_AWAY && CONFIG[AUTO_UNSET_AWAY])
+	{
+		back
+	}
+}
+
+on #^timer 421 "*"
+{
+	if (!_AWAY && CONFIG[AUTO_AWAY] && CONFIG[AUTO_AWAY_TIME] > 0)
+	{
+		@ :diff = time() - CONFIG[AUTO_AWAY_TIME]
+		@ :minutes = CONFIG[AUTO_AWAY_TIME] / 60
+
+		if (diff >= TS[LAST_INPUT])
+		{
+			away Auto-away after $minutes minute${minutes > 1 ? [s] : []}.
+		}
+	}
+}
+
+on #^timer 421 "12:00"
+{
+	if (_AWAY && CONFIG[AWAY_LOG])
+	{
+		@ :fd = open($CONFIG.AWAY_LOGFILE w)
+		@ write($fd [TimeStamp $strftime(%c)])
+		@ close($fd)
+	}
+}
+
+/* Functions */
+alias away.add_logging (void)
+{
+	^on #^msg 421 "*"
+	{
+		if (_AWAY)
+		{
+			@ away.process_incoming(MSG $*)
+		}
+	}
+
+	^on #^notice 421 "*"
+	{
+		if (_AWAY)
+		{
+			@ away.process_incoming(NOTICE $*)
+		}
+	}
+}
+
+alias away.process_incoming (type, nick, msg)
+{
+	if (CONFIG[AWAY_LOG])
+	{
+		@ :fd = open($CONFIG.AWAY_LOGFILE w)
+		@ write($fd [$strftime($time() %X)] $type [$nick!$userhost()] $msg)
+		@ close($fd)
+
+		@ AWAY.NEWMSGS++
+	}
+
+	if (CONFIG[SEND_AWAY_NOTICE] && finditem(sent_away $nick) < 0)
+	{
+		@ setitem(sent_away $numitems(sent_away) $nick)
+		notice $nick I am currently away. \($word(1 $_AWAY)\) [Gone since: $strftime($word(0 $_AWAY) %c)] [Log/${CONFIG[AWAY_LOG] ? [ON] : [OFF]}]
+	}
+
+	return
+}
+
+alias away.prompt_readlog (void)
+{
+	if (AWAY[NEWMSGS])
+	{
+		input "$INPUT_PROMPT\Would you like to read your msgs now? (y/N) "
+		{
+			switch ($tolower($mid(0 1 $0)))
+			{
+				(y) { readlog }
+				(*) { # nada }
+			}
+		}
+	}
+
+	return
+}
+
+alias away.cleanup_logging (void)
+{
+	^on #^msg 421 -"*"
+	^on #^notice 421 -"*"
+
+	return
+}
+
+
+/* bmw '00 */

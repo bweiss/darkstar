@@ -1,0 +1,49 @@
+/*
+ * This is a sample initilization file for Darkstar. By default it should be
+ * copied to ~/.epic4/.dsrc
+ *
+ * If you wish to change its location/filename please set the environment
+ * variable DARKSTAR_RC
+ */
+
+set AUTO_WHOWAS OFF
+set BEEP OFF
+set -CONTINUED_LINE
+set CLOCK_24HOUR ON
+set INDENT ON
+set LOAD_PATH ~/.epic4:/usr/local/share/epic:.
+set NO_FAIL_DISCONNECT ON
+set SCROLLBACK 1024
+
+/* Debugging stuff */
+
+#eval switch ($getenv(TERM))
+#{
+#	(screen)
+#	{
+#		^bind META12-1 META34_CHARACTER
+#		^bind META34-~ PARSE_COMMAND toggle_debug
+#	}
+#	(*)
+#	{
+#		^bind -symbolic key_f10 PARSE_COMMAND toggle_debug
+#	}
+#}
+
+#alias toggle_debug (void)
+#{
+#	if (DEBUG)
+#	{
+#		set DEBUG 0
+#	}{
+#		set DEBUG 7
+#	}
+#}
+
+if (winnam() == [ircII])
+{
+	^window ircII name - level none
+}
+
+
+/* bmw '01 */
