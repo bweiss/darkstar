@@ -21,59 +21,61 @@ alias theme (theme, void)
 {
 	@ themes.buildlist()
 
-	if (theme)
+	/*
+	 * Create a temporary alias that will call the actual change() function.
+	 * This helps with the /input stuff.
+	 */
+	^alias _change_theme (theme, void)
 	{
 		switch ($theme.change($theme))
 		{
 			(0) {xecho -b Now using theme: $DS.THEME}
-			(*) {xecho -b Error: Theme not found.}
+			(*) {xecho -b Error: Invalid theme.}
 		}
-	}{
-		if (DS.THEME) xecho -b Current theme: $DS.THEME
-		xecho -b Available themes:
-		echo #   Theme
-		for cnt from 0 to ${numitems(themes) - 1}
-		{
-			@ :num = cnt + 1
-			echo $[3]num $getitem(themes $cnt)
-		}
+
+		defer ^alias -_change_theme
+	}
+
+	/*
+	 * Find the name of the desired theme and execute _change_theme.
+	 */
+	if (!theme)
+	{
+		@ themes.display()
 
 		input "$INPUT_PROMPT\Which theme would you like to use? " if ([$0])
 		{
 			if (isnumber($0) && [$0] > 0 && [$0] <= numitems(themes))
 			{
-				switch ($theme.change($getitem(themes ${[$0] - 1})))
-				{
-					(0) {xecho -b Now using theme: $DS.THEME}
-					(*) {xecho -b Error: Theme not found.}
-				}
-			} \
-			elsif (finditem(themes $0) > -1)
-			{
-				switch ($theme.change($0))
-				{
-					(0) {xecho -b Now using theme: $DS.THEME}
-					(*) {xecho -b Error: Theme not found.}
-				}
+				_change_theme $getitem(themes ${[$0] - 1})
 			}{
-				xecho -b Error: Invalid theme.
+				_change_theme $0
 			}
 		}
+	} \
+	elsif (isnumber($theme))
+	{
+		if (theme > 0 && theme <= numitems(themes))
+		{
+			@ :item = theme - 1
+			_change_theme $getitem(theme $item)
+		}
+	}{
+		_change_theme $theme
 	}
 }
 
 /*
  * theme.buildlist() - Scans the theme directories and stores available themes
  * in two arrays. One for theme names (themes) and one for theme files
- * (theme_files). Does not take any arguments. Returns "1" if successful, and
- * "0" if not.
+ * (theme_files). Does not take any arguments. Returns nothing.
  */
 alias themes.buildlist (void)
 {
 	@ delarray(themes)
 	@ delarray(theme_files)
 
-	for dir in ($DS.THEMES)
+	for dir in ($DS.THEME_DIR)
 	{
 		@ :dir = twiddle($dir)
 
@@ -99,7 +101,7 @@ alias themes.buildlist (void)
 
 /*
  * themes.change() - Attempts to change the current theme. Takes a theme
- * name as its only argument. Returns "1" if successful, "0" if not.
+ * name as its only argument. Returns "0" if successful, "1" if not.
  */
 alias theme.change (theme, void)
 {
@@ -119,6 +121,24 @@ alias theme.change (theme, void)
 	}
 
 	return 1
+}
+
+/*
+ * themes.display() - Displays the current list of themes. Takes no arguments
+ * and returns nothing.
+ */
+alias themes.display (void)
+{
+	xecho -b Current theme: $DS.THEME
+	xecho -b Available themes:
+	echo #   Theme
+	for cnt from 0 to ${numitems(themes) - 1}
+	{
+		@ :num = cnt + 1
+		echo $[3]num $getitem(themes $cnt)
+	}
+
+	return
 }
 
 

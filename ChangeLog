@@ -3,7 +3,15 @@ Darkstar ChangeLog
 
 12/21/01
 
+ * Various improvements and cleanups in save.dsc, themes.dsc, and status.dsc.
+
+ * Made some internal changes to the way we keep track of config/format
+   variables to avoid possible conflicts with the names of modules.
+
  * The epic4 theme is now the default.
+
+ * The DEFAULT_THEME config variable has been renamed to THEME and will now
+   change the theme if set to a valid theme name. See below.
 
  * The config script (config.dsc) will now hook any changes to config (not
    format) variables to the "hook" /on hook. The arguments it receives are
@@ -12,9 +20,6 @@ Darkstar ChangeLog
    This is mostly useful to module writers as they can now have code executed
    when a specific config variable is modified. If a variable has been
    removed (/dset -var) then no <new value> argument will be present.
-
- * The DEFAULT_THEME config variable has been renamed to THEME and will now
-   change the theme if set to a valid theme name. See above.
 
 12/20/01
 

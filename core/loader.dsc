@@ -151,7 +151,7 @@ alias loader.build_modlist (void)
 	@ delarray(modules)
 	@ delarray(module_files)
 
-	for dir in ($DS.MODULES)
+	for dir in ($DS.MODULE_DIR)
 	{
 		@ :dir = twiddle($dir)
 		for file in ($glob($dir\/\*.dsm))
@@ -215,7 +215,7 @@ alias loader.load_module (module, void)
 		{
 			@ :dir = before(-1 / $before(-1 / $file))
 			^local defaults_file $dir/def/$module\.def
-			^local savefile $DS.SAVE/$module\.sav
+			^local savefile $DS.SAVE_DIR/$module\.sav
 
 			if (fexist($defaults_file) == 1)
 			{
@@ -243,7 +243,7 @@ alias loader.load_module (module, void)
 								^assign DSET.BOOL.$variable 1
 							}
 							
-							@ push(DSET.$module $variable)
+							@ push(DSET.MODULES.$module $variable)
 							^assign DSET.CONFIG.$variable 1
 							^assign CONFIG.$variable $value
 						}
@@ -251,7 +251,7 @@ alias loader.load_module (module, void)
 						(fset)
 						(format)
 						{
-							@ push(FSET.$module $variable)
+							@ push(FSET.MODULES.$module $variable)
 							^assign FSET.FORMAT.$variable 1
 							^assign FORMAT.$variable $value
 						}
@@ -310,14 +310,14 @@ alias loader.unload_module (module)
 				^assign -DSET.BOOL.$var
 			}
 			
-			for var in ($FSET[$module])
+			for var in ($FSET.MODULES[$module])
 			{
 				^assign -FORMAT.$var
 				^assign -FSET.FORMAT.$var
 			}
 
-			^assign -DSET.$module
-			^assign -FSET.$module
+			^assign -DSET.MODULES.$module
+			^assign -FSET.MODULES.$module
 			
 			/* Remove from loaded_modules array */
 			@ delitem(loaded_modules $item)

@@ -11,16 +11,16 @@ format SEND_CTCP $G Requesting a CTCP $3 from $2: $4-
 format SEND_DCC_CHAT [$Z] %W.%ndcc%W[%n$1%W]%n $2-
 format SEND_MSG [$Z] %W.%nmsg%W[%n$1%W]%n $2-
 format SEND_NOTICE [$Z] %W.%nnotice%c[%n$1%c]%n $2-
-format WHOIS_AWAY %c[**] %Wa%nway     %c:%n $1 - $2-
-format WHOIS_CHANNELS %c[**] %Wc%nhannels %c:%n $3-
+format WHOIS_AWAY %c[**]%n away     %c:%n $1 - $2-
+format WHOIS_CHANNELS %c[**]%n channels %c:%n $3-
 format WHOIS_FOOTER
 format WHOIS_HEADER
-format WHOIS_IDLE %c[**] %Wi%ndle     %c:%n $tdiff($3)
-format WHOIS_NAME %c[**] %Wi%nrcname  %c:%n $6-
-format WHOIS_NICK %c[**] %n$2 %c\(%n$3@$4%c\)%n
-format WHOIS_OPER %c[**] %Wo%nperator %c:%n $2 is an IRC Operator
-format WHOIS_SERVER %c[**] %Ws%nerver   %c:%n $3 \($4-\)
-format WHOIS_SIGNON %c[**] %Ws%nignon   %c:%n $strftime($4 %a %Ef %T %Z %Y)
-format WHOWAS_NAME %c[**] %Wi%nrcname  %c:%n $6-
-format WHOWAS_NICK %c[**] %n$2 was %c\(%n$3@$4%c\)%n
+format WHOIS_IDLE %c[**]%n idle     %c:%n $tdiff($3)
+format WHOIS_NAME %c[**]%n ircname  %c:%n $6-
+format WHOIS_NICK %c[**]%n $2 %c\(%n$3@$4%c\)%n
+format WHOIS_OPER %c[**]%n operator %c:%n $2 is an IRC Operator
+format WHOIS_SERVER %c[**]%n server   %c:%n $3 \($4-\)
+format WHOIS_SIGNON %c[**]%n signon   %c:%n $strftime($4 %a %Ef %T %Z %Y)
+format WHOWAS_NAME %c[**]%n ircname  %c:%n $6-
+format WHOWAS_NICK %c[**]%n $2 was %c\(%n$3@$4%c\)%n
 format UMODE $G Mode change \"$3-\" for user $2 by $1

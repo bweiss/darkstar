@@ -5,6 +5,7 @@ config      BANTYPE 3
 config      DEFAULT_KICK_REASON No soup for you!
 config      MAX_NICK_LENGTH 9
 config bool SHOW_OPVOICE_IN_PUBLICS 0
+
 format BANS $[3]1 $[12]5  $strftime($6 %x@%X)  $4
 format BANS_FOOTER $G Total bans on $3: $2
 format BANS_HEADER #   SetBy         When               Ban

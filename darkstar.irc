@@ -80,9 +80,9 @@ if (getenv(DARKSTAR_HOME))
 
 if (getenv(DARKSTAR_USER))
 {
-	@ DS.USER = getenv(DARKSTAR_USER)
+	@ DS.USER_DIR = getenv(DARKSTAR_USER)
 }{
-	^assign DS.USER ~/.darkstar
+	^assign DS.USER_DIR ~/.darkstar
 }
 
 if (getenv(DARKSTAR_RC))
@@ -92,22 +92,22 @@ if (getenv(DARKSTAR_RC))
 	^assign DS.RC ~/.dsrc
 }
 
-eval assign DS.DEF $DS.HOME/def
-eval assign DS.HELP $DS.HOME/help
-eval assign DS.MODULES $DS.HOME/modules $DS.USER/modules
-eval assign DS.STATUS $DS.HOME/status $DS.USER/status
-eval assign DS.THEMES $DS.HOME/themes $DS.USER/themes
-eval assign DS.SAVE $DS.USER/save
+eval assign DS.DEF_DIR $DS.HOME/def
+eval assign DS.HELP_DIR $DS.HOME/help
+eval assign DS.MODULE_DIR $DS.HOME/modules $DS.USER_DIR/modules
+eval assign DS.STATUS_DIR $DS.HOME/status $DS.USER_DIR/status
+eval assign DS.THEME_DIR $DS.HOME/themes $DS.USER_DIR/themes
+eval assign DS.SAVE_DIR $DS.USER_DIR/save
 
-if (fexist($DS.USER) == -1)
+if (fexist($DS.USER_DIR) == -1)
 {
 	xecho -b Creating user directory: $DS.USER
-	@ mkdir($DS.USER)
-	@ mkdir($DS.USER/def)
-	@ mkdir($DS.USER/modules)
-	@ mkdir($DS.USER/status)
-	@ mkdir($DS.USER/themes)
-	@ mkdir($DS.USER/save)
+	@ mkdir($DS.USER_DIR)
+	@ mkdir($DS.USER_DIR/def)
+	@ mkdir($DS.USER_DIR/modules)
+	@ mkdir($DS.USER_DIR/status)
+	@ mkdir($DS.USER_DIR/themes)
+	@ mkdir($DS.USER_DIR/save)
 }
 
 
@@ -137,7 +137,7 @@ if (winnam(1) == [ircII])
  */
 do
 {
-	^local file $DS.HOME/def/core.def
+	^local file $DS.DEF_DIR/core.def
 
 	if (fexist($file) != -1)
 	{
@@ -163,7 +163,7 @@ do
 						^assign DSET.BOOL.$variable 1
 					}
 				
-					@ push(DSET.CORE $variable)
+					@ push(DSET.MODULES.CORE $variable)
 					^assign DSET.CONFIG.$variable 1
 					^assign CONFIG.$variable $value
 				}
@@ -171,7 +171,7 @@ do
 				(fset)
 				(format)
 				{
-					@ push(FSET.CORE $variable)
+					@ push(FSET.MODULES.CORE $variable)
 					^assign FSET.FORMAT.$variable 1
 					^assign FORMAT.$variable $value
 				}
@@ -188,9 +188,9 @@ do
 /*
  * Load saved core settings.
  */
-if (fexist($DS.SAVE/core.sav) == 1)
+if (fexist($DS.SAVE_DIR/core.sav) == 1)
 {
-	load $DS.SAVE/core.sav
+	load $DS.SAVE_DIR/core.sav
 }
 
 

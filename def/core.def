@@ -2,6 +2,7 @@ config      AUTO_LOAD_MODULES away channel keepnick misc names nickcomp tabkey w
 config bool AUTO_LOAD_PROMPT 1
 config      THEME epic4
 config bool VERBOSE_SAVE 0
+
 format SET $G Current value of $1 is $2-
 format SET_NOVALUE $G No value for $1 has been set
 format STRFTIME %c
