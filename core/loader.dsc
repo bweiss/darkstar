@@ -82,7 +82,7 @@ alias unloadmod (modules)
 
 		unless (tolower($mods) == [q])
 		{
-			@ modules = loader.which_mods(modules $mods)
+			@ modules = loader.which_mods(loaded_modules $mods)
 		}
 	}
 

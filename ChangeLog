@@ -6,7 +6,7 @@ Darkstar ChangeLog
 
 12/23/01
 
- * Rewrote large parts of the module loader (loader.dsc). Improvements include:
+ * Rewrote large parts of the module loader (loader.dsc). Changes include:
 	- Greatly improved error checking.
 	- /loadmod and /unloadmod can now take multiple arguments.
 	- Increased efficiency.

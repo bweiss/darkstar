@@ -1,11 +1,19 @@
 * DOCUMENTATION
-* Trivia module (maybe)
+
+* [misc.dsm] Fix /wall
+
 * Relay module (/relm, /reln, etc)
+
 * Logging module
+
 * Userlist module
+
 * Flood protection module
+
 * Auto-join
+
 * XDCC module (fserve would be better)
+
 * Tabkey completion:
   <wd> i.e. for ctcp you might have 'a.completion.add(ctcp %[,]c,N %'ping,
        version,time,utc,userinfo,clientinfo')
