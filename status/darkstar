@@ -9,7 +9,7 @@ set STATUS_AWAY 36[37A${AWAY[NEWMSGS] ? [36!37$AWAY.NEWMSGS] : []}36]37
 set STATUS_CHANNEL 36-[37%C$getchanmode()36]37
 set STATUS_CHANOP 36@37
 set STATUS_DOES_EXPANDOS ON
-set STATUS_FORMAT 36[%W36è%W36]ÍÍ[37%R36]ÍÍ%Q36Í%>Í37%D36Í[%W36è%W36]
+set STATUS_FORMAT 36[%W36è%W36]ÍÍ[37%R36]ÍÍ%Q36Í%>Í[%W36è%W36]
 set STATUS_FORMAT1 36,40ÖÄ[37$Z36]Ä[37%R36]Ä[56%*36%=%@37%N%#36]37%C%B36Ä%Q36Ä37%F36Ä%>%A36Ä·
 set STATUS_FORMAT2 36,40ÇÄ$getchanstats()%{2}S36Ä%>%M36Ä[37$J36]Ä½
 set STATUS_HOLD_LINES 36Ä(37h36!37%B36)37

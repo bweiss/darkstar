@@ -62,5 +62,13 @@ alias padright (size, char, text)
 	@ function_return = text ## repeat(${size - strlen($text)} $char)
 }
 
+alias purge
+{
+	for  $0 _purge {
+		purge $0.$_purge
+	}
+	^assign -$0
+}
+
 
 /* bmw '01 */

@@ -3,6 +3,8 @@ Darkstar ChangeLog
 
 [10/12/01]
 
+ * Added /purge to functions.dsc (requested by whitefang).
+
  * [nickcomp.dsm] The new format variable NICK_COMPLETION now determines the
    formatting of nick completion output. The config variable
    NICK_COMPLETION_CHAR now determines the trigger character for nick completion.

@@ -1,11 +1,11 @@
+* DOCUMENTATION
 * Trivia module (maybe)
 * Relay module (/relm, /reln, etc)
-* /scano, /scann, /scani
 * Logging module
 * Userlist module
 * Flood protection module
 * Auto-join
-* XDCC module
+* XDCC module (fserve would be better)
 
 * Tabkey completion:
 <wd> i.e. for ctcp you might have 'a.completion.add(ctcp %[,]c,N %'ping,
