@@ -65,8 +65,7 @@ alias themes.buildlist (void)
 				{
 					xecho -b themes.buildlist(): Duplicate theme name: $name
 				}{
-					@ :t_file = t_dir ## name ## [.dst]
-					if (fexist($t_file) == 1)
+					if (fexist($t_dir/main.dst) == 1)
 					{
 						@ setitem(themes $numitems(themes) $name)
 						@ setitem(theme_dirs $numitems(theme_dirs) $t_dir)
@@ -92,7 +91,7 @@ alias themes.change (theme, void)
 	if (t_item > -1)
 	{
 		@ :dir = getitem(theme_dirs $t_item)
-		@ :master_file = dir ## theme ## [.dst]
+		^local master_file $dir/main.dst
 		if (fexist($master_file) == 1)
 		{
 			load $master_file
