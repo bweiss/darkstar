@@ -20,6 +20,11 @@ FOR 0.3 RELEASE:
 
   * Add /ALLKICK and /ALLBAN aliases.
 
+  * Add auto-response formats for actions.
+
+  * Rename the auto-response feature to something more sensible? Maybe
+    "highlight" or "public highlight".
+
 
 AFTER 0.3 RELEASE:
 

@@ -1,4 +1,4 @@
-# version:1.6.1 loader:pf
+# version:1.6.2 loader:pf
 # $Id$
 #
 # away.dsm - Away module for DarkStar/EPIC4
@@ -113,7 +113,7 @@ on #-305 421 "*"
 
 	if (CONFIG.PUBLIC_AWAY && AWAY.TIME[$encode($serv)])
 	{
-		@ :away_time = time() - AWAY.TIME.$serv;
+		@ :away_time = time() - AWAY.TIME.$encode($serv);
 		if (CONFIG.PUBLIC_AWAY_CHANNELS)
 		{
 			for chan in ($CONFIG.PUBLIC_AWAY_CHANNELS)

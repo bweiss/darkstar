@@ -30,3 +30,5 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Fix the default SEND_WALL format (also in epic4 theme).
 * Add a SERVER_NOTICE format variable.
 * Add YELL hook to suppress the annoying getaddrinfo() messages.
+* Fix the away module so that away time is displayed properly. This was
+  caused by a missing call to $encode() in the 305 hook.
