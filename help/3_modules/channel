@@ -188,7 +188,14 @@ Author: Brian Weiss <brian@epicsol.org>
        prompts you to select a range to be removed.
 
    tempban <seconds> <nick|mask>
-     - Sets a temporary ban on <nick|mask> that lasts for <seconds>.
+     - Sets a temporary ban, on the current channel, for <nick|mask>. The ban
+       will automatically be removed after <seconds>.
+
+   tempbk <seconds> <nick> [reason]
+     - Places a temporary ban and then kicks <nick> from the current channel.
+
+   tempkb <seconds> <nick> [reason]
+     - Kicks <nick> from the current channel and then sets a temporary ban.
 
    topics [channel] [server refnum]
      - Displays a list of stored topics for [channel]. If any arguments are

@@ -2,6 +2,11 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://darkstar.epicsol.org/UPDATES
 
 
+*** News 2003/11/06 -- channel.dsm 1.1 - New temp. ban aliases: /TEMP[BK|KB]
+	There are two new temporary ban aliases: /TEMPBK and /TEMPKB. These
+	are just like the /BK and /KB aliases except that the bans are
+	placed with /TEMPBAN.
+
 *** News 2003/11/04 -- New function: $winchannels()
 	A $winchannels() function has been added to the core. This new
 	function will return a space separated list of all the channels

@@ -1,4 +1,4 @@
-#version 1.0.1
+#version 1.1
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
@@ -12,7 +12,7 @@
 
 queue cleanup.channel
 {
-	for alias in (addtopic alldeop alldop allop ban bankick banlist bans bk cmode cycle deop dop devoice dvoice et etopic i invite j join k kb key kick kickban l leave lk massmode mdeop mdop mdevoice mdvoice mme mop msay mvoice op part partall settopic t tban tempban topics tt ttopic unban unkey untopic voice wall) {
+	for alias in (addtopic alldeop alldop allop ban bankick banlist bans bk cmode cycle deop dop devoice dvoice et etopic i invite j join k kb key kick kickban l leave lk massmode mdeop mdop mdevoice mdvoice mme mop msay mvoice op part partall settopic t tban tempban tempbk tempkb topics tt ttopic unban unkey untopic voice wall) {
 		^alias -$alias
 	}
 
@@ -176,7 +176,7 @@ alias ban (targets)
 	{
 		@ :uhost = userhost($target) == [<UNKNOWN>@<UNKNOWN>] ? uh($target) : userhost($target)
 		/* Check again in case $uh() failed too. */
-		if (uhost != [<UNKNOWN>@<UNKNOWN>]) {
+		if (uhost && uhost != [<UNKNOWN>@<UNKNOWN>]) {
 			push bans $mask($CONFIG.BANTYPE $uhost)
 		} else {
 			push bans $target!*@*
@@ -197,7 +197,9 @@ alias bankick (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 	}
 
 	ban $nick
-	//kick $C $nick $reason
+	if (onchannel($nick $C)) {
+		//kick $C $nick $reason
+	}
 }
 
 alias bans banlist
@@ -368,7 +370,9 @@ alias kickban (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 		return
 	}
 
-	//kick $C $nick $reason
+	if (onchannel($nick $C)) {
+		//kick $C $nick $reason
+	}
 	ban $nick
 }
 
@@ -608,6 +612,11 @@ alias settopic (chan default "$C", void)
 
 alias t topic
 
+/*
+ * This imitates the /TBAN command in BitchX. It provides an interactive
+ * way to remove bans. I have no idea why this is named what it is and
+ * perhaps it should be renamed so that it is not confused with /TEMPBAN.
+ */
 alias tban (chan default "$C", void)
 {
 	@ delarray(channel.tban)
@@ -626,7 +635,7 @@ alias tban (chan default "$C", void)
 		for bannum in ($tmp)
 		{
 			@ :start = before(- $bannum)
-			@ :end = after(- $bannum)
+ 			@ :end = after(- $bannum)
 			if (start < end && start < numitems(channel.tban) && end <= numitems(channel.tban))
 			{
 				for cnt from $start to $end {
@@ -660,7 +669,7 @@ alias tban (chan default "$C", void)
 
 alias tempban (time, target, void)
 {
-	if (!target)
+	if (!target || !isnumber($time b10) || time < 1)
 	{
 		xecho -b Usage: /TEMPBAN <seconds> <nick|mask>
 		return
@@ -668,14 +677,42 @@ alias tempban (time, target, void)
 
 	@ :uhost = userhost($target) == [<UNKNOWN>@<UNKNOWN>] ? uh($target) : userhost($target)
 	/* Check again in case $uh() failed too. */
-	if (uhost != [<UNKNOWN>@<UNKNOWN>]) {
+	if (uhost && uhost != [<UNKNOWN>@<UNKNOWN>]) {
 		@ :banmask = mask($CONFIG.BANTYPE $uhost)
 	} else {
 		@ :banmask = [$target!*@*]
 	}
 
-	ban $banmask
+	//mode $C +b $banmask
 	timer $time //mode $C -b $banmask
+}
+
+alias tempbk (time, nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
+{
+	if (!target)
+	{
+		xecho -b Usage: /TEMPBK <seconds> <nick> [reason]
+		return
+	}
+
+	tempban $time $target
+	if (onchannel($nick $C)) {
+		//kick $C $nick $reason
+	}
+}
+
+alias tempkb (time, nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
+{
+	if (!target)
+	{
+		xecho -b Usage: /TEMPKB <seconds> <nick> [reason]
+		return
+	}
+
+	if (onchannel($nick $C)) {
+		//kick $C $nick $reason
+	}
+	tempban $time $nick
 }
 
 alias topics (chan default "$C", void)
@@ -969,19 +1006,19 @@ on ^public "*"
 	{
 		if (match(*$servernick()* $2-))
 		{
-			@ :do_ar = 1
+			@ :autoresp = 1
 		}{
 			for word in ($CONFIG.AUTO_RESPONSE_STR)
 			{
 				if (match(*$word* $2-))
 				{
-					@ :do_ar = 1
+					@ :autoresp = 1
 					break
 				}
 			}
 		}
 
-		if (do_ar)
+		if (autoresp)
 		{
 			if (FORMAT.PUBLIC_AR) {
 				echo $fparse(PUBLIC_AR $*)
@@ -999,7 +1036,7 @@ on ^public "*"
 		}
 	}
 
-	if (FORMAT.PUBLIC && !do_ar) {
+	if (FORMAT.PUBLIC && !autoresp) {
 		echo $fparse(PUBLIC $*)
 	}
 }
@@ -1010,19 +1047,19 @@ on ^public_other "*"
 	{
 		if (match(*$servernick()* $2-))
 		{
-			@ :do_ar = 1
+			@ :autoresp = 1
 		}{
 			for word in ($CONFIG.AUTO_RESPONSE_STR)
 			{
 				if (match(*$word* $2-))
 				{
-					@ :do_ar = 1
+					@ :autoresp = 1
 					break
 				}
 			}
 		}
 
-		if (do_ar)
+		if (autoresp)
 		{
 			if (FORMAT.PUBLIC_OTHER_AR) {
 				echo $fparse(PUBLIC_OTHER_AR $*)
@@ -1040,7 +1077,7 @@ on ^public_other "*"
 		}
 	}
 
-	if (FORMAT.PUBLIC_OTHER && !do_ar) {
+	if (FORMAT.PUBLIC_OTHER && !autoresp) {
 		echo $fparse(PUBLIC_OTHER $*)
 	}
 }
@@ -1120,8 +1157,10 @@ on #-hook 428 "CONFIG REMEMBER_TOPICS *"
 		xecho -b Value of $1 set to $CONFIG.REMEMBER_TOPICS
 	}
 
-	/* Make sure that the size of all the channel topic arrays is no
-	 * greater than the new value of REMEMBER_TOPICS. */
+	/*
+	 * Make sure that the size of all the channel topic arrays is no
+	 * greater than the new value of REMEMBER_TOPICS.
+	 */
 	for array in ($getarrays(channel.topics.*))
 	{
 		while (numitems($array) > CONFIG.REMEMBER_TOPICS) {
