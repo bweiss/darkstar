@@ -6,7 +6,7 @@
  * CONFIG.DSC - Configuration manager for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/14/01 (bmw)
+ * Last modified: 10/15/01 (bmw)
  */
 
 alias conf dset
@@ -56,7 +56,7 @@ alias set_routine (type, variable, value)
              */
 		if (#matches > 1 && !cur_value)
 		{
-			xecho -b \"$toupper($var)\" is ambiguous
+			xecho -s -b \"$toupper($var)\" is ambiguous
 			for var in ($matches)
 			{
 				@ :var = after(1 . $var)
@@ -94,7 +94,7 @@ alias set_routine (type, variable, value)
 				@ setcat($var)
 			}
 		}{
-			xecho -b No matches for \"$toupper($var)\" found
+			xecho -s -b No matches for \"$toupper($var)\" found
 		}
 	}
 
@@ -127,17 +127,17 @@ alias setcat (var, void)
 	{
 		if (FORMAT[SET] && before(. $var) == [CONFIG] && aliasctl(assign get DSET.BOOL.$var2))
 		{
-			echo $fparse(SET $toupper($var2) $toupper($convert.num($($var))))
+			xecho -s $fparse(SET $toupper($var2) $toupper($convert.num($($var))))
 		}{
-			echo $fparse(SET $toupper($var2) $($var))
+			xecho -s $fparse(SET $toupper($var2) $($var))
 		}
 	}{
 		if (FORMAT[SET_NOVALUE])
 		{
-			echo $fparse(SET_NOVALUE $toupper($var2))
+			xecho -s $fparse(SET_NOVALUE $toupper($var2))
 		}
 	}
-	
+
 	return
 }
 

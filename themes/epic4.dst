@@ -1,64 +1,64 @@
 /*
  * EPIC4 theme for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
- * Last modified: 10/14/01 (bmw)
+ * Last modified: 10/15/01 (bmw)
  */
 
 status -q epic4
 
 /* Module: channel */
-assign FORMAT.BANS $G $1-
-assign FORMAT.BANS_FOOTER $G Total number of bans on $3 - $2
-assign -FORMAT.BANS_HEADER
-assign FORMAT.CHANNEL_SIGNOFF $G SignOff $1: $2 \($3-%n\) [$tolower($Z)]
-assign FORMAT.CHANNEL_SYNC $G Channel $1 synced in $2 seconds
-assign FORMAT.CHANNEL_TS $G Channel $2 created $strftime($3 %+) [$3]
-assign FORMAT.JOIN $G $1 \($2\) has joined $3
-assign FORMAT.LEAVE $G $1 \($2\) has left $3
-assign FORMAT.MODE $G Mode change \"$3-\" on channel $2 by $1
-assign FORMAT.PUBLIC <$1> $3-
-assign FORMAT.PUBLIC_AR <%W$1%n> $3-
-assign FORMAT.PUBLIC_OTHER <$1:$2> $3-
-assign FORMAT.PUBLIC_OTHER_AR <%W$1%n:$2> $3-
-assign FORMAT.SEND_PUBLIC <$2> $3-
-assign FORMAT.SEND_PUBLIC_OTHER <$1:$2> $3-
-assign FORMAT.TOPIC $G Topic for $2: $3-
-assign FORMAT.TOPIC_CHANGE $G $1 has changed the topic on channel $2 to $3-
-assign FORMAT.TOPIC_SETBY $G The topic was set by $3 on $getstrftime($4)
+fset BANS $G $1-
+fset BANS_FOOTER $G Total number of bans on $3 - $2
+fset -BANS_HEADER
+fset CHANNEL_SIGNOFF $G SignOff $1: $2 \($3-%n\) [$tolower($Z)]
+fset CHANNEL_SYNC $G Channel $1 synced in $2 seconds
+fset CHANNEL_TS $G Channel $2 created $strftime($3 %+) [$3]
+fset JOIN $G $1 \($2\) has joined $3
+fset LEAVE $G $1 \($2\) has left $3
+fset MODE $G Mode change \"$3-\" on channel $2 by $1
+fset PUBLIC <$1> $3-
+fset PUBLIC_AR <%W$1%n> $3-
+fset PUBLIC_OTHER <$1:$2> $3-
+fset PUBLIC_OTHER_AR <%W$1%n:$2> $3-
+fset SEND_PUBLIC <$2> $3-
+fset SEND_PUBLIC_OTHER <$1:$2> $3-
+fset TOPIC $G Topic for $2: $3-
+fset TOPIC_CHANGE $G $1 has changed the topic on channel $2 to $3-
+fset TOPIC_SETBY $G The topic was set by $3 on $getstrftime($4)
 
 /* Module: core */
-assign FORMAT.SET $G Current value of $1 is $2-
-assign FORMAT.SET_NOVALUE $G No value for $1 has been set
-assign FORMAT.STRFTIME %c
+fset SET $G Current value of $1 is $2-
+fset SET_NOVALUE $G No value for $1 has been set
+fset STRFTIME %c
 
 /* Module: misc */
-assign FORMAT.CTCP $G CTCP $3 from $1 to $2: $4-
-assign FORMAT.CTCP_REPLY $G CTCP $2 reply from $1: $3-
-assign FORMAT.DCC_CHAT [$Z] %W.%n$1%W[%cdcc%W]%n $2-
-assign FORMAT.MSG [$Z] %W.%n$1%W[%c$2%W]%n $3-
-assign FORMAT.NOTICE [$Z] -$1%c\(%n$2%c\)%n- $3-
-assign -FORMAT.SEND_CTCP
-assign FORMAT.SEND_DCC_CHAT [$Z] %W.%ndcc%W[%n$1%W]%n $2-
-assign FORMAT.SEND_MSG [$Z] %W.%nmsg%W[%n$1%W]%n $2-
-assign FORMAT.SEND_NOTICE [$Z] %W.%nnotice%c[%n$1%c]%n $2-
-assign FORMAT.WHOIS_AWAY %c[**] %Wa%nway     %c:%n $1 - $2-
-assign FORMAT.WHOIS_CHANNELS %c[**] %Wc%nhannels %c:%n $1-
-assign -FORMAT.WHOIS_FOOTER
-assign -FORMAT.WHOIS_HEADER
-assign FORMAT.WHOIS_IDLE %c[**] %Wi%ndle     %c:%n $tdiff($1)
-assign FORMAT.WHOIS_NAME %c[**] %Wi%nrcname  %c:%n $1-
-assign FORMAT.WHOIS_NICK %c[**] %n$1 %c\(%n$2@$3%c\)%n
-assign FORMAT.WHOIS_OPER %c[**] %Wo%nperator %c:%n $1 \(is an IRC operator\)
-assign FORMAT.WHOIS_SERVER %c[**] %Ws%nerver   %c:%n $1 \($2-\)
-assign FORMAT.WHOIS_SIGNON %c[**] %Ws%nignon   %c:%n $1-
-assign FORMAT.WHOWAS_NAME %c[**] %Wi%nrcname  %c:%n $1-
-assign FORMAT.WHOWAS_NICK %c[**] %n$1 was %c\(%n$2@$3%c\)%n
-assign FORMAT.UMODE $G Mode change \"$3-\" for user $2 by $1
+fset CTCP $G CTCP $3 from $1 to $2: $4-
+fset CTCP_REPLY $G CTCP $2 reply from $1: $3-
+fset DCC_CHAT [$Z] %W.%n$1%W[%cdcc%W]%n $2-
+fset MSG [$Z] %W.%n$1%W[%c$2%W]%n $3-
+fset NOTICE [$Z] -$1%c\(%n$2%c\)%n- $3-
+fset -SEND_CTCP
+fset SEND_DCC_CHAT [$Z] %W.%ndcc%W[%n$1%W]%n $2-
+fset SEND_MSG [$Z] %W.%nmsg%W[%n$1%W]%n $2-
+fset SEND_NOTICE [$Z] %W.%nnotice%c[%n$1%c]%n $2-
+fset WHOIS_AWAY %c[**] %Wa%nway     %c:%n $1 - $2-
+fset WHOIS_CHANNELS %c[**] %Wc%nhannels %c:%n $1-
+fset -WHOIS_FOOTER
+fset -WHOIS_HEADER
+fset WHOIS_IDLE %c[**] %Wi%ndle     %c:%n $tdiff($1)
+fset WHOIS_NAME %c[**] %Wi%nrcname  %c:%n $1-
+fset WHOIS_NICK %c[**] %n$1 %c\(%n$2@$3%c\)%n
+fset WHOIS_OPER %c[**] %Wo%nperator %c:%n $1 \(is an IRC operator\)
+fset WHOIS_SERVER %c[**] %Ws%nerver   %c:%n $1 \($2-\)
+fset WHOIS_SIGNON %c[**] %Ws%nignon   %c:%n $1-
+fset WHOWAS_NAME %c[**] %Wi%nrcname  %c:%n $1-
+fset WHOWAS_NICK %c[**] %n$1 was %c\(%n$2@$3%c\)%n
+fset UMODE $G Mode change \"$3-\" for user $2 by $1
 
 /* Module: names */
-assign FORMAT.NAMES_HEADER $G Users on $1: \(total/$2 - ops/$3 normal/$4\)
-assign FORMAT.NAMES_OP @
-assign FORMAT.NAMES_VOICE +
+fset NAMES_HEADER $G Users on $1: \(total/$2 - ops/$3 normal/$4\)
+fset NAMES_OP @
+fset NAMES_VOICE +
 
 /* Module: nickcomp */
-assign FORMAT.NICK_COMPLETION $1: $2-
+fset NICK_COMPLETION $1: $2-
