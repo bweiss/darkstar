@@ -2,6 +2,14 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://www.epicsol.org/darkstar/UPDATES
 
 
+*** News 2005/03/29 -- No more /SET REVERSE_STATUS_LINE in themes
+	The REVERSE_STATUS_LINE set has been removed from all themes
+	and is no longer written to themes saved with /THEME -SAVE.
+	The proper way to toggle inverse on a status bar is to prefix
+	the STATUS_FORMAT* sets with ^O and optionally ^V (to enable
+	inverse text). This is in preparation for the eventual move
+	to EPIC5.
+
 *** News 2005/03/27 -- tabkey.dsm 0.6 - Forward/backward match cycling
 	The tabkey module now has the ability to perform backward
 	match cycling. In light of this change the TABKEY_CYCLE_MATCHES
