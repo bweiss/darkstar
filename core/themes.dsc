@@ -6,7 +6,7 @@
  * THEMES.DSC - Theme support for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/21/01 (bmw)
+ * Last modified: 12/22/01 (bmw)
  *
  * This script uses serial number 1 for ALL /on hooks.
  */
@@ -27,7 +27,7 @@ alias theme (theme, void)
 	 */
 	^alias _change_theme (theme, void)
 	{
-		switch ($theme.change($theme))
+		switch ($themes.change($theme))
 		{
 			(0) {xecho -b Now using theme: $DS.THEME}
 			(*) {xecho -b Error: Invalid theme.}
@@ -66,7 +66,7 @@ alias theme (theme, void)
 }
 
 /*
- * theme.buildlist() - Scans the theme directories and stores available themes
+ * themes.buildlist() - Scans the theme directories and stores available themes
  * in two arrays. One for theme names (themes) and one for theme files
  * (theme_files). Does not take any arguments. Returns nothing.
  */
@@ -103,7 +103,7 @@ alias themes.buildlist (void)
  * themes.change() - Attempts to change the current theme. Takes a theme
  * name as its only argument. Returns "0" if successful, "1" if not.
  */
-alias theme.change (theme, void)
+alias themes.change (theme, void)
 {
 	@ :item = finditem(themes $theme)
 
@@ -150,7 +150,7 @@ on #-hook 1 "CONFIG THEME %"
 	if ([$2] != DS[THEME])
 	{
 		/* If our theme change fails, set THEME back to previous value. */
-		if (theme.change($CONFIG.THEME))
+		if (themes.change($CONFIG.THEME))
 		{
 			xecho -b Invalid theme.
 			xecho -b Value of THEME set back to $DS.THEME

@@ -20,7 +20,7 @@ format WHOIS_NAME %c[**]%n ircname  %c:%n $6-
 format WHOIS_NICK %c[**]%n $2 %c\(%n$3@$4%c\)%n
 format WHOIS_OPER %c[**]%n operator %c:%n $2 is an IRC Operator
 format WHOIS_SERVER %c[**]%n server   %c:%n $3 \($4-\)
-format WHOIS_SIGNON %c[**]%n signon   %c:%n $strftime($4 %a %Ef %T %Z %Y)
+format WHOIS_SIGNON %c[**]%n signon   %c:%n $strftime($4 %a %b %T %Z %Y)
 format WHOWAS_NAME %c[**]%n ircname  %c:%n $6-
 format WHOWAS_NICK %c[**]%n $2 was %c\(%n$3@$4%c\)%n
 format UMODE $G Mode change \"$3-\" for user $2 by $1

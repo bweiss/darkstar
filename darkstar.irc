@@ -101,7 +101,7 @@ eval assign DS.SAVE_DIR $DS.USER_DIR/save
 
 if (fexist($DS.USER_DIR) == -1)
 {
-	xecho -b Creating user directory: $DS.USER
+	xecho -b Creating user directory: $DS.USER_DIR
 	@ mkdir($DS.USER_DIR)
 	@ mkdir($DS.USER_DIR/def)
 	@ mkdir($DS.USER_DIR/modules)

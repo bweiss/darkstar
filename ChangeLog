@@ -1,6 +1,11 @@
 Darkstar ChangeLog
 
 
+12/22/01
+
+ * Renamed some internal functions to prevent them from showing up in
+   command completion.
+
 12/21/01
 
  * Format settings (/FSET) are now saved to $DS.USER_DIR/themes/custom.dst.

@@ -6,7 +6,7 @@
  * SAVE.DSC - Save /CONFIG and /FSET settings for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/21/01 (bmw)
+ * Last modified: 12/22/01 (bmw)
  */
 
 /*
@@ -80,7 +80,7 @@ alias save (args)
 	 */
 	for module in ($modules)
 	{
-		switch ($save_config($save_dir $module))
+		switch ($save.save_config($save_dir $module))
 		{
 			(0) {if (CONFIG[VERBOSE_SAVE]) {xecho -b Settings for [$module] saved to [$save_dir/$module\.sav]}}
 			(*) {xecho -b Error saving settings for [$module]}
@@ -90,7 +90,7 @@ alias save (args)
 	/*
 	 * Save our format settings (/FSET)
 	 */
-	@ :fmt_file = save_formats($save_dir $modules)
+	@ :fmt_file = save.save_formats($save_dir $modules)
 
 	if (fmt_file)
 	{
@@ -107,7 +107,7 @@ alias save (args)
  * directory and module name as arguments. Returns "0" if successful or "1"
  * if unsuccessful.
  */
-alias save_config (save_dir, module, void)
+alias save.save_config (save_dir, module, void)
 {
 	if (!save_dir || !module)
 	{
@@ -146,11 +146,11 @@ alias save_config (save_dir, module, void)
 }
 
 /*
- * save_formats() - Writes format settings to $DS.USER_DIR/themes/custom.dst.
+ * save.save_formats() - Writes format settings to $DS.USER_DIR/themes/custom.dst.
  * Takes a list of modules as arguments. Returns the filename if successful
  * or "0" if unsuccessful.
  */
-alias save_formats (modules)
+alias save.save_formats (modules)
 {
 	if (!modules)
 	{

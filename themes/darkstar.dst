@@ -1,7 +1,7 @@
 /*
  * Default theme for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
- * Last modified: 12/17/01 (bmw)
+ * Last modified: 12/22/01 (bmw)
  */
 
 status -q darkstar
@@ -14,7 +14,7 @@ fset BANS_FOOTER $G Total bans on $3: $2
 fset BANS_HEADER #   SetBy         When               Ban
 fset CHANNEL_SIGNOFF $G SignOff $1: $2 \($3-%n\) [$tolower($Z)]
 fset CHANNEL_SYNC $G Channel $1 synced in $2 seconds
-fset CHANNEL_TS $G Channel $2 created $strftime($3 %+) [$3]
+fset CHANNEL_TS $G Channel $2 created $strftime($3 %a %b %T %Z %Y) [$3]
 fset JOIN $G $1 \($2\) has joined $3 at $Z
 fset LEAVE $G $1 \($2\) has left $3 at $Z
 fset MODE $G Mode change \"$3-\" on channel $2 by $1
@@ -52,7 +52,7 @@ fset WHOIS_NAME %c[**]%n ircname  %c:%n $6-
 fset WHOIS_NICK %c[**]%n $2 %c\(%n$3@$4%c\)%n
 fset WHOIS_OPER %c[**]%n operator %c:%n $2 is an IRC Operator
 fset WHOIS_SERVER %c[**]%n server   %c:%n $3 \($4-\)
-fset WHOIS_SIGNON %c[**]%n signon   %c:%n $strftime($4 %+)
+fset WHOIS_SIGNON %c[**]%n signon   %c:%n $strftime($4 %a %b %T %Z %Y)
 fset WHOWAS_NAME %c[**]%n ircname  %c:%n $6-
 fset WHOWAS_NICK %c[**]%n $2 was %c\(%n$3@$4%c\)%n
 fset UMODE $G Mode change \"$3-\" for user $2 by $1

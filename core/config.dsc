@@ -6,7 +6,7 @@
  * CONFIG.DSC - Configuration manager for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/21/01 (bmw)
+ * Last modified: 12/22/01 (bmw)
  */
 
 alias conf dset
@@ -15,12 +15,12 @@ alias config dset
 
 alias dset (...)
 {
-	@ set_routine(dset $*)
+	@ config.set_routine(dset $*)
 }
 
 alias fset (...)
 {
-	@ set_routine(fset $*)
+	@ config.set_routine(fset $*)
 }
 
 alias fparse
@@ -33,7 +33,7 @@ alias fparse2
 	eval return $(FORMAT.$0)
 }
 
-alias set_routine (type, variable, value)
+alias config.set_routine (type, variable, value)
 {
 	^local struct1,struct2
 	
@@ -62,7 +62,7 @@ alias set_routine (type, variable, value)
 		for var in ($aliasctl(assign match $struct1\.$struct2\.))
 		{
 			@ :var = after(1 . $var)
-			@ setcat($var)
+			@ config.setcat($var)
 		}
 	}{
 		@ :var = strip(- $variable)
@@ -80,7 +80,7 @@ alias set_routine (type, variable, value)
 			for var in ($matches)
 			{
 				@ :var = after(1 . $var)
-				@ setcat($var)
+				@ config.setcat($var)
 			}
 		} \
 		elsif (#matches == 1 || cur_value)
@@ -121,7 +121,7 @@ alias set_routine (type, variable, value)
 					hook CONFIG $var2 $value
 				}
 			}{
-				@ setcat($var)
+				@ config.setcat($var)
 			}
 		}{
 			xecho -s -b No matches for \"$toupper($var)\" found
@@ -134,7 +134,7 @@ alias set_routine (type, variable, value)
 /*
  * This is a modified version of shade's setcat.
  */
-alias setcat (var, void)
+alias config.setcat (var, void)
 {
 	@ :var2 = after(1 . $var)
 	

@@ -7,7 +7,7 @@
 /modlist				Aliases: /listmods, /modules
 /reload
 /reloadmod [module]
-/save [savedir]
-/statbar <#>				Aliases: /sbar
+/save [-d <savedir>]
+/status <#>				Aliases: /sbar, /statbar
 /unloadmod [module]
 
