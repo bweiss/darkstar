@@ -17,3 +17,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
   /SAVE) in arrays instead of assign variables. This will hopefully fix that
   pesky bug that was causing certain settings to not get saved.
 * Change the way msg windows are named from msgs/serv:<#> to msgs/<#>
+* Fix missing semi-colons in /TIG alias.

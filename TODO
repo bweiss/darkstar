@@ -53,5 +53,8 @@ OTHER NOTES/IDEAS:
   REMEMBER_TOPICS and auto-query could use it instead of each having to
   handle caching things themselves.
 
+* Rewrite the /JOIN and /LEAVE aliases so that they use the CHANTYPES
+  parameter from the 005 numeric to determine the allowed channel prefixes.
+
 
 End of file.
