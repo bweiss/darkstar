@@ -2,7 +2,7 @@
 /*
  * commands.dsc - Miscellaneous commands
  *
- * Written by Brian Weiss
+ * Written by Brian Weiss (except where noted)
  * Copyright (c) 2002 Brian Weiss
  * See the 'COPYRIGHT' file for more information.
  */
@@ -63,11 +63,9 @@ alias dinfo (void)
 #
 
 alias more less
-
 alias less (file, void)
 {
 	@ :winnum = winnum()
-
 	if (file)
 	{
 		if (fexist($file) == 1)
@@ -84,11 +82,10 @@ alias less (file, void)
 alias _less (fd, count, winnum default 0, void)
 {
 	^local line 0
-	^local ugh
 
 	while (!eof($fd) && (line++ < count))
 	{
-		@ ugh = read($fd)
+		@ :ugh = read($fd)
 		if (!eof($fd))
 		{
 			xecho -w $winnum $ugh

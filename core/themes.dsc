@@ -31,7 +31,7 @@ alias theme (theme, void)
 	if (isnumber($theme) && theme > 0 && theme <= numitems(themes))
 	{
 		@ :item = theme - 1
-		@ theme = getitem(themes $item)
+		@ :theme = getitem(themes $item)
 	}
 
 	switch ($themes.change($theme))

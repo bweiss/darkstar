@@ -2,7 +2,7 @@
 /*
  * config.dsc - Configuration interface
  *
- * Written by Brian Weiss
+ * Written by Brian Weiss (except where noted)
  * Copyright (c) 2002 Brian Weiss
  * See the 'COPYRIGHT' file for more information.
  */

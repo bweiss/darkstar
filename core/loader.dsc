@@ -380,7 +380,8 @@ alias module.dep (depmods)
 /*
  * This allows modules to force saved settings to be loaded before the module
  * is finished loading. Very useful for events happening at module load time
- * that depend on certain config settings.
+ * that depend on certain config settings. This should not be used until
+ * after adding your config and format variables via {config|format}.add.
  */
 alias module.load_saved_settings (void)
 {

@@ -20,18 +20,16 @@ alias statbar status
  */
 alias status (args)
 {
-	^local sbar,quiet
-
 	/* Check for quiet option. */
 	if (left(1 $word(0 $args)) == [-])
 	{
-		@ sbar = word(1 $args)
+		@ :sbar = word(1 $args)
 		if (word(0 $args) == [-q])
 		{
-			^assign quiet 1
+			^local quiet 1
 		}
 	}{
-		@ sbar = args
+		@ :sbar = args
 	}
 
 	status.buildlist
@@ -50,7 +48,7 @@ alias status (args)
 	if (isnumber($sbar) && sbar > 0 && sbar <= numitems(status))
 	{
 		@ :item = sbar - 1
-		@ sbar = getitem(status $item)
+		@ :sbar = getitem(status $item)
 	}
 
 	if (quiet)
