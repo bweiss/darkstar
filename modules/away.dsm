@@ -1,4 +1,4 @@
-#version 1.2.1
+#version 1.2.2
 /* $Id$ */
 /*
  * away.dsm - Away module for Darkstar/EPIC4
@@ -42,6 +42,15 @@ config.add -b SEND_AWAY_NOTICE 1
  * Timestamp for last user input. Needed for auto-away.
  */
 @ AWAY.LAST_INPUT = time()
+
+/*
+ * If we're already away when the module is loaded, create a timestamp.
+ * This won't be accurate, of course, but it's better than nothing.
+ */
+if (A)
+{
+	@ AWAY.TIME = time()
+}
 
 
 /*
