@@ -170,10 +170,10 @@ alias window.auto_query_update (serv, nick, uhost, void)
 
 alias window.auto_query_window (serv, nick, void)
 {
-	if (!nick)
+	if (!serv || !nick)
 		return;
 
-	if (CONFIG.AUTO_QUERY_WINDOW && querywin($nick $servername($serv)) == -1)
+	if (CONFIG.AUTO_QUERY_WINDOW && querywin($nick $serv) == -1)
 	{
 		xecho -b -w 0 Creating new window for query with $nick;
 		^window new server $serv query $nick $CONFIG.AUTO_QUERY_WINDOW_ARGS;
@@ -364,7 +364,7 @@ on #-raw_irc 426 "% NICK *"
 	{
 		@ :old_nick = before(1 ! $0);
 		@ :new_nick = after(1 : $2);
-		@ :querywin = querywin($old_nick $lastserver());
+		@ :querywin = querywin($old_nick $servernum());
 		if (querywin > -1)
 		{
 			xecho -b -w 0 Changing query in window $querywin from $old_nick to $new_nick;
