@@ -1,6 +1,15 @@
 Darkstar ChangeLog
 
 
+1/20/02
+
+ * [misc.dsm] New format variable: WHO
+
+1/17/02
+
+ * [channel.dsm] Fixed join/leave aliases to take advantage of changes
+   to the internal join/leave commands.
+
 1/16/02
 
  * New command: /dinfo. Displays various information about the OS, client,
@@ -11,7 +20,7 @@ Darkstar ChangeLog
  * Added $DS.COMMIT_ID. This is just like EPIC's commit_id. It will be
    incremented every time I do a CVS commit.
 
- * HEADS UP: Rewrote names.dsc to be a bit more configurable via /dset and
+ * HEADS UP: Rewrote names.dsm to be a bit more configurable via /dset and
    /fset. This means we have some changes that will affect themes.
    Specifically, NAMES_OP and NAMES_VOICE have changed. There is also a
    new config variable (NAMES_COL) and a new format variable (NAMES_NONOP).
