@@ -1,0 +1,19 @@
+/* $Id$ */
+
+assign CONFIG.NAMES_COL 6
+
+assign FORMAT.NAMES_FOOTER %WÀ%nÄ%KÄ%n> +o%K[%W$3%K]%n -o%K[%W$4%K]%n total%K[%W$2%K]%n
+assign -FORMAT.NAMES_FOOTER1
+assign -FORMAT.NAMES_FOOTER2
+assign FORMAT.NAMES_HEADER %WÚ%nÄ%KÄ%nÄÄ%WÄÄ%nÄÄ%KÄ[%nusers%K/%W$1%K]%nÄ%WÄÄ%nÄ%KÄ%nÄÄ%WÄ%n- %KÄ%n-%KÄ Ä%n-%WÄ%nÄ -%KÄ-%nÄÄ%W-Ä%nÄ- %W- %n-  %K-    %n-
+assign -FORMAT.NAMES_HEADER1
+assign -FORMAT.NAMES_HEADER2
+assign FORMAT.NAMES_LEFT %W³%n
+assign -FORMAT.NAMES_MID
+assign FORMAT.NAMES_NONOP $chr(32)$[9]1
+assign FORMAT.NAMES_OP %W@%n$[9]1
+assign -FORMAT.NAMES_RIGHT
+assign FORMAT.NAMES_VOICE %W+%n$[9]1
+
+
+/* EOF */

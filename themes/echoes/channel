@@ -1,0 +1,34 @@
+/* $Id$ */
+
+assign FORMAT.ACTION_CHANNEL %K>%n $1 $3-
+assign FORMAT.ACTION_CHANNEL_OTHER %K>%n $1%K/%n$2 $3-
+assign FORMAT.BANS $[2]1 $strftime($6 %%B%%d %%T) $4 \($5\)
+assign -FORMAT.BANS_FOOTER
+assign -FORMAT.BANS_FOOTER1
+assign -FORMAT.BANS_FOOTER2
+assign FORMAT.BANS_HEADER $G ---------- Channel $3 Banlist ----------
+assign -FORMAT.BANS_HEADER1
+assign -FORMAT.BANS_HEADER2
+assign FORMAT.CHANNEL_NICK $G nick%K/%W$1%c: %W$2%n is now known as %W$3%n
+assign FORMAT.CHANNEL_SIGNOFF $G quit%K/%W$1%c: %W$2%K[%n$3-%K]%n
+assign -FORMAT.CHANNEL_SYNC
+assign FORMAT.CHANNEL_TS $G Channel $2 created at $strftime($3 %%a %%b %%d %%T %%Y)
+assign FORMAT.JOIN $G join%K/%W$2%c: %W$1%K[%n$before(1 @ $3)%c@%n$after(1 @ $3)%K]%n
+assign FORMAT.KICK $G kick%K/%W$3%c: %W$2%n kicked %W$1%K[%n$4-%K]%n
+assign FORMAT.LEAVE $G part%K/%W$2%c: %W$1%K[%n$before(1 @ $3)%c@%n$after(1 @ $3)%K]%n
+assign FORMAT.MODE $G mode%K/%W$2%c: %W$1%K[%n$3-%K]%n
+assign FORMAT.PUBLIC %K<%n$1%K>%n $3-
+assign FORMAT.PUBLIC_AR %K<%C$1%K>%n $3-
+assign FORMAT.PUBLIC_OTHER %K<%n$1%K/%n$2%K>%n $3-
+assign FORMAT.PUBLIC_OTHER_AR %K<%C$1%K/%n$2%K>%n $3-
+assign FORMAT.SEND_ACTION_CHANNEL %K> %W$servernick()%n $2-
+assign FORMAT.SEND_ACTION_CHANNEL_OTHER %K> %W$servernick()%K/%W$1%n $2-
+assign FORMAT.SEND_PUBLIC %K<%W$2%K>%n $3-
+assign FORMAT.SEND_PUBLIC_OTHER %K<%W$1%K/%W$2%K>%n $3-
+assign FORMAT.TOPIC $G topic%K/%W$2%c:%n $3-
+assign FORMAT.TOPIC_CHANGE $G topic%K/%W$2%c: %W$1%K[%n$3-%K]%n
+assign FORMAT.TOPIC_SETBY $G topic%K/%W$3%c:%n created %K[%W$tolower($strftime($4 %%a %%b %%d %%T %%Y))%K]%n
+assign FORMAT.TOPIC_UNSET $G topic%K/%W$2%c:%n unset %K[%n$1%K]%n
+
+
+/* EOF */

@@ -3,6 +3,10 @@ DarkStar ChangeLog
 
 2002/05/31
 
+ * Added a theme and statbar called 'echoes' by special request from keerf.
+   This is a near exact clone of the theme/statbar by the same name, included
+   with LiCe.
+
  * [window.dsm 0.4.2] Fixed some key binding issues with debug.dsm and
    the F keys. These two modules should now be completely independent
    of each other.
