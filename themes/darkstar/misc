@@ -21,7 +21,7 @@ assign FORMAT.WHOIS_NAME %c[**]%n ircname    %c:%n $6-
 assign FORMAT.WHOIS_NICK %c[**]%n $2 %c\(%n$3@$4%c\)%n
 assign FORMAT.WHOIS_OPER %c[**]%n operator   %c:%n $2 is an IRC Operator
 assign FORMAT.WHOIS_SERVER %c[**]%n server     %c:%n $3 \($4-\)
-assign FORMAT.WHOIS_SIGNON %c[**]%n signon     %c:%n $strftime($4 %%a %%b %%T %%Z %%Y)
+assign FORMAT.WHOIS_SIGNON %c[**]%n signon     %c:%n $strftime($4 %%a %%b %%d %%T %%Z %%Y)
 assign FORMAT.WHOWAS_NAME %c[**]%n ircname    %c:%n $6-
 assign FORMAT.WHOWAS_NICK %c[**]%n $2 was %c\(%n$3@$4%c\)%n
 assign FORMAT.UMODE $G Mode change \"$3-\" for user $2 by $1

@@ -138,7 +138,7 @@ alias loader.build_modlist (void)
 			{
 				@ :ver = word(1 $line)
 			}{
-				@ :ver = 0
+				^local ver -
 			}
 
 			@ setitem(modules $numitems(modules) $name)
