@@ -169,12 +169,13 @@ alias window.auto_query_update (serv, nick, uhost, void)
 	};
 };
 
-alias window.auto_query_window (serv, nick, void)
+alias window.auto_query_window (serv, nick, uhost, void)
 {
 	if (!serv || !nick)
 		return;
 
-	if (CONFIG.AUTO_QUERY_WINDOW && querywin($nick $serv) == -1)
+	if (CONFIG.AUTO_QUERY_WINDOW && querywin($nick $serv) == -1 &&
+	    !ignorectl(RPATTERN $nick!$uhost))
 	{
 		xecho -b -w 0 Creating new window for query with $nick;
 		^window new server $serv query $nick $CONFIG.AUTO_QUERY_WINDOW_ARGS;
@@ -392,14 +393,15 @@ on #-raw_irc 426 '% PRIVMSG \$servernick() *'
 		@ :uhost = after(1 ! $0);
 
 		window.auto_query_update $servernum() $nick $uhost;
-		window.auto_query_window $servernum() $nick;
+		window.auto_query_window $servernum() $nick $uhost;
 	};
 };
 
 on #-send_msg 426 "*"
 {
-	window.auto_query_update $severnum() $0 $uh($0);
-	window.auto_query_window $servernum() $0;
+	@ :uhost = uh($0);
+	window.auto_query_update $servernum() $0 $uhost;
+	window.auto_query_window $servernum() $0 $uhost;
 };
 
 on #-server_lost 426 "*"
