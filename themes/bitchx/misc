@@ -3,12 +3,10 @@
 assign FORMAT.ACTION_USER %Kð %W$1%n $3-
 assign FORMAT.CTCP %K>%n>%W> %G$1 %grequested $3- from $2
 assign FORMAT.CTCP_REPLY $G CTCP %W$3%n reply from $1: $4-
-assign FORMAT.DCC_CHAT %K[%G$1%K\(%gdcc%K\)]%n $2-
 assign FORMAT.MSG %K[%M$1%K\(%m$2%K\)]%n $3-
 assign FORMAT.NOTICE %K-%M$1%K\(%m$2%K\)-%n $3-
 assign FORMAT.SEND_ACTION_USER %Kð%n -> %W$servernick()%n/%c$1%n $2-
 assign FORMAT.SEND_CTCP %K[%rctcp%K\(%R$2%K\)]%n $3
-assign FORMAT.SEND_DCC_CHAT [$Z] %K[%rdcc%K\(%R$1%K\)]%n $2-
 assign FORMAT.SEND_MSG %K[%rmsg%K\(%R$1%K\)]%n $2-
 assign FORMAT.SEND_NOTICE %K[%rnotice%K\(%R$1%K\)]%n $2-
 assign FORMAT.WHO %Y$[10]1 %W$[10]2 %c$[3]3 %n$4%R@%n$5 \($8-\)

@@ -14,8 +14,7 @@ alias dhelp (...)
 	
 	if (@ && HELP_PROMPT == [OFF])
 	{
-		defer
-		{
+		defer {
 			^on ^help ^"*"
 			//help
 			^on ^help -"*"

@@ -3,11 +3,15 @@ DarkStar ChangeLog
 
 2002/05/16
 
- * HEADS UP: I have added a 'dcc' module and moved all of the DCC related
-   stuff in misc.dsm over to it. This means that you must have the new dcc
-   module loaded in order to have the DCC_CHAT and SEND_DCC_CHAT format
-   variables. The new dcc module also adds DCC autoget, which is toggled
-   via the DCC_AUTOGET config variable.
+ * Bug in help.dsc, involving /defer, discovered and fixed by whitefang.
+
+ * HEADS UP: I added a 'dcc' module and moved all of the DCC related
+   stuff in misc.dsm over to it. This means that you must have the new
+   dcc module loaded in order to have the DCC_CHAT and SEND_DCC_CHAT
+   format variables. You will probably want to add this new module to
+   the AUTO_LOAD_MODULES list and update your themes if you have any.
+   This also adds DCC autoget support, which can be toggled via the
+   DCC_AUTOGET config variable.
 
 2002/05/15
 
