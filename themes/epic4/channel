@@ -1,7 +1,5 @@
 /* $Id$ */
 
-/* Module: channel */
-
 assign FORMAT.ACTION_CHANNEL * $1 $3-
 assign FORMAT.ACTION_CHANNEL_OTHER * $1/$2 $3-
 assign FORMAT.BANS $G $1-

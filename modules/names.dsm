@@ -1,4 +1,4 @@
-#version 0.1.2
+#version 0.2
 /* $Id$ */
 /*
  * names.dsm - Darkstar/EPIC4 module to display who's on a channel
@@ -22,8 +22,10 @@ config.add NAMES_COL 6
 
 format.add NAMES_FOOTER
 format.add NAMES_HEADER $G Users on $1: \(total/$2 - ops/$3 normal/$4\)
+format.add NAMES_LEFT $G
 format.add NAMES_NONOP $chr(32)$[9]1
 format.add NAMES_OP %c@%n$[9]1
+format.add NAMES_RIGHT
 format.add NAMES_VOICE %m+%n$[9]1
 
 
@@ -113,13 +115,23 @@ alias names.showusers (chan default "$C", mode default "*", void)
 
 		fe ($users) $tmp
 		{
-			^local foo
-			for (@ :cnt = 1, nick[$cnt], @ cnt++)
+			^local line
+			if (FORMAT[NAMES_LEFT])
 			{
-				eval push foo \\\$names.parse\(\$chan \$nick[$cnt]\)
+				@ :line = [\$fparse(NAMES_LEFT)]
 			}
 
-			eval xecho -b $foo
+			for (@ :cnt = 1, nick[$cnt], @ cnt++)
+			{
+				eval push line \\\$names.parse\(\$chan \$nick[$cnt]\)
+			}
+
+			if (FORMAT[NAMES_RIGHT])
+			{
+				push line \$fparse(NAMES_RIGHT)
+			}
+
+			eval echo $line
 		}
 
 		if (FORMAT[NAMES_FOOTER]) {echo $fparse(NAMES_FOOTER $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))}

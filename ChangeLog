@@ -1,6 +1,13 @@
 Darkstar ChangeLog
 
 
+20020418
+
+ * [names.dsm 0.2] New format variables: NAMES_LEFT and NAMES_RIGHT. These
+   can be used to set the left and right borders for names output.
+
+ * Some color related fixes to the bitchx status bar.
+
 20020416
 
  * Removed $round()

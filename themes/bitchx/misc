@@ -1,7 +1,5 @@
 /* $Id$ */
 
-/* Module: misc */
-
 assign FORMAT.ACTION_USER %Kð %W$1%n $3-
 assign FORMAT.CTCP %K>%n>%W> %G$1 %grequested $3- from $2
 assign FORMAT.CTCP_REPLY $G CTCP %W$3%n reply from $1: $4-

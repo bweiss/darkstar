@@ -1,7 +1,5 @@
 /* $Id$ */
 
-/* Module: channel */
-
 assign FORMAT.ACTION_CHANNEL %Kð %Y$1/$2%n $3-
 assign FORMAT.ACTION_CHANNEL_OTHER %K*%n >%c$1$%n $2-
 assign FORMAT.BANS $[2]1 $[10]3 $[8]before(1 ! $5) $[-7]{time() - [$6]}  $4

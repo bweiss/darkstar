@@ -1,11 +1,13 @@
 /* $Id$ */
 
-/* Module: names */
+assign CONFIG.NAMES_COL 5
 
 assign -FORMAT.NAMES_FOOTER
 assign FORMAT.NAMES_HEADER $G %K[%GUsers%K\(%g$1%K:%g$2%K\)]
+assign -FORMAT.NAMES_LEFT
 assign FORMAT.NAMES_NONOP %K[ %B$[10]1%K]
 assign FORMAT.NAMES_OP %K[%C@%B$[10]1%K]
+assign -FORMAT.NAMES_RIGHT
 assign FORMAT.NAMES_VOICE %K[%M+%B$[10]1%K]
 
 
