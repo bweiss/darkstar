@@ -1,4 +1,4 @@
-#version 0.3.1
+#version 0.3.2
 /* $Id$ */
 /*
  * names.dsm - DarkStar/EPIC4 module to display who's on a channel
@@ -182,7 +182,8 @@ alias names.showusers (chan default "$C", mode default "*", void)
 				/*
 				 * Insert NAMES_MID inbetween each nick, if it exists.
 				 */
-				unless (cnt == CONFIG.NAMES_COL - 1) {
+				@ :foo = cnt + 1
+				if (nick[$foo]) {
 					if (FORMAT.NAMES_MID) {
 						push line \$FORMAT.NAMES_MID
 					}
