@@ -171,7 +171,7 @@ alias nickmgr.scan (void)
 					if (!nickmgr.wantnick($nick $serv))
 					{
 						break
-					}
+					}\
 					else if (matchitem(nickmgr.ignore.$serv $nick *) < 0)
 					{
 						if (!nickmgr.is_on($nick $serv))
