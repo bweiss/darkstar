@@ -20,7 +20,10 @@ set STATUS_SERVER 36[37%S36]37
 set STATUS_UMODE 36(37+%#36)37
 set STATUS_WINDOW 56*37
 
-^window double on
+for refnum in ($winrefs())
+{
+        ^window $refnum double on
+}
 
 alias getchanmode (void)
 {

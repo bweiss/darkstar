@@ -2,6 +2,8 @@ Darkstar ChangeLog
 
 [current]
 
+ - Both the "darkstar" and "epic4" status bars now change window double for
+   ALL open windows instead of just the current one.
  - [tabkey.dsm] Now checks for $CMDCHARS instead of "/" (yes this was stupid).
  - [tabkey.dsm] Now lists each variable on a separate line when displaying
    matches in the set routine.
