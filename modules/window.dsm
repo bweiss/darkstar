@@ -268,11 +268,14 @@ alias window.msgwin.show (void)
 	for ii from 1 to $numitems(window.msgwins)
 	{
 		@ :win = getitem(window.msgwins ${ii-1});
-		if (winserv($win) != winserv())
+		if (winserv() != winserv($win))
 		{
-			^window $win fixed off skip off swappable on;
-			^window $win hide;
-			^window $win fixed on skip on swappable off;
+			if (winvisible($win))
+			{
+				^window $win fixed off skip off swappable on;
+				^window $win hide;
+				^window $win fixed on skip on swappable off;
+			};
 		}{
 			if (!winvisible($win))
 			{
@@ -471,13 +474,15 @@ on #-window_command 426 "*"
 			};
 			@ setitem($array $numitems($array) $0 $query_nick $uhost);
 		};
+
+		# Kill any unneeded msg windows on /WINDOW NOSERV.
+		1cmd 1 window.msgwin.purge;
+	}
+	else
+	{
+		# Make sure the proper msg window is showing.
+		1cmd 1 window.msgwin.show;
 	};
-
-	# Kill any unneeded msg windows on /WINDOW NOSERV.
-	1cmd 1 window.msgwin.purge;
-
-	# Make sure the proper msg window is showing.
-	1cmd 1 window.msgwin.show;
 };
 
 
@@ -487,6 +492,7 @@ on #-window_command 426 "*"
 on #-window_create 426 "*"
 {
 	^alias $0 (void) \{window refnum_or_swap $0\};
+
 	defer window.msgwin.create $winserv($0);
 	defer window.msgwin.show;
 };

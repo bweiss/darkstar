@@ -626,7 +626,8 @@ alias tabkey.cmd.window (...)
 	else
 	{
 		@ :retval = pattern("$word*" $list);
-	}
+	};
+
 	@ function_return = tabkey.nofallback($retval);
 };
 
