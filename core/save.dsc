@@ -80,7 +80,7 @@ alias save (args)
 	 */
 	for module in ($modules)
 	{
-		switch ($save_config($save_dir $modules))
+		switch ($save_config($save_dir $module))
 		{
 			(0) {if (CONFIG[VERBOSE_SAVE]) {xecho -b Settings for [$module] saved to [$save_dir/$module\.sav]}}
 			(*) {xecho -b Error saving settings for [$module]}
@@ -129,6 +129,9 @@ alias save_config (save_dir, module, void)
 		for var in ($variables)
 		{
 			@ :value = aliasctl(assign get CONFIG.$var)
+
+			echo var: $var
+			echo value: $value
 
 			if (value != [])
 			{

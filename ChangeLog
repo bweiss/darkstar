@@ -3,6 +3,8 @@ Darkstar ChangeLog
 
 12/21/01
 
+ * [window.dsm] The msg window (AUTO_CREATE_MSG_WINDOW) now defaults to OFF.
+
  * Various improvements and cleanups in save.dsc, themes.dsc, and status.dsc.
 
  * Made some internal changes to the way we keep track of config/format

@@ -215,7 +215,7 @@ alias loader.load_module (module, void)
 		{
 			@ :dir = before(-1 / $before(-1 / $file))
 			^local defaults_file $dir/def/$module\.def
-			^local savefile $DS.SAVE_DIR/$module\.sav
+			^local save_file $DS.SAVE_DIR/$module\.sav
 
 			if (fexist($defaults_file) == 1)
 			{
@@ -262,9 +262,9 @@ alias loader.load_module (module, void)
 			@ close($fd)
 					
 			/* Load saved settings */
-			if (fexist($savefile) == 1)
+			if (fexist($save_file) == 1)
 			{
-				load $savefile
+				load $save_file
 			}
 
 			/* Load the bugger */
