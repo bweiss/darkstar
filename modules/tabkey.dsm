@@ -1,4 +1,4 @@
-# version:0.5 loader:pf
+# version:0.5.1 loader:pf
 # $Id$
 #
 # tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -120,6 +120,7 @@ alias tabkey.main (void)
 		xtype -l $nextword;
 		@ TABKEY.INDEX++;
 		@ TABKEY.LASTLINE = L;
+		xdebug $oxd;
 		return;
 	};
 

@@ -8,3 +8,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 -------------------------------------
 * Remove takbkey.cmd.mhelp; /MHELP was removed in a previous commit.
 * Fix /MASSMODE
+* Make sure to reset the value of extractw when exiting tabkey.main early.
