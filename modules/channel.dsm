@@ -606,7 +606,7 @@ on ^public_other '% % *\\[${CONFIG[AUTO_RESPONSE_STR]}\\]*'
 {
 	if (CONFIG[AUTO_RESPONSE])
 	{
-		echo $fparse(PUBLIC_OTHER_AR $channel.show_ov($0 $1)$*)
+		echo $fparse(PUBLIC_OTHER_AR $channel.show_ov($0 $1) $1-)
 
 		if (CONFIG[AUTO_RESPONSE_BEEP])
 		{
@@ -620,7 +620,7 @@ on ^public_other '% % *\\[${CONFIG[AUTO_RESPONSE_STR]}\\]*'
 			}
 		}
 	}{
-		echo $fparse(PUBLIC_OTHER $channel.show_ov($0 $1)$*)
+		echo $fparse(PUBLIC_OTHER $channel.show_ov($0 $1) $1-)
 	}
 }
 
