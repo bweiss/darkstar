@@ -2,7 +2,7 @@
    sv [<target>]
 
 Description:
-   Sends your client, OS, and Darkstar version to <target>.
+   Sends your client, OS, and DarkStar version to <target>.
 
 See Also:
    ds:dinfo(1);  ds:uptime(1);

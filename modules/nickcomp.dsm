@@ -1,9 +1,9 @@
 #version 1.0.1
 /* $Id$ */
 /*
- * nickcomp.dsm - Nick completion module for Darkstar/EPIC4
+ * nickcomp.dsm - Nick completion module for DarkStar/EPIC4
  *
- * Written by shade and modified for Darkstar/EPIC4 by Brian Weiss.
+ * Written by shade and modified for DarkStar by Brian Weiss.
  *
  * This script uses serial number 0 for all /on hooks.
  *

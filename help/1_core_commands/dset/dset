@@ -3,9 +3,9 @@
    dset [-]<variable>
 
 Description:
-   This command is used to set/view the values of Darkstar's user configurable
-   variables. It mimics as closely as possible the behavior of EPIC's internal
-   /SET command.
+   This command is used to set/view the values of DarkStar's user
+   configurable variables. It mimics as closely as possible the behavior
+   of EPIC's internal /SET command.
 
    If no value for the given variable is specified, the current value is
    displayed.  The client will display all matching variables if the given

@@ -1,5 +1,5 @@
 Description:
-   The core scripts are the heart of the Darkstar/EPIC4 script pack. They
+   The core scripts are the heart of the DarkStar/EPIC4 script pack. They
    handle the loading and unloading of modules, configuration of settings,
    saving, and the changing of statbars/themes. They also provide commands
    and functions for use in the various modules.

@@ -1,0 +1,186 @@
+Guide to the DarkStar module loading system.
+Last modified: 2002/05/04
+
+This intends to document the DarkStar module loading system as well as
+explain methods for writing high quality modules. It is geared towards
+people with some experience in ircII-EPIC scripting that are looking to
+write their own modules or are just interested in understanding the
+DarkStar core scripts.
+
+What is a DarkStar module? Well, in its simplest form, it's just like any
+other script that that you might /LOAD, but it contains a special block
+of code which I call a "cleanup queue" (using /QUEUE). This cleanup queue
+is responsible for removing certain pieces of code when the module is
+unloaded and is all that is required for a module to work correctly with
+the DarkStar core scripts. There is also a variety of useful things provided
+by the core scripts that module authors will likely want to take advantage
+of, but are not required. I will try to cover most of them here and keep
+this file updated as features are added/removed. It is still recommended
+that anyone writing modules read the ChangeLog on a regular basis. DarkStar
+is still under heavy development and I make no guarantees about any of this
+being consistent between versions.
+
+And now, let's dive right in with a sample module and I'll explain the parts
+of it in the comments.
+
+
+--- START OF FILE: foobar.dsm ---
+#version 0.1.3
+# The above line is an optional tag that is read by the module loader
+# (/LOAD sees it as a comment). If present, the number proceeding it will
+# be stored in the module_version array, and is displayed in things like
+# /MODLIST.
+/*
+ * foobar.dsm - Example module for DarkStar/EPIC4
+ *
+ * Written by Brian Weiss <brian@epicsol.org>
+ * Copyright (c) 2002 Brian Weiss
+ * See the 'COPYRIGHT' file for details.
+ */
+
+/*
+ * The most important part, the cleanup queue. This removes anything
+ * that the module adds that is not automatically removed by the module
+ * loader. This means all /on hooks, all arrays, and any alias or assign
+ * not in a structure named after the module (i.e. Anything not obviously
+ * associated with that module). It is also important to note that there
+ * is one evaluation being performed on the body of this queue, so there
+ * are times you will have to escape certain characters like $, (, and ).
+ * An example of this is shown here in the /on public hook. Also note that
+ * all /alias, /assign, and /on commands include the silent mode (^) to
+ * prevent them from outputting anything when the cleanup queue is executed.
+ */
+queue cleanup.foobar
+{
+	^alias -foo
+	^on public -'% % \$CONFIG.FOOBAR_TRIGGER *'
+	^on #hook 123 -"CONFIG FOOBAR_WINDOW *"
+	@ delarray(foobar)
+}
+
+/*
+ * The aliases config.add and format.add (provided by core/config.dsc) add
+ * config and format variables whose values can be changed via /DSET and
+ * /FSET. The '-b' option passed to config.add creates a boolean variable.
+ * Please see the comments in config.dsc for the complete usage of these
+ * commands. These variables are removed automatically when the module
+ * that added them is unloaded.
+ *
+ * IMPORTANT! The actual values of these variables will reside in the
+ * CONFIG structure and should be accessed (and sometimes directly changed)
+ * from there. See examples later in this file.
+ */
+config.add -b FOOBAR 0
+config.add    FOOBAR_TRIGGER !foo
+config.add -b FOOBAR_WINDOW 0
+
+/*
+ * Format variables should be used with $fparse() and $fparse2() (the only
+ * difference is that fparse2 doesn't pass the string through $cparse() for
+ * color coding) and are generally used to format the output resulting from
+ * certain events. This allows for easy configuration as well as theme
+ * support. See the /on public hook for an example. The numeric expandos
+ * ($0, $1, $2, etc.) will be expanded to the arguments passed to the
+ * fparse functions. Note that the first argument ($0) will be the name of
+ * the format variable. See the /on public hook for the call to $fparse()
+ * in this example.
+ */
+format.add FOOBAR <%G$1%n> $3-
+
+/*
+ * Force the loading of saved settings early so we can use them
+ * at load time. Example directly below. Also see modules/window.dsm
+ * and modules/misc.dsm.
+ */
+module.load_saved_settings
+
+/*
+ * Create a split window named "foobar" at load time. This window
+ * can also be created or killed whenever $CONFIG.FOOBAR_WINDOW is
+ * changed via /DSET by creating an '/on hook' event that catches
+ * config changes. See example below the public hook.
+ */
+if (CONFIG[FOOBAR_WINDOW])
+{
+	window new name foobar hide
+}
+
+/*
+ * There is no way for the module loader to be sure what this alias belongs
+ * to, so it must be removed in the cleanup queue.
+ */
+alias foo (void)
+{
+	echo foobar!
+}
+
+/*
+ * This will automatically be removed by the module loader, as it is
+ * in a structure named after the module. It need not be removed in
+ * the cleanup queue.
+ */
+alias foobar.speak (target, void)
+{
+	if (!target)
+	{
+		return
+	}
+
+	msg $target foobar!
+}
+
+/*
+ * All /ON hooks must be removed in the cleanup queue.
+ */
+on ^public '% % $CONFIG.FOOBAR_TRIGGER *'
+{
+	if (FORMAT[FOOBAR])
+	{
+		echo $fparse(FOOBAR $*)
+	}
+
+	if (CONFIG[FOOBAR] && finditem(foobar $0) == -1)
+	{
+		/* All arrays must also be removed from the cleanup queue. */
+		@ setitem(foobar $numitems(foobar) $0)
+		foobar.speak $0
+	}
+}
+
+/*
+ * This hook kills or creates the "foobar" window whenever the user
+ * changes the value of $CONFIG.FOOBAR_WINDOW with /DSET. Since the
+ * new value of the variable is already stored in the CONFIG structure
+ * after it is set, the previous value is passed to this hook after the
+ * variable name in order to allow the module to reset it to the previous
+ * value. See the hook at the bottom of modules/names.dsm for an example
+ * of this.
+ */
+on #-hook 123 "CONFIG FOOBAR_WINDOW *"
+{
+	if (CONFIG[FOOBAR_WINDOW])
+	{
+		window new name foobar last
+	}{
+		window foobar kill
+	}
+}
+
+
+
+--- END OF FILE: foobar.dsm ---
+
+
+That should give you a pretty good taste of what makes up a module. At this
+point you may want to have a closer look at the various modules that are
+included with DarkStar. Other areas of interest would be commands.dsc and
+functions.dsc in the core/ directory. And if you feel brave, have a peak
+at config.dsc and loader.dsc ;). Please feel free to email me if you
+have a question about something not covered here, or especially if you
+have a suggestion for how something can be improved. That's all for now,
+happy scripting!
+
+ - Brian Weiss <brian@epicsol.org>
+
+
+EOF

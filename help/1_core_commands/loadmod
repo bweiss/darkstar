@@ -2,7 +2,7 @@
    loadmod [<module> [<module> ...]]
 
 Description:
-   This command is used to load a new module into Darkstar, thus adding new
+   This command is used to load a new module into DarkStar, thus adding new
    features.
 
    If <module> is not specified the current module list will be displayed

@@ -1,6 +1,6 @@
-How to use the Darkstar/EPIC4 help system
+How to use the DarkStar/EPIC4 help system
 
-Darkstar uses EPIC4's builtin /HELP command to browse its documentation and
+DarkStar uses EPIC4's builtin /HELP command to browse its documentation and
 thus tries to immitate it as closely as possible. If you are unfamiliar with
 the use of /HELP please see help(1) in the EPIC Help Files. If you do not
 have these, they can be obtained from the following sites:
@@ -8,7 +8,7 @@ have these, they can be obtained from the following sites:
 ftp://ftp.epicsol.org/pub/epic/EPIC4-PRODUCTION/
 http://www.got.net/~brian/epic4/
 
-The help files for Darkstar are organized into the following groups:
+The help files for DarkStar are organized into the following groups:
 
    Section 1: Core Commands
    Section 2: Core Functions

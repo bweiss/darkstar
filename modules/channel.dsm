@@ -1,7 +1,7 @@
 #version 0.3.1
 /* $Id$ */
 /*
- * channel.dsm - Channel related module for Darkstar/EPIC4
+ * channel.dsm - Channel related module for DarkStar/EPIC4
  *
  * Written by Brian Weiss (except where noted)
  * Copyright (c) 2002 Brian Weiss

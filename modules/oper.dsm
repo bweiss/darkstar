@@ -1,7 +1,7 @@
 #version 0.1
 /* $Id$ */
 /*
- * oper.dsm - IRC Operator module for Darkstar/EPIC4
+ * oper.dsm - IRC Operator module for DarkStar/EPIC4
  *
  * Written by Brian Weiss
  * Copyright (c) 2002 Brian Weiss

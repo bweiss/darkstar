@@ -1,18 +1,18 @@
-Darkstar Frequently Asked Questions
+DarkStar Frequently Asked Questions
 $Id$
 
 This is a work in progress and is in no particular order. It will be updated
 as questions come up. Eventually, I may organize it, but don't count on it ;)
 
 
-Q: What should I do when upgrading to new versions of darkstar?
+Q: What should I do when upgrading to new versions of DarkStar?
 
 A: This depends heavily on the amount of customization you do. If you have
    your own modules, themes, statbars, etc. then you need to be more
    concerned with changes to what I distribute. In this situation I strongly
    urge that you review the ChangeLog for details on what's new.
 
-   If you don't write any of your own scripts for Darkstar then you don't
+   If you don't write any of your own scripts for DarkStar then you don't
    need to worry so much. One cool thing is that you don't always need to
    reload everything. If you know that the changes lie only in a specific
    module, you can reload just that module (/reloadmod). Same thing applies

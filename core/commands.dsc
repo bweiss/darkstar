@@ -9,7 +9,7 @@
 
 /*
  * Displays miscellaneous information about the operating system, client,
- * and Darkstar (including modules).
+ * and DarkStar (including modules).
  */
 alias dinfo (void)
 {
@@ -28,8 +28,8 @@ alias dinfo (void)
 	xecho -b Compile-time options: $info(o)
 	echo $G $divider
 
-	/* Display information about Darkstar. */
-	xecho -b Darkstar $DS.VERSION \($DS.INTERNAL_VERSION\) [$DS.COMMIT_ID]
+	/* Display information about DarkStar. */
+	xecho -b DarkStar $DS.VERSION \($DS.INTERNAL_VERSION\) [$DS.COMMIT_ID]
 	xecho -b Available modules: $numitems(modules), Loaded modules: $numitems(loaded_modules)
 	xecho -b Current theme: $DS.THEME, Current statusbar: $DS.SBAR
 	echo $G $divider
@@ -59,7 +59,7 @@ alias dinfo (void)
 # This cheesy rip-off was written by hop in 1996.
 # My apologies in advance to archon.
 # Modified on Jan 25, 1999 as an example of how to use arglists.
-# Modified on Oct 17, 2001 by Brian Weiss for use with Darkstar/EPIC4
+# Modified on Oct 17, 2001 by Brian Weiss for use with DarkStar/EPIC4
 #
 
 alias more less

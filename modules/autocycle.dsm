@@ -1,7 +1,7 @@
 #version 1.1.1
 /* $Id$ */
 /*
- * autocycle.dsm - Auto-Cycle module for Darkstar/EPIC4
+ * autocycle.dsm - Auto-Cycle module for DarkStar/EPIC4
  *
  * Written by Brian Weiss
  * Copyright (c) 2002 Brian Weiss

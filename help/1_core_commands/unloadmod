@@ -2,7 +2,7 @@
    unloadmod [<module> [<module> ...]]
 
 Description:
-   This command is used to unload a module from Darkstar, thus removing
+   This command is used to unload a module from DarkStar, thus removing
    anything previously added by the module (hopefully).
 
    If <module> is not specified the current module list will be displayed

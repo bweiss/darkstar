@@ -2,7 +2,7 @@
    dinfo
 
 Description:
-   Displays various information about the OS, client, and Darkstar.
+   Displays various information about the OS, client, and DarkStar.
 
 See Also:
    ds:sv(1);  ds:uptime(1);

@@ -1,5 +1,13 @@
-Darkstar ChangeLog
+DarkStar ChangeLog
 
+
+20020505
+
+ * Added doc/modules.txt, a guide to module writing and the first in-depth
+   documentation of the core scripts. Woo!
+
+ * The name of the script pack has been officially changed from Darkstar to
+   DarkStar. ;)
 
 20020427
 

@@ -1,7 +1,7 @@
 #version 0.3
 /* $Id$ */
 /*
- * misc.dsm - The 'miscellaneous stuff' module for Darkstar/EPIC4
+ * misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
  *
  * Written by Brian Weiss
  * Copyright (c) 2002 Brian Weiss

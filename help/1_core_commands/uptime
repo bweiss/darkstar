@@ -2,7 +2,7 @@
    uptime
 
 Description:
-   Displays your client, OS, and Darkstar version as well as client uptime.
+   Displays your client, OS, and DarkStar version as well as client uptime.
 
 See Also:
    ds:dinfo(1);  ds:sv(1);
