@@ -15,6 +15,9 @@ Author: Brian Weiss <brian@epicsol.org>
    OPERVIEW_SIZE         - Size of the operview window when it is not hidden.
 
 Commands:
+   operview [on|off]
+     - Toggles the operview window.
+
    operwall <text>
      - Sends an OPERWALL with <text>.
 

@@ -11,6 +11,7 @@
 /****** CLEANUP QUEUE ******/
 
 queue cleanup.oper {
+	^alias -operview
 	^alias -operwall
 	^on #381 427 -"*"
 	^on #hook 427 -"CONFIG OPERVIEW *"
@@ -42,6 +43,14 @@ module.load_saved_settings
 
 
 /****** USER ALIASES ******/
+
+alias operview {
+	if ([$0]) {
+		dset OPERVIEW $0
+	} else {
+		dset OPERVIEW ${CONFIG.OPERVIEW ? 0 : 1}
+	}
+}
 
 alias operwall (text) {
 	if (text) {
