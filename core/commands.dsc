@@ -73,7 +73,7 @@ alias _less (fd, count, winnum default 0, void)
 
 alias purge
 {
-      for $0 _purge
+      foreach $0 _purge
 	{
             purge $0.$_purge
       }

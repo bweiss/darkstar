@@ -3,6 +3,8 @@ Darkstar ChangeLog
 
 11/25/01
 
+ * Fixed /purge. (whitefang)
+
  * Fixed the statbars. They should now work with EPIC4-1.1.x.
 
 10/22/01
