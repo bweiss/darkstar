@@ -1,0 +1,35 @@
+/*
+ * Created by Brian Weiss <brian@epicsol.org> for Darkstar/EPIC4
+ */
+
+eval xecho -r $chr(27)\(U
+
+set INPUT_PROMPT 36Àì37 
+set STATUS_AWAY 36[37A${AWAY[NEWMSGS] ? [36!37$AWAY.NEWMSGS] : []}36]37
+set STATUS_CHANNEL 36-[37%C$getchanmode()36]37
+set STATUS_DOES_EXPANDOS ON
+set STATUS_FORMAT 36[%W36è%W36]ÍÍ[37%R36]ÍÍ%Q36Í%>Í[%W36è%W36]
+set STATUS_FORMAT1 36,40ÖÄ[37$Z36]Ä[37%R36]Ä[56%*36%=%@37%N%#36]37%C%B36Ä%Q36Ä37%F36Ä%>%A36Ä·
+set STATUS_FORMAT2 36,40ÇÄ$getchanstats()%{2}S36Ä%>%M36Ä[37$J36]Ä½
+set STATUS_HOLD_LINES 36Ä(37h36!37%B36)37
+set STATUS_MAIL 36[37mail36!37%M36]37
+#set STATUS_MODE 36(37+%+36)37
+set STATUS_NOTIFY 36(37w36!37%F36)37
+set STATUS_QUERY 36(37q36!37%Q36)37
+set STATUS_SERVER 36[37%S36]37
+set STATUS_UMODE 36(37+%#36)37
+set STATUS_WINDOW 56*37
+
+^window double on
+
+alias getchanmode (void)
+{
+	@ function_return = chanmode() != [*] ? [36\(37+$chanmode()36\)37] : []
+}
+
+alias getchanstats (void)
+{
+	@ function_return = numonchannel() ? [36[37t36/37$numonchannel() o36/37$#chops() n36/37$#nochops()36]ÄÄ37] : []
+}
+
+/* bmw '01 */

@@ -1,7 +1,7 @@
 Darkstar README
 Author: Brian Weiss <brian@epicsol.org>
 
-Last modification: 9/15/01
+Last modification: 9/16/01
 
 
 ABOUT
@@ -10,13 +10,12 @@ Darkstar is a modular script written for use with EPIC4, specifically,
 version 1.0. It is intended mostly for advanced users that wish to
 take the time to customize their client. The core script itself is quite
 small and provides everything necessary to load/unload modules, configure
-settings, save settings, and browse the help files. All other features
-come in the form of modules that can be loaded or unloaded at any time.
-This gives the script great flexibility and power. I must apologize for
-the lack of real documentation at this time, but the following should
-be enough to get you started. The script is quite usable despite it being
-in the early stages of development. Anyway, I hope you enjoy what I have
-created here.
+settings, save settings, change statbars, and browse the help files. All
+other features come in the form of modules that can be loaded or unloaded
+at any time. This gives the script great flexibility and power. I must
+apologize for the lack of real documentation at this time, but the following
+should be enough to get you started. The script is quite usable despite it
+being in the early stages of development.
 
 
 WHERE TO GET DARKSTAR AND EPIC4
@@ -50,7 +49,6 @@ of the following environment variables...
 
   DARKSTAR_HOME - Darkstar home directory (default ~/darkstar)
   DARKSTAR_RC - Location of the Darkstar startup file (default ~/.epic4/.dsrc)
-  DARKSTAR_SAVE_DIR - Location of save directory (default ~/.epic4/.ds_save)
 
 This can be accomplished in the following ways (depending on your shell) ...
 
@@ -93,7 +91,7 @@ place the following code in ~/.ircrc ...
 Once the script is loaded you can use /dhelp for further assistance.
 
 That's it! I hope you enjoy my script and please feel free to contact me with
-bug reports/suggestions.
+bug reports, code, or suggestions.
 
 
 FILES
@@ -102,21 +100,14 @@ COPYRIGHT		- The license file.
 README			- This file.
 TODO			- To-do list.
 ChangeLog		- The changelog.
-
-darkstar.irc		- The main script. This is what you actually /load
+darkstar.irc		- The startup script. This is what you actually /load
 			  to start using Darkstar.
-sample.dsrc		- Sample .dsrc file
-
-core/config.dsc		- Configuration manager (/dset and /fset)
-core/functions.dsc	- Functions module writers might find useful.
-core/help.dsc		- Help system
-core/loader.dsc		- The module loader
-core/save.dsc		- The /save system
-core/statbar.dsc	- Status bar manager
-
-defaults/*.def		- Default settings
-
-modules/*.dsm		- The modules themselves.
+sample.dsrc		- Sample .dsrc file.
+core/*.dsc		- Scripts that make up the core of Darkstar
+			  These are all required.
+modules/*.dsm		- The modules that provide most of the features. All
+			  of these are completely optional and are independent
+			  of each other.
 
 
 
