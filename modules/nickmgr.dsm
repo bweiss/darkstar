@@ -40,10 +40,9 @@ addconfig    NICKMGR_SCAN_TIMEOUT 900
 
 alias nick (...)
 {
-	if (CONFIG.NICKMGR)
+	if (CONFIG.NICKMGR && CONFIG.NICKMGR_AUTO_ADD_NICKS && findw($0 $CONFIG.NICKMGR_NICKLIST) == -1)
 	{
-		if (CONFIG.NICKMGR_AUTO_ADD_NICKS && findw($0 $CONFIG.NICKMGR_NICKLIST) == -1) \
-			push CONFIG.NICKMGR_NICKLIST $0
+		push CONFIG.NICKMGR_NICKLIST $0
 	}
 	//nick $*
 }
@@ -258,8 +257,9 @@ on #-join 422 "*"
 {
 	@ :serv = servernum()
 	@ :item = matchitem(nickmgr.ignore.$serv $0)
-	if (item > -1) \
+	if (item > -1) {
 		@ delitem(nickmgr.ignore.$serv $item)
+	}
 }
 
 on #-raw_irc 422 "% NICK *"
@@ -290,8 +290,9 @@ on #-timer 422 "*"
 	{
 		@ :ts = NICKMGR.SCAN[$serv]
 		@ :diff = time() - ts
-		if (diff > CONFIG.NICKMGR_SCAN_TIMEOUT) \
+		if (diff > CONFIG.NICKMGR_SCAN_TIMEOUT) {
 			^assign -NICKMGR.SCAN.$serv
+		}
 	}
 }
 

@@ -165,6 +165,7 @@ alias window.last.scroll (direction, void)
 	if (!direction) {
 		return
 	}
+
 	window last
 	parsekey scroll_$direction
 	window last
@@ -201,11 +202,11 @@ on #-join 426 '$servernick() *'
 	@ :curwin = winnum()
 	if (CONFIG.JOIN_NEW_WINDOW)
 	{
-		window new channel $1
+		^window new channel $1
 		if (CONFIG.BIND_ON_JOIN) {
-			window bind $1
+			^window bind $1
 		}
-		window $CONFIG.JOIN_NEW_WINDOW_ARGS
+		^window $CONFIG.JOIN_NEW_WINDOW_ARGS
 	}
 }
 
@@ -226,7 +227,8 @@ on #-raw_irc 426 "% NICK *"
 		@ :old_nick = before(1 ! $0)
 		@ :new_nick = after(1 : $2)
 		@ :querywin = querywin($old_nick $lastserver())
-		if (querywin > -1) {
+		if (querywin > -1)
+		{
 			xecho -b -w 0 Changing query in window $querywin from $old_nick to $new_nick
 			window $querywin query $new_nick
 		}
@@ -254,7 +256,7 @@ on #-raw_irc 426 '% PRIVMSG $servernick() *'
 	if (CONFIG.AUTO_QUERY_WINDOW && querywin($nick $lastserver()) == -1)
 	{
 		xecho -b -w 0 Creating new window for query with $nick
-		^window new query $nick $CONFIG.AUTO_QUERY_WINDOW_ARGS
+		^window new server $lastserver() query $nick $CONFIG.AUTO_QUERY_WINDOW_ARGS
 	}
 }
 
@@ -337,5 +339,3 @@ if (CONFIG.MSG_WINDOW) {
 	window.msgwin.create
 }
 
-
-/* EOF */

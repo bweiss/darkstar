@@ -125,9 +125,8 @@ alias fparse2 (...)
  */
 alias getitems (array, offset, list)
 {
-	if (!getarrays($array) || !isnumber(b10 $offset) || !list) {
+	if (!getarrays($array) || !isnumber(b10 $offset) || !list) \
 		return
-	}
 
 	for word in ($list)
 	{
@@ -289,7 +288,8 @@ alias uh
 
 alias visiblewins (void)
 {
-	for wref in ($winrefs()) {
+	for wref in ($winrefs())
+	{
 		if (winvisible($wref) > 0) {
 			@ push(:ret $wref)
 		}
@@ -304,7 +304,8 @@ alias visiblewins (void)
 alias winchannels (win default "$winnum()", void)
 {
 	@ :serv = winserv($win)
-	for chan in ($mychannels($serv)) {
+	for chan in ($mychannels($serv))
+	{
 		xeval -s $serv {
 			if (winchan($chan) == win) {
 				@ push(:channels $chan)
