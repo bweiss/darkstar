@@ -492,7 +492,7 @@ alias mdvoice (...)
 alias mdevoice (chan default "$C", void)
 {
 	massmode $chan - v $remw($servernick() $onchannel($chan));
-}
+};
 
 alias mme
 {
