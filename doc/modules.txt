@@ -16,12 +16,14 @@ responsible for removing certain pieces of code when the module is unloaded.
 This is due to the fact that the module loader has no way to reliably keep
 track of everything the module adds, so certain things must be specified
 for removal by the module itself. I hope to remedy this as soon as it
-becomes possible to do so.
+becomes possible to do so. For now, this is something we're stuck with.
 
-The only other rule is that the filename of the module must contain the
-name of the module and have an extension of ".dsm". Of course, the module
-must also be placed in one of the module directories in order for it to be
-recognized.
+Technically, the only thing required to make a script available as a
+DarkStar module is to place it in one of the module directories with
+a ".dsm" extension. Of course, the module won't unload properly and
+could cause all sorts of problems if the user ever tries to do so.
+Including a cleanup queue and keeping it up-to-date is pretty important
+and I strongly urge all module authors to take the time to do this..
 
 Nothing else needs to be done in order for a script to become a DarkStar
 module. However, there are a variety of features provided by the core
@@ -30,18 +32,24 @@ detail about some of these, as well as the cleanup queue, in the comments
 of the example module below.
 
 
---- START OF FILE: foobar.dsm ---
+--- START OF FILE: sample.dsm ---
 #version 0.1.3
 # The above line is an optional tag that is read by the module loader
 # (/LOAD sees it as a comment). If present, the number proceeding it will
 # be stored in the module_version array, and is displayed in the output
 # of /MODLIST. It must be the first line of the file or it will not work.
 /*
- * foobar.dsm - Example module for DarkStar/EPIC4
+ * sample.dsm - Example module for DarkStar/EPIC4
  *
  * Written by Brian Weiss <brian@epicsol.org>
  * Copyright (c) 2002 Brian Weiss
  * See the 'COPYRIGHT' file for details.
+ *
+ * Standard header comment, you can put whatever you like here. To make
+ * things easy on other module authors, I like to include a line like the
+ * one below whenever I have /on hooks. 
+ *
+ * This script uses serial numbers 0 and 123 for all /on hooks.
  */
 
 /*
@@ -51,17 +59,19 @@ of the example module below.
  * not in a structure named after the module (i.e. Anything not obviously
  * associated with that module). It is also important to note that there
  * is one evaluation being performed on the body of this queue, so there
- * are times you will have to escape certain characters like '$', and possibly
- * '(', and ')'. An example of this is shown here in the /on public hook.
- * Also note that all /alias, /assign, and /on commands include the silent
- * mode (^) to prevent them from outputting anything when the cleanup queue
- * is executed.
+ * are times you will have to escape certain characters like '$'. An example
+ * of this is shown here in the /on public hook. The name of this queue
+ * must be in the form of "cleanup.<modulename>" and must match the exact
+ * module name (if the module is named "foo2", the cleanup queue must be
+ * named "cleanup.foo2"). Also note that all /alias, /assign, and /on
+ * commands include the silent mode (^) to prevent them from outputting
+ * anything when the cleanup queue is executed.
  */
-queue cleanup.foobar
+queue cleanup.sample
 {
 	^alias -foo
-	^on public -'% % \$CONFIG.FOOBAR_TRIGGER *'
-	^on #hook 123 -"CONFIG FOOBAR_WINDOW *"
+	^on public -'% % \$CONFIG.SAMPLE_TRIGGER *'
+	^on #hook 123 -"CONFIG SAMPLE_WINDOW *"
 	@ delarray(foobar)
 }
 
@@ -77,9 +87,9 @@ queue cleanup.foobar
  * CONFIG structure and should be accessed (and sometimes directly changed)
  * from there. See examples later in this file.
  */
-config.add -b FOOBAR 0
-config.add    FOOBAR_TRIGGER !foo
-config.add -b FOOBAR_WINDOW 0
+config.add -b FOO 1
+config.add    SAMPLE_TRIGGER !foo
+config.add -b SAMPLE_WINDOW 1
 
 /*
  * Format variables should be used with $fparse() and $fparse2() (the only
@@ -92,7 +102,7 @@ config.add -b FOOBAR_WINDOW 0
  * the format variable. See the /on public hook for the call to $fparse()
  * in this example.
  */
-format.add FOOBAR <%G$1%n> $3-
+format.add BLAH <%G$1%n> $3-
 
 /*
  * Force the loading of saved settings early so we can use them
@@ -102,14 +112,14 @@ format.add FOOBAR <%G$1%n> $3-
 module.load_saved_settings
 
 /*
- * Create a split window named "foobar" at load time. This window
- * can also be created or killed whenever $CONFIG.FOOBAR_WINDOW is
+ * Create a split window named "sample" at load time. This window
+ * can also be created or killed whenever $CONFIG.SAMPLE_WINDOW is
  * changed via /DSET by creating an '/on hook' event that catches
  * config changes. See example below the public hook.
  */
-if (CONFIG[FOOBAR_WINDOW])
+if (CONFIG[SAMPLE_WINDOW])
 {
-	window new name foobar hide
+	window new name sample hide
 }
 
 /*
@@ -126,7 +136,7 @@ alias foo (void)
  * in a structure named after the module. It need not be removed in
  * the cleanup queue.
  */
-alias foobar.speak (target, void)
+alias sample.speak (target defalt "$C", void)
 {
 	if (!target)
 	{
@@ -139,43 +149,43 @@ alias foobar.speak (target, void)
 /*
  * All /ON hooks must be removed in the cleanup queue.
  */
-on ^public '% % $CONFIG.FOOBAR_TRIGGER *'
+on ^public '% % $CONFIG.SAMPLE_TRIGGER *'
 {
-	if (FORMAT[FOOBAR])
+	if (FORMAT[BLAH])
 	{
-		echo $fparse(FOOBAR $*)
+		echo $fparse(BLAH $*)
 	}
 
-	if (CONFIG[FOOBAR] && finditem(foobar $0) == -1)
+	if (CONFIG[FOO] && finditem(foobar $0) == -1)
 	{
 		/* All arrays must also be removed from the cleanup queue. */
 		@ setitem(foobar $numitems(foobar) $0)
-		foobar.speak $0
+		sample.speak $0
 	}
 }
 
 /*
- * This hook kills or creates the "foobar" window whenever the user
- * changes the value of $CONFIG.FOOBAR_WINDOW with /DSET. Since the
+ * This hook kills or creates the "sample" window whenever the user
+ * changes the value of $CONFIG.SAMPLE_WINDOW with /DSET. Since the
  * new value of the variable is already stored in the CONFIG structure
  * after it is set, the previous value is passed to this hook after the
  * variable name in order to allow the module to reset it to the previous
  * value. See the hook at the bottom of modules/names.dsm for an example
  * of this.
  */
-on #-hook 123 "CONFIG FOOBAR_WINDOW *"
+on #-hook 123 "CONFIG SAMPLE_WINDOW *"
 {
-	if (CONFIG[FOOBAR_WINDOW])
+	if (CONFIG[SAMPLE_WINDOW])
 	{
-		window new name foobar last
+		window new name sample last
 	}{
-		window foobar kill
+		window sample kill
 	}
 }
 
 
 
---- END OF FILE: foobar.dsm ---
+--- END OF FILE: sample.dsm ---
 
 
 That should give you a pretty good taste of what makes up a module. At this
