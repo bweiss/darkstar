@@ -8,6 +8,10 @@ Author: Brian Weiss <brian@epicsol.org>
    AUTO_RESPONSE                - Boolean. Turns auto-response on/off.
    AUTO_RESPONSE_BEEP           - Boolean. If true, auto-response will beep
                                   when triggered.
+   AUTO_RESPONSE_NOTIFY         - Boolean. If true, a notification will
+                                  be echoed to the current window whenever
+                                  auto-response is triggered in another
+                                  window.
    AUTO_RESPONSE_STR            - Space separated list of words that should
                                   trigger auto-response.
    BANTYPE                      - Integer argument for mask(6). This is used

@@ -12,6 +12,8 @@ PLANNED FOR FUTURE:
 * URL grab module
 * Rewrite keepnick.dsm
 * /MEMO command
+* Rewrite module loader to use wd's namespace stuff once it has been merged
+  into the main EPIC tree.
 
 
 OTHER NOTES/IDEAS:

@@ -144,7 +144,7 @@ alias config.add_variable (type, ...) {
 		(CONFIG) { ^local struct DSET; }
 		(FORMAT) { ^local struct FSET; }
 		(*) {
-			echo Error: conofig.add_variable: Invalid type: $type
+			echo Error: config.add_variable: Invalid type: $type
 			return
 		}
 	}

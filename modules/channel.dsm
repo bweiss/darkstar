@@ -1,4 +1,4 @@
-#version 0.6.3
+#version 0.6.4
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
@@ -27,6 +27,7 @@ queue cleanup.channel {
 
 config.add -b AUTO_RESPONSE 0
 config.add -b AUTO_RESPONSE_BEEP 0
+config.add -b AUTO_RESPONSE_NOTIFY 0
 config.add    AUTO_RESPONSE_STR
 config.add    BANTYPE 3
 config.add    DEFAULT_KICK_REASON No soup for you!
@@ -684,6 +685,9 @@ on ^public '% % *\\[$CONFIG.AUTO_RESPONSE_STR\\]*' {
 			beep
 			^stack pop set BEEP
 		}
+		if (CONFIG.AUTO_RESPONSE_NOTIFY && winchan($1) != winnum()) {
+			xecho -b -c Auto-response triggered in window #$winchan($1) by $0 \($1\)
+		}
 	} else {
 		if (FORMAT.PUBLIC) {
 			echo $fparse(PUBLIC $*)
@@ -701,6 +705,9 @@ on ^public_other '% % *\\[$CONFIG.AUTO_RESPONSE_STR\\]*' {
 			^set BEEP ON
 			beep
 			^stack pop set BEEP
+		}
+		if (CONFIG.AUTO_RESPONSE_NOTIFY && winchan($1) != winnum()) {
+			xecho -b -c Auto-response triggered in window #$winchan($1) by $0 \($1\)
 		}
 	} else {
 		if (FORMAT.PUBLIC_OTHER) {
