@@ -1,4 +1,4 @@
-#version 1.2.5
+#version 1.2.6
 /* $Id$ */
 /*
  * away.dsm - Away module for Darkstar/EPIC4
@@ -179,7 +179,7 @@ on #-notice 421 "*"
 {
 	if (A)
 	{
-		@ away.log(NOTICE $userhost $*)
+		@ away.log(NOTICE $userhost() $*)
 	}
 }
 

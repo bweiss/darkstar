@@ -1,6 +1,12 @@
 Darkstar ChangeLog
 
 
+20020427
+
+ * [away.dsm 1.2.6] I wasn't properly passing the userhost to away.log when
+   logging notices. This caused the first word of the text to be placed in
+   the nick field, and the nick to be placed in the userhost field.
+
 20020422
 
  * Added a doc directory as well as the beginnings of a FAQ.
