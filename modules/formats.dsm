@@ -1,8 +1,8 @@
-# version:0.1 loader:pf
+# version:0.2 loader:pf
 # $Id$
 #
 # formats.dsm - Standard formatting hooks and variables for DarkStar/EPIC4
-# Copyright (c) 2002, 2003 Brian Weiss (except where noted)
+# Copyright (c) 2002-2004 Brian Weiss (except where noted)
 # See the 'COPYRIGHT' file for more information.
 #
 # This script uses serial numbers 0 and 425 for /ON hooks.
@@ -14,7 +14,7 @@ queue cleanup.formats
 		^alias -$alias;
 	};
 
-	for hook in (301 307 308 $jot(310 315) $jot(317 320) 332 333 335 338 353 366 367 368 369 378 action channel_nick channel_signoff channel_sync ctcp ctcp_reply dcc_chat invite join kick leave mode msg nickname notice public public_other send_action send_dcc_chat send_msg send_notice send_public signoff topic wallop) {
+	for hook in (301 307 308 $jot(310 315) $jot(317 320) 332 333 335 338 353 366 367 368 369 378 action channel_nick channel_signoff channel_sync ctcp ctcp_reply dcc_chat invite join kick leave mode msg nickname notice public public_other send_action send_dcc_chat send_msg send_notice send_public server_notice signoff topic wallop) {
 		^on $hook -"*";
 	};
 	^on action -'% \$servernick() *';
@@ -87,7 +87,8 @@ addformat SEND_MSG *$$1*> $$2-;
 addformat SEND_NOTICE;
 addformat SEND_PUBLIC > $$3-;
 addformat SEND_PUBLIC_OTHER $$2> $$3-;
-addformat SEND_WALL -@$$1-> $$2-;
+addformat SEND_WALL -@$$1\\\-> $$2-;
+addformat SERVER_NOTICE $$G $$1-;
 addformat SIGNOFF $$G SignOff $$1: \\\($$2-%n\\\);
 addformat TOPIC $$G Topic for $$1: $$2-;
 addformat TOPIC_CHANGE $$G $$2 has changed the topic on channel $$1 to $$3-;
@@ -652,9 +653,9 @@ on ^send_ctcp "PRIVMSG *"
 };
 
 on ^send_dcc_chat "*" {formats.echo SEND_DCC_CHAT $*};
-
-on ^send_msg    "*" {formats.echo SEND_MSG $*};
-on ^send_notice "*" {formats.echo SEND_NOTICE $*};
+on ^send_msg      "*" {formats.echo SEND_MSG $*};
+on ^send_notice   "*" {formats.echo SEND_NOTICE $*};
+on ^server_notice "*" {formats.echo SERVER_NOTICE $2-};
 
 #
 # This event does not get hooked if the CHANNEL_SIGNOFF format

@@ -62,6 +62,8 @@ assign FORMAT.SEND_NOTICE [$Z] SEND_NOTICE $1> $2-
 assign FORMAT.SEND_PUBLIC <$2> $3-
 assign FORMAT.SEND_PUBLIC_OTHER <$1:$2> $3-
 assign FORMAT.SEND_WALL [$Z] SEND_WALL $1> $2-
+assign FORMAT.SERVER_NOTICE $G $1-
+assign FORMAT.SIGNOFF $G SignOff $1: \($2-%n\) [$tolower($Z)]
 assign FORMAT.TOPIC $G Topic for $1: $2-
 assign FORMAT.TOPIC_CHANGE $G $2 has changed the topic on channel $1 to $3-
 assign -FORMAT.TOPIC_FOOTER

@@ -23,7 +23,7 @@ assign -FORMAT.BANS_HEADER
 assign -FORMAT.BANS_HEADER1
 assign -FORMAT.BANS_HEADER2
 assign -FORMAT.CHANNEL_NICK
-assign FORMAT.CHANNEL_SIGNOFF $G Signoff: %c$2%n \($3-\)
+assign FORMAT.CHANNEL_SIGNOFF $G Signoff: %c$2%n \($3-%n\)
 assign FORMAT.CHANNEL_SYNC $G Join to %C$1%n is now synched \($2 seconds\)
 assign FORMAT.CHANNEL_TS $G Channel %C$2%n created on $strftime($3 %%a %%b %%d %%T %%Y)
 assign FORMAT.CTCP $G %CCTCP $3%n from %c$1%n %W\(%p$before(@ $userhost())%W\@%p$after(@ $userhost())%W)%n
@@ -63,6 +63,8 @@ assign FORMAT.SEND_NOTICE %G<%n-%g$1%n-%G>%n $2-
 assign FORMAT.SEND_PUBLIC %c<$2>%n $3-
 assign FORMAT.SEND_PUBLIC_OTHER %c<$1%n:%C$2>%n $3-
 assign FORMAT.SEND_WALL $G Sent wallmsg on $1 to $remw($servernick() $chops($1))
+assign FORMAT.SERVER_NOTICE %W-%G$servername()%W-%n $3-
+assign FORMAT.SIGNOFF $G Signoff: %c$1%n \($2-%n\)
 assign FORMAT.TOPIC $G Topic for $1: $2-
 assign FORMAT.TOPIC_CHANGE $G $2 has set the topic on channel $1 to $3-
 assign -FORMAT.TOPIC_FOOTER

@@ -14,6 +14,12 @@ FOR 0.3 RELEASE:
 
   * Update help files and write better module documentation (doc/modules.txt)
 
+  * Add some sort of function to return a list of all the channels that you
+    and the specified nick are both joined to. Maybe something like
+    $commonchans() or $sharedchans()?
+
+  * Add /ALLKICK and /ALLBAN aliases.
+
 
 AFTER 0.3 RELEASE:
 

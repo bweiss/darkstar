@@ -2,6 +2,10 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://darkstar.epicsol.org/UPDATES
 
 
+*** News 2004/04/26 -- foramts.dsm 0.2 - New format: SERVER_NOTICE
+	There is a new format variable called SERVER_NOTICE that will
+	be used to format all, yep you guessed it, server notices.
+
 *** News 2004/04/17 -- window.dsm 0.10.2 - /DSET MSG_WINDOW_LEVEL
 	A new config variable named MSG_WINDOW_LEVEL has been added.
 	This already existed with the old msg window code but I never

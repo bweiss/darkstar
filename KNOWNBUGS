@@ -2,7 +2,7 @@ DarkStar Projects, Bugs, and other Errata:
 
 KNOWN ERRATA (eg, bugs, or unresolved requests):
 ------------------------------------------------
-* Important metadata required for /SAVE is mysteriously being removed.
+<none>
 
 THE CHANGELOG SINCE THE LAST RELEASE:
 -------------------------------------
@@ -25,3 +25,7 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Add a MSG_WINDOW_LEVEL config variable.
 * Make /TBAN support comma delimited lists of ban numbers.
 * Add context sensitive completion alias for /IG (tabkey.cmd.ig)
+* Fix /THEME -SAVE
+* Add a SIGNOFF format to all themes.
+* Fix the default SEND_WALL format (also in epic4 theme).
+* Add a SERVER_NOTICE format variable.
