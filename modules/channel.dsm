@@ -870,15 +870,18 @@ alias wall (text)
  */
 alias channel.topic (serv, chan, topic)
 {
-	@ :array = [channel.topics.$serv\.$chan]
-	@ :head = numitems($array) - 1
-	if ((:item = matchitem($array $topic)) > -1) {
-		@ delitem($array $item)
+	if (CONFIG.REMEMBER_TOPICS > 0)
+	{
+		@ :array = [channel.topics.$serv\.$chan]
+		@ :head = numitems($array) - 1
+		if ((:item = matchitem($array $topic)) > -1) {
+			@ delitem($array $item)
+		}
+		while (numitems($array) >= CONFIG.REMEMBER_TOPICS) {
+			@ delitem($array 0)
+		}
+		@ setitem($array $numitems($array) $topic)
 	}
-	while (numitems($array) >= CONFIG.REMEMBER_TOPICS) {
-		@ delitem($array 0)
-	}
-	@ setitem($array $numitems($array) $topic)
 }
 
 
