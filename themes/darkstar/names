@@ -1,0 +1,9 @@
+/* Module: names */
+
+assign -FORMAT.NAMES_FOOTER
+assign FORMAT.NAMES_HEADER $G Users on $1: \(total/$2 - ops/$3 normal/$4\)
+assign FORMAT.NAMES_OP %c@%n
+assign FORMAT.NAMES_VOICE %m+%n
+
+
+/* bmw '01 */

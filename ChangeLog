@@ -1,6 +1,30 @@
 Darkstar ChangeLog
 
 
+12/25/01
+
+ * HEADS UP: Changes to the theme system. Each theme will now need to have
+   its own directory (within one of the theme directories) containing
+   <themename>.dst as well as individual files for each module. This solves
+   the problem of modules not using theme settings when loaded after a theme
+   has been chosen. I have also started using /assign rather than /fset to
+   change format variables in themes, as it is far more efficient. Using /fset
+   in your themes will still work, it just won't be as fast. See the two
+   included themes for examples of the new theme format.
+
+   Theme authors: The nature of these changes allow old themes to be easily
+   converted to the new and more efficient format by following these easy
+   steps:
+	- Start a client running this version (or newer) of Darkstar.
+	- Make sure all modules that you have theme settings for are currently
+	  loaded.
+	- /load ~/.darkstar/themes/<oldtheme>.dst
+	- /save
+	- mv ~/.darkstar/themes/custom ~/.darkstar/themes/<theme_name>
+
+ * Fixed a bug in /unloadmod that was causing commands like "/unloadmod 1-3"
+   and "/unloadmod 1 2 3" to not work.
+
 12/24/01
 
  * [channel.dsm] New format variables: ACTION_CHANNEL, ACTION_CHANNEL_OTHER,

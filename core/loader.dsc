@@ -6,7 +6,7 @@
  * LOADER.DSC - Module loader for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/23/01 (bmw)
+ * Last modified: 12/25/01 (bmw)
  */
 
 
@@ -84,6 +84,8 @@ alias unloadmod (modules)
 		{
 			@ modules = loader.which_mods(loaded_modules $mods)
 		}
+	}{
+		@ modules = loader.which_mods(loaded_modules $modules)
 	}
 
 	for module in ($modules)
@@ -235,6 +237,15 @@ alias loader.load_module (module, void)
 		/* Load the bugger */
 		load $file
 		@ setitem(loaded_modules $numitems(loaded_modules) $module)
+
+		/* Load theme file for this module */
+		@ :t_item = finditem(themes $DS.THEME)
+		@ :t_file = getitem(theme_files $t_item) ## module
+
+		if (fexist($t_file) == 1)
+		{
+			load $t_file
+		}
 
 		return 0
 	}
@@ -403,8 +414,6 @@ elsif (CONFIG[AUTO_LOAD_MODULES])
 {
 	loadmod $CONFIG.AUTO_LOAD_MODULES
 }
-
-eval theme $CONFIG.THEME
 
 
 /* bmw '01 */

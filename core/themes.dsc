@@ -6,7 +6,7 @@
  * THEMES.DSC - Theme support for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/22/01 (bmw)
+ * Last modified: 12/25/01 (bmw)
  *
  * This script uses serial number 1 for all ON hooks.
  */
@@ -30,7 +30,9 @@ alias theme (theme, void)
 		switch ($themes.change($theme))
 		{
 			(0) {xecho -b Now using theme: $DS.THEME}
-			(*) {xecho -b ERROR: Invalid theme}
+			(1) {xecho -b ERROR: Invalid theme [$theme]}
+			(2) {xecho -b ERROR: Theme directory not found}
+			(*) {xecho -b ERROR: Unknown}
 		}
 
 		defer ^alias -_change_theme
@@ -81,16 +83,21 @@ alias themes.buildlist (void)
 
 		if (fexist($dir) == 1)
 		{
-			for file in ($glob($dir\/\*.dst))
+			for t_dir in ($glob($dir\/\*))
 			{
-				@ :name = before(. $after(-1 / $file))
+				@ :name = after(-1 / $before(-1 / $t_dir))
 
 				if (finditem(themes $name) > -1)
 				{
 					xecho -b themes.buildlist(): Duplicate theme name: $name
 				}{
-					@ setitem(themes $numitems(themes) $name)
-					@ setitem(theme_files $numitems(theme_files) $file)
+					@ :t_file = t_dir ## name ## [.dst]
+
+					if (fexist($t_file) == 1)
+					{
+						@ setitem(themes $numitems(themes) $name)
+						@ setitem(theme_files $numitems(theme_files) $t_dir)
+					}
 				}
 			}
 		}
@@ -109,15 +116,30 @@ alias themes.change (theme, void)
 
 	if (item > -1)
 	{
-		@ :file = getitem(theme_files $item)
+		@ :dir = getitem(theme_files $item)
 
-		if (fexist($file) == 1)
+		if (fexist($dir) == 1)
 		{
-			//load $file
+			@ :t_file = dir ## theme ## [.dst]
+			load $t_file
+
+			for cnt from 0 to ${numitems(loaded_modules) - 1}
+			{
+				@ :module = getitem(loaded_modules $cnt)
+				@ :file = dir ## module
+
+				if (fexist($file) == 1)
+				{
+					load $file
+				}
+			}
+
 			^assign DS.THEME $theme
 			^assign CONFIG.THEME $theme
 			return 0
 		}
+
+		return 2
 	}
 
 	return 1
@@ -158,6 +180,9 @@ on #-hook 1 "CONFIG THEME %"
 		}
 	}
 }
+
+
+eval theme $CONFIG.THEME
 
 
 /* bmw '01 */

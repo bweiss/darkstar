@@ -1,0 +1,15 @@
+/*
+ * EPIC4 theme for Darkstar/EPIC4
+ * Author: Brian Weiss <brian@epicsol.org> - 2001
+ * Last modified: 12/25/01 (bmw)
+ */
+
+status -q epic4
+
+set BANNER ***
+
+assign FORMAT.SET $G Current value of $1 is $2-
+assign FORMAT.SET_NOVALUE $G No value for $1 has been set
+
+
+/* bmw '01 */

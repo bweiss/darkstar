@@ -6,7 +6,7 @@
  * MISC.DSM - The 'miscellaneous stuff' module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/24/01 (bmw)
+ * Last modified: 12/25/01 (bmw)
  *
  * This script uses serial number 424 for all ON hooks.
  */
@@ -83,7 +83,8 @@ alias nslookup (address, void)
 {
 	if (address)
 	{
-		xecho -b $address is ${convert($address) ? convert($address) : [unknown]}
+		@ :tmp = convert($address)
+		xecho -b $address is ${tmp ? tmp : [unknown]}
 	}{
 		xecho -b Usage: /nslookup <address>
 	}

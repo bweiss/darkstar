@@ -64,8 +64,8 @@ do
 /*
  * Important global variables
  */
-assign DS.VERSION 0.1.1
-assign DS.INTERNAL_VERSION 20011223
+assign DS.VERSION 0.1.2
+assign DS.INTERNAL_VERSION 20011225
 
 
 /*
@@ -200,10 +200,10 @@ if (fexist($DS.SAVE_DIR/core.sav) == 1)
 eval load $DS.HOME/core/functions.dsc
 eval load $DS.HOME/core/commands.dsc
 eval load $DS.HOME/core/config.dsc
+eval load $DS.HOME/core/help.dsc
 eval load $DS.HOME/core/save.dsc
 eval load $DS.HOME/core/status.dsc
 eval load $DS.HOME/core/themes.dsc
-eval load $DS.HOME/core/help.dsc
 eval load $DS.HOME/core/loader.dsc
 
 
