@@ -1,4 +1,4 @@
-#version 0.9.1
+#version 0.9.2
 /* $Id$ */
 /*
  * misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
@@ -281,11 +281,11 @@ on ^319 "*" {
 		for chan in ($2-) {
 			if (!channels) {
 				push channels $chan
-			} else if (no_fit && strlen($fparse($format_var $0 $1 $channels)) >= word(0 $geom())) {
+			} else if (no_fit && strlen($stripcrap(ALL $fparse($format_var $0 $1 $channels))) >= word(0 $geom())) {
 				echo $fparse($format_var $0 $1 $channels)
 				@ :channels = chan
 				@ :no_fit = []
-			} else if (strlen($fparse($format_var $0 $1 $channels $chan)) >= word(0 $geom())) {
+			} else if (strlen($stripcrap(ALL $fparse($format_var $0 $1 $channels $chan))) >= word(0 $geom())) {
 				echo $fparse($format_var $0 $1 $channels)
 				@ :channels = chan
 				@ :format_var = [WHOIS_CHANNELS_WRAP]
