@@ -1,0 +1,34 @@
+Synopsis:
+   $ts()
+   $ts(<time>)
+
+Description:
+   This is a timestamp function that can be used in themes to allow them
+   provide timestamping support that is easily toggled via /DSET.
+
+Technical:
+   * If no <time> is specified then the current value of $time() will be used.
+   * If present, the <time> argument must be in UTC format.
+   * This function only returns a value if the TIMESTAMP config variable
+     is ON.
+   * The resulting format of the timestamp depends entirely on the value of
+     the TIMESTAMP_FORMAT config variable. Its value, along with the UTC
+     version of the time will be passed to strftime(). Consult your system's
+     strftime() man page for details on formatting codes.
+
+Returns:
+   The current time (or <time>) formatted according to the TIMESTAMP_FORMAT
+   config variable.
+
+Other Notes:
+   Due to the fact that TIMESTAMP_FORMAT is a config variable, it will not
+   be passed through $cparse() and thus will not accept cparse color codes.
+   The reason for this is that both $strftime() and $cparse() use the '%'
+   character to prefix their expandos. If you would like to add color to
+   your timestamps just use ^C color codes directly. See epic4/doc/color.txt
+   and epic4/doc/colors for more information on ^C color codes.
+
+See Also:
+   time(6);  cparse(6);  strftime(6);
+   ds:dset(1) timestamp;  ds:dset(1) timestamp_format
+

@@ -1,9 +1,5 @@
 FOR 0.3 RELEASE:
 
-  * Add timestamping functionality to the core. This includes a TIMESTAMP
-    config variable, a format variable of the same name, and a $ts() function
-    for use in themes.
-
   * Write a new_users help page for /DHELP
 
   * Add a function that will return the nicks of all normal users (no ops,

@@ -5,6 +5,9 @@
 # See the 'COPYRIGHT' file for more information.
 #
 
+addconfig -b TIMESTAMP 0;
+addconfig    TIMESTAMP_FORMAT [%H:%M] ;
+
 #
 # Works just like the builtin $cparse() but outputs ANSI color
 # codes instead of ^C color codes. This was written by |Rain|.
@@ -303,6 +306,13 @@ alias tld
 			@ :name = TLD.$0 ? TLD.$0 : [unknown];
 			xecho -b Top-level domain "$0" is "$name";
 		};
+	};
+};
+
+alias ts (time default "$time()", void)
+{
+	if (CONFIG.TIMESTAMP) {
+		@ function_return = strftime($time $CONFIG.TIMESTAMP_FORMAT);
 	};
 };
 

@@ -36,3 +36,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Rename $chanvoice() to $chvoices() for consistency.
 * Make $getdsets()/$getfsets() support multiple patterns like $getsets().
 * Make $loadedmods() and $mods() take pattern arguments like $getsets().
+* Add a $ts() function and 2 new config vars: TIMESTAMP and TIMESTAMP_FORMAT.

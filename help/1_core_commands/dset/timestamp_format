@@ -1,0 +1,13 @@
+Synopsis:
+   dset timestamp_format [...]
+
+Description:
+   This determines the format of the return value of the $ts() function.
+   Whenever the TIMESTAMP config variable is true and a call to $ts() is
+   made the value of this variable will be passed to $strftime() and the
+   output will be returned. Please consult your system's strftime() man
+   page for details regarding syntax.
+
+See Also:
+   strftime(6);  ds:ts(2);  ds:dset(1) timestamp
+

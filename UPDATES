@@ -2,6 +2,12 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://darkstar.epicsol.org/UPDATES
 
 
+*** News 2004/06/01 -- Timestamp support! $ts()
+	I have finally added a $ts() function for use in themes to
+	provide timestamping that can be toggled via /DSET. The related
+	config variables are named TIMESTAMP and TIMESTAMP_FORMAT.
+	See ds:ts(2) for more details.
+
 *** News 2004/06/01 -- $loadedmods()/$mods() now take arguments
 	The $loadedmods() and $mods() functions provided by the core
 	core scripts are now able to take pattern arguments just like
@@ -49,7 +55,7 @@ The entire file can be found at http://darkstar.epicsol.org/UPDATES
 	connected to a different server. Multi-server operview windows
 	coming soon!
 
-*** News 2003/12/07 -- New functions: $mods, $loadedmods()
+*** News 2003/12/07 -- New functions: $mods(), $loadedmods()
 	These two functions are very straightforward. The $mods() function
 	returns a space separated list of currently available modules
 	and the $loadedmods() function returns a list of modules that are

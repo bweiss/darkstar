@@ -1,0 +1,10 @@
+Synopsis:
+   dset timestamp [on|off|1|0]
+
+Description:
+   If true, calls to the $ts() function will return a timestamp formatted
+   according to the value of the TIMESTAMP_FORMAT config variable.
+
+See Also:
+   ds:ts(2);  ds:dset(1) timestamp_format
+
