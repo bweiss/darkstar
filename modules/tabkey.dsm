@@ -555,7 +555,7 @@ on #^dcc_request 420 "% CHAT *" {
 
 on #^send_ctcp 420 "PRIVMSG % DCC CHAT *" {
 	for sref in ($serverrefs()) {
-		tabkey.addnicktohist $sref =$0
+		tabkey.addnicktohist $sref =$1
 	}
 }
 
