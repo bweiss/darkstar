@@ -162,10 +162,10 @@ alias pipe {
  */
 alias serverrefs (void) {
 	^local refnums
-	for w_ref in ($winrefs()) {
-		@ :s_ref = winserv($winref)
-		if (!match($s_ref $refnums)) {
-			push refnums $s_ref
+	for wref in ($winrefs()) {
+		@ :sref = winserv($wref)
+		if (!match($sref $refnums)) {
+			push refnums $sref
 		}
 	}
 	@ function_return = refnums

@@ -9,7 +9,7 @@ The entire file can be found at http://darkstar.epicsol.org/UPDATES
 
 *** News 2003/09/21 -- channel.dsm 1.0 - /WALL Yay, /WALL2 Nay
 	I finally fixed the /WALL alias and got rid of /WALL2. The method
-	for used for sending the NOTICEs will now be determined by the new
+	used for sending the NOTICEs will now be determined by the new
 	config variable CHANNEL_WALL_TYPE. There are three possible types:
 	   1 - Send a single NOTICE to @<channel>
 	   2 - Send NOTICEs to all +o users, seven at a time
