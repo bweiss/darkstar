@@ -2,35 +2,54 @@ Module: relay
 Author: Brian Weiss <brian@epicsol.org>
 
 Description:
-   Relays your last sent/received msgs and notices.
+   Relays your last sent/received messages of various types.
 
 Config Variables:
    RELAY_BUFFER_SIZE       - This determines the number of items that
                              will be stored for each type.
 
 Commands:
-   clearrelaybuf
-     - Clears all the arrays containing your msgs and notices.
-
-   relay <-m|-n|-sm|-sn> [-list|<item#> [<target>]]
-     - The first argument determines the type of message. The values
-       are as follows:
-         '-m'  : msg             '-n'  : notice
-         '-sm' : sent_msg        '-sn' : sent_notice
-     - If the "-list" option is specified, the list of items available
-       to be relayed will be displayed.
+   relay <type> [-clear|-list|<item#> [<target>]]
+     - The <type> argument determines the type of message. The possible
+       values are as follows (abbreviations in parenthesis):
+         (c)ctcp, (cr)ctcp_reply, (m)msg, (n)notice, (p)public,
+         (po)public_other, (sc)send_ctcp, (sm)send_msg, (sn)send_notice,
+         (sp)send_public, (spo)send_public_other
+     - The "-clear" option will clear the relay buffer for <type>
+     - The "-list" option displays the current relay buffer for <type>
      - If no item # is given, the most recent entry will be used.
      - If no target is given, the current window's target ($T) will be used.
 
-   relm [-list|<item#> [<target>]]
-     - Passes its arguments to /relay with the '-m' type.
+   relc
+     - Passes its arguments to /relay with the type "ctcp"
 
-   reln [-list|<item#> [<target>]]
-     - Passes its arguments to /relay with the '-n' type.
+   relcr
+     - Passes its arguments to /relay with the type "ctcp_reply"
 
-   relsm [-list|<item#> [<target>]]
-     - Passes its arguments to /relay with the '-sm' type.
+   relm
+     - Passes its arguments to /relay with the type "msg"
 
-   relsn [-list|<item#> [<target>]]
-     - Passes its arguments to /relay with the '-sn' type.
+   reln
+     - Passes its arguments to /relay with the type "notice"
+
+   relp
+     - Passes its arguments to /relay with the type "public"
+
+   relpo
+     - Passes its arguments to /relay with the type "public_other"
+
+   relsc
+     - Passes its arguments to /relay with the type "send_ctcp"
+
+   relsm
+     - Passes its arguments to /relay with the type "send_msg"
+
+   relsn
+     - Passes its arguments to /relay with the type "send_notice"
+
+   relsp
+     - Passes its arguments to /relay with the type "send_public"
+
+   relspo
+     - Passes its arguments to /relay with the type "send_public_other"
 

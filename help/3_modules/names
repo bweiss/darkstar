@@ -11,7 +11,8 @@ Author: Brian Weiss <brian@epicsol.org>
                          before everyone else.
 
 Format Variables:
-   NAMES_FOOTER[1|2], NAMES_HEADER[1|2], NAMES_NONOP, NAMES_OP, NAMES_VOICE
+   NAMES_FOOTER[1|2], NAMES_HEADER[1|2], NAMES_LEFT, NAMES_MID, NAMES_NONOP,
+   NAMES_OP, NAMES_RIGHT, NAMES_VOICE
 
 Commands:
    names [channel]
