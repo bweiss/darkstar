@@ -1,4 +1,4 @@
-#version 0.2.2
+#version 0.2.3
 /* $Id$ */
 /*
  * keepnick.dsm - Keepnick/Getnick module for DarkStar/EPIC4
@@ -45,12 +45,12 @@ alias getnick (nick, void) {
 				@ _GETNICK = nick
 				if (!is_on($_GETNICK)) {
 					xecho -b Changing nick to [$_GETNICK]
-					//nick $_GETNICK
+					defer //nick $_GETNICK
 					keepnick.getnick_cleanup
 				} else {
 					^on #-notify_signoff 422 '\$_GETNICK' {
 						xecho -b Changing nick to [$0]
-						//nick $0
+						defer //nick $0
 						keepnick.getnick_cleanup
 					}
 					^on #-timer 422 "*" {
@@ -58,7 +58,7 @@ alias getnick (nick, void) {
 							getnick -
 						} else if (S && servernick() != [<not registered yet>] && !is_on($_GETNICK)) {
 							xecho -b Changing nick to [$_GETNICK]
-							//nick $_GETNICK
+							defer //nick $_GETNICK
 							keepnick.getnick_cleanup
 						}
 					}
