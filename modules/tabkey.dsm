@@ -703,19 +703,10 @@ alias tabkey.method.variable (type, void)
 
 		switch ($type)
 		{
-			(ALIAS) (ASSIGN) {
-				@ :matches = aliasctl($type match $word2);
-			}
-			(CONFIG) (FORMAT) (SET)
-			{
-				switch ($type)
-				{
-					(CONFIG) {@ :func = [getdsets($word2*)]}
-					(FORMAT) {@ :func = [getfsets($word2*)]}
-					(SET)    {@ :func = [getsets($word2*)]}
-				};
-				@ :matches = *func;
-			}
+			(ALIAS) (ASSIGN) {@ :matches = aliasctl($type match $word2)}
+			(CONFIG)         {@ :matches = getdsets($word2*)}
+			(FORMAT)         {@ :matches = getfsets($word2*)}
+			(SET)            {@ :matches = getsets($word2*)}
 		};
 
 		if (rm) {
@@ -732,10 +723,10 @@ alias tabkey.method.variable (type, void)
 		{
 			(CONFIG) (FORMAT) {
 				eval xtype -l \$$type\.$word(${curword - 1} $L);
-			}
+			};
 			(*) {
 				eval xtype -l \$$word(${curword - 1} $L);
-			}
+			};
 		};
 	};
 
