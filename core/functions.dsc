@@ -100,33 +100,36 @@ alias padleft (size, char, text)
 	@ function_return = repeat(${size - strlen($text)} $char) ## text
 }
 
-
-/* epic4/script/pipe from EPIC4-1.1.3, written by Jeremy Nelson. -brian */
+/*
+ * The original version of this function was taken from EPIC4-1.1.3 and
+ * was written by Jeremy Nelson. It has been modified to use $rand() to
+ * generate a unique process name, rather than a global variable that
+ * is incremented every time the function is called. The original comment
+ * follows. -Brian
+ */
 /*
  * Ok.  Here's the plan.
  *
  * $pipe(commands) will return the output from 'commands'.
  */
+alias pipe
+{
+	@ srand($time())
+	@ :desc = [pipe] ## rand(999999)
+	^local retval
 
-alias pipe {
-	@ pipe.intval++
-	^local mypipeval $pipe.intval
-	^local mypipedesc pipe$mypipeval
-	^local mypiperetval
-
-	^on ^exec "$mypipedesc *" {
+	^on ^exec "$desc *"
+	{
 		bless
-		push mypiperetval $1-
+		push retval $1-
 	}
 
-	^exec -name $mypipedesc $*
-	^wait %$mypipedesc
-	^on exec -"$mypipedesc *"
-	return $mypiperetval
+	^exec -name $desc $*
+	^wait %$desc
+	^on exec -"$desc *"
+	return $retval
 }
-
-#hop'97
-
+#hop '97
 
 /*
  * Rounds a decimal number based on the first digit to the right of the
