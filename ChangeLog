@@ -3,6 +3,9 @@ Darkstar ChangeLog
 
 1/13/02
 
+ * Fixed a bug in config.dsc that was allowing boolean config variables to
+   be set to literal values.
+
  * HEADS UP: Major changes to the way config and format variables are added
    by modules. All of the .def files (along with def/) have been removed in
    favor of the modules adding the variables themselves via /config.add and

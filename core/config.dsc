@@ -107,8 +107,15 @@ alias config.set_routine (type, variable, value)
 			{
 				if (struct2 == [CONFIG] && DSET[BOOL][$var2])
 				{
-					^assign $var $convert.onoff($value)
-					xecho -s -b Value of $toupper($var2) set to $toupper($convert.num($value))
+					switch ($tolower($value))
+					{
+						(0) (1) (off) (on)
+						{
+							^assign $var $convert.onoff($value)
+							xecho -s -b Value of $toupper($var2) set to $toupper($convert.num($value))
+						}
+						(*) {xecho -s -b Value must either be ON, OFF, 1, or 0}
+					}
 				}{
 					^assign $var $value
 					xecho -s -b Value of $toupper($var2) set to $value
@@ -174,7 +181,7 @@ alias config.add
 	{
 		^assign variable $1
 		^assign value $2-
-		^assign DSET.BOOL.$var 1
+		^assign DSET.BOOL.$variable 1
 	}{
 		^assign variable $0
 		^assign value $1-
