@@ -12,7 +12,7 @@
  * This script uses serial number 420 for all /on hooks.
  */
 
-queue cleanup.newtabkey
+queue cleanup.tabkey
 {
 	^on #msg 420 -"*"
 	^on #send_msg 420 -"*"
