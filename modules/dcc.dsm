@@ -42,7 +42,7 @@ alias chat (nick, void)
  */
 alias dcc (...)
 {
-	if ([$0] == [SEND] && left(1 $2) == ["] && right(1 $2-) != ["]) {
+	if ([$0] == [SEND] && left(1 $2) == ["] && right(1 $word(${numwords($2-) - 1} $2-)) != ["]) {
 		//dcc $0 $1 $2-"
 	} else {
 		//dcc $*
