@@ -1,6 +1,6 @@
+/* $Id$ */
 /*
  * Created by Brian Weiss <brian@epicsol.org> for Darkstar/EPIC4
- * Last modified: 2/26/02 (bmw)
  */
 
 eval xecho -r $chr(27)\(U
@@ -44,4 +44,4 @@ for refnum in ($winrefs())
 }
 
 
-/* bmw '01 */
+/* EOF */
