@@ -25,6 +25,7 @@ alias theme (theme, void)
 	{
 		themes.display
 		^assign theme $"Which theme would you like to use? "
+		if (!theme) {return}
 	}
 
 	if (isnumber($theme) && theme > 0 && theme <= numitems(themes))
@@ -36,10 +37,10 @@ alias theme (theme, void)
 	switch ($themes.change($theme))
 	{
 		(0) {xecho -b Now using theme: $DS.THEME}
-		(1) {xecho -b ERROR: themes.change\(\): Not enough arguments}
-		(2) {xecho -b ERROR: themes.change\(\): Theme not found \($theme\)}
-		(3) {xecho -b ERROR: themes.change\(\): Master theme file not found}
-		(*) {xecho -b ERROR: themes.change\(\): Unknown}
+		(1) {xecho -b Error: themes.change\(\): Not enough arguments}
+		(2) {xecho -b Error: themes.change\(\): Theme not found \($theme\)}
+		(3) {xecho -b Error: themes.change\(\): Master theme file not found}
+		(*) {xecho -b Error: themes.change\(\): Unknown}
 	}
 }
 

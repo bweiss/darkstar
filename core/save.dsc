@@ -6,7 +6,7 @@
  * SAVE.DSC - Save /CONFIG and /FSET settings for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/11/02 (bmw)
+ * Last modified: 1/14/02 (bmw)
  */
 
 /*
@@ -61,7 +61,7 @@ alias save (args)
 		
 		if (mkdir($save_dir) > 0)
 		{
-			xecho -b ERROR: Unable to create directory [$save_dir]
+			xecho -b Error: Unable to create directory [$save_dir]
 			xecho -b Aborting save...
 			return
 		}
@@ -75,7 +75,7 @@ alias save (args)
 		switch ($save.save_config($save_dir $module))
 		{
 			(0) {if (CONFIG[VERBOSE_SAVE]) {xecho -b Settings for [$module] saved to [$save_dir/$module\.sav]}}
-			(*) {xecho -b ERROR: Unable to save settings for [$module]}
+			(*) {xecho -b Error: Unable to save settings for [$module]}
 		}
 	}
 
@@ -83,10 +83,10 @@ alias save (args)
 	switch ($save.save_formats($modules))
 	{
 		(0) {(CONFIG[VERBOSE_SAVE]) {xecho -b Format settings saved to [$DS.USER_DIR/themes/custom/]}}
-		(1) {xecho -b ERROR: Too few arguments passed to save_formats()}
-		(2) {xecho -b ERROR: Unable to write master theme file}
-		(3) {xecho -b ERROR: Unable to write one or more module themes}
-		(*) {xecho -b ERROR: Unknown}
+		(1) {xecho -b Error: Too few arguments passed to save_formats()}
+		(2) {xecho -b Error: Unable to write master theme file}
+		(3) {xecho -b Error: Unable to write one or more module themes}
+		(*) {xecho -b Error: Unknown}
 	}
 
 	xecho -b Save completed [$strftime(%c)]

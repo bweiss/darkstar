@@ -45,10 +45,10 @@ alias loadmod (modules)
 		switch ($loader.load_module($module))
 		{
 			(0) {xecho -b Module [$module] has been loaded}
-			(1) {xecho -b ERROR: No modules found}
-			(2) {xecho -b ERROR: Module [$module] is already loaded}
-			(3) {xecho -b ERROR: Module [$module] not found}
-			(*) {xecho -b ERROR: Unknown}
+			(1) {xecho -b Error: No modules found}
+			(2) {xecho -b Error: Module [$module] is already loaded}
+			(3) {xecho -b Error: Module [$module] not found}
+			(*) {xecho -b Error: Unknown}
 		}
 	}
 }
@@ -97,9 +97,9 @@ alias unloadmod (modules)
 		switch ($loader.unload_module($module))
 		{
 			(0) {xecho -b Module [$module] has been unloaded}
-			(1) {xecho -b ERROR: No modules are currently loaded}
-			(2) {xecho -b ERROR: Module [$module] is not loaded}
-			(*) {xecho -b ERROR: Unknown}
+			(1) {xecho -b Error: No modules are currently loaded}
+			(2) {xecho -b Error: Module [$module] is not loaded}
+			(*) {xecho -b Error: Unknown}
 		}
 	}
 }

@@ -41,6 +41,7 @@ alias status (args)
 	{
 		status.display
 		^assign sbar $"Which status bar would you like to use? "
+		if (!sbar) {return}
 	}
 
 	if (isnumber($sbar) && sbar > 0 && sbar <= numitems(status))
@@ -56,8 +57,8 @@ alias status (args)
 		switch ($status.change($sbar))
 		{
 			(0) {xecho -b Now using status: $sbar}
-			(1) {xecho -b ERROR: status.change\(\): Status bar not found \($sbar\)}
-			(*) {xecho -b ERROR: status.change\(\): Unknown}
+			(1) {xecho -b Error: status.change\(\): Status bar not found \($sbar\)}
+			(*) {xecho -b Error: status.change\(\): Unknown}
 		}
 	}
 }
