@@ -1,6 +1,11 @@
 Darkstar ChangeLog
 
 
+20020410
+
+ * [misc.dsm 0.3] New config variable: IGNORE_CTCP_FINGER. If true,
+   all CTCP FINGER requests will be ignored.
+
 20020409
 
  * [misc.dsm 0.2] New format variables: WHO_FOOTER and WHO_HEADER.
@@ -23,13 +28,12 @@ Darkstar ChangeLog
    client to eventually give an error message like "Unable to open file,
    too many files open", and not open the file. This also affects the
    away module since /READLOG uses /LESS to display the log. Major oops.
-   (discovered by myke)
 
 20020405
 
  * [tabkey.dsm 0.6.3] Fixed a bug where nicks were not being properly added
    to the msg history when establishing a DCC CHAT connection. The error
-   msg is as follows. (discovered by blakangel)
+   msg is as follows.
 
    ASSIGN names may not contain '-' (You asked for [TABKEY.NICKS.-1])
    ASSIGN names may not contain '-' (You asked for [TABKEY.INDEX.-1])

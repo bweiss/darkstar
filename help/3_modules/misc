@@ -6,6 +6,8 @@ Author: Brian Weiss <brian@epicsol.org>
 
 Config Variables:
    DEFAULT_UMODES          - Default user modes when connecting to a server.
+   IGNORE_CTCP_FINGER      - Boolean. If true, all CTCP FINGER requests will
+                             be ignored.
    SHOW_AWAY_ONCE          - Boolean. If true, prevents the WHOIS_AWAY numeric
                              from being displayed each time you msg/notice
                              someone. This will not stop you from seeing it

@@ -1,4 +1,4 @@
-#version 0.2
+#version 0.3
 /* $Id$ */
 /*
  * misc.dsm - The 'miscellaneous stuff' module for Darkstar/EPIC4
@@ -28,12 +28,15 @@ queue cleanup.misc
 	^on send_ctcp -"PRIVMSG *"
 	^on #timer 424 -"*"
 	^on who -"* % % % % *"
+	^on #hook 424 -"CONFIG IGNORE_CTCP_FINGER *"
+	^on raw_irc -"% PRIVMSG % :FINGER"
 
 	@ delarray(away_users)
 }
 
 
 config.add    DEFAULT_UMODES iw
+config.add -b IGNORE_CTCP_FINGER 1
 config.add -b SHOW_AWAY_ONCE 1
 config.add    SHOW_AWAY_ONCE_TIMEOUT 900
 
@@ -65,6 +68,13 @@ format.add WHOIS_SIGNON %c[**]%n signon     %c:%n $strftime($4 %%a %%b %%d %%T %
 format.add WHOWAS_NAME %c[**]%n ircname    %c:%n $6-
 format.add WHOWAS_NICK %c[**]%n $2 was %c\(%n$3@$4%c\)%n
 format.add UMODE $G Mode change \"$3-\" for user $2 by $1
+
+
+/*
+ * Force loading of our saved settings now. At the moment this is just
+ * here for IGNORE_CTCP_FINGER.
+ */
+module.load_saved_settings
 
 
 alias chat (nick, void)
@@ -412,6 +422,30 @@ on ^who "* % % % % *"
 	if (FORMAT[WHO])
 	{
 		echo $fparse(WHO $*)
+	}
+}
+
+/*
+ * Add or remove the /on hook needed for IGNORE_CTCP_FINGER.
+ */
+on #-hook 426 "CONFIG IGNORE_CTCP_FINGER *"
+{
+	if (CONFIG[IGNORE_CTCP_FINGER])
+	{
+		^on ^raw_irc "% PRIVMSG % :FINGER"
+		{
+			xecho -b CTCP FINGER request received from $before(1 ! $0), ignoring...
+		}
+	}{
+		^on raw_irc -"% PRIVMSG % :FINGER"
+	}
+}
+
+if (CONFIG[IGNORE_CTCP_FINGER])
+{
+	^on ^raw_irc "% PRIVMSG % :FINGER"
+	{
+		xecho -b CTCP FINGER request received from $before(1 ! $0), ignoring...
 	}
 }
 
