@@ -8,8 +8,8 @@
 /****** USER ALIASES ******/
 
 alias config dset
-alias dset (...) {config.set_routine config $*}
-alias fset (...) {config.set_routine format $*}
+alias dset (...) {config.set_routine CONFIG $*}
+alias fset (...) {config.set_routine FORMAT $*}
 
 
 /****** FUNCTIONS ******/
@@ -55,20 +55,20 @@ alias config.set_routine (type, variable, value) {
 		}
 	} else {
 		^local var $strip(- $variable)
-		^local cur_value $aliasctl(assign get $struct\.$type\.$var)
+		^local active $aliasctl(assign get $struct\.$type\.$var)
 		^local matches $aliasctl(assign match $struct\.$type\.$var)
 		/*
 		 * If the number of matches found is greater than 1, output the
 		 * values for all matching variables. If only 1 match is found,
 		 * we then have to figure out exactly what to do with that variable.
 		 */
-		if (#matches > 1 && !cur_value) {
+		if (#matches > 1 && !active) {
 			xecho -s -b \"$toupper($var)\" is ambiguous
 			for var in ($matches) {
 				^local var $after(1 . $var)
 				config.setcat $var
 			}
-		} else if (#matches == 1 || cur_value) {
+		} else if (#matches == 1 || active) {
 			^local var $after(1 . $word(0 $matches))
 			^local var2 $after(1 . $var)
 			^local old_value $aliasctl(assign get $var)
@@ -83,11 +83,11 @@ alias config.set_routine (type, variable, value) {
 				^assign -$var
 				xecho -s -b Value of $toupper($var2) set to <EMPTY>
 				/* Hook the changes so modules can act on it. */
-				if (type == [DSET]) {
+				if (type == [CONFIG]) {
 					hook CONFIG $var2 $old_value
 				}
 			} else if (value != []) {
-				if (match(CONFIG $type) && DSET[BOOL][$var2]) {
+				if (type == [CONFIG] && DSET[BOOL][$var2]) {
 					switch ($toupper($value)) {
 						(0) (1) (OFF) (ON) {
 							^assign $var $bool_to_num($value)
@@ -99,7 +99,7 @@ alias config.set_routine (type, variable, value) {
 					^assign $var $value
 					xecho -s -b Value of $toupper($var2) set to $value
 				}
-				if (type == [DSET]) {
+				if (type == [CONFIG]) {
 					hook CONFIG $var2 $old_value
 				}
 			} else {
