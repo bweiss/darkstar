@@ -1,5 +1,10 @@
 TODO:
 
+  * Multi-server operview.
+
+  * Make NAMES formatting in formats.dsm use /ON NAMES instead of hooking
+    numerics directly.
+
   * Incorporate CrazyEddy's CEOP script.
 
   * Add some sort of function to return a list of all the channels that you

@@ -1,0 +1,16 @@
+Synopsis:
+   theme [theme]
+   theme -save [name]
+
+Description:
+   Attempts to change the current theme to <theme>.
+
+   If <theme> is not specified the user will be prompted to choose one from
+   the list of available themes. Either name or number is accepted.
+
+   If the -SAVE	option is present then the current settings will be written
+   to the user directory as a theme named [name] (or 'custom' if none).
+
+See Also:
+   ds:dset(1);  ds:fset(1);  ds:status(1);
+
