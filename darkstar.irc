@@ -79,7 +79,7 @@ for array in ($getarrays()) {
 # This will be incremented every time a change takes place in
 # the core scripts (this file and any *.dsc files in $DS.HOME/core/).
 #
-@ DS.CORE_ID = 110;
+@ DS.CORE_ID = 111;
 
 xecho -b -c Loading DarkStar $DS.VERSION;
 
@@ -107,7 +107,7 @@ if (fexist($DS.HOME/darkstar.irc) == -1)
 #
 set CLIENT_INFORMATION DarkStar $DS.VERSION;
 set CONTROL_C_COLOR ON;
-set CURRENT_WINDOW_LEVEL ALL;
+set CURRENT_WINDOW_LEVEL CRAP;
 set DISPLAY_PC_CHARACTERS 4;
 set FLOATING_POINT_MATH ON;
 set HIGH_BIT_ESCAPE 0;

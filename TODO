@@ -10,6 +10,10 @@ FOR 0.3 RELEASE:
 
   * Add support for a topic bar.
 
+  * Add a function that will return the nicks of all normal users (no ops,
+    no half-ops, no voice) in a specified channel. This is needed because
+    $nochops() returns voiced users along with the normal ones.
+
 
 AFTER 0.3 RELEASE:
 

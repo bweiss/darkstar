@@ -18,7 +18,6 @@ queue cleanup.window
 	};
 
 	^on #connect 426 -"*";
-	^on #disconnect 426 -"*";
 	^on #hook 426 -"CONFIG MSG_WINDOW *";
 	^on #hook 426 -"CONFIG MSG_WINDOW_NUMBER *";
 	^on #hook 426 -"CONFIG MSG_WINDOW_SIZE *";
@@ -27,6 +26,7 @@ queue cleanup.window
 	^on #raw_irc 426 -"% NICK *";
 	^on #raw_irc 426 -'% PRIVMSG \$servernick() *';
 	^on #send_msg 426 -"*";
+	^on #server_lost 426 -"*";
 	^on #switch_windows 426 -"*";
 	^on #window_beforekill 426 -"*";
 	^on #window_command 426 -"*";
@@ -42,8 +42,10 @@ queue cleanup.window
 	};
 	^bind -symbolic key_f12 nothing;
 
-	for serv in ($serverrefs()) {
-		window.msgwin.destroy $serv;
+	for win in ($winrefs()) {
+		if (winnam($win) =~ [msgs/serv:*]) {
+			window.msgwin.destroy $win;
+		};
 	};
 };
 
@@ -222,13 +224,17 @@ alias window.msgwin.create (serv, void)
 	};
 };
 
-alias window.msgwin.destroy (serv, void)
+alias window.msgwin.destroy (win, void)
 {
-	if (serv == [] || serv == -1)
+	if (!win || win < 1)
 		return;
 
-	if ((:win = winnum(msgs/serv:$serv)) != -1) {
+	if (winnum($win) != -1) {
 		window $win kill;
+	};
+
+	if ((:item = finditem(window.msgwins $win)) > -1)
+		@ delitem(window.msgwins $item);
 	};
 };
 
@@ -240,7 +246,7 @@ alias window.msgwin.purge (void)
 {
 	for win in ($winrefs())
 	{
-		if (finditem(window.msgwins $win) < 0) {
+		if (finditem(window.msgwins $win) < 0 && winserv($win) > -1) {
 			@ push(:servers $winserv($win));
 		};
 	};
@@ -248,8 +254,8 @@ alias window.msgwin.purge (void)
 	for ii from 1 to $numitems(window.msgwins)
 	{
 		@ :msgwin = getitem(window.msgwins ${ii-1});
-		if (findw($winserv($msgwin) $servers) < 0) {
-			window.msgwin.destroy $winserv($msgwin);
+		if (winnum($msgwin) != -1 && findw($winserv($msgwin) $servers) < 0) {
+			window.msgwin.destroy $msgwin;
 		};
 	};
 };
@@ -288,13 +294,6 @@ on #-connect 426 "*"
 	};
 };
 
-on #-disconnect 426 "*"
-{
-	if (CONFIG.MSG_WINODW) {
-		defer window.msgwin.purge;
-	};
-};
-
 on #-hook 426 "CONFIG MSG_WINDOW *"
 {
 	if (CONFIG.MSG_WINDOW)
@@ -303,8 +302,8 @@ on #-hook 426 "CONFIG MSG_WINDOW *"
 			window.msgwin.create $serv;
 		};
 	}{
-		for serv in ($serverrefs()) {
-			window.msgwin.destroy $serv;
+		for ii from 1 to $numitems(window.msgwins) {
+			window.msgwin.destroy $getitem(window.msgwins ${ii-1});
 		};
 	};
 };
@@ -388,6 +387,21 @@ on #-send_msg 426 "*"
 {
 	window.auto_query_update $severnum() $0 $uh($0);
 	window.auto_query_window $servernum() $0;
+};
+
+on #-server_lost 426 "*"
+{
+	if (CONFIG.MSG_WINDOW)
+	{
+		# It would be nice if window.msgwin.purge could be used here. Oh well.
+		for ii from 1 to $numitems(window.msgwins)
+		{
+			@ :win = getitem(window.msgwins ${ii-1});
+			if (winnam($win) == [msgs/serv:$0]) {
+				window.msgwin.destroy $win;
+			};
+		};
+	};
 };
 
 on #-switch_windows 426 "*"
@@ -481,9 +495,6 @@ on #-window_kill 426 "*"
 	window.msgwin.purge;
 	if ((:item = finditem(window.msgwins $0)) > -1) {
 		@ delitem(window.msgwins $item);
-	};
-	if (!numitems(window.msgwins)) {
-		dset MSG_WINDOW OFF;
 	};
 };
 
