@@ -21,6 +21,7 @@ set STATUS_HOLD_LINES 36Ä\(-1h36!-1%B36\)-1
 set STATUS_MAIL 36[-1mail36!-1%M36]-1
 set STATUS_MODE 36\(-1+%+36\)-1
 set STATUS_NICKNAME $N
+set STATUS_NO_REPEAT OFF
 set STATUS_NOTIFY 36\(-1w36!-1%F36\)-1
 set STATUS_OPER 56*-1
 set STATUS_QUERY 36\(-1q36!-1$Q36\)-1
