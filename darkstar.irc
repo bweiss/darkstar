@@ -50,6 +50,7 @@ if (!epic() || V < 20011203)
  * Make sure we're clean
  */
 dump all
+timer -del all
 
 for array in ($getarrays())
 {
@@ -62,7 +63,7 @@ for array in ($getarrays())
  */
 assign DS.VERSION 0.1.4
 assign DS.INTERNAL_VERSION 20020113
-assign DS.COMMIT_ID 4
+assign DS.COMMIT_ID 5
 
 
 /*
