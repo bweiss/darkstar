@@ -1,4 +1,4 @@
-#version 1.2
+#version 1.2.1
 /* $Id$ */
 /*
  * away.dsm - Away module for Darkstar/EPIC4
@@ -103,6 +103,7 @@ on #-306 421 "*"
 	}
 
 	@ AWAY.TIME = time()
+	^assign MODINFO.AWAY.SET You are currently marked as being away.
 }
 
 /*
@@ -133,6 +134,7 @@ on #-305 421 "*"
 
 	@ delarray(sent_away)
 	^assign -AWAY.TIME
+	^assign -MODINFO.AWAY.SET
 
 	if (AWAY[NEWMSGS])
 	{

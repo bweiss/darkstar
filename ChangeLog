@@ -3,15 +3,18 @@ Darkstar ChangeLog
 
 3/4/02
 
+ * The /PURGE command now purges both alias and assign structures.
+
  * HEADS UP: Some important commands have been renamed for clarity. Changes
    are as follows:
 	loader.dependency -> module.dep
 	loader.load_saved_settings -> module.load_saved_settings
 
- * The contents of the modinfo array will now be displayed with /DINFO.
-   Info lines can be added via the module.info command and removed with
-   module.rminfo. Please see the comments in loader.dsc for information
-   on how to use these commands.
+ * The contents of the MODINFO assign structure will now be displayed with
+   /DINFO. I will not document the use of module info lines here. So for now,
+   if you want to use these in your modules, please send me an email and I
+   will be happy to explain them. Currently the away, keepnick, and tabkey
+   modules take advantage of this.
 
  * [keepnick.dsm v0.2] Fixed a bug that would cause getnick to be deactivated
    when your current nick matched CONFIG.KEEPNICK_NICK but CONFIG.KEEPNICK

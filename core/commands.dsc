@@ -12,28 +12,42 @@ alias dinfo (void)
 {
 	@ :divider = repeat(${word(0 $geom()) - 8} -)
 	echo $G $divider
+
+	/* Display information about the operating system. */
 	xecho -b $uname(%s %r) \($uname(%m)\)
 	echo $G $divider
+
+	/* Display information about the client. */
 	xecho -b ircII $J \($V\) [$info(i)] - PID: $pid()  PPID: $ppid()
 	xecho -b $info(c)
 	xecho -b Client Uptime: $tdiff(${time() - F})
 	echo $G $divider
+
+	/* Display information about Darkstar. */
 	xecho -b Darkstar $DS.VERSION \($DS.INTERNAL_VERSION\) [$DS.COMMIT_ID]
 	xecho -b Available modules: $numitems(modules), Loaded modules: $numitems(loaded_modules)
 	xecho -b Current theme: $DS.THEME, Current statusbar: $DS.SBAR
 	echo $G $divider
 
-	if (numitems(modinfo))
+	/* Display module information. */
+	foreach MODINFO module
 	{
-		for cnt from 0 to ${numitems(modinfo) - 1}
+		for var in ($aliasctl(assign match MODINFO.$module\.))
 		{
-			@ :iline = getitem(modinfo $cnt)
-			eval xecho -b [\$word\(0 \$iline\)] $restw(1 $iline)
+			@ :modname = tolower($module)
+			/* This is pretty nasty but it works. */
+			eval ^local iline \$$var
+			eval xecho -b [\$[12]modname] $iline
 		}
+		@ :pig_in_a_pen = 1
+	}
 
+	if (pig_in_a_pen)
+	{
 		echo $G $divider
 	}
 }
+
 
 #
 # A file pager.  A demonstration of how to do something useful in ircII.
@@ -42,6 +56,7 @@ alias dinfo (void)
 # Modified on Jan 25, 1999 as an example of how to use arglists.
 # Modified on Oct 17, 2001 by Brian Weiss for use with Darkstar/EPIC4
 #
+
 alias more less
 
 alias less (file, void)
@@ -96,15 +111,21 @@ alias _less (fd, count, winnum default 0, void)
 
 /*
  * /PURGE
- * Used to purge structures. (Requested by whitefang)
+ * Purges alias and assign structures.
  */
-alias purge
+alias purge (arg, void)
 {
-      foreach $0 _purge
+      foreach $arg _purge
 	{
-            purge $0.$_purge
-      }
-      ^assign -$0
+		purge $arg\[$_purge]
+	}
+	^assign -$arg
+
+	foreach -$arg _purge
+	{
+		purge $arg\[$_purge]
+	}
+	^alias -$arg
 }
 
 alias reload (void)

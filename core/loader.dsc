@@ -244,15 +244,7 @@ alias loader.unload_module (module, void)
 
 		/* Get rid of any global aliases/variables obviously
 		   related to this module. */
-		for alias in ($aliasctl(alias match $module\.))
-		{
-			^alias -$alias
-		}
-			
-		for var in ($aliasctl(assign match $module\.))
-		{
-			^assign -$var
-		}
+		purge $module
 
 		/* Remove all config and format variables. */
 		for var in ($DSET.MODULES[$module])
@@ -272,7 +264,7 @@ alias loader.unload_module (module, void)
 		^assign -FSET.MODULES.$module
 			
 		/* Remove any info lines for this module. */
-		module.rminfo $module
+		purge MODINFO[$module]
 
 		/* Remove from loaded_modules array. */
 		@ delitem(loaded_modules $item)
@@ -387,31 +379,6 @@ alias module.dep (depmods)
 }
 
 /*
- * Addes a module info line for display with /DINFO. If this is not called
- * during the loading of a module, the first argument needs to be the name
- * of the module it belongs to.
- * 
- * Warning: Whatever is passed to this will be evaluated when /DINFO is
- *          executed, but not until then. Please be wary of this.
- */
-alias module.info (args)
-{
-	if (LOADER[PENDING_MODULE])
-	{
-		@ :module = LOADER.PENDING_MODULE
-		@ :iline = args
-	}{
-		@ :module = word(0 $args)
-		@ :iline = restw(1 $args)
-	}
-
-	if (module && iline)
-	{
-		@ setitem(modinfo $numitems(modinfo) $module $iline)
-	}
-}
-
-/*
  * This allows modules to force saved settings to be loaded before the module
  * is finished loading. Very useful for events happening at module load time
  * that depend on certain config settings.
@@ -426,32 +393,6 @@ alias module.load_saved_settings (void)
 		{
 			^load $save_file
 		}
-	}
-}
-
-/*
- * Remove all info lines for a specific module.
- */
-alias module.rminfo (module)
-{
-	if (!module)
-	{
-		return
-	}
-
-	^local rm
-	for cnt from 0 to ${numitems(modinfo) - 1}
-	{
-		@ :iline = getitem(modinfo $cnt)
-		if (module == word(0 $iline))
-		{
-			@ push(rm $cnt)
-		}
-	}
-
-	for tmp in ($reverse($rm))
-	{
-		@ delitem(modinfo $tmp)
 	}
 }
 

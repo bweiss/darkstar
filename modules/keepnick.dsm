@@ -77,7 +77,7 @@ alias getnick (nick, void)
 						}
 					}
 
-					module.info keepnick Getnick is active: \$_GETNICK
+					^assign MODINFO.KEEPNICK.GETNICK Getnick is active: \$_GETNICK
 				}
 			}
 		}
@@ -99,7 +99,7 @@ alias keepnick.getnick_cleanup (void)
 	^on #timer 422 -"*"
 	defer ^notify -$_GETNICK
 	^assign -_GETNICK
-	module.rminfo keepnick
+	^assign -MODINFO.KEEPNICK.GETNICK
 
 	return
 }
