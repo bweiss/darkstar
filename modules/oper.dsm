@@ -11,7 +11,18 @@
 
 queue cleanup.oper
 {
+	alias -operwall
 	^on #381 427 -"*"
+}
+
+alias operwall (text)
+{
+	if (text)
+	{
+		//quote operwall :$text
+	}{
+		xecho -b Usage: /operwall <text>
+	}
 }
 
 on #^381 427 "*"
