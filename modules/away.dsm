@@ -6,7 +6,7 @@
  * AWAY.DSM - Away module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 9/18/01 (bmw)
+ * Last modified: 10/12/01 (bmw)
  *
  * This script uses serial number 421 for all ON hooks.
  */
@@ -18,6 +18,8 @@ queue cleanup.away
 		^alias -$alias
 	}
 
+	^on #305 421 -"*"
+	^on #306 421 -"*"
 	^on #msg 421 -"*"
 	^on #notice 421 -"*"
 	^on #input 421 -"*"
@@ -27,112 +29,50 @@ queue cleanup.away
 	@ delarray(sent_away)
 }
 
+
 /*
  * Timestamp for last user input. Needed for auto-away.
  */
 @ AWAY.LAST_INPUT = time()
 
-alias away (reason default "$CONFIG.DEFAULT_AWAY_REASON")
+
+/*
+ * /AWAY [-l] [reason]
+ * Set or unset yourself away. This just changes the default behavior of
+ * //AWAY from being local to global. If the "-l" option is not specified,
+ * the "-a" option will be passed to //AWAY.
+ */
+alias away (args)
 {
-	if (!A)
+	if (word(0 $args) == [-l])
 	{
-		if (CONFIG[AWAY_LOG])
-		{
-			@ :fd = open($CONFIG.AWAY_LOGFILE w)
-			@ write($fd [MsgLog Started $strftime(%c)])
-			@ close($fd)
-		}
-
-		if (CONFIG[PUBLIC_AWAY])
-		{
-			if (CONFIG[PUBLIC_AWAY_CHANNELS])
-			{
-				for chan in ($CONFIG.PUBLIC_AWAY_CHANNELS)
-				{
-					if (match($chan $mychannels()))
-					{
-						describe $chan is away: $reason [Log/${CONFIG[AWAY_LOG] ? [ON] : [OFF]}]
-					}
-				}
-			}{
-				for chan in ($mychannels())
-				{
-					describe $chan is away: $reason [Log/${CONFIG[AWAY_LOG] ? [ON] : [OFF]}]
-				}
-			}
-		}
-
-		^on #^msg 421 "*"
-		{
-			if (A)
-			{
-				@ away.process_incoming(MSG $*)
-			}
-		}
-		^on #^notice 421 "*"
-		{
-			if (A)
-			{
-				@ away.process_incoming(NOTICE $*)
-			}
-		}
-
-		^assign AWAY.TIME $time()
-		//away $reason
+		//away $restw(1 $args)
 	}{
-		xecho -b You are already away!
-	}
-}
-
-alias back (reason default "$CONFIG.DEFAULT_BACK_REASON")
-{
-	if (A)
-	{
-		if (CONFIG[AWAY_LOG])
-		{
-			@ :fd = open($CONFIG.AWAY_LOGFILE w)
-			@ write($fd [MsgLog Stopped $strftime(%c)])
-			@ close($fd)
-		}
-
-		if (CONFIG[PUBLIC_AWAY])
-		{
-			if (CONFIG[PUBLIC_AWAY_CHANNELS])
-			{
-				for chan in ($CONFIG.PUBLIC_AWAY_CHANNELS)
-				{
-					if (match($chan $mychannels()))
-					{
-						describe $chan is back: $reason [Gone since: $strftime($AWAY.TIME %c)]
-					}
-				}
-			}{
-				for chan in ($mychannels())
-				{
-					describe $chan is back: $reason [Gone since: $strftime($AWAY.TIME %c)]
-				}
-			}
-		}
-
-		^on #msg 421 -"*"
-		^on #notice 421 -"*"
-
-		@ delarray(sent_away)
-		^assign -AWAY.TIME
-		//away
-
-		if (AWAY[NEWMSGS])
-		{
-			xecho -b You have $AWAY.NEWMSGS new message${AWAY[NEWMSGS] > 1 ? [s] : []}.
-		}
-		
-		@ away.prompt_readlog()
-	}{
-		xecho -b You are not set away.
+		//away -a $args
 	}
 }
 
 /*
+ * /BACK [-l]
+ * Set yourself back. This is the same as executing //AWAY with no arguments.
+ * If the "-l" option is not specified, the "-a" option (global away) will be
+ * passed to //AWAY.
+ */
+alias back (option, void)
+{
+	if (option == [-l])
+	{
+		//away
+	}{
+		//away -a
+	}
+}
+
+/*
+ * /READLOG
+ * Displays your away log to the current window in a way similar to the more
+ * pager.
+ *
  * This was taken from archon's 'more' script distributed with EPIC
  * http://www.epicsol.org/
  */
@@ -173,6 +113,10 @@ alias readlog (void)
 	}
 }
 
+/*
+ * /REMLOG
+ * Removes your away log.
+ */
 alias remlog (void)
 {
 	^assign -AWAY.NEWMSGS
@@ -191,6 +135,102 @@ alias remlog (void)
 		@ write($fd [MsgLog Started $strftime(%c)])
 		@ close($fd)
 	}
+}
+
+
+/*
+ * You have set yourself away.
+ */
+on #-306 421 "*"
+{
+	if (CONFIG[AWAY_LOG])
+	{
+		@ :fd = open($CONFIG.AWAY_LOGFILE w)
+		@ write($fd [MsgLog Started $strftime(%c)])
+		@ close($fd)
+	}
+
+	if (CONFIG[PUBLIC_AWAY])
+	{
+		if (CONFIG[PUBLIC_AWAY_CHANNELS])
+		{
+			for chan in ($CONFIG.PUBLIC_AWAY_CHANNELS)
+			{
+				if (match($chan $mychannels()))
+				{
+					describe $chan is away: $A [Log/${CONFIG[AWAY_LOG] ? [ON] : [OFF]}]
+				}
+			}
+		}{
+			for chan in ($mychannels())
+			{
+				describe $chan is away: $A [Log/${CONFIG[AWAY_LOG] ? [ON] : [OFF]}]
+			}
+		}
+	}
+
+	^on #^msg 421 "*"
+	{
+		if (A)
+		{
+			@ away.process_incoming(MSG $*)
+		}
+	}
+
+	^on #^notice 421 "*"
+	{
+		if (A)
+		{
+			@ away.process_incoming(NOTICE $*)
+		}
+	}
+
+	^assign AWAY.TIME $time()
+}
+
+/*
+ * You have unset away.
+ */
+on #-305 421 "*"
+{
+	if (CONFIG[AWAY_LOG])
+	{
+		@ :fd = open($CONFIG.AWAY_LOGFILE w)
+		@ write($fd [MsgLog Stopped $strftime(%c)])
+		@ close($fd)
+	}
+
+	if (CONFIG[PUBLIC_AWAY])
+	{
+		if (CONFIG[PUBLIC_AWAY_CHANNELS])
+		{
+			for chan in ($CONFIG.PUBLIC_AWAY_CHANNELS)
+			{
+				if (match($chan $mychannels()))
+				{
+					describe $chan is back [Gone since: $strftime($AWAY.TIME %c)]
+				}
+			}
+		}{
+			for chan in ($mychannels())
+			{
+				describe $chan is back [Gone since: $strftime($AWAY.TIME %c)]
+			}
+		}
+	}
+
+	^on #msg 421 -"*"
+	^on #notice 421 -"*"
+
+	@ delarray(sent_away)
+	^assign -AWAY.TIME
+
+	if (AWAY[NEWMSGS])
+	{
+		xecho -b You have $AWAY.NEWMSGS new message${AWAY[NEWMSGS] > 1 ? [s] : []}.
+	}
+		
+	@ away.prompt_readlog()
 }
 
 /*

@@ -3,6 +3,12 @@ Darkstar ChangeLog
 
 [10/12/01]
 
+ * [away.dsm] Some pretty significant changes here. /AWAY and /BACK are now
+   simple aliases to //AWAY that just reverse the default behavior from being
+   local to global (The "-a" option is passed to //AWAY unless the "-l" option
+   is passed to the aliases). Everything else is now hooked by the 305 and 306
+   numerics. (requested by whitefang)
+
  * Theme support now actually works ;)
 
  * Now supports what I call a "user directory." This is just a place where
