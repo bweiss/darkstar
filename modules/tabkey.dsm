@@ -1,4 +1,4 @@
-#version 0.3.1
+#version 0.3.2
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -10,7 +10,6 @@
  * from there.
  *
  * Extended and maintained for DarkStar by Brian Weiss <brian@epicsol.org>
- * Please report bugs to me, not CrazyEddy.
  *
  * This script uses serial number 420 for all /ON hooks.
  *
@@ -112,6 +111,7 @@ alias tabkey.main {
 		wait for @ :matches = tabkey.default($word)
 	}
 	@ :prefix = prefix($matches)
+	@ :prefix = 0 > index("$chr($jot(32 1))" $prefix) ? prefix : ["$prefix"]
 	if (numwords($matches) > 1 && word == prefix) {
 		echo Completions for \"$word\": $matches
 		@ TABKEY.INDEX = 0
@@ -162,7 +162,9 @@ alias tabkey.cmd {
 	while (args) {
 		@ :matches = aliasctl(alias pmatch tabkey.cmd.$args*)
 		@ :matches = prefix($matches)
-		if (aliasctl(alias exists $matches) && matches == [tabkey.cmd.$args]) {
+		if (curword == count(. $args)) {
+		} elsif (matches != [tabkey.cmd.$args]) {
+		} elsif (aliasctl(alias exists $matches)) {
 			@ args = matches
 			break
 		}
@@ -207,13 +209,19 @@ alias tabkey.cmd.channel  { return $tabkey.nofallback($tabkey.method.chan($*)); 
 
 alias tabkey.cmd.config   { return $tabkey.nofallback($tabkey.method.variables(config)); }
 
-alias tabkey.cmd.dcc      { return $tabkey.nofallback($pattern("$0*" CHAT CLOSE CLOSEALL GET LIST RAW RENAME RESUME SEND)); }
+alias tabkey.cmd.dcc (args) {
+	bless
+	switch ($curword) {
+		(1) {return $tabkey.nofallback($pattern("$shift(args)*" CHAT CLOSE CLOSEALL GET LIST RAW RENAME RESUME SEND))}
+	}
+}
+
 alias tabkey.cmd.dcc.resume tabkey.cmd.dcc.send
 alias tabkey.cmd.dcc.send {
 	bless
 	switch ($curword) {
-		(0) {echo This should never happen.;call}
-		(1) {echo This should never happen.;call}
+		(0) {echo This should never happen.;call;local}
+		(1) {echo This should never happen.;call;local}
 		(2) {return $tabkey.nofallback($tabkey.method.nick($*))}
 		(*) {return $tabkey.nofallback($tabkey.method.file($*))}
 	}
@@ -411,7 +419,8 @@ alias tabkey.method.arrays (array, void) {
 	if (word == []) {
 		@ :ret = list
 	} else {
-		@ :ret = pattern("$word*" $list)
+		@ :foo = word
+		@ :ret = pattern("$shift(foo)*" $list)
 	}
 	return $ret
 }
@@ -421,11 +430,11 @@ alias tabkey.method.commands {
 	return $ret
 }
 
-alias tabkey.method.chan { return $pattern("$0*" $mychannels()); }
+alias tabkey.method.chan (args) { return $pattern("$shift(args)*" $mychannels()); }
 
 alias alias.foo alias $*;alias $sar(g/globi/glob/$sar(g/filei/file/$*))
-alias.foo tabkey.method.filei {
-	@ :f0 = :f1 = globi("$0*")
+alias.foo tabkey.method.filei (args) {
+	@ :f0 = :f1 = globi("$shift(args)*")
 	while (numwords($f0) == 1 && f0 =~ [*/]) {
 		@ f0 = globi($f0*)
 	}
@@ -444,15 +453,16 @@ alias tabkey.method.mask {
 	return $ret
 }
 
-alias tabkey.method.nick {
-	if ((:foo = pattern("$0*" $chanusers()))) {
-		return $foo;
+alias tabkey.method.nick (args) {
+	@ :args = shift(args)
+	if (match("$args*" $chanusers())) {
+		return $pattern("$args*" $chanusers())
 	} else {
 		^local chanusers
 		fe ($mychannels()) chan {
 			push chanusers $chanusers($chan)
 		}
-		return $pattern("$0*" $sort($uniq($chanusers)));
+		return $pattern("$args*" $sort($uniq($chanusers)));
 	}
 }
 
@@ -464,7 +474,7 @@ alias tabkey.method.nickchannotify {
 	return $remws(/ $tabkey.method.chan($*) $sort($uniq($tabkey.method.nick($*) $tabkey.method.notify($*))))
 }
 
-alias tabkey.method.notify { return $pattern("$0*" $notify(on)); }
+alias tabkey.method.notify (args) { return $pattern("$shift(args)*" $notify(on)); }
 
 alias tabkey.method.variables (type, void) {
 	bless
