@@ -1,4 +1,4 @@
-# version:1.2.1 loader:pf
+# version:1.2.2 loader:pf
 # $Id$
 #
 # misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
@@ -18,6 +18,7 @@ queue cleanup.misc
 
 	^on #connect 424 -"*";
 	^on raw_irc -"% PRIVMSG % :FINGER*";
+	^on yell -"getaddrinfo(%): Name or service not known";
 };
 
 
@@ -157,3 +158,4 @@ on ?raw_irc "% PRIVMSG % *FINGER*"
 	};
 };
 
+on ^yell "getaddrinfo(%): Name or service not known" {#};
