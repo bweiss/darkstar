@@ -1,8 +1,33 @@
-Darkstar/EPIC4 Frequently Asked Questions
+Darkstar Frequently Asked Questions
+$Id$
 
-This is a work in progress. I will update it as questions arise. If you have
-a question you feel should be here, please drop me an email.
+This is a work in progress and is in no particular order. It will be updated
+as questions come up. Eventually, I may organize it, but don't count on it ;)
 
+
+Q: What should I do when upgrading to new versions of darkstar?
+
+A: This depends heavily on the amount of customization you do. If you have
+   your own modules, themes, statbars, etc. then you need to be more
+   concerned with changes to what I distribute. In this situation I strongly
+   urge that you review the ChangeLog for details on what's new.
+
+   If you don't write any of your own scripts for Darkstar then you don't
+   need to worry so much. One cool thing about the way I designed things is
+   that you don't always need to reload everything. If you know that the
+   changes lie only in a specific module, you can reload just that module
+   (/reloadmod). Same thing applies to themes (just set your theme again
+   with /theme) and status bars (/status). The only time you need to reload
+   the entire system (/reload) is when there have been changes to the
+   core scripts (darkstar.irc and everything in the core directory). When
+   this is the case, the value of DS.COMMIT_ID (darkstar.irc) will be
+   incremented. This number being higher does not necessarily mean that
+   a full reload is required in order to make use of changes in other things,
+   it just means that something in the core scripts has changed. The only
+   way to know for sure is to check the ChangeLog. If you don't want to
+   worry about it at all, just always use /reload and you'll be fine.
+
+--
 
 Q: The 'darkstar' status bar is displaying letters with accents instead of
    straight lines. How can I fix this?
@@ -21,6 +46,7 @@ A: You need a font that displays these upper ASCII characters correctly.
    If this works for you, you can place this command in ~/.epicrc so that
    it executes on startup.
 
+--
 
 Q: How can I set a default status bar?
 
@@ -30,6 +56,7 @@ A: The status bar is chosen by your theme. If you want to change the status
    lose your changes during upgrades. You can follow the directions in
    the answer of the following question to create a theme.
 
+--
 
 Q: How can I create my own theme?
 
@@ -47,6 +74,10 @@ A: Creating your own theme is fairly easy. Just follow these steps.
    7. % cp -R custom/ <new_name>
    8. Type "/theme <new_name>" to begin using your new theme.
    9. You may want to /save again so that this theme is used on startup.
+
+   Note: Only the settings for currently loaded modules are saved, so it is
+         a good idea if you load all the modules you expect to use before
+         creating your theme.
 
 
 EOF
