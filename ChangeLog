@@ -1,6 +1,11 @@
 Darkstar ChangeLog
 
 
+1/11/02
+
+ * [autocycle.dsm] Had a misnamed local variable that was causing auto-cycle
+   not to work at all.
+
 1/9/02
 
  * Optimized all code that prompts the user to enter something. Apparently
