@@ -54,6 +54,7 @@ alias theme (...)
 
 	if (isnumber(b10 $theme)) {
 		@ :item = theme - 1;
+		@ :theme = getitem(theme.names $item);
 	} else {
 		@ :item = finditem(theme.names $theme);
 	};
