@@ -205,12 +205,7 @@ alias tabkey.module_routine (array, void)
 		for cnt from 1 to $numitems($array)
 		{
 			@ :itm = cnt - 1
-			if (array == [modules])
-			{
-				@ push(modules $before(-1 . $after(-1 / $getitem($array $itm))))
-			}{
-				@ push(modules $getitem($array $itm))
-			}
+			@ push(modules $getitem($array $itm))
 		}
 		
 		@ :lastw = word(${#L - 1} $L)

@@ -10,7 +10,8 @@ Darkstar ChangeLog
    keep track of names and filenames in separate arrays. This allows us to
    use $finditem() instead of $matchitem() and thus be far more accurate.
    Prior to this fix, it would be possible to have issues as a result of
-   having similarly named modules/themes/statbars.
+   having similarly named modules/themes/statbars. These changes should be
+   transparent to just about everyone.
 
  * I am now passing more arguments to the various WHOIS_* format sets
    in misc.dsm. This allows for more customization of whois output via /fset.
