@@ -144,9 +144,15 @@ alias reload (void)
 
 alias sv (whom default "$C", void)
 {
-        msg $whom ircII $J $uname() - $CLIENT_INFORMATION
+	msg $whom ircII $J $uname() - $CLIENT_INFORMATION
 }
 
+alias uptime (void)
+{
+	xecho -b ircII $J $uname() - $CLIENT_INFORMATION
+	xecho -b Uptime: $tdiff(${time() - F})
+}
+            
 
 /* Warn if client doesn't meet specifications */
 

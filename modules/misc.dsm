@@ -11,7 +11,7 @@
 
 queue cleanup.misc
 {
-	for alias in (chat colors dns disco m nslookup pingme q umode uptime ver wi wii ww)
+	for alias in (chat colors dns disco m nslookup pingme q umode ver wi wii ww)
 	{
 		^alias -$alias
 	}
@@ -90,12 +90,6 @@ alias q query
 alias umode (mode)
 {
 	//mode $servernick() $mode
-}
-
-alias uptime (void)
-{
-	xecho -b ircII $J $uname() - $CLIENT_INFORMATION
-	xecho -b Uptime: $tdiff(${time() - F})
 }
 
 alias ver (nick default "$servernick()", void)
