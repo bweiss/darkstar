@@ -71,11 +71,11 @@ alias config.set_routine (type, variable, value)
 		@ :cur_value = aliasctl(assign get $struct1\.$struct2\.$var)
 		@ :matches = aliasctl(assign match $struct1\.$struct2\.$var)
 		
-            /*
-             * If the number of matches found is greater than 1, output the
-             * values for all matching variables. If only 1 match is found,
-             * we then have to figure out exactly what to do with that varable.
-             */
+		/*
+		 * If the number of matches found is greater than 1, output the
+		 * values for all matching variables. If only 1 match is found,
+		 * we then have to figure out exactly what to do with that varable.
+		 */
 		if (#matches > 1 && !cur_value)
 		{
 			xecho -s -b \"$toupper($var)\" is ambiguous

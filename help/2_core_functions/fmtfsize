@@ -1,0 +1,19 @@
+Synopsis:
+   $fmtfsize(<bytes>)
+
+Description:
+   Converts an integer representing an arbitrary number of bytes into a
+   more human readable form.
+
+Returns:
+   The file size formatted as bytes, kilobytes, megabytes, gigabytes,
+   or terabytes with decimals truncated to 2 digits.
+
+Examples:
+   $fmtfsize(1234)                           returns "1.21kb"
+   $fmtfsize(12345)                          returns "12.06kb"
+   $fmtfsize(123456789)                      returns "117.74mb"
+
+See Also:
+   fsize(6)
+

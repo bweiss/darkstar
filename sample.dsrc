@@ -24,11 +24,6 @@ set NO_FAIL_DISCONNECT ON
 set SCROLLBACK 1024
 set WORD_BREAK ,;
 
-/*
- * Use the new math parser. This seems to be pretty stable
- * these days, and it is far superior, so I use it.
- */
-xdebug +new_math
 
 /*
  * Those of you who don't like typing /away

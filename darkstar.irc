@@ -60,11 +60,11 @@ for array in ($getarrays()) {
  * Important global variables
  */
 @ DS.VERSION = [0.2.7]
-@ DS.INTERNAL_VERSION = [20020724]
+@ DS.INTERNAL_VERSION = [20020731]
 
 /* This will be incremented every time a change takes place to the core
    scripts (anything that requires /reload to update). */
-@ DS.COMMIT_ID = 60
+@ DS.COMMIT_ID = 61
 
 
 eval xecho -b Loading DarkStar $DS.VERSION
@@ -150,8 +150,15 @@ eval set CLIENT_INFORMATION DarkStar $DS.VERSION
 set -CONTINUED_LINE
 set CONTROL_C_COLOR ON
 set DISPLAY_PC_CHARACTERS 4
+set FLOATING_POINT_MATH ON
 set HIGH_BIT_ESCAPE 0
 set INDENT ON
+
+
+/*
+ * Enable the new math parser.
+ */
+xdebug +NEW_MATH
 
 
 /*

@@ -64,6 +64,38 @@ alias bool_to_num (arg, void)
 }
 
 /*
+ * This function converts an integer representing an arbitrary number
+ * of bytes into a more human readable form. It was taken from the
+ * mail script that was recently added to the EPIC4 distribution and
+ * placed in the public domain by its author, wd.
+ */
+alias fmtfsize (bytes, void)
+{
+	if (!bytes) {
+		return
+	}
+
+	^stack push set FLOATING_POINT_MATH
+	^set FLOATING_POINT_MATH ON
+
+	if (!bytes) {
+		@ function_return = [0b]
+	} else if (bytes < 1024) {
+		@ function_return = [${bytes}b]
+	} else if (bytes < 1048576) {
+		@ function_return = [$trunc(2 ${bytes / 1024})kb]
+	} else if (bytes < 1073741824) {
+		@ function_return = [$trunc(2 ${bytes / 1048576})mb]
+	} else if (bytes < 1099511627776) {
+		@ function_return = [$trunc(2 ${bytes / 1073741824})gb]
+	} else {
+		@ function_return = [$trunc(2 ${bytes / 1099511627776})tb]
+	}
+
+	^stack pop set FLOATING_POINT_MATH
+}
+
+/*
  * Returns true if specified module is loaded.
  */
 alias isloaded (module, void)

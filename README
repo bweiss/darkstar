@@ -1,7 +1,7 @@
 README file for DarkStar/EPIC4
 $Id$
 
-DarkStar written by Brian Weiss <brian@epicsol.org>
+DarkStar written and maintained by Brian Weiss <brian@epicsol.org>
 Copyright (c) 2002 Brian Weiss
 Please see the 'COPYRIGHT' file for licensing information.
 See the bottom of this file for a list of contributors.
@@ -150,8 +150,8 @@ in some way to this project.
 	Daniel Shatter <shatter at flag.blackened.net>
 	Tyler Hall <thall at epicsol.org>
 	Terry Warner <keerf at epicsol.org>
+	David B. Kratter <BlackJac at EFnet>
 	RoboHak <robohak at epicsol.org>
-	BlackJac <BlackJac at EFnet>
 	shade <shade at chemlab.org>
 	dialtone <dialtone at neglected.net>
 	myke <myke at neglected.net>
