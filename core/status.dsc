@@ -6,7 +6,7 @@
  * STATUS.DSC - Statbar manager for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/29/01 (bmw)
+ * Last modified: 1/14/02 (bmw)
  */
 
 alias sbar status
@@ -35,55 +35,37 @@ alias status (args)
 		@ sbar = args
 	}
 
-	@ status.buildlist()
+	status.buildlist
 
-	/*
-	 * Create a temporary alias that will call the actual change() function.
-	 * This helps with the /input stuff.
-	 */
-	^alias _change_status (sbar, quiet, void)
-	{
-		switch ($status.change($sbar))
-		{
-			(0) {if (!quiet) {xecho -b Now using status: $sbar}}
-			(*) {xecho -b Unable to load status [$sbar]}
-		}
-
-		defer ^alias -_change_status
-	}
-
-	/* Find the name of the desired statbar and execute _change_status. */
 	if (!sbar)
 	{
-		@ status.display()
-		input "Which status bar would you like to use? " if ([$0])
-		{
-			if (isnumber($0) && [$0] > 0 && [$0] <= numitems(status))
-			{
-				@ :item = [$0] - 1
-				_change_status $getitem(status $item)
-			}{
-				_change_status $0
-			}
-		}
-	} \
-	elsif (isnumber($sbar))
+		status.display
+		^assign sbar $"Which status bar would you like to use? "
+	}
+
+	if (isnumber($sbar) && sbar > 0 && sbar <= numitems(status))
 	{
-		if (sbar > 0 && sbar <= numitems(status))
-		{
-			@ :item = sbar - 1
-			_change_status $getitem(status $item) $quiet
-		}
+		@ :item = sbar - 1
+		@ sbar = getitem(status $item)
+	}
+
+	if (quiet)
+	{
+		@ status.change($sbar)
 	}{
-		_change_status $sbar $quiet
+		switch ($status.change($sbar))
+		{
+			(0) {xecho -b Now using status: $sbar}
+			(1) {xecho -b ERROR: status.change\(\): Status bar not found \($sbar\)}
+			(*) {xecho -b ERROR: status.change\(\): Unknown}
+		}
 	}
 }
 
 
 /*
- * status.buildlist() - Scans the status directories and dumps all available
- * statbars into an array containing the name (status) and an array containing
- * the complete filename (status_files). Returns nothing.
+ * Scans the status directories and dumps all available statbars into an array
+ * containing the name (status) and the complete filename (status_files).
  */
 alias status.buildlist (void)
 {
@@ -107,14 +89,12 @@ alias status.buildlist (void)
 			}
 		}
 	}
-
-	return
 }
 
 /*
- * status.change() - Everything involved with actually changing the status.
- * Takes a status name as its only argument. Returns "0" if successful,
- * "1" if not.
+ * STATUS.CHANGE(sbar)
+ * Everything involved with actually changing the status. Returns 0 on success
+ * and > 0 on failure.
  */
 alias status.change (sbar, void)
 {
@@ -127,7 +107,6 @@ alias status.change (sbar, void)
 			load $file
 			parsekey refresh_screen
 			^assign DS.SBAR $after(-1 / $file)
-
 			return 0
 		}
 	}
@@ -135,10 +114,6 @@ alias status.change (sbar, void)
 	return 1
 }
 
-/*
- * status.display() - Displays the current list of status bars. Takes no
- * arguments and returns nothing.
- */
 alias status.display (void)
 {
 	xecho -b Available status bars:
@@ -148,8 +123,6 @@ alias status.display (void)
 		@ :num = cnt + 1
 		echo $[3]num $name
 	}
-
-	return
 }
 
 

@@ -8,7 +8,9 @@
  * Author: shade <shade@chemlab.org> - 1999
  *         Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/13/02 (bmw)
+ * Last modified: 1/14/02 (bmw)
+ *
+ * This script uses serial number 0 for all /on hooks.
  *
  * Most of this was taken from the nick completion module that shade wrote
  * for my BitchX/EPIC4 script called playdough. He deserves most of the

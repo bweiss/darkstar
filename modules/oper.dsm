@@ -6,9 +6,9 @@
  * OPER.DSM - IRC Operator module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/13/02 (bmw)
+ * Last modified: 1/14/02 (bmw)
  *
- * This script uses serial number 427 for all ON hooks.
+ * This script uses serial number 427 for all /on hooks.
  */
 
 queue cleanup.oper

@@ -6,9 +6,9 @@
  * CHANNEL.DSM - Channel related stuff for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/13/02 (bmw)
+ * Last modified: 1/14/02 (bmw)
  *
- * This script uses serial numbers 0 and 424 for all ON hooks.
+ * This script uses serial numbers 0 and 424 for all /on hooks.
  */
 
 queue cleanup.channel

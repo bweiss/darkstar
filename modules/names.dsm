@@ -6,7 +6,9 @@
  * NAMES.DSM - Module to display who's on a channel for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/13/02 (bmw)
+ * Last modified: 1/14/02 (bmw)
+ *
+ * This script uses serial number 0 for all /on hooks.
  */
 
 queue cleanup.names

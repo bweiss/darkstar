@@ -6,9 +6,9 @@
  * THEMES.DSC - Theme support for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/29/01 (bmw)
+ * Last modified: 1/14/02 (bmw)
  *
- * This script uses serial number 1 for all ON hooks.
+ * This script uses serial number 1 for all /on hooks.
  */
 
 /*
@@ -19,60 +19,39 @@
  */
 alias theme (theme, void)
 {
-	@ themes.buildlist()
+	themes.buildlist
 
-	/*
-	 * Create a temporary alias that will call the actual change() function.
-	 * This helps with the /input stuff.
-	 */
-	^alias _change_theme (theme, void)
-	{
-		switch ($themes.change($theme))
-		{
-			(0) {xecho -b Now using theme: $DS.THEME}
-			(1) {xecho -b ERROR: Invalid theme [$theme]}
-			(2) {xecho -b ERROR: Theme directory not found}
-			(*) {xecho -b ERROR: Unknown}
-		}
-
-		defer ^alias -_change_theme
-	}
-
-	/* Find the name of the desired theme and execute _change_theme. */
 	if (!theme)
 	{
-		@ themes.display()
-		input "Which theme would you like to use? " if ([$0])
-		{
-			if (isnumber($0) && [$0] > 0 && [$0] <= numitems(themes))
-			{
-				_change_theme $getitem(themes ${[$0] - 1})
-			}{
-				_change_theme $0
-			}
-		}
-	} \
-	elsif (isnumber($theme))
+		themes.display
+		^assign theme $"Which theme would you like to use? "
+	}
+
+	if (isnumber($theme) && theme > 0 && theme <= numitems(themes))
 	{
-		if (theme > 0 && theme <= numitems(themes))
-		{
-			@ :item = theme - 1
-			_change_theme $getitem(theme $item)
-		}
-	}{
-		_change_theme $theme
+		@ :item = theme - 1
+		@ theme = getitem(themes $item)
+	}
+
+	switch ($themes.change($theme))
+	{
+		(0) {xecho -b Now using theme: $DS.THEME}
+		(1) {xecho -b ERROR: themes.change\(\): Not enough arguments}
+		(2) {xecho -b ERROR: themes.change\(\): Theme not found \($theme\)}
+		(3) {xecho -b ERROR: themes.change\(\): Master theme file not found}
+		(*) {xecho -b ERROR: themes.change\(\): Unknown}
 	}
 }
 
 /*
- * themes.buildlist() - Scans the theme directories and stores available themes
- * in two arrays. One for theme names (themes) and one for theme files
- * (theme_files). Does not take any arguments. Returns nothing.
+ * THEMES.BUILDLIST
+ * Scans the theme directories and stores available themes in two arrays.
+ * One for theme names (themes) and one for theme directories (theme_dirs).
  */
 alias themes.buildlist (void)
 {
 	@ delarray(themes)
-	@ delarray(theme_files)
+	@ delarray(theme_dirs)
 
 	for dir in ($DS.THEME_DIR)
 	{
@@ -90,30 +69,36 @@ alias themes.buildlist (void)
 					if (fexist($t_file) == 1)
 					{
 						@ setitem(themes $numitems(themes) $name)
-						@ setitem(theme_files $numitems(theme_files) $t_dir)
+						@ setitem(theme_dirs $numitems(theme_dirs) $t_dir)
 					}
 				}
 			}
 		}
 	}
-
-	return
 }
 
 /*
- * themes.change() - Attempts to change the current theme. Takes a theme
- * name as its only argument. Returns "0" if successful, "1" if not.
+ * THEMES.CHANGE(theme)
+ * Attempts to change the current theme. Returns 0 if successful or > 0 if not.
  */
 alias themes.change (theme, void)
 {
-	@ :item = finditem(themes $theme)
-	if (item > -1)
+	if (!theme)
 	{
-		@ :dir = getitem(theme_files $item)
-		if (fexist($dir) == 1)
+		/* Not enough arguments. */
+		return 1
+	}
+
+	@ :t_item = finditem(themes $theme)
+
+	if (t_item > -1)
+	{
+		@ :dir = getitem(theme_dirs $t_item)
+		@ :master_file = dir ## theme ## [.dst]
+
+		if (fexist($master_file) == 1)
 		{
-			@ :t_file = dir ## theme ## [.dst]
-			load $t_file
+			load $master_file
 
 			for cnt from 0 to ${numitems(loaded_modules) - 1}
 			{
@@ -130,18 +115,22 @@ alias themes.change (theme, void)
 			return 0
 		}
 
-		return 2
+		/* Master theme file not found. */
+		return 3
 	}
 
-	return 1
+	/* Theme not found. */
+	return 2
 }
 
 /*
- * themes.display() - Displays the current list of themes. Takes no arguments
- * and returns nothing.
+ * THEMES.DISPLAY
+ * Displays the currently available themes.
  */
 alias themes.display (void)
 {
+	themes.buildlist
+
 	xecho -b Current theme: $DS.THEME
 	xecho -b Available themes:
 	echo #   Theme
@@ -150,8 +139,6 @@ alias themes.display (void)
 		@ :num = cnt + 1
 		echo $[3]num $getitem(themes $cnt)
 	}
-
-	return
 }
 
 
@@ -167,12 +154,13 @@ on #-hook 1 "CONFIG THEME *"
 		{
 			xecho -b Invalid theme.
 			xecho -b Value of THEME set back to $DS.THEME
-			dset THEME $DS.THEME
+			^assign CONFIG.THEME $DS.THEME
 		}
 	}
 }
 
 
+/* Set our current theme. */
 eval theme $CONFIG.THEME
 
 

@@ -3,6 +3,9 @@ Darkstar ChangeLog
 
 1/14/02
 
+ * Rewrote and optimized both themes.dsc and status.dsc. They still contain
+   very similar code but are now much cleaner and more efficient.
+
  * [window.dsm] All keybindings are now returned to their original settings
    when the module is unloaded. The msg window will also be killed on unload.
 

@@ -6,7 +6,7 @@
  * LOADER.DSC - Module loader for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/13/02 (bmw)
+ * Last modified: 1/14/02 (bmw)
  */
 
 
@@ -17,12 +17,17 @@ alias modules modlist
 
 alias loadedmodules (void)
 {
-	@ loader.display_loaded()
+	echo #   Module
+	for cnt from 0 to ${numitems(loaded_modules) - 1}
+	{
+		@ :num = cnt + 1
+		echo $[3]num $getitem(loaded_modules $cnt)
+	}
 }
 
 alias loadmod (modules)
 {
-	@ loader.build_modlist()
+	loader.build_modlist
 	@ modules = loader.which_mods(modules $modules)
 
 	if (!modules)
@@ -50,8 +55,21 @@ alias loadmod (modules)
 
 alias modlist (void)
 {
-	@ loader.build_modlist()
-	@ loader.display_modlist()
+	loader.build_modlist
+
+	echo #   Module                     Size (bytes)  Loaded  Auto-Load
+	for cnt from 0 to ${numitems(modules) - 1}
+	{
+		@ :num = cnt + 1
+		@ :file = getitem(module_files $cnt)
+		@ :module = getitem(modules $cnt)
+		@ :auto_load = common($module / $CONFIG.AUTO_LOAD_MODULES) ? [*] : []
+		@ :loaded = finditem(loaded_modules $module) > -1 ? [*] : []
+		echo $[3]num $[25]module $[-12]fsize($file)     $[8]loaded $[8]auto_load
+	}
+	xecho -b Type '/dset AUTO_LOAD_MODULES' to modify the Auto-Load list
+	xecho -b Type '/loadmod [<module> ...]' to load a module
+	xecho -b Type '/unloadmod [<module> ...]' to unload a module
 }
 
 alias reloadmod (module, void)
@@ -64,7 +82,7 @@ alias unloadmod (modules)
 {
 	if (!modules)
 	{
-		@ loader.display_loaded()
+		loadedmodules
 		^local mods $"Modules to unload? (1 2-4 ...) "
 		if (mods)
 		{
@@ -102,8 +120,6 @@ alias loader.build_modlist (void)
 			@ setitem(module_files $numitems(module_files) $file)
 		}
 	}
-
-	return
 }
 
 alias loader.dependency (depmods)
@@ -141,37 +157,6 @@ alias loader.dependency (depmods)
 			}
 		}
 	}
-}
-
-alias loader.display_loaded (void)
-{
-	echo #   Module
-	for cnt from 0 to ${numitems(loaded_modules) - 1}
-	{
-		@ :num = cnt + 1
-		echo $[3]num $getitem(loaded_modules $cnt)
-	}
-
-	return
-}
-
-alias loader.display_modlist (void)
-{
-	echo #   Module                     Size (bytes)  Loaded  Auto-Load
-	for cnt from 0 to ${numitems(modules) - 1}
-	{
-		@ :num = cnt + 1
-		@ :file = getitem(module_files $cnt)
-		@ :module = getitem(modules $cnt)
-		@ :auto_load = common($module / $CONFIG.AUTO_LOAD_MODULES) ? [*] : []
-		@ :loaded = finditem(loaded_modules $module) > -1 ? [*] : []
-		echo $[3]num $[25]module $[-12]fsize($file)     $[8]loaded $[8]auto_load
-	}
-	xecho -b Type '/dset AUTO_LOAD_MODULES' to modify the Auto-Load list
-	xecho -b Type '/loadmod [<module> ...]' to load a module
-	xecho -b Type '/unloadmod [<module> ...]' to unload a module
-
-	return
 }
 
 /*
@@ -216,7 +201,7 @@ alias loader.load_module (module, void)
 	{
 		@ :file = getitem(module_files $item)
 		^local save_file $DS.SAVE_DIR/$module\.sav
-		@ :theme_file = getitem(theme_files $finditem(themes $DS.THEME)) ## module
+		@ :theme_file = getitem(theme_dirs $finditem(themes $DS.THEME)) ## module
 
 		/* Load the actual module. */
 		^assign LOADER.PENDING_MODULE $module
