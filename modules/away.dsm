@@ -6,7 +6,7 @@
  * AWAY.DSM - Away module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/12/01 (bmw)
+ * Last modified: 10/17/01 (bmw)
  *
  * This script uses serial number 421 for all ON hooks.
  */
@@ -37,77 +37,43 @@ queue cleanup.away
 
 
 /*
- * /AWAY [-l] [reason]
- * Set or unset yourself away. This just changes the default behavior of
- * //AWAY from being local to global. If the "-l" option is not specified,
- * the "-a" option will be passed to //AWAY.
+ * /BACK
+ * Just an alias to //away. If a reason is specified, this will actually
+ * try to set away, rather than unsetting it.
  */
-alias away (args)
-{
-	if (word(0 $args) == [-l])
-	{
-		//away $restw(1 $args)
-	}{
-		//away -a $args
-	}
-}
-
-/*
- * /BACK [-l]
- * Set yourself back. This is the same as executing //AWAY with no arguments.
- * If the "-l" option is not specified, the "-a" option (global away) will be
- * passed to //AWAY.
- */
-alias back (option, void)
-{
-	if (option == [-l])
-	{
-		//away
-	}{
-		//away -a
-	}
-}
+alias back //away
 
 /*
  * /READLOG
- * Displays your away log to the current window in a way similar to the more
- * pager.
- *
- * This was taken from archon's 'more' script distributed with EPIC
- * http://www.epicsol.org/
+ * Displays your away log to the current window using /LESS.
  */
-alias readlog (void)
+alias readlog (file default "$CONFIG.AWAY_LOGFILE", void)
 {
-	if (fexist($CONFIG.AWAY_LOGFILE) == 1)
+	^assign -AWAY.NEWMSGS
+
+	if (fexist($file) == 1)
 	{
-		less $CONFIG.AWAY_LOGFILE
+		less $file
 	}{
-		xecho -b Logfile [$CONFIG.AWAY_LOGFILE] does not exist.
+		xecho -b Logfile [$file] does not exist.
 	}
 }
 
 /*
- * /REMLOG
+ * /REMLOG [filename]
  * Removes your away log.
  */
-alias remlog (void)
+alias remlog (file default "$CONFIG.AWAY_LOGFILE", void)
 {
 	^assign -AWAY.NEWMSGS
 
-	if (fexist($CONFIG.AWAY_LOGFILE))
+	if (fexist($file))
 	{
-		@ unlink($CONFIG.AWAY_LOGFILE)
-		xecho -b Removed logfile [$CONFIG.AWAY_LOGFILE]
+		@ unlink($file)
+		xecho -b Removed logfile [$file]
 	}{
-		xecho -b Logfile [$CONFIG.AWAY_LOGFILE] does not exist.
-	}
-	
-	if (A && CONFIG[AWAY_LOG])
-	{
-		@ :fd = open($CONFIG.AWAY_LOGFILE w)
-		@ write($fd [MsgLog Started $strftime(%c)])
-		@ close($fd)
-	}
+		xecho -b Logfile [$file] does not exist.
+	}	
 }
 
 
@@ -116,13 +82,6 @@ alias remlog (void)
  */
 on #-306 421 "*"
 {
-	if (CONFIG[AWAY_LOG])
-	{
-		@ :fd = open($CONFIG.AWAY_LOGFILE w)
-		@ write($fd [MsgLog Started $strftime(%c)])
-		@ close($fd)
-	}
-
 	if (CONFIG[PUBLIC_AWAY])
 	{
 		if (CONFIG[PUBLIC_AWAY_CHANNELS])
@@ -166,13 +125,6 @@ on #-306 421 "*"
  */
 on #-305 421 "*"
 {
-	if (CONFIG[AWAY_LOG])
-	{
-		@ :fd = open($CONFIG.AWAY_LOGFILE w)
-		@ write($fd [MsgLog Stopped $strftime(%c)])
-		@ close($fd)
-	}
-
 	if (CONFIG[PUBLIC_AWAY])
 	{
 		if (CONFIG[PUBLIC_AWAY_CHANNELS])
@@ -202,8 +154,6 @@ on #-305 421 "*"
 	{
 		xecho -b You have $AWAY.NEWMSGS new message${AWAY[NEWMSGS] > 1 ? [s] : []}.
 	}
-		
-	@ away.prompt_readlog()
 }
 
 /*
@@ -237,19 +187,6 @@ on #^timer 421 "*"
 	}
 }
 
-/*
- * Timestamp our logfile at noon if we are away. This is important because
- * logged messages do not contain the date.
- */
-on #^timer 421 "12:00"
-{
-	if (A && CONFIG[AWAY_LOG])
-	{
-		@ :fd = open($CONFIG.AWAY_LOGFILE w)
-		@ write($fd [TimeStamp $strftime(%c)])
-		@ close($fd)
-	}
-}
 
 /*
  * This handles the actual writing of messages to your logfile as well
@@ -260,7 +197,7 @@ alias away.process_incoming (type, nick, msg)
 	if (CONFIG[AWAY_LOG])
 	{
 		@ :fd = open($CONFIG.AWAY_LOGFILE w)
-		@ write($fd [$strftime($time() %X)] $type [$nick!$userhost()] $msg)
+		@ write($fd [$strftime(%x %X)] $type [$nick!$userhost($nick)] $msg)
 		@ close($fd)
 
 		@ AWAY.NEWMSGS++
@@ -270,23 +207,6 @@ alias away.process_incoming (type, nick, msg)
 	{
 		@ setitem(sent_away $numitems(sent_away) $nick)
 		notice $nick I am currently away. \($A\) [Gone since: $strftime($AWAY.TIME %c)] [Log/${CONFIG[AWAY_LOG] ? [ON] : [OFF]}]
-	}
-
-	return
-}
-
-alias away.prompt_readlog (void)
-{
-	if (AWAY[NEWMSGS])
-	{
-		input "$INPUT_PROMPT\Would you like to read your msgs now? (y/N) "
-		{
-			switch ($tolower($mid(0 1 $0)))
-			{
-				(y) { readlog }
-				(*) { # nada }
-			}
-		}
 	}
 
 	return
