@@ -11,12 +11,14 @@ Author: CrazyEddy / Brian Weiss <brian@epicsol.org>
    TABKEY_CYCLE_MATCHES     - Boolean. If true, continually pushing the
                               tab key will cause the module to cycle through
                               the list of possible matches.
-   TABKEY_MAX_NICKHIST      - Number of nicks to remember for msg completion.
+   TABKEY_MAX_MSG_HISTORY   - Max number of nicks to store in the msg
+                              history for /MSG completion.
    TABKEY_NICKCOMP_SUFFIX   - If completing a nickname, and the nick is the
                               first word on the input prompt, append this
                               to it.
 
 History:
    This module is based on the tabkey.ce script written by CrazyEddy and
-   distributed with EPIC4.
+   distributed with EPIC4. His ingenious design and code are responsible
+   for making this script possible. Many thanks.
 

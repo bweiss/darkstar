@@ -1,4 +1,4 @@
-#version 0.7.3
+#version 0.7.4
 /* $Id$ */
 /*
  * window.dsm - Window module for DarkStar/EPIC4
@@ -182,7 +182,7 @@ on #-hook 426 "CONFIG MSG_WINDOW *" {
 }
 
 on #-hook 426 "CONFIG MSG_WINDOW_HIDDEN *" {
-	if ([$2] != CONFIG.MSG_WINDOW_HIDDEN) {
+	if (CONFIG.MSG_WINDOW && [$2] != CONFIG.MSG_WINDOW_HIDDEN) {
 		window.msgwin.destroy
 		window.msgwin.create
 	}
