@@ -108,7 +108,7 @@ alias _less.output (array_struct, void)
 
 		unless (!arrays)
 		{
-			^local pause $'*** Hit any key for more, \'q\' to quit ***';
+			^local pause $'*** Hit any key for more, "q" to quit ***';
 			if (pause == [q])
 				break;
 		};
