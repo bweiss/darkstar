@@ -48,7 +48,7 @@ format.add SEND_ACTION_USER * -> $1: $servernick() $2-
 format.add SEND_CTCP $G Requesting a CTCP $3 from $2: $4-
 format.add SEND_MSG [$Z] SEND_MSG $1> $2-
 format.add SEND_NOTICE [$Z] SEND_NOTICE $1> $2-
-format.add WHO %c$[10]1%n $[9]2 $[3]3 %W$7%n${([$6]=~[*$after(. $servername())*]) ? [%R$[14]after(1 . $6)%n] : [%c$[14]after(1 . $6)%n]} $[-10]4%W@%n$5
+format.add WHO %c$[10]1%n $[9]2 $[3]3 %W$7${[$7] ? [%c] : [%R]}$[14]after(1 . $6)%n $[-10]4%W@%n$5
 format.add WHO_FOOTER $G $1-
 format.add WHO_FOOTER1
 format.add WHO_FOOTER2
