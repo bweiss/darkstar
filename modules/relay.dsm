@@ -106,7 +106,10 @@ alias relay.show (type, ...)
 		(*) {xecho -b Error: relay.show: Invalid type}
 	}
 
-	if (pattern(-l% $0)) {
+	if (!numitems($array)) {
+		xecho -b Error: relay.show: No items found for this type
+		return
+	} else if (pattern(-l% $0)) {
 		relay.showarray $array $format
 		return
 	} else if ([$0] == []) {
