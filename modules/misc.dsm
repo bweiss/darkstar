@@ -294,6 +294,8 @@ on ^notice "*"
 	}
 }
 
+on ^send_ctcp "ACTION *" #
+
 on ^send_ctcp "PRIVMSG *"
 {
 	if (FORMAT[SEND_CTCP])
