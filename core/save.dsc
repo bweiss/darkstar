@@ -6,7 +6,7 @@
  * SAVE.DSC - Save /CONFIG and /FSET settings for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 8/30/01 (bmw)
+ * Last modified: 10/5/01 (bmw)
  */
 
 /*
@@ -41,18 +41,14 @@ alias save (args)
 	 */
 	if (!args || word(0 $args) == [*])
 	{
-		/*
-		 * Save everything!
-		 */
+		/* Save everything! */
 		@ push(modules core)
 		for cnt from 0 to ${numitems(loaded_modules) - 1}
 		{
 			@ push(modules $getitem(loaded_modules $cnt))
 		}
 	}{
-		/*
-		 * Save only what's specified by user.
-		 */
+		/* Save only what's specified by user. */
 		for module in ($args)
 		{
 			if (finditem(loaded_modules $module) > -1 || module == [core])
@@ -62,6 +58,9 @@ alias save (args)
 		}
 	}	
 
+	/*
+	 * Check our save directory and create it if necessary.
+	 */
 	if (fexist($savedir) == -1)
 	{
 		xecho -b No save directory found. Creating [$savedir] ...
@@ -74,6 +73,9 @@ alias save (args)
 		}
 	}
 
+	/*
+	 * And on with the show...
+	 */
 	unless (abort)
 	{
 		xecho -b Saving settings to [$savedir] ...

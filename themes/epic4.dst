@@ -1,0 +1,62 @@
+/*
+ * EPIC4 theme for Darkstar/EPIC4
+ * Author: Brian Weiss <brian@epicsol.org> - 2001
+ * Last modified: 10/7/01 (bmw)
+ */
+
+status epic4
+
+/*
+ * This is currently the same as the "darkstar" theme. Anyone feel like
+ * tackling this? ;-)
+ */
+[channel]
+format BANS $[3]1 $[12]5  $strftime($6 %x@%X)  $4
+format BANS_FOOTER $G Total bans on $3: $2
+format BANS_HEADER #   SetBy         When               Ban
+format CHANNEL_SIGNOFF SignOff $1: $2 \($3-%n\) [$tolower($Z)]
+format CHANNEL_SYNC Channel $1 synced in $2 seconds
+format CHANNEL_TS Channel $2 created $strftime($3 %+) [$3]
+format JOIN $1 \($2\) has joined $3 at $Z
+format LEAVE $1 \($2\) has left $3 at $Z
+format MODE Mode change \"$3-\" on channel $2 by $1
+format PUBLIC <$1> $3-
+format PUBLIC_AR <%W$1%n> $3-
+format PUBLIC_OTHER <$1:$2> $3-
+format PUBLIC_OTHER_AR <%W$1%n:$2> $3-
+format SEND_PUBLIC <$2> $3-
+format SEND_PUBLIC_OTHER <$1:$2> $3-
+format TOPIC Topic for $2: $3-
+format TOPIC_CHANGE $1 has changed the topic on channel $2 to $3-
+format TOPIC_SETBY The topic was set by $3 on $getstrftime($4)
+[core]
+format SET Current value of $1 is $2-
+format SET_NOVALUE No value for $1 has been set
+format STRFTIME %c
+[misc]
+format CTCP CTCP $3 from $1 to $2: $4-
+format CTCP_REPLY CTCP $2 reply from $1: $3-
+format DCC_CHAT [$Z] %W.%n$1%W[%cdcc%W]%n $2-
+format MSG [$Z] %W.%n$1%W[%c$2%W]%n $3-
+format NOTICE [$Z] -$1%c\(%n$2%c\)%n- $3-
+format SEND_DCC_CHAT [$Z] %W.%ndcc%W[%n$1%W]%n $2-
+format SEND_MSG [$Z] %W.%nmsg%W[%n$1%W]%n $2-
+format SEND_NOTICE [$Z] %W.%nnotice%c[%n$1%c]%n $2-
+format WHOIS_AWAY %c[**] %Wa%nway     %c:%n $1 - $2-
+format WHOIS_CHANNELS %c[**] %Wc%nhannels %c:%n $1-
+format WHOIS_FOOTER
+format WHOIS_HEADER
+format WHOIS_IDLE %c[**] %Wi%ndle     %c:%n $tdiff($1)
+format WHOIS_NAME %c[**] %Wi%nrcname  %c:%n $1-
+format WHOIS_NICK %c[**] %n$1 %c\(%n$2@$3%c\)%n
+format WHOIS_OPER %c[**] %Wo%nperator %c:%n $1 \(is an IRC operator\)
+format WHOIS_SERVER %c[**] %Ws%nerver   %c:%n $1 \($2-\)
+format WHOIS_SIGNON %c[**] %Ws%nignon   %c:%n $1-
+format WHOWAS_NAME %c[**] %Wi%nrcname  %c:%n $1-
+format WHOWAS_NICK %c[**] %n$1 was %c\(%n$2@$3%c\)%n
+format UMODE Mode change \"$3-\" for user $2 by $1
+[names]
+format NAMES_FOOTER 
+format NAMES_HEADER Users on $1: \(total/$2 - ops/$3 normal/$4\)
+format NAMES_OP %c@%n
+format NAMES_VOICE %m+%n

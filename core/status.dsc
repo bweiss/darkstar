@@ -80,17 +80,12 @@ alias change_status (file, void)
 	{
 		load $DS.STATUS_DIR/$file
 		parsekey refresh_screen
-		xecho -b Now using status [$file]
+		xecho -b Now using status: $file
 		return 1
 	}{
 		return 0
 	}
 }
-
-/*
- * Set default statbar. This can be changed via the .dsrc file.
- */
-status darkstar
 
 
 /* bmw '01 */

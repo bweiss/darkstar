@@ -22,11 +22,12 @@ eval for array in \($getarrays()\)
 	@ delarray($array)
 }
 
+
 /*
  * Important global variables
  */
-assign DS.VERSION 0.0.10-RC
-assign DS.INTERNAL_VERSION 20011004
+assign DS.VERSION 0.0.10
+assign DS.INTERNAL_VERSION 20011007
 
 
 /*
@@ -57,6 +58,7 @@ eval assign DS.DEFAULTS_DIR $DS.HOME/def
 eval assign DS.HELP_DIR $DS.HOME/help
 eval assign DS.MODULE_DIR $DS.HOME/modules
 eval assign DS.STATUS_DIR $DS.HOME/status
+eval assign DS.THEMES_DIR $DS.HOME/themes
 
 
 /* 
@@ -70,51 +72,63 @@ set DISPLAY_PC_CHARACTERS 4
 set HIGH_BIT_ESCAPE 0
 set INDENT ON
 
+
 /*
  * Grab the default settings for the core scripts
  */
 do
 {
-	@ :fd = open($DS.DEFAULTS_DIR/core.def R)
-	
-	while (!eof($fd))
-	{
-		@ :line = read($fd)
-		@ :type = word(0 $line)
-		@ :variable = word(1 $line)
-		@ :value = restw(2 $line)
-                                    		
-		switch ($type)
-		{
-			(dset)
-			(config)
-			{
-				if (word(1 $line) == [bool])
-				{
-					@ variable = word(2 $line)
-					@ value = restw(3 $line)
-					
-					^assign DSET.BOOL.$variable 1
-				}
-				
-				@ push(DSET.CORE $variable)
-				^assign DSET.CONFIG.$variable 1
-				^assign CONFIG.$variable $value
-			}
+	^local file $DS.DEFAULTS_DIR/core.def
 
-			(fset)
-			(format)
+	if (fexist($file) != -1)
+	{
+		@ :fd = open($file R)
+	
+		while (!eof($fd))
+		{
+			@ :line = read($fd)
+			@ :type = word(0 $line)
+			@ :variable = word(1 $line)
+			@ :value = restw(2 $line)
+                                    		
+			switch ($type)
 			{
-				@ push(FSET.CORE $variable)
-				^assign FSET.FORMAT.$variable 1
-				^assign FORMAT.$variable $value
+				(dset)
+				(config)
+				{
+					if (word(1 $line) == [bool])
+					{
+						@ variable = word(2 $line)
+						@ value = restw(3 $line)
+					
+						^assign DSET.BOOL.$variable 1
+					}
+				
+					@ push(DSET.CORE $variable)
+					^assign DSET.CONFIG.$variable 1
+					^assign CONFIG.$variable $value
+				}
+
+				(fset)
+				(format)
+				{
+					@ push(FSET.CORE $variable)
+					^assign FSET.FORMAT.$variable 1
+					^assign FORMAT.$variable $value
+				}
 			}
 		}
-	}
 	
-	@ close($fd)
+		@ close($fd)
+	}{
+		xecho -b ERROR: $file not found.
+	}
 }
 
+
+/*
+ * Load saved core settings.
+ */
 if (fexist($DS.SAVE_DIR/core.sav) == 1)
 {
 	load $DS.SAVE_DIR/core.sav
@@ -128,14 +142,19 @@ eval load $DS.HOME/core/functions.dsc
 eval load $DS.HOME/core/config.dsc
 eval load $DS.HOME/core/save.dsc
 eval load $DS.HOME/core/status.dsc
-eval load $DS.HOME/core/loader.dsc
+eval load $DS.HOME/core/themes.dsc
 eval load $DS.HOME/core/help.dsc
+eval load $DS.HOME/core/loader.dsc
 
 
+/*
+ * Load rcfile if found.
+ */
 if (fexist($DS.RCFILE) == 1)
 {
 	load $DS.RCFILE
 }
+
       
 /*
  * Some useful aliases

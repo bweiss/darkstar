@@ -6,10 +6,104 @@
  * LOADER.DSC - Module loader for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 8/27/01 (bmw)
+ * Last modified: 10/7/01 (bmw)
  */
 
-alias build_modlist (void)
+alias listmods modlist
+alias modules modlist
+
+alias loadmod (module, void)
+{
+	if (module && !isnumber($module))
+	{
+		if (load_module($module))
+		{
+			xecho -b Module [$module] has been successfully loaded
+		}{
+			xecho -b Error loading module [$module]
+		}
+	}{
+		^local mods
+
+		modlist
+
+		while (!mods)
+		{
+			^assign mods $"Modules to load? (1 2-4 ...) "
+			if (mods == [])
+			{
+				^assign mods q
+			}
+		}
+
+		unless (tolower(mods) == [q])
+		{
+			for module in ($which_mods(load $mods))
+			{
+				if (load_module($module))
+				{
+					xecho -b Module [$module] has been successfully loaded
+				}{
+					xecho -b Error loading module [$module]
+				}
+			}
+		}
+	}
+}
+
+alias modlist (void)
+{
+	@ loader.build_modlist()
+	@ loader.display_modlist()
+}
+
+alias reloadmod (module, void)
+{
+	unloadmod $module
+	loadmod $module
+}
+
+alias unloadmod (module, void)
+{
+	if (module)
+	{
+		if (loader.unload_module($module))
+		{
+			xecho -b Module [$module] has been successfully unloaded
+		}{
+			xecho -b Error unloading module [$module]
+		}
+	}{
+		^local mods
+
+		@ display_loaded()
+
+		while (!mods)
+		{
+			^assign mods $"Modules to unload? (1 2-4 ...) "
+			if (mods == [])
+			{
+				^assign mods q
+			}
+		}
+
+		unless (tolower(mods) == [q])
+		{
+			for module in ($loader.which_mods(unload $mods))
+			{
+				if (loader.unload_module($module))
+				{
+					xecho -b Module [$module] has been successfully unloaded
+				}{
+					xecho -b Error unloading module [$module]
+				}
+			}
+		}
+	}
+}
+
+
+alias loader.build_modlist (void)
 {
 	@ delarray(modules)
 
@@ -22,7 +116,8 @@ alias build_modlist (void)
 	return
 }
 
-alias display_loaded (void)
+
+alias loader.display_loaded (void)
 {
 	echo #   Module
 	@ :endcnt = numitems(loaded_modules) - 1
@@ -35,7 +130,7 @@ alias display_loaded (void)
 	return
 }
 
-alias display_modlist (void)
+alias loader.display_modlist (void)
 {
 	echo #   Module                     Size (bytes)  Loaded  Auto-Load
 	@ :endcnt = numitems(modules) - 1
@@ -54,9 +149,8 @@ alias display_modlist (void)
 	return
 }
 
-alias listmods modlist
 
-alias load_module (module, void)
+alias loader.load_module (module, void)
 {
 	if (numitems(modules))
 	{
@@ -127,60 +221,7 @@ alias load_module (module, void)
 }
 
 
-alias loadmod (module, void)
-{
-	if (module && !isnumber($module))
-	{
-		if (load_module($module))
-		{
-			xecho -b Module [$module] has been successfully loaded
-		}{
-			xecho -b Error loading module [$module]
-		}
-	}{
-		^local mods
-
-		modlist
-
-		while (!mods)
-		{
-			^assign mods $"Modules to load? (1 2-4 ...) "
-			if (mods == [])
-			{
-				^assign mods q
-			}
-		}
-
-		unless (tolower(mods) == [q])
-		{
-			for module in ($which_mods(load $mods))
-			{
-				if (load_module($module))
-				{
-					xecho -b Module [$module] has been successfully loaded
-				}{
-					xecho -b Error loading module [$module]
-				}
-			}
-		}
-	}
-}
-
-alias modlist (void)
-{
-	@ build_modlist()
-	@ display_modlist()
-}
-
-alias modules modlist
-
-alias reloadmod (module, void)
-{
-	unloadmod $module
-	loadmod $module
-}
-
-alias unload_module (module)
+alias loader.unload_module (module)
 {
 	if (numitems(loaded_modules))
 	{
@@ -202,12 +243,12 @@ alias unload_module (module)
 				^assign -$var
 			}
 
-			/* Remove all dset/fset variables */
+			/* Remove all config and format variables */
 			for var in ($DSET\.$module)
 			{
 				^assign -CONFIG.$var
 				^assign -DSET.CONFIG.$var
-				^assign -DSET.LIT.$var
+				^assign -DSET.BOOL.$var
 			}
 			
 			for var in ($FSET\.$module)
@@ -229,47 +270,8 @@ alias unload_module (module)
 	return 0
 }
 
-alias unloadmod (module, void)
-{
-	if (module)
-	{
-		if (unload_module($module))
-		{
-			xecho -b Module [$module] has been successfully unloaded
-		}{
-			xecho -b Error unloading module [$module]
-		}
-	}{
-		^local mods
 
-		@ display_loaded()
-
-		while (!mods)
-		{
-			^assign mods $"Modules to unload? (1 2-4 ...) "
-			if (mods == [])
-			{
-				^assign mods q
-			}
-		}
-
-		unless (tolower(mods) == [q])
-		{
-			for module in ($which_mods(unload $mods))
-			{
-				if (unload_module($module))
-				{
-					xecho -b Module [$module] has been successfully unloaded
-				}{
-					xecho -b Error unloading module [$module]
-				}
-			}
-		}
-	}
-}
-
-
-alias which_mods (action, args)
+alias loader.which_mods (action, args)
 {
 	if (args && isnumber($strip(- $args)))
 	{
@@ -307,18 +309,22 @@ alias which_mods (action, args)
 				}
 			}
 		}
+
 		@ function_return = modlist
 	}{
 		if ([$0])
 		{
 			xecho -b \"$*\" is not valid
 		}
-		return
 	}
+
+	return
 }
 
 
-/* Find out what modules to load on startup */
+/*
+ * Find out what modules to load on startup.
+ */
 if (CONFIG[AUTO_LOAD_MODULES])
 {
 	^local dont_suppress_motd
@@ -355,7 +361,7 @@ if (CONFIG[AUTO_LOAD_MODULES])
 					xecho -b Auto-Loading modules...
 					for module in ($CONFIG.AUTO_LOAD_MODULES)
 					{
-						if (load_module($module))
+						if (loader.load_module($module))
 						{
 							xecho -b Module [$module] has been loaded successfully
 						}{
@@ -363,13 +369,15 @@ if (CONFIG[AUTO_LOAD_MODULES])
 						}
 					}
 					xecho -b Auto-Load completed [$strftime(%c)]
+
+					theme $CONFIG.DEFAULT_THEME
 				}
-				(N) { # Do nuh-thing! }
+				(N) { /* Do nothing */ }
 				(*)
 				{ 
-					for module in ($which_mods(load $*))
+					for module in ($loader.which_mods(load $*))
 					{
-						if (load_module($module))
+						if (loader.load_module($module))
 						{
 							xecho -b Module [$module] has been successfully loaded
 						}{
@@ -377,6 +385,8 @@ if (CONFIG[AUTO_LOAD_MODULES])
 						}
 					}
 					xecho -b Load complete [$strftime(%c)]
+
+					theme $CONFIG.DEFAULT_THEME
 				}
 			}
 
@@ -386,7 +396,7 @@ if (CONFIG[AUTO_LOAD_MODULES])
 		xecho -b Auto-Loading modules...
 		for module in ($CONFIG.AUTO_LOAD_MODULES)
 		{
-			if (load_module($module))
+			if (loader.load_module($module))
 			{
 				xecho -b Module [$module] has been loaded successfully
 			}{
@@ -394,6 +404,8 @@ if (CONFIG[AUTO_LOAD_MODULES])
 			}
 		}
 		xecho -b Auto-Load completed [$strftime(%c)]
+
+		theme $CONFIG.DEFAULT_THEME
 	}
 	
 	wait -cmd for hook in (250 251 252 254 255 265 266)

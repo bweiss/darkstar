@@ -2,6 +2,12 @@ Darkstar ChangeLog
 
 [0.0.10]
 
+ - [loader.dsc] Went through a bit of a rewrite.
+ - New config variable: DEFAULT_THEME. This is now how you should be setting
+   your default theme. You can remove the "status" line from your rcfiles.
+ - Theme support! Theme files will be kept in $DS.HOME/themes/ default and must
+   have an extension of ".dst". Have a look at the darkstar theme for an
+   example of creating a theme.
  - New status bar called "blue". Created by stshatter.
  - Moved the defaults/ directory to def/.
  - Now understands both dset/fset as well as config/format as keywords in the

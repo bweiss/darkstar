@@ -1,0 +1,129 @@
+/*     _             _        _
+ *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
+ * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
+ * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
+ *
+ * THEMES.DSC - Theme support for Darkstar/EPIC4
+ * Author: Brian Weiss <brian@epicsol.org> - 2001
+ *
+ * Last modified: 10/5/01 (bmw)
+ */
+
+/*
+ * /THEME [newtheme]
+ * Changes the current theme. If [newtheme] is not specified the list of
+ * available themes will be displayed and the user will be prompted to choose
+ * one, either by name or number.
+ */
+alias theme (theme, void)
+{
+	/*
+	 * Find available themes and dump them in the themes array.
+	 */
+	@ delarray(themes)
+
+	for file in ($glob($DS.THEMES_DIR\/\*.dst))
+	{
+		@ :theme_name = before(. $after(-1 / $file))
+		@ setitem(themes $numitems(themes) $theme_name)
+	}
+
+	if (theme)
+	{
+		if (theme.change($theme))
+		{
+			xecho -b Now using theme: $DS.THEME
+		}{
+			xecho -b Error loading theme.
+		}
+	}{
+		if (DS.THEME) xecho -b Current theme: $DS.THEME
+		xecho -b Available themes:
+		echo #   Theme
+		for cnt from 0 to ${numitems(themes) - 1}
+		{
+			@ :num = cnt + 1
+			echo $[3]num $getitem(themes $cnt)
+		}
+
+		input "Which theme would you like to use? " if ([$0])
+		{
+			if (isnumber($0) && [$0] > 0 && [$0] <= numitems(themes))
+			{
+				if (theme.change($getitem(themes ${[$0] - 1})))
+				{
+					xecho -b Now using theme: $DS.THEME
+				}{
+					xecho -b Error loading theme.
+				}
+			} \
+			elsif (finditem(themes $0) > -1)
+			{
+				if (theme.change($0))
+				{
+					xecho -b Now using theme: $DS.THEME
+				}{
+					xecho -b Error loading theme.
+				}
+			}{
+				xecho -b Error: Invalid theme.
+			}
+		}
+	}
+}
+
+alias theme.change (theme, void)
+{
+	if (finditem(themes $theme) > -1 && theme != DS.THEME)
+	{
+		@ :theme_file = twiddle($DS.THEMES_DIR/$theme\.dst)
+
+		if (fexist($theme_file) == 1)
+		{
+			@ :fd = open($theme_file R)
+			
+			while (!eof($fd))
+			{
+				^local chformat
+				@ :line = read($fd)
+				@ :keyword = word(0 $line)
+
+				if (match([* $keyword) && match(*] $keyword))
+				{
+					@ :module = before(-1 ] $after(-1 [ $keyword))
+
+					if (finditem(loaded_modules $module) > -1)
+					{
+						^assign chformat 1
+					}{
+						^assign -chformat
+					}
+				} \
+				elsif (keyword == [status])
+				{
+					status $word(1 $line)
+				}
+
+				if (chformat)
+				{
+					@ :variable = word(1 $line)
+					@ :value = restw(2 $line)
+
+					if (keyword == [format])
+					{
+						^assign FORMAT.$variable $value
+					}
+				}
+			}
+
+			@ close($fd)
+			^assign DS.THEME $theme
+			return 1
+		}
+	}
+
+	return 0
+}
+
+
+/* bmw '01 */
