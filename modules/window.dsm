@@ -1,4 +1,4 @@
-#version 0.1
+#version 0.1.1
 /*     _             _        _
  *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
  * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
@@ -126,14 +126,12 @@ alias wj (chan)
 		return
 	}
 
-	window new_hide
-	window swap last
-	//join $chan
-		
+	window new channel $chan
 	if (CONFIG[AUTO_BIND_ON_WINDOW_JOIN])
 	{
 		window bind $word(0 $chan)
 	}
+	window hide
 }
 
 alias wk (void)
