@@ -130,9 +130,6 @@ alias save_config (save_dir, module, void)
 		{
 			@ :value = aliasctl(assign get CONFIG.$var)
 
-			echo var: $var
-			echo value: $value
-
 			if (value != [])
 			{
 				@ write($fd assign CONFIG.$var $value)
