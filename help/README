@@ -13,7 +13,7 @@ The help files for Darkstar are organized into the following groups:
 
    Section 1: Darkstar Core
    Section 2: Modules
-   Section 3: Programming with Darkstar
+   Section 3: Programming
 
 In order to read a help file its section number must be given. This is true
 except when you are already at the help prompt and in the proper section.

@@ -90,9 +90,7 @@ alias set_routine (type, variable, value)
 					^assign $var $value
 					xecho -s -b Value of $toupper($var2) set to $value
 				}
-			} \
-			elsif (value == [])
-			{
+			}{
 				@ setcat($var)
 			}
 		}{

@@ -2,6 +2,7 @@ Darkstar ChangeLog
 
 [current]
 
+ - [tabkey.dsm] Now checks for $CMDCHARS instead of "/" (yes this was stupid).
  - [tabkey.dsm] Now lists each variable on a separate line when displaying
    matches in the set routine.
  - [misc.dsm] New fsets: WHOIS_HEADER and WHOIS_FOOTER

@@ -38,7 +38,8 @@ alias tabkey.process_tabkey (void)
 {
 	if (L)
 	{
-		if (mid(0 1 $L) == [/])
+		/* Check for $CMDCHARS */
+		if (index($left(1 $L) $K) > -1)
 		{
 			switch ($rest(1 $L))
 			{
