@@ -130,9 +130,9 @@ alias oper._save (fd, void)
 		return;
 
 	@ write($fd # Challenge/Response List);
-	for ii from 0 to ${numitems(oper.challenge) - 1} {
-		@ write($fd @ setitem\(oper.challenge $ii $getitem(oper.challenge $ii)\));
-	}
+	for ii from 1 to $numitems(oper.challenge) {
+		@ write($fd @ setitem\(oper.challenge ${ii-1} $getitem(oper.challenge ${ii-1})\));
+	};
 	@ write($fd );
 };
 
