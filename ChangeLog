@@ -1,6 +1,11 @@
 Darkstar ChangeLog
 
 
+2/18/92
+
+ * [tabkey.dsm] Added /set completion as well as scripted command completion
+   (instead of the built in command_completion).
+
 2/17/02
 
  * HEADS UP: loader.get_saved_settings renamed to loader.load_saved_settings.
