@@ -3,8 +3,10 @@
  * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
  * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
  *
- * NAMES.DSM - Module to reformat /NAMES output for Darkstar/EPIC4
+ * NAMES.DSM - Module to display who's on a channel for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
+ *
+ * Last modified: 8/27/01 (bmw)
  */
 
 queue cleanup.names
@@ -19,13 +21,39 @@ alias names.showusers (chan default "$C", mode default "*", void)
 {
 	if (match($chan $mychannels()))
 	{
-		^local users
+		^local desc,users
 
 		switch ($tolower($mode))
 		{
-			(n) {@ users = nochops($chan)}
-			(o) {@ users = chops($chan)}
+			(n)
+			{
+				^assign desc normal users
+				@ users = nochops($chan)
+			}
+			(o)
+			{
+				^assign desc channel operators
+				@ users = chops($chan)
+			}
+			(v)
+			{
+				^assign desc voiced users
+				for nick in ($channel($chan))
+				{
+					if (mid(1 1 $nick) == [+])
+					{
+						@ push(users $rest(2 $nick))
+					}
+				}
+			}
 			(*) {@ users = onchannel($chan)}
+		}
+
+		/* If no users matching the request are found alert user and exit */
+		if (#users < 1)
+		{
+			xecho -b No $desc were found on $chan
+			return 0
 		}
 
 		if (FORMAT[NAMES_HEADER])
@@ -63,6 +91,11 @@ alias scann (chan default "$C", void)
 alias scano (chan default "$C", void)
 {
 	@ names.showusers($chan o)
+}
+
+alias scanv (chan default "$C", void)
+{
+	@ names.showusers($chan v)
 }
 
 on ^353 "*"

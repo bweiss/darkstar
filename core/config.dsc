@@ -5,6 +5,8 @@
  *
  * CONFIG.DSC - Configuration manager for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
+ *
+ * Last modified: 8/27/01 (bmw)
  */
 
 alias conf dset
@@ -15,6 +17,7 @@ alias set_routine (type, variable, value)
 {
 	^local struct1,struct2
 	
+	/* Figure out what kind of variables we're dealing with */
 	switch ($toupper($type))
 	{
 		(DSET)
@@ -31,6 +34,7 @@ alias set_routine (type, variable, value)
 	
 	if (!variable)
 	{
+		/* No variable specified by user. Display all. */
 		for var in ($aliasctl(assign match $struct1\.$struct2\.))
 		{
 			@ :var = after(1 . $var)
@@ -41,6 +45,11 @@ alias set_routine (type, variable, value)
 		@ :cur_value = aliasctl(assign get $struct1\.$struct2\.$var)
 		@ :matches = aliasctl(assign match $struct1\.$struct2\.$var)
 		
+            /*
+             * If the number of matches found is greater than 1, output the
+             * values for all matching variables. If only 1 match is found,
+             * we then have to figure out exactly what to do with that varable.
+             */
 		if (#matches > 1 && !cur_value)
 		{
 			xecho -b \"$toupper($var)\" is ambiguous
@@ -55,6 +64,13 @@ alias set_routine (type, variable, value)
 			@ :var = after(1 . $word(0 $matches))
 			@ :var2 = after(1 . $var)
 			
+			/*
+			 * If variable name is preceded by a "-" empty its value.
+			 * Otherwise, if a new value is supplied by the user, set
+			 * this to the variables new value and we're done. 
+			 * If no new value is specified, output the variable's
+			 * current value.
+			 */
 			if (variable =~ [-%])
 			{
 				^assign -$var
@@ -93,13 +109,14 @@ alias fset (...)
 	@ set_routine(fset $*)
 }
 
-/* Functions */
-
 alias fparse
 {
 	eval return $cparse($(FORMAT.$0))
 }
 
+/*
+ * This is a modified version of shade's setcat.
+ */
 alias setcat (var, void)
 {
 	@ :var2 = after(1 . $var)

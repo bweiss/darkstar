@@ -5,6 +5,8 @@
  *
  * STATBAR.DSC - Statbar manager for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
+ *
+ * Last modified: 8/27/01 (bmw)
  */
 
 alias sbar status

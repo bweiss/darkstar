@@ -5,15 +5,16 @@
  * | (_| || (_| || |   |   < \__ \| |_ | (_| || |
  *  \__,_| \__,_||_|   |_|\_\|___/ \__| \__,_||_|
  *
- *  Darkstar by Brian Weiss <brian@epicsol.org>
+ *  Darkstar/EPIC4 by Brian Weiss <brian@epicsol.org>
  *
  *  For use with EPIC4-1.0 and higher.
  *  See the 'README' file for general information.
  *  See the 'COPYRIGHT' file for licensing information.
  */
 
-/* Make sure we're clean */
-
+/*
+ * Make sure we're clean
+ */
 dump all
 
 eval for array in \($getarrays()\)
@@ -21,15 +22,16 @@ eval for array in \($getarrays()\)
 	@ delarray($array)
 }
 
-      
-/* Important global variables */
-
+/*
+ * Important global variables
+ */
 assign DS.VER 0.0.9
 assign DS.VERSION 20010915
 
 
-/* Find out where everything is */
-
+/*
+ * Find out where everything is
+ */
 if (getenv(DARKSTAR_HOME))
 {
 	@ DS.HOME = getenv(DARKSTAR_HOME)
@@ -57,8 +59,10 @@ eval assign DS.MODULE_DIR $DS.HOME/modules
 eval assign DS.STATUS_DIR $DS.HOME/status
 
 
-/* Important /SET's */
-
+/* 
+ * Important /SET's
+ * If you want to change these, it should be done via .dsrc
+ */
 eval set CLIENT_INFORMATION Darkstar $DS.VER
 set -CONTINUED_LINE
 set CONTROL_C_COLOR ON
@@ -66,8 +70,10 @@ set DISPLAY_PC_CHARACTERS 4
 set HIGH_BIT_ESCAPE 0
 set INDENT ON
 
-
-alias get_core_settings (void)
+/*
+ * Grab the default settings for the core scripts
+ */
+do
 {
 	@ :fd = open($DS.DEFAULTS_DIR/core.def R)
 	
@@ -106,17 +112,15 @@ alias get_core_settings (void)
 	@ close($fd)
 }
 
-@ get_core_settings()
-alias -get_core_settings
-
 if (fexist($DS.SAVE_DIR/core.sav) == 1)
 {
 	load $DS.SAVE_DIR/core.sav
 }
 
 
-/* Load the rest of the core script */
-
+/*
+ * Load the rest of the core scripts
+ */
 eval load $DS.HOME/core/functions.dsc
 eval load $DS.HOME/core/config.dsc
 eval load $DS.HOME/core/save.dsc
@@ -130,7 +134,9 @@ if (fexist($DS.RCFILE) == 1)
 	load $DS.RCFILE
 }
       
-
+/*
+ * Some useful aliases
+ */
 alias reload (void)
 {
 	@ :home = DS.HOME

@@ -7,6 +7,8 @@
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *         whitefang
  *
+ * Last modified: 8/27/01 (bmw)
+ *
  * This was originally written by whitefang. He deserves all the credit.
  */
 

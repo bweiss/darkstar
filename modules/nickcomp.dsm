@@ -5,8 +5,10 @@
  *
  *
  * NICKCOMP.DSM - Nick completion module for Darkstar/EPIC4
- * Author: Brian Weiss <brian@epicsol.org> - 2001
- *         shade <shade@chemlab.org>
+ * Author: shade <shade@chemlab.org> - 1999
+ *         Brian Weiss <brian@epicsol.org> - 2001
+ *
+ * Last modified: 8/27/01 (bmw)
  *
  * Most of this was taken from the nick completion module that shade wrote
  * for my BitchX/EPIC4 script called playdough. He deserves most of the

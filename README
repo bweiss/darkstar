@@ -1,7 +1,7 @@
 Darkstar README
 Author: Brian Weiss <brian@epicsol.org>
 
-Last modification: 9/16/01
+Last modification: 8/27/01
 
 
 ABOUT
@@ -107,6 +107,10 @@ darkstar.irc		- The startup script. This is what you actually /load
 sample.dsrc		- Sample .dsrc file.
 core/*.dsc		- Scripts that make up the core of Darkstar
 			  These are all required.
+defaults/*.def		- These files define what variables are seen by
+			  /dset and /fset as well as their default values.
+			  I do not recommend editing these files as it may
+			  cause things not to work. You have been warned.
 modules/*.dsm		- The modules that provide most of the features. All
 			  of these are completely optional and are independent
 			  of each other.

@@ -6,6 +6,8 @@
  * AUTOCYCLE.DSM - Auto-Cycle module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
+ * Last modified: 8/27/01 (bmw)
+ *
  * This script uses serial number 425 for all ON hooks.
  *
  * Description: Automatically cycles op-less channels.
