@@ -14,6 +14,8 @@ DarkStar 0.3
 	 - Support for /WINDOW completion.
 	 - The TABKEY_NICK_HISTORY config variable has been renamed to
 	   TABKEY_MAX_NICKHIST.
+	 - No longer controlled by "completion rules".
+	 - No /TABKEY alias.
 
 *** News 2002/09/28 -- window.dsm 0.6 - /DSET AUTO_QUERY and /WQ
 	A new boolean config variable named AUTO_QUERY has been added.
