@@ -1,0 +1,11 @@
+Synopsis:
+   dset auto_load_modules [<module> [<module> ...]]
+
+Description:
+   This determines which modules will be automatically loaded on startup. This
+   only applies if AUTO_LOAD_PROMPT is OFF or if the 'A' option is specified
+   at the auto-load prompt.
+
+See Also:
+   ds:dset(1) auto_load_prompt
+

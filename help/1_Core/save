@@ -1,0 +1,17 @@
+Synopsis:
+   save [-d <directory>] [<*> | <module> <module> ...]
+
+Description:
+   This command writes all your config settings (/DSET and /FSET) for the
+   specified module(s) to your save directory (or <directory> if '-d' is
+   specified).
+
+   All /DSET variables will be saved to files according to which module they
+   belong to.
+
+   All /FSET variables are written to a single file called custom.dst which
+   can immediately be set as the current theme.
+
+See Also:
+   ds:dset(1);  ds:fset(1);  ds:theme(1);
+

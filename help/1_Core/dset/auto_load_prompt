@@ -1,0 +1,10 @@
+Synopsis:
+   dset auto_load_prompt [on|off|1|0]
+
+Description:
+   If true, the user will be prompted, on startup, to choose which modules
+   they would like to be loaded.
+
+See Also:
+   ds:dset(1) auto_load_modules
+

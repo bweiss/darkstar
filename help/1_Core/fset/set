@@ -1,0 +1,10 @@
+Synopsis:
+   fset set [<value>]
+
+Description:
+   Controls the appearance of /DSET and /FSET output when the variable in
+   question has a value.
+
+See Also:
+   ds:fset(1) set_novalue
+
