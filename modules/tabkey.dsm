@@ -1,4 +1,4 @@
-#version 0.2.7
+#version 0.2.8
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -94,7 +94,7 @@ alias tabkey.main {
 		@ wordind = curpos()
 	}
 	@ :word = mid($wordind ${curpos() - wordind} $L)
-	if (CONFIG.TABKEY_CYCLE_MATCHES && TABKEY.LASTMATCHES != [] && word == TABKEY.LASTWORD) {
+	if (CONFIG.TABKEY_CYCLE_MATCHES && TABKEY.LASTMATCHES != [] && L != [] && word == TABKEY.LASTWORD) {
 		if (TABKEY.INDEX == numwords($TABKEY.LASTMATCHES)) {
 			@ TABKEY.INDEX = 0
 		}

@@ -12,9 +12,9 @@ Author: Brian Weiss <brian@epicsol.org>
    AUTO_CREATE_WINDOWS        - Number of windows you want to have when
                                 this module loads.
    AUTO_QUERY                 - Boolean. Automatically create a new window
-                                and start a query for incoming private msgs
-                                and automatically update existing queries
-                                when users change nicks.
+                                with a query for each user that msgs you.
+   AUTO_QUERY_UPDATE          - Boolean. Automatically update existing
+                                queries when a nick change is detected.
    BIND_ON_JOIN               - Boolean. Automatically bind channels
                                 when you join them.
    MSG_WINDOW                 - Boolean. Creates a new window called "msgs"

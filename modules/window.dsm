@@ -1,4 +1,4 @@
-#version 0.7
+#version 0.7.1
 /* $Id$ */
 /*
  * window.dsm - Window module for DarkStar/EPIC4
@@ -49,6 +49,7 @@ queue cleanup.window
 config.add    AUTO_BIND_CHANNELS
 config.add    AUTO_CREATE_WINDOWS 2
 config.add -b AUTO_QUERY 0
+config.add -b AUTO_QUERY_UPDATE 1
 config.add -b BIND_ON_JOIN 0
 config.add -b MSG_WINDOW 0
 config.add -b MSG_WINDOW_HIDDEN 0
@@ -173,9 +174,6 @@ alias window.msgwin.down (void) {
 
 /****** ON HOOKS ******/
 
-/*
- * Kill or create msg window on /DSET MSG_WINDOW
- */
 on #-hook 426 "CONFIG MSG_WINDOW *" {
 	if (CONFIG.MSG_WINDOW) {
 		window.msgwin.create
@@ -247,25 +245,24 @@ on #-leave 426 '$servernick() *' {
 }
 
 on #-msg 426 "*" {
-	if (CONFIG.AUTO_QUERY) {
-		@ :item = matchitem(window.autoquery %!$userhost())
-		if (item > -1) {
-			if (getitem(window.autoquery $item) != [$0!$userhost()]) {
-				@ :oldnick = before(-1 ! $getitem(window.autoquery $item))
-				@ :win = querywin($oldnick $lastserver())
-				if (win > -1) {
+	if ((:item = matchitem(window.queries.$lastserver() %!$userhost())) > -1) {
+		if (getitem(window.queries.$lastserver() $item) != [$0!$userhost()]) {
+			if (CONFIG.AUTO_QUERY_UPDATE) {
+				@ :oldnick = before(-1 ! $getitem(window.queries.$lastserver() $item))
+				if ((:win = querywin($oldnick $lastserver())) > -1) {
 					window $win query $0
 				}
-				@ setitem(window.autoquery $item $0!$userhost())
 				xecho -b -w $win Query window for $oldnick changed to $0
 			}
+			@ setitem(window.queries.$lastserver() $item $0!$userhost())
 		}
-		@ setitem(window.autoquery $numitems(window.autoquery) $0!$userhost())
-		if (querywin($0 $lastserver()) == -1) {
-			window new_hide swap last
-			query $0
-			xecho -b New query window created for $0
-		}
+	} else {
+		@ setitem(window.queries.$lastserver() $numitems(window.queries.$lastserver()) $0!$userhost())
+	}
+	if (CONFIG.AUTO_QUERY && querywin($0 $lastserver()) == -1) {
+		window new_hide swap last
+		query $0
+		xecho -b New query window created for $0
 	}
 }
 

@@ -1,6 +1,15 @@
 DarkStar 0.3
 
 
+*** News 2002/10/14 -- window.dsm 0.7.1 - Auto-query changes
+	A new config variable named AUTO_QUERY_UPDATE has been added
+	to control whether existing queries are updated automatically
+	on nick changes. This means that the existing AUTO_QUERY variable
+	now only controls the initial creation of query windows for
+	incoming private msgs. The code that handles both of these
+	features should now also be safe for use with multiple server
+	connections in a single client.
+
 *** News 2002/10/07 -- misc.dsm 0.9 - New format variable: WHOIS_ADMIN
 	Support for a new WHOIS numeric (308) has been added. This numeric
 	is sent by Hybrid7 servers (and some modified Hyb6 servers) when
