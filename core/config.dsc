@@ -11,7 +11,7 @@ alias conf dset
 
 alias config dset
 
-alias do_set (type, variable, value)
+alias set_routine (type, variable, value)
 {
 	^local struct1,struct2
 	
@@ -81,12 +81,12 @@ alias do_set (type, variable, value)
 
 alias dset (...)
 {
-	@ do_set(dset $*)
+	@ set_routine(dset $*)
 }
 
 alias fset (...)
 {
-	@ do_set(fset $*)
+	@ set_routine(fset $*)
 }
 
 /* Functions */
