@@ -6,16 +6,40 @@
  * NAMES.DSM - Module to display who's on a channel for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 8/27/01 (bmw)
+ * Last modified: 12/22/01 (bmw)
  */
 
 queue cleanup.names
 {
-	for alias in (sc scan scann scano)
+	for alias in (names sc scan scann scano scanv)
 	{
 		^alias -$alias
 	}
 }
+
+alias names scan
+alias sc scan
+
+alias scan (chan, void)
+{
+	@ names.showusers($chan)
+}
+
+alias scann (chan default "$C", void)
+{
+	@ names.showusers($chan n)
+}
+
+alias scano (chan default "$C", void)
+{
+	@ names.showusers($chan o)
+}
+
+alias scanv (chan default "$C", void)
+{
+	@ names.showusers($chan v)
+}
+
 
 alias names.showusers (chan default "$C", mode default "*", void)
 {
@@ -76,27 +100,6 @@ alias names.showusers (chan default "$C", mode default "*", void)
 	return 0
 }
 
-alias sc scan
-
-alias scan (chan, void)
-{
-	@ names.showusers($chan)
-}
-
-alias scann (chan default "$C", void)
-{
-	@ names.showusers($chan n)
-}
-
-alias scano (chan default "$C", void)
-{
-	@ names.showusers($chan o)
-}
-
-alias scanv (chan default "$C", void)
-{
-	@ names.showusers($chan v)
-}
 
 on ^353 "*"
 {

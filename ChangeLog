@@ -3,6 +3,9 @@ Darkstar ChangeLog
 
 12/23/01
 
+ * [names.dsm] Aliased /names to /scan to prevent people from accidentally
+   executing the internal /names with no arguments.
+
  * [misc.dsm] /whowas will now display WHOIS_HEADER and WHOIS_FOOTER if present.
 
  * Moved /reload, /sv, and /uptime out of darkstar.irc and into commands.dsc.
