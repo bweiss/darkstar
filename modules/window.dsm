@@ -6,7 +6,6 @@
  * See the 'COPYRIGHT' file for more information.
  *
  * This script uses serial number 426 for all /ON hooks.
- * The msg window attempts to use a refnum of 426.
  */
 
 /****** CLEANUP QUEUE ******/
@@ -52,7 +51,7 @@ addconfig -b BIND_ON_JOIN 0
 addconfig -b JOIN_NEW_WINDOW 0
 addconfig    JOIN_NEW_WINDOW_ARGS hide_others
 addconfig -b MSG_WINDOW 0
-addconfig    MSG_WINDOW_ARGS level msgs size 5 double off fixed on skip on hide last
+addconfig    MSG_WINDOW_ARGS number 426 double off fixed on skip on size 5 level msgs last
 addconfig -b PART_KILL_WINDOW 0
 addconfig -b UNBIND_ON_PART 0
 
@@ -145,7 +144,7 @@ alias window.last.scroll (direction, void)
 alias window.msgwin.create (void)
 {
 	if (winnum(msgs) == -1) {
-		window new name msgs number 426 $CONFIG.MSG_WINDOW_ARGS
+		^window new name msgs $CONFIG.MSG_WINDOW_ARGS
 	}
 }
 
@@ -243,25 +242,25 @@ on #-window_kill 426 "msgs"
 
 /****** STARTUP ******/
 
-module.load_saved_settings
-
-if (CONFIG.AUTO_CREATE_WINDOWS)
-{
-	for ii from 1 to $CONFIG.AUTO_CREATE_WINDOWS
+defer {
+	if (CONFIG.AUTO_CREATE_WINDOWS)
 	{
-		@ :chan = word($ii $CONFIG.AUTO_BIND_CHANNELS)
-		if (winnum($ii) == -1) {
-			window new
-			if (chan) {
-				window bind $chan
+		for ii from 1 to $CONFIG.AUTO_CREATE_WINDOWS
+		{
+			@ :chan = word($ii $CONFIG.AUTO_BIND_CHANNELS)
+			if (winnum($ii) == -1) {
+				^window new
+				if (chan) {
+					^window bind $chan
+				}
+				^window hide
 			}
-			window hide
 		}
 	}
-}
 
-if (CONFIG.MSG_WINDOW) {
-	window.msgwin.create
+	if (CONFIG.MSG_WINDOW) {
+		window.msgwin.create
+	}
 }
 
 

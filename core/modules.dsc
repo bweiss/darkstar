@@ -46,10 +46,10 @@ alias autoload (args)
 			(-a) { @ :action = [add]; }
 			(-d) { @ :action = [delete]; }
 			(*) {
-				if (action = [add]) {
-					@ push(modlist $arg)
+				if (action == [add] && findw($arg $modlist) == -1) {
+					@ push(:modlist $arg)
 				} else if (action == [delete]) {
-					@ modlist = remw($arg $modlist)
+					@ :modlist = remw($arg $modlist)
 				}
 			}
 		}
@@ -255,33 +255,6 @@ alias unloadmod (modules)
 }
 
 
-/****** MODULE ALIASES ******/
-
-/*
- * This allows modules to force saved settings to be loaded before the module
- * is finished loading. Very useful for events happening at module load time
- * that depend on certain config settings. This should not be used until
- * after adding your config and format variables via module.add{config|format}
- */
-alias module.load_saved_settings (void)
-{
-	@ :file = after(-1 / $word(1 $loadinfo()))
-	if (match(*.dsc $file)) {
-		@ :module = [core]
-	} else {
-		@ :module = before(-1 . $file)
-	}
-
-	if (module)
-	{
-		@ :savefile = [$DS.SAVE_DIR/$module]
-		if (fexist($savefile) == 1) {
-			load $savefile
-		}
-	}
-}
-
-
 /****** INTERNAL ALIASES ******/
 
 alias _build_modlist (void)
@@ -434,55 +407,44 @@ alias _unload_module (module, void)
 
 /****** STARTUP ******/
 
-module.load_saved_settings
+defer {
+	modlist
+	^window hold_mode on
 
-/* Keep things quiet while we list available modules */
-for hook in (250 251 252 254 255 265 266)
-{
-	^on ^$hook ^"*"
-}
-stack push set SUPPRESS_SERVER_MOTD
-set SUPPRESS SERVER_MOTD ON
-
-modlist
-
-if (CONFIG.LOAD_PROMPT)
-{
-	^local ask $"Enter modules to load ('a' for auto-load, '*' for all): "
-	switch ($ask)
+	if (CONFIG.LOAD_PROMPT)
 	{
-		(a) {
-			if (CONFIG.AUTO_LOAD_MODULES) {
-				loadmod $CONFIG.AUTO_LOAD_MODULES
-			} else {
-				xecho -b No modules on the auto-load list
-				xecho -b Type /AUTOLOAD or /DSET AUTO_LOAD_MODULES to add a module
+		^window hold_mode on
+		^local ask $"Enter modules to load ('a' for auto-load, '*' for all): "
+		switch ($ask)
+		{
+			(a) {
+				if (CONFIG.AUTO_LOAD_MODULES) {
+					loadmod $CONFIG.AUTO_LOAD_MODULES
+				} else {
+					xecho -b No modules on the auto-load list
+					xecho -b Type /AUTOLOAD or /DSET AUTO_LOAD_MODULES to add a module
+				}
 			}
-		}
-		(\\*) {
-			for ii from 1 to $numitems(_modules) {
-				@ push(:mods $getitem(_modules ${ii-1}))
-			}
-			loadmod $mods
-		}
-		(*) {
-			@ :mods = getitems(_modules -1 $ask)
-			if (mods) {
+			(\\*) {
+				for ii from 1 to $numitems(_modules) {
+					@ push(:mods $getitem(_modules ${ii-1}))
+				}
 				loadmod $mods
 			}
+			(*) {
+				@ :mods = getitems(_modules -1 $ask)
+				if (mods) {
+					loadmod $mods
+				}
+			}
 		}
+		^window hold_mode off
+	}\
+	else if (CONFIG.AUTO_LOAD_MODULES)
+	{
+		loadmod $CONFIG.AUTO_LOAD_MODULES
 	}
-}\
-else if (CONFIG.AUTO_LOAD_MODULES)
-{
-	loadmod $CONFIG.AUTO_LOAD_MODULES
 }
-
-defer for hook in (250 251 252 254 255 265 266)
-{
-	^on $hook -"*"
-}
-stack pop set SUPPRESS_SERVER_MOTD
 
 
 /* EOF */

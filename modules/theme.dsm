@@ -14,17 +14,14 @@ queue cleanup.theme
 {
 	^alias -theme
 	^alias -tabkey.cmd.theme
-	^on #hook 428 -"CONFIG DOUBLE_STATUS *"
 	^on #hook 428 -"CONFIG THEME *"
 	^on #hook 428 -"LOADMOD *"
-	^on #window_create 428 -"*"
 }
 
 
 /****** CONFIG/FORMAT VARIABLES ******/
 
-addconfig -b DOUBLE_STATUS 0
-addconfig    THEME
+addconfig THEME
 
 
 /****** USER ALIASES ******/
@@ -143,16 +140,6 @@ alias theme.scan_dir (dir, void)
 
 /****** ON HOOKS ******/
 
-on #-hook 428 "CONFIG DOUBLE_STATUS *"
-{
-	for wref in ($winrefs())
-	{
-		if (!windowctl(GET $wref FIXED)) {
-			window $wref double $bool2word($CONFIG.DOUBLE_STATUS)
-		}
-	}
-}
-
 /*
  * Change themes on /DSET THEME and restrict its value to valid theme names.
  */
@@ -196,18 +183,14 @@ on #-hook 428 "LOADMOD *"
 	}
 }
 
-on #-window_create 428 "*"
-{
-	if (CONFIG.DOUBLE_STATUS && !windowctl(GET $0 FIXED)) {
-		window double on
-	}
-}
-
 
 /****** STARTUP ******/
 
-module.load_saved_settings
-defer theme $CONFIG.THEME
+defer {
+	^window hold_mode on
+	theme $CONFIG.THEME
+	^window hold_mode off
+}
 
 
 /* EOF */

@@ -16,6 +16,7 @@ queue cleanup.oper
 	^alias -challenge
 	^alias -operview
 	^alias -operwall
+	^alias -tabkey.cmd.challenge
 
 	^on #381 427 -"*"
 	^on #464 427 -"*"
@@ -39,7 +40,7 @@ addconfig -b OPER_AUTO_CHALLENGE 0
 addconfig    OPER_RSA_RESPOND_TOOL
 addconfig    OPER_UMODES wzsky
 addconfig -b OPERVIEW 0
-addconfig    OPERVIEW_ARGS level opnotes,snotes,wallops size 5 double off fixed on skip on hide last
+addconfig    OPERVIEW_ARGS double off fixed on skip on size 5 level opnotes,snotes,wallops last
 
 
 /****** USER ALIASES ******/
@@ -63,8 +64,7 @@ alias challenge (...)
 	{
 		(-a) (-add)
 		{
-			if (![$3])
-			{
+			if (![$3]) {
 				xecho -b Usage: /CHALLENGE -add <server> <nick> <key>
 				return
 			}
@@ -78,8 +78,7 @@ alias challenge (...)
 
 		(-d) (-del) (-delete)
 		{
-			if (![$1])
-			{
+			if (![$1]) {
 				xecho -b Usage: /CHALLENGE -delete <server>
 				return
 			}
@@ -291,8 +290,7 @@ alias oper.challenge.add (serv, nick, key, void)
 	if (item > -1)
 	{
 		^local ask $'There is already an entry for $serv - Overwrite? '
-		if (ask == [y])
-		{
+		if (ask == [y]) {
 			@ setitem(oper.challenge $item $serv $nick $key)
 			return 0
 		}
@@ -455,14 +453,14 @@ on #-window_kill 427 "operview"
 
 /****** STARTUP ******/
 
-module.load_saved_settings
-
 if (isloaded(tabkey)) {
 	oper.add_tabcomp
 }
 
-if (CONFIG.OPERVIEW) {
-	oper.operview.create
+defer {
+	if (CONFIG.OPERVIEW) {
+		oper.operview.create
+	}
 }
 
 

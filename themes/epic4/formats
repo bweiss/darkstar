@@ -59,10 +59,10 @@ assign -FORMAT.SEND_NOTICE
 assign FORMAT.SEND_PUBLIC > $3-
 assign FORMAT.SEND_PUBLIC_OTHER $2> $3-
 assign FORMAT.SEND_WALL -@$1-> $2-
-assign FORMAT.TOPIC $G Topic for $2: $3-
-assign FORMAT.TOPIC_CHANGE $G $1 has changed the topic on channel $2 to $3-
-assign FORMAT.TOPIC_SETBY $G The topic was set by $3 $4 sec ago
-assign FORMAT.TOPIC_UNSET $G $1 has changed the topic on channel $2 to
+assign FORMAT.TOPIC $G Topic for $1: $2-
+assign FORMAT.TOPIC_CHANGE $G $2 has changed the topic on channel $1 to $3-
+assign FORMAT.TOPIC_SETBY $G The topic was set by $2 $3 sec ago
+assign FORMAT.TOPIC_UNSET $G $2 has changed the topic on channel $1 to
 assign FORMAT.UMODE $G Mode change \"$3-\" for user $2 by $1
 assign FORMAT.WALLOP !$1$2! $3-
 assign FORMAT.WHO $[15]1 $[9]2 $[3]3 $4@$5 \($7-\)

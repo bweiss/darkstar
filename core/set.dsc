@@ -31,15 +31,14 @@ alias format.add addformat
  *
  * Data about each variable will be stored in several assign structures.
  *
- * Key:
- *  <module> is the name of the calling module or "core" if there isn't one
- *  <type> is "CONFIG" or "FORMAT"
- *  <type2> is "_DSET" or "_FSET"
- *  <var> is the name of the variable
- *
  *  <type>.<var>            = value for <var> (may be empty)
  *  <type2>.<var>           = name of parent module
- *  _MODULE.<module>.<type> = list of vars belonging to <module>
+ *  _MODULE.<module>.<type> = list of <type> vars belonging to <module>
+ *
+ *  <module> is the name of the calling module or "core" if there isn't one
+ *  <type> is either "CONFIG" or "FORMAT"
+ *  <type2> is either "_DSET" or "_FSET"
+ *  <var> is the name of the variable
  *
  * A list of config variables that are boolean will also be stored in the
  * _boolcfgvars array.
@@ -155,8 +154,7 @@ alias _set (type, variable, value)
 				{
 					switch ($toupper($value))
 					{
-						(0) (1) (OFF) (ON)
-						{
+						(0) (1) (OFF) (ON) {
 							^assign $realvar $bool2num($value)
 							xecho -b -s Value of $toupper($var) set to $toupper($bool2word($value))
 						}

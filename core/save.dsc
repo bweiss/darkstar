@@ -21,7 +21,7 @@ alias save (args)
 {
 	^local modules
 	^local option,optopt,optarg
-	^local savedir $twiddle($DS.USER_DIR/save)
+	^local savedir $twiddle($DS.SAVE_DIR)
 
 	while (option = getopt(optopt optarg "cd:f" $args))
 	{

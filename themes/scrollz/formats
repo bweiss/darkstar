@@ -63,10 +63,10 @@ assign FORMAT.SEND_NOTICE %G<%n-%g$1%n-%G>%n $2-
 assign FORMAT.SEND_PUBLIC %c<$2>%n $3-
 assign FORMAT.SEND_PUBLIC_OTHER %c<$1%n:%C$2>%n $3-
 assign FORMAT.SEND_WALL $G Sent wallmsg on $1 to $remw($servernick() $chops($1))
-assign FORMAT.TOPIC $G Topic for $2: $3-
-assign FORMAT.TOPIC_CHANGE $G $1 has set the topic on channel $2 to $3-
-assign FORMAT.TOPIC_SETBY $G set by $3 on $strftime($4 %%a %%b %%d %%T %%Y)
-assign FORMAT.TOPIC_UNSET $G $1 has unset the topic on channel $2
+assign FORMAT.TOPIC $G Topic for $1: $2-
+assign FORMAT.TOPIC_CHANGE $G $2 has set the topic on channel $1 to $3-
+assign FORMAT.TOPIC_SETBY $G set by $2 on $strftime($3 %%a %%b %%d %%T %%Y)
+assign FORMAT.TOPIC_UNSET $G $2 has unset the topic on channel $1
 assign FORMAT.UMODE $G Mode change \"$3-\" for user $2 by $1
 assign FORMAT.WALLOP !$1! $3-
 assign FORMAT.WHO %C$[10]1 %c$[9]2 %n$[3]3 %p$4%W@%p$5%n \(%W$8-%n\)

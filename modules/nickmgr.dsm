@@ -302,10 +302,10 @@ on #-timer 422 "*"
 
 /****** STARTUP ******/
 
-module.load_saved_settings
-
 defer nickmgr.scan
-eval timer -ref nickmgr -rep -1 $CONFIG.NICKMGR_SCAN_INTERVAL nickmgr.scan
+defer {
+	timer -ref nickmgr -rep -1 $CONFIG.NICKMGR_SCAN_INTERVAL nickmgr.scan
+}
 
 
 /* EOF */

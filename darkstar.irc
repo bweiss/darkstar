@@ -62,7 +62,7 @@ for array in ($getarrays()) {
  * This will be incremented every time a change takes place in
  * the core scripts (this file and any *.dsc files in $DS.HOME/core/).
  */
-@ DS.CORE_ID = 97
+@ DS.CORE_ID = 98
 
 eval xecho -b Loading DarkStar $DS.VERSION
 
@@ -85,18 +85,6 @@ set CONTROL_C_COLOR ON
 set DISPLAY_PC_CHARACTERS 4
 set FLOATING_POINT_MATH ON 
 set HIGH_BIT_ESCAPE 0
-
-/*
- * Bind PgUp/PgDn to scroll the current window. This is needed for the
- * module list that is going to be displayed by loader.dsc.
- */
-bind ^[[5~ scroll_backward
-bind ^[[6~ scroll_forward 
-
-/*
- * I think just about everybody wants this one...
- */
-bind ^X switch_channels
 
 /*
  * Enable the new math parser.
@@ -146,11 +134,14 @@ if (fexist($DS.USER_DIR/modules) == -1) {
 }
 
 /*
- * Load the core scripts. The 'core' save file is now loaded by a call to
- * module.load_saved_settings in modules.dsc.
+ * Load the core scripts.
  */
-for file in (commands.dsc functions.dsc globals.dsc help.dsc save.dsc set.dsc modules.dsc) {
+for file in (set.dsc commands.dsc functions.dsc globals.dsc help.dsc save.dsc window.dsc modules.dsc) {
 	load $DS.HOME/core/$file
+}
+
+if (fexist($DS.SAVE_DIR/core) == 1) {
+	^load $DS.SAVE_DIR/core
 }
 
 if (fexist($DS.RC) == 1) {

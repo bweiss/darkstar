@@ -62,10 +62,10 @@ assign FORMAT.SEND_NOTICE %K[%rnotice%K\(%R$1%K\)]%n $2-
 assign FORMAT.SEND_PUBLIC %M<%n$2%M>%n $3-
 assign FORMAT.SEND_PUBLIC_OTHER %m<%n$1%K:%n$2%m>%n $3-
 assign FORMAT.SEND_WALL [%GBX-Wall%n/%W$1%n] $2-
-assign FORMAT.TOPIC $G Topic %K\(%c$2%K\):%n $3-
-assign FORMAT.TOPIC_CHANGE $G Topic %K\(%c$2%K\):%n changed by %c$1%K:%n $3-
-assign FORMAT.TOPIC_SETBY $G Topic %K\(%c$2%K\):%n set by %c$3%n at %c$strftime($4 %%a %%b %%d %%T %%Y)%n
-assign FORMAT.TOPIC_UNSET $G Topic %K\(%c$2%K\):%n unset by %c$1%n
+assign FORMAT.TOPIC $G Topic %K\(%c$1%K\):%n $2-
+assign FORMAT.TOPIC_CHANGE $G Topic %K\(%c$1%K\):%n changed by %c$1%K:%n $3-
+assign FORMAT.TOPIC_SETBY $G Topic %K\(%c$1%K\):%n set by %c$2%n at %c$strftime($3 %%a %%b %%d %%T %%Y)%n
+assign FORMAT.TOPIC_UNSET $G Topic %K\(%c$1%K\):%n unset by %c$2%n
 assign FORMAT.UMODE $G Mode Change %K[%W$3-%K]%n for user %c$2
 assign FORMAT.WALLOP %G!%g$1:$2%G!%n $3-
 assign FORMAT.WHO %Y$[10]1 %W$[10]2 %c$[3]3 %n$4%R@%n$5 \($8-\)

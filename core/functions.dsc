@@ -147,7 +147,7 @@ alias getdsets (patt default "*")
 
 alias getfsets (patt default "*")
 {
-	@ function_return = pattern("$patt" $sar(g/_DSET.//$aliasctl(assign match _FSET.)))
+	@ function_return = pattern("$patt" $sar(g/_FSET.//$aliasctl(assign match _FSET.)))
 }
 
 alias isloaded (module, void)

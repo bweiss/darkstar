@@ -12,7 +12,9 @@
 
 queue cleanup.channel
 {
-	for alias in (addtopic alldeop alldop allop ban bankick banlist bans bk cmode cycle deop dop devoice dvoice et etopic i invite j join k kb key kick kickban l leave lk massmode mdeop mdop mdevoice mdvoice mme mop msay mvoice op part partall settopic t tban tempban tempbk tempkb topics tt ttopic unban unkey untopic voice wall) {
+	^bind ^X nothing
+
+	for alias in (addtopic alldeop alldop allop ban bankick banlist bans bk cmode cycle deop dop devoice dvoice et etopic i invite j join k kb key kick kickban l leave lk massmode mdeop mdop mdevoice mdvoice mme mop msay mvoice op part partall settopic t tban tedit tempban tempbk tempkb topics tt ttopic unban unkey untopic voice wall) {
 		^alias -$alias
 	}
 
@@ -30,6 +32,11 @@ addconfig BANTYPE 3
 addconfig CHANNEL_WALL_TYPE 1
 addconfig DEFAULT_KICK_REASON No soup for you!
 addconfig REMEMBER_TOPICS 5
+
+
+/****** KEY BINDINGS ******/
+
+bind ^X switch_channels
 
 
 /****** HELP ALIASES ******/
@@ -76,14 +83,12 @@ alias channel._help.config (void)
 
 alias addtopic (newtopic)
 {
-	if (!newtopic)
-	{
+	if (!newtopic) {
 		xecho -b Usage: /ADDTOPIC <text>
 		return
 	}
 
-	if (!C)
-	{
+	if (!C) {
 		xecho -b No active channel for this window
 		return
 	}
@@ -99,24 +104,27 @@ alias addtopic (newtopic)
 		@ CHANNEL.ADDTOPIC = newtopic
 
 		/* No topic set */
-		^on -331 "% $C *" {
+		^on -331 "$servername() $C *"
+		{
 			//topic $1 $CHANNEL.ADDTOPIC
 			@ CHANNEL.ADDTOPIC = []
-			defer ^on 331 -"% $1 *"
-			defer ^on 332 -"% $1 *"
-			defer ^on 333 -"% $1 *"
+			defer ^on 331 -"$0 $1 *"
+			defer ^on 332 -"$0 $1 *"
+			defer ^on 333 -"$0 $1 *"
 		}
 
 		/* The actual topic */
-		^on ^332 "% $C *" {
+		^on ^332 "$servername() $C *"
+		{
 			//topic $1 $2- $CONFIG.ADDTOPIC_DELIMETER $CHANNEL.ADDTOPIC
 			@ CHANNEL.ADDTOPIC = []
-			defer ^on 332 -"% $1 *"
+			defer ^on 332 -"$0 $1 *"
 		}
 
 		/* Topic set by */
-		^on ^333 "% $C *" {
-			defer ^on 333 -"% $1 *"
+		^on ^333 "$servername() $C *"
+		{
+			defer ^on 333 -"$0 $1 *"
 		}
 
 		//topic
@@ -127,8 +135,7 @@ alias alldop alldeop
 
 alias alldeop (nicks)
 {
-	if (!nicks)
-	{
+	if (!nicks) {
 		xecho -b Usage: /ALLDEOP <nick> ...
 		return
 	}
@@ -146,8 +153,7 @@ alias alldeop (nicks)
 
 alias allop (nicks)
 {
-	if (!nicks)
-	{
+	if (!nicks) {
 		xecho -b Usage: /ALLOP <nick> ...
 		return
 	}
@@ -165,8 +171,7 @@ alias allop (nicks)
 
 alias ban (targets)
 {
-	if (!targets)
-	{
+	if (!targets) {
 		xecho -b Usage: /BAN <nick|hostmask> ...
 		return
 	}
@@ -219,8 +224,7 @@ alias bk bankick
 
 alias bankick (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
-	if (!nick)
-	{
+	if (!nick) {
 		xecho -b Usage: /BANKICK <nick> [reason]
 		return
 	}
@@ -240,8 +244,7 @@ alias banlist (chan default "$C", void)
 
 alias cmode (mode, ...)
 {
-	if (!mode)
-	{
+	if (!mode) {
 		xecho -b Usage: /CMODE <modes>
 		return
 	}
@@ -261,8 +264,7 @@ alias dop deop
 
 alias deop (nicks)
 {
-	if (!nicks)
-	{
+	if (!nicks) {
 		xecho -b Usage: /DEOP <nick> ...
 		return
 	}
@@ -274,8 +276,7 @@ alias dvoice devoice
 
 alias devoice (nicks)
 {
-	if (!nicks)
-	{
+	if (!nicks) {
 		xecho -b Usage: /DEVOICE <nick> ...
 		return
 	}
@@ -307,22 +308,25 @@ alias etopic (void)
 			xtype -l $K\TOPIC $topic
 		}{
 			/* No topic set */
-			^on -331 "% $C *" {
-				defer ^on 331 -"% $1 *"
-				defer ^on 332 -"% $1 *"
-				defer ^on 333 -"% $1 *"
+			^on -331 "$servername() $C *"
+			{
+				defer ^on 331 -"$0 $1 *"
+				defer ^on 332 -"$0 $1 *"
+				defer ^on 333 -"$0 $1 *"
 			}
 
 			/* The actual topic */
-			^on ^332 "% $C *" {
+			^on ^332 "$servername() $C *"
+			{
 				parsekey erase_line
 				xtype -l $K\TOPIC $2-
-				defer ^on 332 -"% $1 *"
+				defer ^on 332 -"$0 $1 *"
 			}
 
 			/* Topic set by */
-			^on ^333 "% $C *" {
-				defer ^on 333 -"% $1 *"
+			^on ^333 "$servername() $C *"
+			{
+				defer ^on 333 -"$0 $1 *"
 			}
 
 			//topic
@@ -334,8 +338,7 @@ alias i invite
 
 alias invite (nick, channel default "$C", void)
 {
-	if (!nick)
-	{
+	if (!nick) {
 		xecho -b Usage: /INVITE <nick> [channel]
 		return
 	}
@@ -367,8 +370,7 @@ alias join
 
 alias key (key, void)
 {
-	if (!key)
-	{
+	if (!key) {
 		xecho -b Usage: /KEY <key>
 		return
 	}
@@ -380,8 +382,7 @@ alias k kick
 
 alias kick (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
-	if (!nick)
-	{
+	if (!nick) {
 		xecho -b Usage: /KICK <nick> [reason]
 		return
 	}
@@ -393,8 +394,7 @@ alias kb kickban
 
 alias kickban (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
-	if (!nick)
-	{
+	if (!nick) {
 		xecho -b Usage: /KICKBAN <nick> [reason]
 		return
 	}
@@ -434,8 +434,7 @@ alias leave
  */
 alias lk (reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
-	if (!ischanop($N $C))
-	{
+	if (!ischanop($N $C)) {
 		xecho -b Sorry, you must be +o to kick people
 		return
 	}
@@ -458,14 +457,12 @@ alias lk (reason default "$CONFIG.DEFAULT_KICK_REASON")
 
 alias massmode (chan, action, mode, args)
 {
-	if (!args)
-	{
+	if (!args) {
 		xecho -b Usage: /MASSMODE <channel> <+|-> <mode> <mode parameters>
 		return
 	}
 
-	if (!ischanop($servernick() $chan))
-	{
+	if (!ischanop($servernick() $chan)) {
 		xecho -b Sorry, you must be +o to set channel modes
 		return
 	}
@@ -512,8 +509,7 @@ alias mme
 		@ :text = [$*]
 	}
 
-	if (!text)
-	{
+	if (!text) {
 		xecho -b Usage: /MME [-all] <text>
 		return
 	}
@@ -552,8 +548,7 @@ alias msay
 		@ :text = [$*]
 	}
 
-	if (!text)
-	{
+	if (!text) {
 		xecho -b Usage: /MSAY [-all] <text>
 		return
 	}
@@ -580,8 +575,7 @@ alias mvoice (chan default "$C", void)
 
 alias op (nicks)
 {
-	if (!nicks)
-	{
+	if (!nicks) {
 		xecho -b Usage: /OP <nick> ...
 		return
 	}
@@ -695,6 +689,8 @@ alias tban (chan default "$C", void)
 	//mode $chan +b
 }
 
+alias tedit etopic
+
 alias tempban (time, target, void)
 {
 	if (!target || !isnumber($time b10) || time < 1)
@@ -766,8 +762,7 @@ alias ttopic etopic
 
 alias unban (bans)
 {
-	if (!bans)
-	{
+	if (!bans) {
 		xecho -b Usage: /UNBAN <ban> ...
 		return
 	}
@@ -791,8 +786,7 @@ alias untopic (chan default "$C", void)
 
 alias voice (nicks)
 {
-	if (!nicks)
-	{
+	if (!nicks) {
 		xecho -b Usage: /VOICE <nick> ...
 		return
 	}
@@ -813,8 +807,7 @@ alias voice (nicks)
  */
 alias wall (text)
 {
-	if (!text)
-	{
+	if (!text) {
 		xecho -b Usage: /WALL <text>
 		return
 	}
@@ -843,7 +836,7 @@ alias wall (text)
 		}
 
 		(3) {
-			/* This is evil and should never be used on large channels. */
+			/* This should never be used on large channels. */
 			for nick in ($filter($servernick() $chops())) {
 				notice $nick [wall/$chan] $text
 			}

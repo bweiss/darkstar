@@ -92,10 +92,10 @@ addformat SEND_PUBLIC > $3-
 addformat SEND_PUBLIC_OTHER $2> $3-
 addformat SEND_WALL -@$1-> $2-
 addformat SIGNOFF $G SignOff $1: \($2-%n\)
-addformat TOPIC $G Topic for $2: $3-
-addformat TOPIC_CHANGE $G $1 has changed the topic on channel $2 to $3-
-addformat TOPIC_SETBY $G The topic was set by $3 $4 sec ago
-addformat TOPIC_UNSET $G $1 has changed the topic on channel $2 to
+addformat TOPIC $G Topic for $1: $2-
+addformat TOPIC_CHANGE $G $2 has changed the topic on channel $1 to $3-
+addformat TOPIC_SETBY $G The topic was set by $2 $3 sec ago
+addformat TOPIC_UNSET $G $2 has changed the topic on channel $1 to
 addformat UMODE $G Mode change \"$3-\" for user $2 by $1
 addformat WALLOP !$1$2! $3-
 addformat WHO $[15]1 $[9]2 $[3]3 $4@$5 \($7-\)
@@ -390,8 +390,22 @@ on ^319 "*"
 on ^320 "*" { formats.echo WHOIS_IDENTIFIED $*; }
 
 on ^329 "*" { formats.echo CHANNEL_TS $*; }
-on ^332 "*" { formats.echo TOPIC $*; }
-on ^333 "*" { formats.echo TOPIC_SETBY $*; }
+
+on ^332 "*"
+{
+	formats.echo TOPIC $1-
+	/*
+	 * XXX - Make sure that there aren't any hooks to suppress the output
+	 * of the 333 numeric (topic set by). Some aliases in the channel
+	 * module (/ADDTOPIC and /ETOPIC) create these hooks but may not remove
+	 * them due to certain ircds (*cough*ircnet*cough*) not sending a 333
+	 * numeric along with 332. Hopefully this won't interfere with any other
+	 * features that people may add in their own modules.
+	 */
+	^on 333 -"$servername() $1 *"
+}
+
+on ^333 "*" { formats.echo TOPIC_SETBY $1-; }
 
 /*
  * UnrealIRCd's WHOISBOT numeric
@@ -671,9 +685,15 @@ on ^send_public "*"
 on ^topic "*"
 {
 	if (![$2]) {
-		formats.echo TOPIC_UNSET $*
-	} else {
-		formats.echo TOPIC_CHANGE $*
+		formats.echo TOPIC_UNSET $1 $0
+	}{
+		formats.echo TOPIC_CHANGE $1 $0 $2-
+		/*
+		 * XXX - Make sure that there aren't any hooks to suppress the output
+		 * of the 333 numeric (topic set by). See the 332 hook for a longer
+		 * explanation of this miserable hack.
+		 */
+		^on 333 -"$servername() $1 *"
 	}
 }
 
