@@ -1,4 +1,4 @@
-#version 0.5.1
+#version 0.5.2
 /* $Id$ */
 /*
  * window.dsm - Window module for DarkStar/EPIC4
@@ -43,6 +43,8 @@ queue cleanup.window
 	^bind ^X META2_CHARACTER
 	^bind -symbolic key_f11 NOTHING
 	^bind -symbolic key_f12 NOTHING
+	^bind ^[[7~ NOTHING
+	^bind ^[[8~ NOTHING
 
 	for item in ($getrmatches(single_status msgs)) {
 		@ delitem(single_status $item)
@@ -117,6 +119,8 @@ config.add -b UNBIND_ON_PART 0
 ^bind META13-~ PARSE_COMMAND window.msgwin_down
 ^bind -symbolic key_f11 TOGGLE_INSERT_MODE
 ^bind -symbolic key_f12 PARSE_COMMAND if (winnum(msgs) != -1) {window msgs clear}
+^bind ^[[7~ SCROLL_START
+^bind ^[[8~ SCROLL_END
 
 /*
  * Force the loading of saved settings early
