@@ -1,4 +1,9 @@
-*** News 2002/06/11 -- channel.dsm 0.5.5
+*** News 2002/06/18 -- misc.dsm 0.7.4 - IGNORE_CTCP_FINGER fixed
+	There was a typo in the raw_irc hook added at load time for
+	IGNORE_CTCP_FINGER that caused FINGER requests to not be ignored
+	when they should have been.
+
+*** News 2002/06/11 -- channel.dsm 0.5.5 - New edit-topic alias: /etopic
 	Added an alias called /etopic that will allow you to edit the
 	current topic by placing it on the input line preceded by "/topic".
 	The /tt and /ttopic aliases point to /etopic.
