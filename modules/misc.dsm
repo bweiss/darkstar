@@ -143,7 +143,7 @@ on #^connect 424 "*"
 	//mode $servernick() $CONFIG.DEFAULT_UMODES
 }
 
-on ?raw_irc "% PRIVMSG % :FINGER*"
+on ?raw_irc "% PRIVMSG % *FINGER*"
 {
 	if (CONFIG.IGNORE_CTCP_FINGER)
 	{
