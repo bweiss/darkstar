@@ -1,0 +1,18 @@
+Synopsis:
+   $pipe(<command>)
+
+Description:
+   Executes the given <command> using /EXEC and returns its output.
+
+Returns:
+   Output from /EXEC <command>. All new-line characters are stripped.
+
+History:
+   This is the same function that is distributed with EPIC, but has
+   been modified to use $rand() to generate a unique process name
+   rather than using a global variable that is incremented after
+   every call. It was written by Jeremy Nelson <jnelson@epicsol.org>.
+
+See Also:
+   pipe(6)
+

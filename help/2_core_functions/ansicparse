@@ -1,0 +1,18 @@
+Synopsis:
+   $ansicparse(<text>)
+   $ansicparse(<text> <arguments>...)
+
+Description:
+   This works exactly like the builtin $cparse() function, but outputs
+   ANSI color codes instead of ^C color codes.
+
+Returns:
+   <text> after being passed through $cparse() and then having its color
+   codes converted to their ANSI equivalents.
+
+Credits:
+   This function was written by Ben Winslow <rain@bluecherry.net>.
+
+See Also:
+   cparse(6)
+

@@ -1,0 +1,10 @@
+Synopsis:
+   dset verbose_load [on|off|1|0]
+
+Description:
+   Determines the verbosity of module loading and unloading.
+   This affects anything that uses /LOADMOD or /UNLOADMOD.
+
+See Also:
+   ds:loadmod(1); ds:unloadmod(1)
+

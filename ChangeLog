@@ -1,6 +1,33 @@
 DarkStar ChangeLog
 
 
+!! RELEASE: 0.2.6 (2002/06/01) !!
+
+
+2002/06/01
+
+ * Added help pages for all the functions provided by the core scripts.
+
+ * Removed the $padleft() function.
+
+ * The $convert.num() and $convert.onoff() functions were renamed to
+   $bool_to_onoff() and $bool_to_num(). I'm still not sure I like these
+   names, but it's an improvement.
+
+ * All prompts (/input) in the core scripts are now preceeded by the
+   the current value of $INPUT_PROMPT. I think I like this better.
+
+ * Added a VERBOSE_LOAD config variable to the core scripts. It has a
+   boolean value and, when true, the loading and unloading of modules
+   will remain as it has always been.
+
+   e.g. *** Module [foo] has been loaded
+
+   If it is false, a message will not be displayed about individual
+   modules unless there is an error. Instead, the input prompt will
+   display your progress and a final tally of the results will be
+   displayed in the current window. The default value is false.
+
 2002/05/31
 
  * [window.dsm 0.5]

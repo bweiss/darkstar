@@ -2,8 +2,7 @@
    dset verbose_save [on|off|1|0]
 
 Description:
-   If true, the user will be shown which settings were written to exactly
-   which files during a /SAVE.
+   Determines the verbosity of the /SAVE command.
 
 See Also:
    ds:save(1)

@@ -1,0 +1,13 @@
+Synopsis:
+   $bool_to_num(on|off)
+
+Description:
+   Converts ON/OFF to 1/0. It is not case sensitive.
+
+Returns:
+   Returns "1" if passed "ON", "0" if passed "OFF", or its arguments
+   unchanged if they are neither "ON" nor "OFF".
+
+See Also:
+   ds:bool_to_onoff(2)
+

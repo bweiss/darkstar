@@ -44,27 +44,24 @@ alias ansicparse
 }
 
 /*
- * convert.num(0|1)
- * convert.onoff(off|on)
- * Convert between 0/1 and OFF/ON. These are mostly used by /DSET.
- * I would like to rename these to something better, so if anyone has
- * ideas, please email me.
- */ 
-alias convert.num (arg, void)
+ * Convert between 1/0 and ON/OFF.
+ * These are mostly used by /DSET.
+ */
+alias bool_to_onoff (arg, void)
 {
 	switch ($arg) {
-		(0) {return off}
-		(1) {return on}
-		(*) {return $arg}
+		(0) {@ function_return = [OFF]}
+		(1) {@ function_return = [ON]}
+		(*) {@ function_return = arg}
 	}
 }
 
-alias convert.onoff (arg, void)
+alias bool_to_num (arg, void)
 {
 	switch ($tolower($arg)) {
-		(off) {return 0}
-		(on)  {return 1}
-		(*)   {return $arg}
+		(off) {@ function_return = 0}
+		(on)  {@ function_return = 1}
+		(*)   {@ function_return = arg}
 	}
 }
 
@@ -81,8 +78,11 @@ alias isloaded (module, void)
 }
 	
 /*
- * Taken from the "guh" script written by Jeremy Nelson and distributed
- * with EPIC. Returns the person's nick if they are online, or nothing if not.
+ * Determines whether someone is currently online. It returns the
+ * person's nick if they are online, or nothing if not.
+ *
+ * This was taken from the "guh" script distributed with EPIC.
+ * It was written by Jeremy Nelson <jnelson@epicsol.org>.
  */
 alias is_on (nick, void)
 {
@@ -119,14 +119,6 @@ alias modinfo (module, flag)
 
 	/* Module not found. Return nothing. */
 	return
-}
-
-/*
- * Works like $pad() except that it pads on the left side.
- */
-alias padleft (size, char, text)
-{
-	@ function_return = repeat(${size - strlen($text)} $char) ## text
 }
 
 /*

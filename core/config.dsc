@@ -115,8 +115,8 @@ alias config.set_routine (type, variable, value)
 				{
 					switch ($tolower($value)) {
 						(0) (1) (off) (on) {
-							^assign $var $convert.onoff($value)
-							xecho -s -b Value of $toupper($var2) set to $toupper($convert.num($value))
+							^assign $var $bool_to_num($value)
+							xecho -s -b Value of $toupper($var2) set to $toupper($bool_to_onoff($value))
 						}
 						(*) {
 							xecho -s -b Value must be either ON, OFF, 1, or 0
@@ -153,7 +153,7 @@ alias config.setcat (var, void)
 	{
 		if (FORMAT.SET) {
 			if (before(. $var) == [CONFIG] && DSET[BOOL][$var2]) {
-				xecho -s $fparse(SET $toupper($var2) $toupper($convert.num($($var))))
+				xecho -s $fparse(SET $toupper($var2) $toupper($bool_to_onoff($($var))))
 			} else {
 				xecho -s $fparse(SET $toupper($var2) $($var))
 			}

@@ -1,0 +1,20 @@
+Synopsis:
+   $modinfo(<module> [flag])
+
+Description:
+   Retrieves information about <module>. The information retrieved depends
+   on the flag specified. The list of valid flags is as follows.
+
+     a - Get both the module's filename and its version.
+     f - Get only the filename.
+     v - Get only the version.
+
+   If no flag is specified, the default is to use 'a'.
+
+Returns:
+   Returns data retrieved about module according to the flags specified.
+   If the module could not be found, nothing is returned.
+
+See Also:
+   ds:isloaded(2)
+

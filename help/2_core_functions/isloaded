@@ -1,0 +1,12 @@
+Synopsis:
+   $isloaded(<module>)
+
+Description:
+   Determines whether <module> is currently loaded or not.
+
+Returns:
+   Returns "1" if the module is loaded, "0" if not.
+
+See Also:
+   ds:modinfo(2)
+

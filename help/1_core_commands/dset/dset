@@ -1,6 +1,6 @@
 Synopsis:
    dset [<variable> [<value>]]
-   dset [-]<variable>
+   dset [-<variable>]
 
 Description:
    This command is used to set/view the values of DarkStar's user
@@ -14,5 +14,5 @@
    (-), the variable is unset, giving it no value.
 
 See Also:
-   set(4);  ds:fset(1)
+   set(4); ds:fset(1)
 

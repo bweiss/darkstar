@@ -1,0 +1,16 @@
+Synopsis:
+   $is_on(<nick>)
+
+Description:
+   Determines whether <nick> is currently online.
+
+Returns:
+   Returns the person's nick if they are online, or nothing if not.
+
+History:
+   This function first appeared in the "guh" script that is distributed
+   with EPIC. It was written by Jeremy Nelson <jnelson@epicsol.org>.
+
+See Also:
+   ison(2)
+

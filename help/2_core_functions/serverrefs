@@ -1,0 +1,12 @@
+Synopsis:
+   $serverrefs()
+
+Description:
+   Returns a list of refnums for all established server connections.
+
+Returns:
+   The refnums of all established server connections.
+
+See Also:
+   winrefs(6)
+
