@@ -83,7 +83,11 @@ alias reloadmod (modules)
 alias unloadmod (modules)
 {
 	if (!modules) {
-		loadedmodules
+		echo #   Module
+		for cnt from 0 to ${numitems(loaded_modules) - 1} {
+			@:num = cnt + 1
+			echo $[3]num $getitem(loaded_modules $cnt)
+		}
 		^local mods $"Modules to unload? (1 2-4 ...) "
 		if (mods) {
 			@:modules = loader.which_mods(loaded_modules $mods)

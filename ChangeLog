@@ -1,6 +1,11 @@
 DarkStar ChangeLog
 
 
+2002/05/26
+
+ * The /unloadmod alias was still trying to call /loadedmodules, which
+   no longer exists. It now displays the list of the loaded modules itself.
+
 2002/05/25
 
  * [misc.dsm 0.7.1] Change of behavior for the WHOIS_CHANNELS* format
