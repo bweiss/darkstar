@@ -1,9 +1,7 @@
 /* $Id$ */
 /*
  * functions.dsc - Miscellaneous functions
- *
- * Written by Brian Weiss (except where noted)
- * Copyright (c) 2002 Brian Weiss
+ * Copyright (c) 2002 Brian Weiss (except where noted)
  * See the 'COPYRIGHT' file for more information.
  */
 

@@ -2,8 +2,6 @@
 /* $Id$ */
 /*
  * names.dsm - DarkStar/EPIC4 module to display who's on a channel
- *
- * Written by Brian Weiss
  * Copyright (c) 2002 Brian Weiss
  * See the 'COPYRIGHT' file for more information.
  *
