@@ -62,11 +62,11 @@ for array in ($getarrays())
  * Important global variables
  */
 assign DS.VERSION 0.2.2
-assign DS.INTERNAL_VERSION 20020416
+assign DS.INTERNAL_VERSION 20020419
 
 /* This will be incremented every time a change takes place to the core
    scripts (anything that requires /reload to update). */
-assign DS.COMMIT_ID 28
+assign DS.COMMIT_ID 29
 
 
 /*
@@ -156,7 +156,6 @@ config.add -b VERBOSE_SAVE 0
 format.add SET $G Current value of $1 is $2-
 format.add SET_NOVALUE $G No value for $1 has been set
 
-
 if (fexist($DS.SAVE_DIR/core.sav) != -1)
 {
 	^load $DS.SAVE_DIR/core.sav
@@ -167,7 +166,7 @@ eval load $DS.HOME/core/loader.dsc
 
 if (fexist($DS.RC) != -1)
 {
-	eval ^load $DS.RC
+	^load $DS.RC
 }
 
 

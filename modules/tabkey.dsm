@@ -1,4 +1,4 @@
-#version 0.6.3
+#version 0.6.4
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key module for Darkstar/EPIC4
@@ -176,9 +176,10 @@ alias tabkey.show_matches (list)
 		return
 	}
 
+	beep
+
 	if (L == TABKEY[LAST_INPUT] && strlen($L) == strlen($TABKEY.LAST_INPUT))
 	{
-		beep
 		xecho -b Matches:
 		for tmp in ($list)
 		{

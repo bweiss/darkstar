@@ -24,13 +24,10 @@ alias save (args)
 	{
 		(-d)
 		{
-			@ save_dir = twiddle($word(1 $args))
-			@ args = restw(2 $args)
+			@ :save_dir = twiddle($word(1 $args))
+			@ :args = restw(2 $args)
 		}
-		(*)
-		{
-			@ save_dir = twiddle($DS.SAVE_DIR)
-		}
+		(*) {@ :save_dir = twiddle($DS.SAVE_DIR)}
 	}
 	
 	/* Find out what modules to save settings for. */

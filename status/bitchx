@@ -5,15 +5,14 @@
  *
  * This attempts to mimic the BX status bar where possible. It is not
  * perfect, nor does it try to be. Some things were changed out of
- * necessity and others just because I felt it was a good idea. The color
- * coding in this is also pretty sloppy, but then, so is the real BX statbar.
+ * necessity and others just because I felt it was a good idea.
  */
 
 assign STATUS.DOUBLE 1
 
 set INPUT_PROMPT [$T] 
 set REVERSE_STATUS_LINE OFF
-set STATUS_AWAY  36\(52zZzZ ${AWAY[NEWMSGS] ? [57$AWAY.NEWMSGS] : [570]}36\)
+set STATUS_AWAY  36\(52zZzZ ${AWAY[NEWMSGS] ? [57$AWAY.NEWMSGS] : [570]}36\)37
 set STATUS_CHANNEL $C
 set STATUS_CHANOP 57@37
 set STATUS_CLOCK 36[57%T36]37
@@ -26,7 +25,7 @@ set STATUS_HOLD  -- more --
 set STATUS_HOLD_LINES 36\(57%B36\)37
 set -STATUS_INSERT
 set STATUS_MAIL 36[37Mail: 57%M36]37
-set STATUS_MODE 57\(36+37%+57\)
+set STATUS_MODE 57\(36+37%+57\)37
 set STATUS_NICKNAME $N
 set STATUS_NOTIFY  36[37Act: 57%F36]37
 set STATUS_NO_REPEAT ON
