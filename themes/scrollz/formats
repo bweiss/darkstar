@@ -8,7 +8,6 @@
 # but it comes pretty close.
 
 assign -CONFIG.NAMES_COL
-assign CONFIG.NAMES_SORT_BY_MODE 0
 
 assign FORMAT.ACTION_CHANNEL %W* %c$1%n $3-
 assign FORMAT.ACTION_CHANNEL_HL %W* %c$1%n $3-

@@ -27,3 +27,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Do not write the value of REVERSE_STATUS_LINE when saving themes.
 * Change the SEND_PUBLIC format in the epic4 theme to show the target.
 * Fix the /LEAVE alias for EPIC5 (It now uses //PART).
+* Don't set the NAMES_SORT_BY_MODE config variable within themes.

@@ -1,4 +1,4 @@
-# version:0.1.2 loader:pf
+# version:0.1.3 loader:pf
 # $Id$
 #
 # theme.dsm - Theme system for DarkStar/EPIC4
@@ -144,7 +144,6 @@ alias theme.save (name, void)
 				else if (mod == [formats])
 				{
 					@ write($fd assign CONFIG.NAMES_COL $CONFIG.NAMES_COL);
-					@ write($fd assign CONFIG.NAMES_SORT_BY_MODE $CONFIG.NAMES_SORT_BY_MODE);
 					@ write($fd );
 				};
 

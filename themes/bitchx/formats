@@ -7,7 +7,6 @@
 # comes pretty close.
 
 assign CONFIG.NAMES_COL 5
-assign CONFIG.NAMES_SORT_BY_MODE 0
 
 assign FORMAT.ACTION_CHANNEL %Kð %Y$1/$2%n $3-
 assign FORMAT.ACTION_CHANNEL_HL %Kð %Y$1/$2%n $3-
