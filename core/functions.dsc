@@ -214,56 +214,6 @@ alias modinfo (module, flag)
 	}
 }
 
-alias numlines (text)
-{
-	if (!text) \
-		return 1
-
-	^local line
-	@ :first_word = word(0 $text)
-	@ :screen_width = word(0 $geom())
-
-	for (@ :line_num = 1, text, @ :line_num++)
-	{
-		/*
-		 * Account for /SET CONTINUED_LINE and /SET INDENT
-		 */
-		if (line_num > 1)
-		{
-			if (strlen($CONTINUED_LINE)) \
-				@ :line.$line_num = CONTINUED_LINE
-
-			if (INDENT == [ON] && strlen($first_word) > strlen($CONTINUED_LINE)) \
-				@ :line.$line_num = repeat($strlen($first_word )  )
-		}
-
-		for (@ :word_cnt = 1, strlen($line[$line_num]) < screen_width && strlen($text), @ :word_cnt++)
-		{
-			if (!text) \
-				break
-
-			/*
-			 * We don't want the extra space from $push() if the
-			 * beginning of the line was padded because of /SET INDENT
-			 * or /SET CONTINUED_LINE.
-			 */
-			if (word_cnt == 1 && (strlen($CONTINUED_LINE) || INDENT == [ON])) {
-				@ :line.$line_num #= shift(text)
-			} else {
-				@ push(:line.$line_num $shift(text))
-			}
-		}
-
-		/*
-		 * Put words back until we fit on a single line.
-		 */
-		while (strlen($line[$line_num]) >= screen_width) \
-			@ unshift(text $pop(line.$line_num))
-	}
-
-	@ function_return = line_num - 1
-}
-
 /*
  * The original version of this function was taken from EPIC4-1.1.3 and
  * was written by Jeremy Nelson. It has been modified to use $rand() to

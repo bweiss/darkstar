@@ -53,8 +53,7 @@ alias more less
 /*
  * Output the contents of files to the current window, pausing between
  * each full screen of output, while taking into account linewrapping and
- * /SET {CONTINUED_LINE|SET INDENT}. It's not terribly efficient but
- * it sure beats the hell out of the old /LESS. :-)
+ * /SET CONTINUED_LINE, INDENT.
  */
 alias less (file, void)
 {
@@ -92,6 +91,9 @@ alias _less.output (array_struct, void)
 	if (!array_struct) \
 		return
 
+	stack push set OUTPUT_REWRITE
+	^set -OUTPUT_REWRITE
+
 	@ :ii = 0
 	@ :arrays = getarrays($array_struct\.*)
 	while (:array = shift(arrays))
@@ -108,7 +110,8 @@ alias _less.output (array_struct, void)
 		}
 	}
 
-	purgearray _less
+	stack pop set OUTPUT_REWRITE
+	purgearray $array_struct
 }
 
 /*
@@ -126,7 +129,7 @@ alias _less.split_array (array, void)
 	while (ii < numitems(_less))
 	{
 		@ :text = getitem(_less $ii)
-		@ :numlines = numlines($text)
+		@ :numlines = numlines($word(0 $geom()) $text)
 		@ :lines += numlines
 
 		/*
