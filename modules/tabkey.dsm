@@ -5,12 +5,12 @@
  * Copyright (c) 2002 EPIC Software Labs
  * See the 'COPYRIGHT' file for more information.
  *
- * This script is based on the tabkey.ce script that is distributed with
- * the EPIC4 IRC client and written by CrazyEddy. Most of the important
- * code comes from there.
+ * This script is based on the tabkey.ce script written by CrazyEddy and
+ * distributed with the EPIC4 IRC client. Most of the important code comes
+ * from there.
  *
- * Converted and maintained for DarkStar by Brian Weiss <brian@epicsol.org>.
- * Please report bugs to me, not CE.
+ * Extended and maintained for DarkStar by Brian Weiss <brian@epicsol.org>
+ * Please report bugs to me, not CrazyEddy.
  *
  * This script uses serial number 420 for all /ON hooks.
  *
@@ -149,6 +149,8 @@ alias tabkey.cmd {
 	@ :args = mid(0 $curpos() $L)
 	@ :args = unsplit(. $args)
 	@ :args = pass(._$pass $args)
+	/* Make absolutely sure we remove $CMDCHARS from the beginning of the
+	   the string. This is only necessary when $CMDCHARS is '.' -bmw */
 	if (mid(0 $strlen($CMDCHARS) $args) == CMDCHARS) {
 		@:args = rest($strlen($CMDCHARS) $args)
 	}
