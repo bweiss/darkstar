@@ -1,0 +1,14 @@
+Module: oper
+Author: Brian Weiss <brian@epicsol.org>
+
+Description:
+   Operator stuff. Doesn't do much at the moment, but still has dreams of
+   greatness.
+
+Config Variables:
+   OPER_UMODES           - User modes to set when you become an operator.
+
+Commands:
+   operwall <text>
+     - Sends an OPERWALL with <text>.
+

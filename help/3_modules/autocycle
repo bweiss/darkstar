@@ -1,0 +1,14 @@
+Module: autocycle
+Author: Brian Weiss <brian@epicsol.org>
+
+Description:
+   Automatically cycles empty and op-less channels.
+
+Config Variables:
+   AUTO_CYCLE                - Boolean. Turns auto-cycle on/off.
+
+Notes:
+   This feature is far from fool-proof. It has been known to cause trouble,
+   especially when connected to multiple servers in a single EPIC session.
+   Use at your own risk.
+

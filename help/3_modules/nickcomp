@@ -1,0 +1,20 @@
+Module: nickcomp
+Author: Brian Weiss <brian@epicsol.org>
+Original author: shade <shade@chemlab.org>
+
+Description:
+   Advanced nick completion for the input prompt.
+
+Config Variables:
+   NICK_COMPLETION         - Boolean. Turns nick completion on/off.
+   NICK_COMPLETION_CHAR    - When the first word (that isn't a command) being
+                             entered at the input prompt is this character,
+                             a completion based on the nicks in the current
+                             channel will be attempted.
+
+Format Variables:
+   NICK_COMPLETION
+
+History:
+   This was taken from my BitchX/EPIC4 script called playdough.
+

@@ -1,0 +1,35 @@
+Module: away
+Author: Brian Weiss <brian@epicsol.org>
+
+Description:
+   Away system. Includes support for logging private msgs and notices,
+   auto-away, auto-unset-away, and allows the user to choose which
+   channels, if any, they would like to send a public away message to.
+
+Config Variables:
+   AUTO_AWAY                 - Boolean. If true, sets away after...
+   AUTO_AWAY_TIME            - Auto-away after this many seconds.
+   AUTO_UNSET_AWAY           - Boolean. If true, will automatically unset
+                               away when anything is entered at the input
+                               prompt.
+   AWAY_LOG                  - Boolean. If true, private msgs and notices
+                               will be logged when away.
+   AWAY_LOGFILE              - Where to write the away log.
+   PUBLIC_AWAY               - Boolean. Determines whether we should send
+                               an action letting everyone know you are
+                               away/back.
+   PUBLIC_AWAY_CHANNELS      - Space separated list of channels to send
+                               the public away to. If unset, all channels
+                               you are currently in will be notified.
+   SEND_AWAY_NOTICE          - Boolean. Determines whether we should send
+                               a notice to people that msg you, letting
+                               them know you are away.
+
+Commands:
+  readlog [<filename>]
+    - Read your logfile. If no filename is specified, the value from
+      $CONFIG.AWAY_LOGFILE is used.
+
+  remlog [<filename>]
+    - Same as above except that it deletes your logfile.
+

@@ -1,0 +1,66 @@
+Module: misc
+Author: Brian Weiss <brian@epicsol.org>
+
+Description:
+   Miscellaneous features and formatting.
+
+Config Variables:
+   DEFAULT_UMODES          - Default user modes when connecting to a server.
+   SHOW_AWAY_ONCE          - Boolean. If true, prevents the WHOIS_AWAY numeric
+                             from being displayed each time you msg/notice
+                             someone. This will not stop you from seeing it
+                             when you /whois them.
+   SHOW_AWAY_ONCE_TIMEOUT  - Seconds until nicks are removed from the
+                             away_users array.
+
+Format Variables:
+   ACTION_USER, CTCP, CTCP_REPLY, DCC_CHAT, MSG, NOTICE, SEND_ACTION_USER,
+   SEND_CTCP, SEND_DCC_CHAT, SEND_MSG, SEND_NOTICE, WHO, WHOIS_AWAY,
+   WHOIS_CHANNELS, WHOIS_FOOTER, WHOIS_HEADER, WHOIS_IDENTIFIED, WHOIS_IDLE,
+   WHOIS_NAME, WHOIS_NICK, WHOIS_OPER, WHOIS_SERVER, WHOIS_SIGNON,
+   WHOWAS_NAME, WHOWAS_NICK, UMODE
+
+Commands:
+   chat <nick>
+     - Alias to /dcc chat.
+
+   colors
+     - Displays the ^C color codes.
+
+   disco [server refnum] [reason]
+     - Alias to /disconnect.
+
+   dns <nick> ...
+     - Perform a DNS lookup on each specified nick.
+
+   m <nick> <text>
+     - Sends a private msg to <nick> with <text>. This is an alias to /msg.
+
+   nslookup <address> ...
+     - Perform a DNS lookup on each specified address.
+
+   pingme
+     - Send a CTCP PING to yourself.
+
+   q [nick]
+     - Attempts to start a query with [nick], or closes an existing query
+       if a nick is not specified. This is an alias to /query.
+
+   umode <modes>
+     - Sets <modes> for yourself.
+
+   ver [nick]
+     - Sends a CTCP VERSION to [nick] (or yourself if none specified).
+
+   whois [nick] ...
+     - Front-end to the internal /whois command. This exists to interact
+       with show-away-once.
+       * Aliases: wi
+
+   wii [nick]
+     - Request extra whois information for [nick] (or your nick if not given).
+       This is the same as '/whois <nick> <nick>'
+
+   ww [nick] ...
+     - Alias to /whowas.
+

@@ -1,0 +1,17 @@
+Module: keepnick
+Author: Brian Weiss <brian@epicsol.org>
+
+Description:
+   Keepnick/Getnick services. Getnick is used to gain a nick as soon as it
+   becomes available. Keepnick monitors your own nick and runs getnick when
+   needed.
+
+Config Variables:
+   KEEPNICK                - Boolean. Turns keepnick on/off.
+   KEEPNICK_NICK           - If keepnick is on, run getnick if this is not
+                             our current nick.
+
+Commands:
+   getnick <nick|->
+     - Attempts to regain <nick>. Passing it "-" will disable getnick.
+

@@ -1,0 +1,29 @@
+Module: names
+Author: Brian Weiss <brian@epicsol.org>
+
+Description:
+   Formatted /names output that is a bit more powerful than what is
+   supplied by the client.
+
+Config Variables:
+   NAMES_COL           - Determines how many columns to display.
+
+Format Variables:
+   NAMES_FOOTER, NAMES_HEADER, NAMES_NONOP, NAMES_OP, NAMES_VOICE
+
+Commands:
+   scan [channel]
+     - Displays the nicks of everyone on [channel] (or the current channel
+       if one is not specified).
+       * Aliases: names sc
+
+   scann [channel]
+     - Displays all "normal" users (those not +o or +v) on [channel] (or the
+       current channel if none specified).
+
+   scano [channel]
+     - Displays all channel operators (+o) on [channel].
+
+   scanv [channel]
+     - Displays all voiced (+v) users on [channel].
+

@@ -1,0 +1,56 @@
+Module: window
+Author: Brian Weiss <brian@epicsol.org>
+
+Description:
+   Provides various commands, keybindings, and other features to assist
+   in window management.
+
+Config Variables:
+   AUTO_BIND_CHANNELS         - If $CONFIG.AUTO_CREATE_WINDOWS is true,
+                                bind the specified channels to windows as
+                                they are created.
+   AUTO_BIND_ON_JOIN          - Boolean. Automatically bind channels to
+                                the current window on join.
+   AUTO_CREATE_WINDOW_ARGS    - List of commands to pass to /window when
+                                creating windows according to the following..
+   AUTO_CREATE_WINDOWS        - Number of windows to create at load time.
+   AUTO_UNBIND_ON_PART        - Boolean. Automatically unbind channels
+                                after you part them.
+   MSG_WINDOW                 - Boolean. Creates a split screen "msg window".
+   MSG_WINDOW_LEVEL           - Comma-separated list of window levels for
+                                the msg window. This determines what actually
+                                goes to the msg window.
+   MSG_WINDOW_SIZE            - Size of the msg window.
+
+Commands:
+   swap [window name or refnum]
+     - Attempts to swap to another window. If no refnum or name is given
+       you will be prompted for one.
+
+   wb [channel]
+     - Attempts to bind [channel] (or the current channel) to the current
+       window.
+
+   wc
+     - Create a new hidden window. This is status-aware and will set
+       window double accordingly.
+
+   wj <channel> [key]
+     - Creates a new hidden window and joins <channel>. This is also
+       status-aware.
+
+   wk
+     - Kill the current window.
+
+   wl
+     - Alias to '/window last'
+
+   wn
+     - Alias to '/window next'
+
+   wp
+     - Alias to '/window previous'
+
+   wub
+     - Unbinds the current window.
+

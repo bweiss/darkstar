@@ -1,0 +1,154 @@
+Module: channel
+Author: Brian Weiss <brian@epicsol.org>
+
+Description:
+   Lots of channel related features and formatting.
+
+Config Variables:
+   AUTO_RESPONSE                - Boolean. Turns auto-response on/off.
+   AUTO_RESPONSE_BEEP           - Boolean. If true, auto-response will beep
+                                  when triggered.
+   AUTO_RESPONSE_STR            - Space separated list of words that should
+                                  trigger auto-response.
+   BANTYPE                      - Integer argument for mask(6). This is used
+                                  by the ban related aliases.
+   DEFAULT_KICK_REASON          - Default kick reason for various aliases.
+   SHOW_OPVOICE_IN_PUBLICS      - Boolean. Display @/+ (op/voice) in publics.
+
+Format Variables:
+   ACTION_CHANNEL, ACTION_CHANNEL_OTHER, BANS, BANS_HEADER, BANS_FOOTER,
+   CHANNEL_SIGNOFF, CHANNEL_SYNC, CHANNEL_TS, JOIN, LEAVE, MODE, PUBLIC,
+   PUBLIC_AR, PUBLIC_OTHER, PUBLIC_OTHER_AR, SEND_ACTION_CHANNEL,
+   SEND_ACTION_CHANNEL_OTHER, SEND_PUBLIC, SEND_PUBLIC_OTHER, TOPIC,
+   TOPIC_CHANGE, TOPIC_SETBY
+
+Commands:
+   alldeop <nick> ...
+     - Set mode -o for <nick> on all channels that are common between you.
+       * Aliases: alldop
+
+   allop <nick> ...
+     - Set mode +o for <nick> on all channels that are common between you.
+
+   ban <nick|mask> ...
+     - Set mode +b for <nick|mask> on current channel. If the nick of a
+       person on the current channel is specified, a hostmask will be created
+       via $mask() according to the value of $CONFIG.BANTYPE. If multiple
+       arguments are specified, the bans will be sent 3 at a time. Eventually
+       this will be configurable. Most other ban related aliases use this.
+
+   bankick <nick> [reason ...]
+     - Sets mode +b for <nick> followed immediately by a kick, both on the
+       current channel.
+       * Aliases: bk
+
+   banlist [channel]
+     - Displays the banlist for [channel] or the current channel if none
+       is specified.
+       * Aliases: bans
+
+   cmode <modes>
+     - Sets <modes> on the current channel.
+
+   cycle [channel]
+     - Parts then re-joins [channel] or the current channel if none is
+       specified.
+
+   deop <nick> ...
+     - Sets -o on the current channel for all nicks specified.
+       * Aliases: dop
+
+   devoice <nick> ...
+     - Sets -v on the current channel for all nicks specified.
+       * Aliases: dvoice
+
+   invite <nick> [channel]
+     - Invites <nick> to [channel]. If no channel given, assumes current.
+       * Aliases: i
+
+   join <channel[,channel2,...]> [key[,key2,...]]
+     - Improved /join, taken from 2.8script.
+       * Aliases: j
+
+   key <key>
+     - Sets +k <key> on the current channel.
+
+   kick <nick> [reason]
+     - Kicks <nick> from the current channel with [reason]. If no reason is
+       given the value of $CONFIG.DEFAULT_KICK_REASON is used.
+       * Aliases: k
+
+   kickban <nick> [reason]
+     - Same as above but also bans.
+       * Aliases: kb
+
+   leave <channel[,channel2,...]>
+     - Improved /leave, taken from 2.8script.
+       * Aliases: l part
+
+   lk [reason]
+     - Kicks everyone out of the current channel except +o and +v. If no
+       reason is given $CONFIG.DEFAULT_KICK_REASON is used. This command
+       will ask before doing anything.
+
+   massmode <channel> <+|-> <mode> <mode parameters>
+     - Sets an unlimited number of modes 4 at a time.
+
+   mdeop [channel]
+     - Set -o for everyone on [channel] or the current channel if not given.
+       * Aliases: mdop
+
+   mdevoice [channel]
+     - Sets -v for everyone on [channel] or the current channel.
+       * Aliases: mdvoice
+
+   mop [channel]
+     - Sets +o for everyone on [channel] or the current channel.
+
+   mvoice [channel]
+     - Sets +v for everyone on [channel] or the current channel.
+
+   oldtopic [channel]
+     - Displays the last topic for [channel] or the current channel.
+
+   op <nick> ...
+     - Sets +o on the current channel for all nicks specified.
+
+   partall
+     - Parts all your channels. This command will ask before doing anything.
+
+   setoldtopic [channel]
+     - Changes the current topic in [channel], or the current channel, to
+       the previous topic.
+
+   t [topic]
+     - Alias to /topic
+
+   tban [channel]
+     - Displays a list of bans for [channel], or the current channel, and
+       prompts you to select a range to be removed.
+
+   tempban <seconds> <nick|mask>
+     - Sets a temporary ban on <nick|mask> that lasts for <seconds>.
+
+   unban <mask> ...
+     - Removes an unlimited amount of bans, 4 at a time. Requires an exact
+       hostmask.
+
+   unkey
+     - Removes key from current channel, if any.
+
+   untopic [channel]
+     - Unsets the topic on [channel] or the current channel.
+
+   voice <nick> ...
+     - Sets +v on an unlimited number of nicks, 4 at a time.
+
+   wall <text>
+     - Sends a notice to all ops on the current channel, 7 at a time.
+       It's possible this will not work on all servers.
+
+   wall2 <text>
+     - Sends a notice to all ops on the current channel using
+       "/notice #@channel". This definitely doesn't work on all servers.
+
