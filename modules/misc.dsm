@@ -1,4 +1,4 @@
-#version 0.3.1
+#version 0.4
 /* $Id$ */
 /*
  * misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
@@ -12,7 +12,7 @@
 
 queue cleanup.misc
 {
-	for alias in (chat dns disco m nslookup pingme q umode ver whois wi wii ww)
+	for alias in (chat dns disco m nslookup pingme q tig umode ver whois wi wii ww)
 	{
 		^alias -$alias
 	}
@@ -31,7 +31,8 @@ queue cleanup.misc
 	^on #hook 424 -"CONFIG IGNORE_CTCP_FINGER *"
 	^on raw_irc -"% PRIVMSG % :FINGER"
 
-	@ delarray(away_users)
+	@ delarray(misc.away_users)
+	@ delarray(misc.tig)
 }
 
 
@@ -137,6 +138,46 @@ alias pingme (void)
 
 alias q query
 
+alias tig (void)
+{
+	@ delarray(misc.tig)
+
+	/* Grab the ignore list and store it in the misc.tig array. */
+	for mask in ($igmask(*))
+	{
+		@ setitem(misc.tig $numitems(misc.tig) $mask $igtype($mask))
+	}
+
+	/* Display ignore list. */
+	xecho -b Ignorance list:
+	for cnt from 0 to ${numitems(misc.tig) - 1}
+	{
+		@ :line = getitem(misc.tig $cnt)
+		@ :num = cnt + 1
+		echo  $[3]num $[30]word(0 $line) $restw(1 $line)
+	}
+
+	^local tmp $"Which ignore(s) to remove? (1, 2-5, ...) "
+
+	/* Remove any of the ignores that the user specified above. */
+	for ignum in ($tmp)
+	{
+		@ :start = before(- $ignum)
+		@ :end = after(- $ignum)
+		if (start < end && start < numitems(misc.tig) && end <= numitems(misc.tig))
+		{
+			for cnt from $start to $end
+			{
+				//ignore $word(0 $getitem(misc.tig ${cnt - 1})) NONE
+			}
+		}\
+		else if (ignum <= numitems(misc.tig))
+		{
+			//ignore $word(0 $getitem(misc.tig ${ignum - 1})) NONE
+		}
+	}
+}
+
 alias umode (mode)
 {
 	//mode $servernick() $mode
@@ -150,10 +191,10 @@ alias ver (nick default "$servernick()", void)
 alias wi whois
 alias whois (args)
 {
-	@ :item = matchitem(away_users $word(0 $args)*)
+	@ :item = matchitem(misc.away_users $word(0 $args)*)
 	if (item > -1)
 	{
-		@ delitem(away_users $item)
+		@ delitem(misc.away_users $item)
 	}
 
 	//whois $args
@@ -173,10 +214,10 @@ on ^301 "*"
 	{
 		if (CONFIG[SHOW_AWAY_ONCE])
 		{
-			if (matchitem(away_users $0*) == -1)
+			if (matchitem(misc.away_users $0*) == -1)
 			{
 				echo $fparse(WHOIS_AWAY $*)
-				@ setitem(away_users $numitems(away_users) $0 $time())
+				@ setitem(misc.away_users $numitems(misc.away_users) $0 $time())
 			}
 		}{
 			echo $fparse(WHOIS_AWAY $*)
@@ -397,9 +438,9 @@ on ^send_notice "*"
 on #-timer 424 "*"
 {
 	^local delete
-	for cnt from 0 to ${numitems(away_users) - 1}
+	for cnt from 0 to ${numitems(misc.away_users) - 1}
 	{
-		@ :ts = word(1 $getitem(away_users $cnt))
+		@ :ts = word(1 $getitem(misc.away_users $cnt))
 		if ((time() - ts) > CONFIG[SHOW_AWAY_ONCE_TIMEOUT])
 		{
 			@ push(delete $cnt)
@@ -407,7 +448,7 @@ on #-timer 424 "*"
 	}
 	for item in ($reverse($delete))
 	{
-		@ delitem(away_users $item)
+		@ delitem(misc.away_users $item)
 	}
 }
 

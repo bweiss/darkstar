@@ -48,6 +48,10 @@ Author: Brian Weiss <brian@epicsol.org>
      - Attempts to start a query with [nick], or closes an existing query
        if a nick is not specified. This is an alias to /query.
 
+   tig
+     - Displays your ignorance list and then prompts for a range of ignores
+       to be removed.
+
    umode <modes>
      - Sets <modes> for yourself.
 

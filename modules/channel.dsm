@@ -1,4 +1,4 @@
-#version 0.3.3
+#version 0.3.4
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
@@ -17,8 +17,9 @@ queue cleanup.channel
 		^alias -$alias
 	}
 
-	@ delarray(oldtopics)
-	@ delarray(tban)
+	@ delarray(channel.oldtopics)
+	@ delarray(channel.tban)
+	@ delarray(channel.topics)
 	
 	^on public -'% % *\\\\\[\${CONFIG[AUTO_RESPONSE_STR]}\\\\\]*'
 	^on public_other -'% % *\\\\\[\${CONFIG[AUTO_RESPONSE_STR]}\\\\\]*'
@@ -430,7 +431,7 @@ alias mvoice (chan default "$C", void)
 
 alias oldtopic (chan default "$C", void)
 {
-	@ :oldtopic = gettmatch(oldtopics $chan*)
+	@ :oldtopic = gettmatch(channel.oldtopics $chan*)
 	if (oldtopic)
 	{
 		xecho -b Last topic for $chan: $restw(1 $oldtopic)
@@ -466,7 +467,7 @@ alias partall (void)
 
 alias setoldtopic (chan default "$C", void)
 {
-	@ :oldtopic = gettmatch(oldtopics $chan*)
+	@ :oldtopic = gettmatch(channel.oldtopics $chan*)
 	if (oldtopic)
 	{
 		//topic $oldtopic
@@ -479,11 +480,11 @@ alias t topic
 
 alias tban (chan default "$C", void)
 {
-	@ delarray(tban)
+	@ delarray(channel.tban)
 
 	^on #^367 424 "% $chan *"
 	{
-		@ setitem(tban $numitems(tban) $*)
+		@ setitem(channel.tban $numitems(channel.tban) $*)
 	}
 
 	^on #^368 424 "% % $chan"
@@ -496,16 +497,16 @@ alias tban (chan default "$C", void)
 		{
 			@ :startban = before(- $bannum)
 			@ :endban = after(- $bannum)
-			if (startban < endban && startban < numitems(tban) && endban <= numitems(tban))
+			if (startban < endban && startban < numitems(channel.tban) && endban <= numitems(channel.tban))
 			{
 				for cnt from $startban to $endban
 				{
-					push bans $word(2 $getitem(tban ${cnt - 1}))
+					push bans $word(2 $getitem(channel.tban ${cnt - 1}))
 				}
 			}\
-			else if (bannum <= numitems(tban))
+			else if (bannum <= numitems(channel.tban))
 			{
-				push bans $word(2 $getitem(tban ${bannum - 1}))
+				push bans $word(2 $getitem(channel.tban ${bannum - 1}))
 			}
 		}
 
@@ -821,20 +822,20 @@ on ^topic "*"
 		}
 	}
 
-	@ :topic_itm = matchitem(topics $1*)
+	@ :topic_itm = matchitem(channel.topics $1*)
 	if (topic_itm > -1)
 	{
-		@ :oldtopic_itm = matchitem(oldtopics $1*)
+		@ :oldtopic_itm = matchitem(channel.oldtopics $1*)
 		if (oldtopic_itm > -1)
 		{
-			@ delitem(oldtopics $oldtopic_itm)
+			@ delitem(channel.oldtopics $oldtopic_itm)
 		}
 
-		@ setitem(oldtopics $numitems(oldtopics) $getitem(topics $topic_itm))
-		@ delitem(topics $topic_itm)
+		@ setitem(channel.oldtopics $numitems(channel.oldtopics) $getitem(channel.topics $topic_itm))
+		@ delitem(channel.topics $topic_itm)
 	}
 
-	@ setitem(topics $numitems(topics) $1-)
+	@ setitem(channel.topics $numitems(channel.topics) $1-)
 }
 
 /*

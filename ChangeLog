@@ -3,6 +3,9 @@ DarkStar ChangeLog
 
 20020508
 
+ * [misc.dsm 0.4] Added a /tig alias for removing ignores. It works just
+   like /tban from channel.dsm.
+
  * Removed autocycle.dsm from the official script pack. I will distribute
    it separately on my site(s).
 
