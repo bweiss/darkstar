@@ -1,12 +1,5 @@
 FOR 0.3 RELEASE:
 
-  * Write a $numlines() function that will return the number of lines
-    that a given string will occupy after final display. This must take
-    into account the effects of /SET [CONTINUED_LINE|INDENT].
-
-  * Using the above mentioned $numlines() function, rewrite /LESS so that
-    it correctly handles linewrapped output.
-
   * Add timestamping functionality to the core. This includes a TIMESTAMP
     config variable, a format variable of the same name, and a $ts() function
     for use in themes.
@@ -15,14 +8,9 @@ FOR 0.3 RELEASE:
 
   * Add support for "paste mode" either as a module or as part of the core.
 
-  * Fix auto-query.
-
   * Add support for a topic bar.
 
   * Implement /THEME -save
-
-  * Add an option to /DSET and /FSET to allow them to operate only on a
-    specific module.
 
 
 AFTER 0.3 RELEASE:
@@ -60,11 +48,9 @@ OTHER NOTES/IDEAS:
 * Figure out a way to allow modules to prevent output from /DSET (and /FSET?)
   from within /ON hooks.
 
-* Add a DarkStar echo prefix? e.g. "*** DarkStar: Loaded module: foo 1.0"
-
 * Would some kind of generic caching system be useful? Features like
-  REMEMBER_TOPICS could use it instead of each having to handle caching
-  things themselves.
+  REMEMBER_TOPICS and auto-query could use it instead of each having to
+  handle caching things themselves.
 
 
 End of file.

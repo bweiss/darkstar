@@ -50,69 +50,121 @@ alias dinfo (void)
 
 alias more less
 
-alias less (files)
+/*
+ * Output the contents of files to the current window, pausing between
+ * each full screen of output, while taking into account linewrapping and
+ * /SET {CONTINUED_LINE|SET INDENT}. It's not terribly efficient but
+ * it sure beats the hell out of the old /LESS. :-)
+ */
+alias less (file, void)
 {
-	if (!files)
-	{
-		xecho -b Usage: /LESS <file> ...
+	if (!file) {
+		xecho -b Usage: /LESS <file>
 		return
 	}
 
-	for file in ($files)
+	/*
+	 * Dump the contents of the specified file into an array.
+	 */
+	if (fexist($file) == 1)
 	{
-		if (fexist($file) == 1)
+		@ :fd = open($file R)
+		if (fd != -1)
 		{
-			@ :fd = open($file R)
-			if (fd != -1)
-			{
-				while (!eof($fd))
-				{
-					@ :line = 0
-					while (line++ < winsize())
-					{
-						@ :foo = read($fd)
-						unless (eof($fd) && foo == []) {
-							echo $foo
-						}
-					}
-					if (!eof($fd))
-					{
-						^local pause $'Hit q to quit, or anything else to continue.'
-						if (pause == [q]) {
-							return
-						}
-					}
-				}
-				@ close($fd)
-			}{
-				echo Error: Could not open $file for reading
+			@ delarray(_less)
+			for (@ :item = 0, !eof($fd), @ :item++) {
+				@ setitem(_less $item $read($fd))
 			}
+			@ close($fd)
 		}{
-			echo $file\: File not found
+			xecho -b LESS: Could not open $file for reading
+		}
+	}{
+		xecho -b LESS: File not found: $file
+	}
+
+	_less.split_array _less
+	_less.output _less
+}
+
+alias _less.output (array_struct, void)
+{
+	if (!array_struct) \
+		return
+
+	@ :ii = 0
+	@ :arrays = getarrays($array_struct\.*)
+	while (:array = shift(arrays))
+	{
+		for ii from 1 to $numitems($array) {
+			echo $getitem($array ${ii-1})
+		}
+
+		unless (!arrays)
+		{
+			^local pause $'Hit q to quit, or anything else to continue.'
+			if (pause == [q]) \
+				break
+		}
+	}
+
+	purgearray _less
+}
+
+/*
+ * Break up the contents of the specified array into multiple arrays,
+ * each with as many lines as can be displayed at one time in the current
+ * window.
+ */
+alias _less.split_array (array, void)
+{
+	if (!array) \
+		return
+
+	@ :cnt = 1
+	@ :ii = :lines = 0
+	while (ii < numitems(_less))
+	{
+		@ :text = getitem(_less $ii)
+		@ :numlines = numlines($text)
+		@ :lines += numlines
+
+		/*
+		 * We don't want an infinite loop if the window is so small we can't
+		 * even display a single line, so we make sure lines > numlines.
+		 */
+		if (lines > numlines && lines > winsize())
+		{
+			@ :cnt++
+			@ :lines = 0
+		}{
+			@ setitem($array\.$cnt $numitems($array\.$cnt) $text)
+			@ :ii++
 		}
 	}
 }
 
-/*
- * Removes assign structures.
- */
-alias purge (arg, void)
+alias purge (struct, void)
 {
-	foreach $arg _purge {
-		purge $arg\[$_purge]
+	foreach $struct _purge {
+		purge $struct\[$_purge]
 	}
-	^assign -$arg
+	^assign -$struct
 }
 
-/*
- * Removes alias structures.
- */
-alias purgealias (arg, void)
+alias purgealias (struct, void)
 {
-	foreach -$arg _purge {
-		purgealias $arg\[$_purge]
+	foreach -$struct _purge {
+		purgealias $struct\[$_purge]
 	}
-	^alias -$arg
+	^alias -$struct
+}
+
+alias purgearray (struct, void)
+{
+	for array in ($getarrays($struct*)) {
+		@ delarray($array)
+	}
 }
 
 /*
@@ -238,5 +290,3 @@ fe (q push fq unshift) cmd op {
 }
 stack pop alias alias.tt
 
-
-/* EOF */

@@ -13,7 +13,6 @@
 queue cleanup.nickmgr
 {
 	^alias -nick
-	^alias -nickmgr
 	^alias -nickscan
 
 	^on #hook 422 -"CONFIG NICKMGR_SCAN_INTERVAL *"

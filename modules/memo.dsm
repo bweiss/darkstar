@@ -10,7 +10,7 @@
 
 queue cleanup.memo
 {
-	^alias -memo
+	/* Nothing to clean up :-) */
 }
 
 
@@ -64,7 +64,8 @@ alias memo
 		}
 
 		(*) {
-			switch ($memo.add($mfile $*)) {
+			switch ($memo.add($mfile $*))
+			{
 				(0) () {#}
 				(1) { Error: memo.add: Not enough arguments; }
 				(2) { Error: memo.add: Unable to write memo file; }
@@ -140,25 +141,15 @@ alias memo.list (file, void)
 
 	if (!memo.read($file))
 	{
-		xecho -b Memos:
-		@ :cnt = 0
-		while (cnt < numitems(memo.memos))
+		@ delarray(_less)
+		for ii from 0 to ${numitems(memo.memos) - 1}
 		{
-			@ :line = 0
-			while (line++ < winsize())
-			{
-				@ :num = cnt + 1 ## [.]
-				echo $[3]num $getitem(memo.memos $cnt)
-				@ cnt++
-				if (cnt >= numitems(memo.memos)) {
-					return 0
-				}
-			}
-			^local pause $'Hit q to quit, or anything else to continue.'
-			if (pause == [q]) {
-				return 0
-			}
+			@ :num = ii + 1
+			@ setitem(_less $ii $num\. $getitem(memo.memos $ii-1))
 		}
+		xecho -b Memos:
+		_less.split_array _less
+		_less.output _less
 	}{
 		/* Unable to read memo file */
 		return 3
@@ -215,5 +206,3 @@ alias memo.write (file, void)
 	}
 }
 
-
-/* EOF */

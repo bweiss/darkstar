@@ -12,7 +12,7 @@
 
 queue cleanup.relay
 {
-	for alias in (relay relc relm reln relp relpo relsc relsm relsn relsp relspo) {
+	for alias in (relc relm reln relp relpo relsc relsm relsn relsp relspo) {
 		^alias -$alias
 	}
 	for hook in (ctcp ctcp_reply msg notice public public_other send_msg send_notice send_public) {
