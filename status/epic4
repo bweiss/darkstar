@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Default status bar for EPIC4
+ * Default EPIC4 status bar.
  */
 
 assign -STATUS.DOUBLE
