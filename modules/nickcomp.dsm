@@ -3,15 +3,13 @@
 /*
  * nickcomp.dsm - Nick completion module for Darkstar/EPIC4
  *
- * Written by shade and Brian Weiss
- * Copyright © 2002 Brian Weiss
- * See the 'COPYRIGHT' file for more information.
+ * Written by shade and modified for Darkstar/EPIC4 by Brian Weiss.
  *
  * This script uses serial number 0 for all /on hooks.
  *
  * Most of this was taken from the nick completion module that shade wrote
  * for my BitchX/EPIC4 script called playdough. He deserves most of the
- * credit. Please send bug reports to me, not shade.
+ * credit. Please send bug reports to me, not shade. -bmw
  */
 
 queue cleanup.nickcomp
