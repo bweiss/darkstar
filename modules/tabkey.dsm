@@ -1,4 +1,4 @@
-#version 0.4
+#version 0.4.1
 /*     _             _        _
  *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
  * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
@@ -141,7 +141,7 @@ alias tabkey.show_matches (list)
 		return
 	}
 
-	if (L == TABKEY[LAST_INPUT] && strlen(L) == strlen($TABKEY.LAST_INPUT))
+	if (L == TABKEY[LAST_INPUT] && strlen($L) == strlen($TABKEY.LAST_INPUT))
 	{
 		beep
 		xecho -b Matches:
@@ -157,7 +157,6 @@ alias tabkey.show_matches (list)
  */
 alias tabkey.process_tabkey (void)
 {
-	@ TABKEY.LAST_INPUT = L
 	@ :item = rmatchitem(tabkey_rules "$L")
 	if (item > -1)
 	{
@@ -165,6 +164,7 @@ alias tabkey.process_tabkey (void)
 		@ :proc = word(0 $rinfo)
 		eval ^local list $restw(1 $rinfo)
 		tabkey.proc.$proc $list
+		@ TABKEY.LAST_INPUT = L
 	}
 }
 
@@ -340,6 +340,7 @@ alias tabkey.set_proc (type, void)
 	@ :lastc = mid(${strlen($L) - 1} 1 $L)
 	unless (lastc == [ ])
 	{
+		/* Deal with the removal of variables correctly. */
 		if (left(1 $word(1 $L)) == [-])
 		{
 			@ :rmflag = 1
@@ -357,27 +358,14 @@ alias tabkey.set_proc (type, void)
 		
 		if (#matches == 1)
 		{
-			^assign -TABKEY.SHOWMATCHES
 			parsekey delete_to_previous_space
 			xtype -l ${rmflag ? [-] : []}$matches${[ ]}
 		}\
 		else if (#matches > 1)
 		{
-			beep
-			@ TABKEY.SHOWMATCHES++
 			parsekey delete_to_previous_space
 			xtype -l ${rmflag ? [-] : []}$prefix($matches)
-
-			if (TABKEY[SHOWMATCHES] > 1)
-			{
-				xecho -b Matches:
-				for var in ($matches)
-				{
-					echo $var
-				}
-			}
-		}{
-			^assign -TABKEY.SHOWMATCHES
+			tabkey.show_matches $matches
 		}
 	}
 }
