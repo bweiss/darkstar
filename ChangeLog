@@ -1,6 +1,9 @@
 DarkStar ChangeLog
 
 
+!! RELEASE: 0.2.5 (2002/05/22) !!
+
+
 2002/05/22
 
  * [misc.dsm 0.6.2] Removed /pingme and added a /ping alias. If no target
@@ -31,9 +34,13 @@ DarkStar ChangeLog
  * The module loader will now remove any arrays that are obviously
    associated with a specific module, as is done for aliases and
    assigns already.
+
    e.g. An array named foo.bar would be removed automatically when
    the module named foo was unloaded. An array named foobar would
    not be removed automatically.
+
+   Naming your arrays in this way is also beneficial because it helps
+   prevent modules from interfering with each other.
 
 2002/05/18
 

@@ -60,12 +60,12 @@ for array in ($getarrays())
 /*
  * Important global variables
  */
-@ DS.VERSION = [0.2.4]
-@ DS.INTERNAL_VERSION = [20020520]
+@ DS.VERSION = [0.2.5]
+@ DS.INTERNAL_VERSION = [20020522]
 
 /* This will be incremented every time a change takes place to the core
    scripts (anything that requires /reload to update). */
-@ DS.COMMIT_ID = 42
+@ DS.COMMIT_ID = 43
 
 
 /*
@@ -116,8 +116,10 @@ if (fexist($DS.USER_DIR) == -1)
 	@ mkdir($DS.USER_DIR/themes)
 	@ mkdir($DS.USER_DIR/save)
 
-	/* This could be a first time user, so we'll display
-	   some extra information for them. */
+	/*
+	 * This could be a first time user, so we'll display
+	 * some extra information for them.
+	 */
 	xecho -b
 	xecho -b Welcome to the DarkStar/EPIC4 script pack!
 	xecho -b Copyright (c) 2002 Brian Weiss <brian@epicsol.org>

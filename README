@@ -13,29 +13,32 @@ DarkStar is a modular script pack for EPIC4, specifically versions 1.1
 and up. It is highly extensible and includes theme support, advanced tab
 completion, and a whole bunch of other goodies. The modular design offers
 many benefits (and a few drawbacks) and allows for a very high level of
-customization. These scripts are mostly geared towards advanced users and
-other programmers, though I do try to cater to the needs of everyone.
+customization.
 
-This project is still under heavy development but should already be quite
-usable for most people. So far only the end-user stuff has been documented,
-but there are plans for more detailed documentation, explaining how to
-write your own modules, themes, and status bars. Until then, if you're
-interested in contributing (or just adding something for yourself), please
-don't hesitate to contact me.
+Although still under heavy development, these scripts should be quite
+usable and already provide most of the features people are accustomed to.
+The documentation is still a bit scarce, so anyone looking to write their
+own modules, themes, and status bars should contact me for help. Everyone
+else should browse through the help files (located in the help/ directory)
+by typing /DHELP at the EPIC4 input prompt after DarkStar has finished
+loading.
 
 
 REQUIREMENTS
 
-Only EPIC4-1.1.x or higher. This script pack will NOT work with EPIC4-1.0.
-You have been warned.
+The only requirement is EPIC4-1.1 or higher. This script pack will NOT
+work with EPIC4-1.0. You have been warned.
 
 
 WHERE TO GET DARKSTAR AND EPIC4
 
-Recent versions of both DarkStar and EPIC4 can be found at the
-following URLs:
+There is now an official DarkStar website, which can be found here:
 
   http://darkstar.epicsol.org/
+
+Recent versions of both DarkStar and EPIC4 can also be found at the
+following URLs:
+
   http://www.epicsol.org/
   http://www.got.net/~brian/epic4/
 
@@ -74,7 +77,7 @@ variables.
   DARKSTAR_RC - Location of the rc file. This is loaded every time
                 darkstar.irc is loaded, including /RELOADs. This should be
                 used for EPIC settings in place of ~/.epicrc. This frees
-                ~/.epicrc up to load darkstar.irc on startup.
+                up ~/.epicrc to load darkstar.irc on startup.
                 (default: ~/.dsrc)
 
   DARKSTAR_USERDIR - Location of the "User directory". This just contains
@@ -87,11 +90,11 @@ The way you set these variables depends on the shell that you are using.
 
 (sh, bash, zsh, etc)
 
-  export DARKSTAR_HOME=~/.epic4/darkstar
+  export DARKSTAR_USERDIR=~/.epic4/darkstar
 
 (*csh)
 
-  setenv DARKSTAR_HOME ~/.epic4/darkstar
+  setenv DARKSTAR_USERDIR ~/.epic4/darkstar
 
 If you don't want to create these variables every time you login, I recommend
 putting them in a shell startup script. (~/.bash_profile, ~/.profile,
