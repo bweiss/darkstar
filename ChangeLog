@@ -1,6 +1,9 @@
 Darkstar ChangeLog
 
 
+!! RELEASE: 0.1.3 (12/28/01) !!
+
+
 12/28/01
 
  * The module loader now checks for duplicate config and format variables.
