@@ -98,6 +98,34 @@ alias padleft (size, char, text)
 	@ function_return = repeat(${size - strlen($text)} $char) ## text
 }
 
+
+/* epic4/script/pipe from EPIC4-1.1.3 -brian */
+/*
+ * Ok.  Here's the plan.
+ *
+ * $pipe(commands) will return the output from 'commands'.
+ */
+
+alias pipe {
+	@ pipe.intval++
+	^local mypipeval $pipe.intval
+	^local mypipedesc pipe$mypipeval
+	^local mypiperetval
+
+	^on ^exec "$mypipedesc *" {
+		bless
+		push mypiperetval $1-
+	}
+
+	^exec -name $mypipedesc $*
+	^wait %$mypipedesc
+	^on exec -"$mypipedesc *"
+	return $mypiperetval
+}
+
+#hop'97
+
+
 /*
  * Rounds a decimal number based on the first digit to the right of the
  * decimal point.

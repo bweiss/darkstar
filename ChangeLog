@@ -1,6 +1,18 @@
 Darkstar ChangeLog
 
 
+20020331
+
+* /DINFO now displays the output from $pipe(uptime) in the OS field.
+
+* Added $pipe() from epic4/script/pipe. This was written by Jeremy Nelson.
+
+* /RELOAD now executes the cleanup queues of all loaded modules before
+  loading darkstar.irc. This will probably make it a little bit slower,
+  but it fixes an issue with the msg window (window.dsm) and I think
+  it is a good idea.
+
+
 !! RELEASE: 0.2.0 (20020329) !!
 
 

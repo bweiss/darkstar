@@ -18,6 +18,7 @@ alias dinfo (void)
 
 	/* Display information about the operating system. */
 	xecho -b $uname(%s %r) \($uname(%m)\)
+	xecho -b $pipe(uptime)
 	echo $G $divider
 
 	/* Display information about the client. */
@@ -145,10 +146,9 @@ alias reload (void)
 {
 	@ :home = DS.HOME
 	timer -del all
-	for cnt from 1 to $numitems(loaded_modules)
+	for cnt from 0 to ${numitems(loaded_modules) - 1}
 	{
-		@ :itm = cnt - 1
-		queue -flush cleanup.$getitem(loaded_modules $itm)
+		queue -do cleanup.$getitem(loaded_modules $cnt)
 	}
 	^load $home/darkstar.irc
 }
