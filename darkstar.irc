@@ -61,12 +61,12 @@ for array in ($getarrays())
 /*
  * Important global variables
  */
-assign DS.VERSION 0.2.0
-assign DS.INTERNAL_VERSION 20020401
+assign DS.VERSION 0.2.1
+assign DS.INTERNAL_VERSION 20020403
 
 /* This will be incremented every time a change takes place to the core
    scripts (anything that requires /reload to update). */
-assign DS.COMMIT_ID 22
+assign DS.COMMIT_ID 23
 
 
 /*
@@ -84,9 +84,9 @@ if (getenv(DARKSTAR_HOME))
 	}
 }
 
-if (getenv(DARKSTAR_USER))
+if (getenv(DARKSTAR_USERDIR))
 {
-	@ DS.USER_DIR = getenv(DARKSTAR_USER)
+	@ DS.USER_DIR = getenv(DARKSTAR_USERDIR)
 }{
 	^assign DS.USER_DIR ~/.darkstar
 }
@@ -167,8 +167,9 @@ eval ^load $DS.RC
 
 if (fexist($DS.HOME/darkstar.irc) == -1)
 {
-	xecho -b WARNING! DS.HOME was not set properly
-	xecho -b Please have a look at the README file
+	xecho -b WARNING! We were unable to detect our location.
+	xecho -b You may need to set the DARKSTAR_HOME environment variable.
+	xecho -b Please have a look at the README file for more information.
 }
 
 

@@ -9,11 +9,11 @@
 
 * Relay module (/relm, /reln, etc)
 
-* Logging module
+* Advanced logging module
 
 * Userlist module
 
-* Flood protection module
+* Channel protection module
 
 * Auto-join
 

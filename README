@@ -1,5 +1,5 @@
 README file for Darkstar/EPIC4
-Last updated: 4/1/2002
+$Id$
 
 Darkstar written by Brian Weiss <brian@epicsol.org>
 Copyright (c) 2002 Brian Weiss
@@ -23,13 +23,12 @@ These modules are completely independent of each other (though dependencies
 are supported) and can be loaded or unloaded at any time. These modules
 are mostly made up of scripts that I was using before this project.
 
-The current state of this project is:
-  Core scripts: Beta, but stable. Still subject to change. End user commands
-                have been documented.
-  Modules: Beta, but stable. Still subject to change. Documented.
-
-Contributors are welcomed! If you would like to get involved with this
-project in any way, please don't hesitate to contact me.
+This project is still under heavy development but should already be quite
+usable for most people. So far only the end-user stuff has been documented
+but there are plans for more detailed documentation, explaining how to
+write your own modules, themes, and status bars. Until then, if you're
+interested in contributing (or just adding things for yourself), please
+don't hesitate to contact me.
 
 
 WHERE TO GET DARKSTAR AND EPIC4
@@ -59,31 +58,33 @@ Once you have done a checkout you can just do the following to update it.
 
 GETTING STARTED
 
-The first thing that needs to be done in order to use Darkstar is to tell
-the script where everything is located. This can be done through the setting
-of the following environment variables...
+If you're the impatient type, it should be safe to just go ahead and
+load darkstar.irc now. It should automatically detect its location and
+set things up accordingly. Once loaded, you can use /DHELP to browse the
+basic documentation.
 
-NOTE: You do not need to do this if you are using the default locations.
-      Due to recent changes (see *** note below), it is now completely safe
-      to skip all this and go right to "/load path/to/darkstar.irc".
+There are a few things that get set at load time that you may want to
+change. This can be accomplished by setting the following environment
+variables.
 
   DARKSTAR_HOME - Darkstar home directory (default: ~/darkstar)
                   *** You are no longer required to set this if you install
                       somewhere other than the default. It will now use
                       $loadinfo() to determine the home directory.
 
-  DARKSTAR_RC - Location of the rc file. This is loaded every time darkstar.irc
-                is loaded, including /RELOADs. This should be used for EPIC
-                settings in place of ~/.epicrc. This frees ~/.epicrc up to
-                load darkstar.irc on startup. (default: ~/.dsrc)
+  DARKSTAR_RC - Location of the rc file. This is loaded every time
+                darkstar.irc is loaded, including /RELOADs. This should be
+                used for EPIC settings in place of ~/.epicrc. This frees
+                ~/.epicrc up to load darkstar.irc on startup.
+                (default: ~/.dsrc)
 
-  DARKSTAR_USER - Location of the "User directory." This just contains
-                  directories where you can put your own modules, status bars,
-                  and themes so they are not messed with when you upgrade.
-                  Saved settings also go here by default.
-                  (default: ~/.darkstar)
+  DARKSTAR_USERDIR - Location of the "User directory". This just contains
+                     directories where you can put your own modules, status
+                     bars, and themes so they are not messed with when you
+                     upgrade. Saved settings also go here by default.
+                     (default: ~/.darkstar)
 
-This can be accomplished in the following ways (depending on your shell) ...
+The way you set these variables depends on the shell that you are using.
 
 (sh, bash, zsh, etc)
 
@@ -110,38 +111,28 @@ place the following code in ~/.epicrc
 
   load /path/to/darkstar.irc
 
-Once the script is loaded you can use /dhelp for further assistance.
+Once the script is loaded you can use /DHELP for further assistance.
 
-That's it! I hope you enjoy my scripts and please feel free to send me any
-feedback you might have.
+That's it! I hope you find these scripts as useful as I do, and please feel
+free to send me any feedback you might have.
 
 
 FILES
 
   COPYRIGHT		- The license file.
-
   README		- This file.
-
   TODO			- To-do list.
-
   ChangeLog		- The changelog.
-
-  darkstar.irc		- The startup script. This is what you actually /load
-			  to start using Darkstar.
-
+  darkstar.irc		- The startup script. This is the file that you /LOAD
+			  to begin using Darkstar.
   sample.dsrc		- Sample .dsrc file.
-
   core/*.dsc		- Scripts that make up the core of Darkstar
 			  These are all required.
-
-  help/*		- The Darkstar help files.
-
+  help/*		- The basic documentation for /DINFO
   modules/*.dsm		- The modules that provide most of the features. All
 			  of these are completely optional and are independent
 			  of each other.
-
   status/*		- Statbar files.
-
   themes/*		- Theme files. These change cosmetic aspects of the
 			  script.
 

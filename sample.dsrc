@@ -3,7 +3,10 @@
  * copied to ~/.dsrc
  *
  * If you wish to change its location/filename please set the environment
- * variable DARKSTAR_RC
+ * variable DARKSTAR_RC. See the README file for details.
+ *
+ * This should contain any settings that would normally be put in ~/.ircrc
+ * or ~/.epicrc thus freeing those files to load darkstar.irc on startup.
  */
 
 set AUTO_WHOWAS OFF
@@ -47,4 +50,4 @@ set WORD_BREAK ,;
 #}
 
 
-/* bmw '01 */
+/* EOF */

@@ -12,6 +12,8 @@
  * convert.num(0|1)
  * convert.onoff(off|on)
  * Convert between 0/1 and OFF/ON. These are mostly used by /DSET.
+ * I would like to rename these to something better, so if anyone has
+ * ideas, please email me.
  */ 
 alias convert.num (arg, void)
 {
@@ -99,7 +101,7 @@ alias padleft (size, char, text)
 }
 
 
-/* epic4/script/pipe from EPIC4-1.1.3 -brian */
+/* epic4/script/pipe from EPIC4-1.1.3, written by Jeremy Nelson. -brian */
 /*
  * Ok.  Here's the plan.
  *

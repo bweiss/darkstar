@@ -1,6 +1,13 @@
 Darkstar ChangeLog
 
 
+!! RELEASE: 0.2.1 (20020403) !!
+
+
+20020403
+
+ * The DARKSTAR_USER environment variable has been renamed to DARKSTAR_USERDIR
+
 20020402
 
  * [tabkey.dsm 0.6.2] Fixed a bug that was causing msg completion to not
