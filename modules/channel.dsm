@@ -9,7 +9,6 @@
  * This script uses serial number 424 for all ON hooks.
  */
 
-/*
 queue cleanup.channel
 {
 	for alias in ($aliasctl(alias match channel.))
@@ -33,7 +32,6 @@ queue cleanup.channel
 		^on $hook -"*"
 	}
 }
-*/
 
 alias alldeop (nicks)
 {
@@ -43,7 +41,7 @@ alias alldeop (nicks)
 		{
 			for nick in ($nicks)
 			{
-				if (ischanop($servernick() $chan) && common($nick / $onchannel($chan)) && ischanop($nick $chan))
+				if (ischanop($servernick() $chan) && ischanop($nick $chan))
 				{
 					//mode $chan -o $nick
 				}
@@ -64,7 +62,7 @@ alias allop (nicks)
 		{
 			for nick in ($nicks)
 			{
-				if (ischanop($servernick() $chan) && common($nick / $onchannel($chan)) && !ischanop($nick $chan))
+				if (ischanop($servernick() $chan) && onchannel($nick $chan) && !ischanop($nick $chan))
 				{
 					//mode $chan +o $nick
 				}
@@ -79,7 +77,7 @@ alias ban (what, void)
 {
 	if (what && ischanop($N $C))
 	{
-		if (common($onchannel() / $what))
+		if (onchannel($what $C))
 		{
 			//mode $C +b $mask($CONFIG.BANTYPE $userhost($what))
 		}{
@@ -92,7 +90,7 @@ alias ban (what, void)
 
 alias bankick (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
-	if (nick && ischanop($N $C) && common($onchannel() / $nick))
+	if (nick && ischanop($N $C) && onchannel($nick $C))
 	{
 		//mode $C +b $mask($CONFIG.BANTYPE $userhost($nick))
 		//kick $C $nick $reason
@@ -192,7 +190,7 @@ alias key (key, void)
 
 alias kick (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
-	if (nick && ischanop($N $C) && common($onchannel() / $nick))
+	if (nick && ischanop($N $C) && onchannel($nick $C))
 	{
 		//kick $C $nick $reason
 	}{
@@ -203,7 +201,7 @@ alias kick (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 
 alias kickban (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
-	if (nick && ischanop($N $C) && common($onchannel() / $nick))
+	if (nick && ischanop($N $C) && onchannel($nick $C))
 	{
 		//kick $C $nick $reason
 		//mode $C +b $mask($CONFIG.BANTYPE $userhost($nick))
@@ -398,7 +396,7 @@ alias tempban (time, what, void)
 {
 	if (time && what && ischanop($N $C))
 	{
-		if (common($onchannel() / $what))
+		if (onchannel($what $C))
 		{
 			//mode $C +b $mask($CONFIG.BANTYPE $userhost($what))
 			timer $time //mode $C -b $mask($CONFIG.BANTYPE $userhost($what))

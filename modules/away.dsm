@@ -9,7 +9,6 @@
  * This script uses serial number 421 for all ON hooks.
  */
 
-/*
 queue cleanup.away
 {
 	for alias in ($aliasctl(alias match away.))
@@ -28,7 +27,6 @@ queue cleanup.away
 
 	@ delarray(sent_away)
 }
-*/
 
 @ TS.LAST_INPUT = time()
 @ delarray(sent_away)
@@ -48,6 +46,7 @@ alias away (reason default "$CONFIG.DEFAULT_AWAY_REASON")
 		{
 			if (CONFIG[PUBLIC_AWAY_CHANNELS])
 			{
+				/* This desparately needs fixing */
 				for chan in ($common($CONFIG.PUBLIC_AWAY_CHANNELS / $mychannels()))
 				{
 					describe $chan is away: $reason [Log/${CONFIG[AWAY_LOG] ? [ON] : [OFF]}]

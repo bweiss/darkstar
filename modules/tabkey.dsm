@@ -9,7 +9,6 @@
  * This script uses serial number 420 for all ON hooks.
  */
 
-/*
 queue cleanup.tabkey
 {
 	for alias in ($aliasctl(alias match tabkey.))
@@ -27,7 +26,6 @@ queue cleanup.tabkey
 
 	^assign -TABKEY.LASTNICK
 }
-*/
 
 bind ^I parse_command tabkey.process_tabkey
 

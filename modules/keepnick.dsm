@@ -9,7 +9,6 @@
  * This script uses serial numbers 422 and 423 for all ON hooks.
  */
 
-/*
 queue cleanup.keepnick
 {
 	^alias -getnick
@@ -17,7 +16,6 @@ queue cleanup.keepnick
 	@ getnick.cleanup()
 	^on #timer 423 -"*"
 }
-*/
 
 alias getnick (nick, void)
 {

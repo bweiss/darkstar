@@ -13,13 +13,11 @@
  * credit. Please send bug reports to me, do not bother shade.
  */
 
-/*
 queue cleanup.nickcomp
 {
 	^alias -nickcomp.getnick
 	^on input -"%: *"
 }
-*/
 
 alias nickcomp.getnick
 {

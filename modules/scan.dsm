@@ -7,7 +7,6 @@
  * Author: Brian Weiss <brian@got.net> - 2001
  */
 
-/*
 queue cleanup.scan
 {
 	for alias in ($aliasctl(alias match scan.))
@@ -19,7 +18,6 @@ queue cleanup.scan
 	^alias -scan
 	^assign -SCAN.CHAN
 }
-*/
 
 alias sc scan
 

@@ -14,7 +14,6 @@
  *       a client connected to multiple servers. Use at your own risk.
  */
 
-/*
 queue cleanup.autocycle
 {
 	^alias -autocycle
@@ -24,7 +23,6 @@ queue cleanup.autocycle
 	^on #leave 425 -'\\\$servernick() *'
 	@ delarray(synced_channels)
 }
-*/
 
 alias autocycle (channel, void)
 {
