@@ -105,8 +105,18 @@ Author: Brian Weiss <brian@epicsol.org>
      - Sets -v for everyone on [channel] or the current channel.
        * Aliases: mdvoice
 
+   mme [-all] <text>
+     - Sends an action with <text> to all your channels. If the '-all'
+       option is specified, actions will be sent to all channels on
+       all server connections.
+
    mop [channel]
      - Sets +o for everyone on [channel] or the current channel.
+
+   msay [-all] <text>
+     - Sends a public with <text> to all your channels. If the '-all'
+       option is specified, publics will be sent to all channels on
+       all server connections.
 
    mvoice [channel]
      - Sets +v for everyone on [channel] or the current channel.

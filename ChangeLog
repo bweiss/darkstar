@@ -3,11 +3,23 @@ DarkStar ChangeLog
 
 20020505
 
+ * Changes to the whois, msg, and notice formats in the darkstar and
+   feedback themes.
+
+ * Added two new functions to the core: $ansicparse() and $serverrefs().
+
+ * [channel.dsm 0.3.2] Added two new aliases: /mme and /msay
+
  * Added doc/modules.txt, a guide to module writing and the first in-depth
    documentation of the core scripts. Woo!
 
  * The name of the script pack has been officially changed from Darkstar to
    DarkStar. ;)
+
+20020502
+
+ * [names.dsm 0.2.1] I wasn't cleaning up any of the /on hooks when the
+   module is unloaded.
 
 20020427
 

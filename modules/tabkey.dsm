@@ -1,4 +1,4 @@
-#version 0.6.4
+#version 0.6.5
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key module for DarkStar/EPIC4
@@ -125,25 +125,6 @@ alias tabkey.display_rules (void)
 		@ :num = cnt + 1
 		echo $[3]num $[26]pattern $[12]proc ${list ? list : []}
 	}
-}
-
-/*
- * Goes through all existing windows and returns the refnums of all
- * current server connections. I added this so that /on hooks related to
- * DCC CHAT could call tabkey.addnick for ALL server connections.
- */
-alias tabkey.get_server_refnums (void)
-{
-	^local retval
-	for winref in ($winrefs())
-	{
-		@ :sref = winserv($winref)
-		if (!match($sref $retval))
-		{
-			push retval $sref
-		}
-	}
-	@ function_return = retval
 }
 
 /*
@@ -470,7 +451,7 @@ for hook in (dcc_chat send_dcc_chat)
 {
 	on #^$hook 420 "*"
 	{
-		for sref in ($tabkey.get_server_refnums())
+		for sref in ($serverrefs())
 		{
 			tabkey.addnick $sref =$0
 		}
@@ -479,7 +460,7 @@ for hook in (dcc_chat send_dcc_chat)
 
 on #^dcc_request 420 "% CHAT *"
 {
-	for sref in ($tabkey.get_server_refnums())
+	for sref in ($serverrefs())
 	{
 		tabkey.addnick $sref =$0
 	}
@@ -487,7 +468,7 @@ on #^dcc_request 420 "% CHAT *"
 
 on #^send_ctcp 420 "PRIVMSG % DCC CHAT *"
 {
-	for sref in ($tabkey.get_server_refnums())
+	for sref in ($serverrefs())
 	{
 		tabkey.addnick $sref =$1
 	}

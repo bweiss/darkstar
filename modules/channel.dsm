@@ -1,4 +1,4 @@
-#version 0.3.1
+#version 0.3.2
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
@@ -12,7 +12,7 @@
 
 queue cleanup.channel
 {
-	for alias in (alldeop alldop allop ban bankick banlist bans bk cmode cycle deop dop devoice dvoice i invite j join k kb key kick kickban l leave lk massmode mdeop mdop mdevoice mdvoice mop mvoice oldtopic op part partall setoldtopic t tban tempban unban unkey untopic voice wall wall2)
+	for alias in (alldeop alldop allop ban bankick banlist bans bk cmode cycle deop dop devoice dvoice i invite j join k kb key kick kickban l leave lk massmode mdeop mdop mdevoice mdvoice mme mop msay mvoice oldtopic op part partall setoldtopic t tban tempban unban unkey untopic voice wall wall2)
 	{
 		^alias -$alias
 	}
@@ -352,9 +352,75 @@ alias mdevoice (chan default "$C", void)
 	massmode $chan - v $remw($servernick() $onchannel($chan))
 }
 
+alias mme
+{
+	if (pattern($0* -all))
+	{
+		@ :all_servers = 1
+		@ :text = [$1-]
+	}{
+		@ :text = [$*]
+	}
+
+	if (!text)
+	{
+		xecho -b Usage: /mme [-all] <text>
+		return
+	}
+
+	if (all_servers)
+	{
+		for sref in ($serverrefs())
+		{
+			for chan in ($mychannels($sref))
+			{
+				xeval -s $sref describe \$chan \$text
+			}
+		}
+	}{
+		for chan in ($mychannels())
+		{
+			describe $chan $text
+		}
+	}
+}
+
 alias mop (chan default "$C", void)
 {
 	massmode $chan + o $remw($servernick() $nochops($chan))
+}
+
+alias msay
+{
+	if (pattern($0* -all))
+	{
+		@ :all_servers = 1
+		@ :text = [$1-]
+	}{
+		@ :text = [$*]
+	}
+
+	if (!text)
+	{
+		xecho -b Usage: /msay [-all] <text>
+		return
+	}
+
+	if (all_servers)
+	{
+		for sref in ($serverrefs())
+		{
+			for chan in ($mychannels($sref))
+			{
+				xeval -s $sref msg \$chan \$text
+			}
+		}
+	}{
+		for chan in ($mychannels())
+		{
+			msg $chan $text
+		}
+	}
 }
 
 alias mvoice (chan default "$C", void)
