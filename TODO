@@ -57,6 +57,8 @@ AFTER 0.3 RELEASE:
   * Rewrite the /JOIN and /LEAVE aliases so that they use the CHANTYPES
     parameter from the 005 numeric to determine the allowed channel prefixes.
 
+  * Write a server management module.
+
 
 OTHER NOTES/IDEAS:
 

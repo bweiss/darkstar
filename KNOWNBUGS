@@ -32,3 +32,5 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Add YELL hook to suppress the annoying getaddrinfo() messages.
 * Fix the away module so that away time is displayed properly. This was
   caused by a missing call to $encode() in the 305 hook.
+* Add $chhops(), $nochhops(), and $nochvoices().
+* Rename $chanvoice() to $chvoices() for consistency.

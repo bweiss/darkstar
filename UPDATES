@@ -2,7 +2,16 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://darkstar.epicsol.org/UPDATES
 
 
-*** News 2004/04/26 -- foramts.dsm 0.2 - New format: SERVER_NOTICE
+*** News 2004/05/31 -- New functions: (no)chhops/(no)chvoices
+	We have several new functions that allow you to get a list
+	of the current voiced or half-op users. They are called
+	$chhops(), $nochhops(), $chvoices(), and $nochvoices().
+	They work just like the builtin $chops()/$nochops() functions.
+
+	The $chvoices() function is the old $chanvoice() function
+	donated by Ben Winslow. It has been renamed for consistency.
+
+*** News 2004/04/26 -- formats.dsm 0.2 - New format: SERVER_NOTICE
 	There is a new format variable called SERVER_NOTICE that will
 	be used to format all, yep you guessed it, server notices.
 

@@ -70,13 +70,37 @@ alias bool2word (arg, void)
 	@ function_return = ret;
 };
 
+alias chhops (chan default "$C", void)
+{
+	for nick in ($pattern(\\%* $channel($chan))) {
+		@ push(:tmp $rest(2 $nick));
+	};
+	@ function_return = tmp;
+};
+
+alias nochhops (chan default "$C", void)
+{
+	for nick in ($filter(\\%* $channel($chan))) {
+		@ push(:tmp $rest(2 $nick));
+	};
+	@ function_return = tmp;
+};
+
 # This was donated by Ben Winslow.
-alias chanvoice (chan default "$C", void)
+alias chvoices (chan default "$C", void)
 {
 	for nick in ($pattern(?+* $channel($chan))) {
-		@ push(:voice $rest(2 $nick));
+		@ push(:tmp $rest(2 $nick));
 	};
-	@ function_return = voice;
+	@ function_return = tmp;
+};
+
+alias nochvoices (chan default "$C", void)
+{
+	for nick in ($filter(?+* $channel($chan))) {
+		@ push(:tmp $rest(2 $nick));
+	};
+	@ function_return = tmp;
 };
 
 alias country (...)

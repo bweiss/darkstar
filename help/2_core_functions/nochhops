@@ -1,0 +1,34 @@
+Synopsis:
+   $nochhops(<channel>)
+
+Technical:
+   * If the <channel> argument is omitted, the current window's current
+     channel is used.  THIS IS NOT NECCESARILY THE CORRECT CHANNEL IN 
+     AN /ON!
+   * If the <channel> argument is the literal star character (``*''), the
+     current window's current channel is used.  THIS IS NOT NECCESARILY THE
+     CORRECT CHANNEL IN AN /ON!
+   * This function returns the non-half-ops on the specified channel.
+   * You must be on the channel; the empty string is returned if you are not.
+   * Before /ON CHANNEL_SYNC is thrown, this function may return the empty
+     string (because EPIC does not know who are the voiced users yet.)
+   * A design defect in the historical server implementation may cause 
+     truncated nicknames to be included in the list.  The client corrects 
+     these truncated nicknames by watching the WHO reply.  Before 
+     /ON CHANNEL_SYNC is thrown, truncated nicknames may be included in 
+     this list.
+
+Returns:
+   The non-half-ops on the specified channel.  You must be on the channel.
+   Before /ON CHANNEL_SYNC, this function may return the empty string,
+   or a list with truncated nicknames.
+
+Examples:
+   $nochhops(#foo)             shows non-half-ops on channel #foo
+   $nochhops(*)                shows non-half-ops on current channel
+   $nochhops()                 shows non-half-ops on current channel
+
+See Also:
+   names(2);  onchannel(6);  chops(6);  nochops(6);
+   ds:chhops(6);  ds:chvoices(6);  ds:nochvoices(6)
+
