@@ -1,4 +1,4 @@
-#version 0.7.1
+#version 0.7.2
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key module for DarkStar/EPIC4
@@ -63,12 +63,12 @@ alias tabkey
 			xecho -b Invalid sub-command: $0
 			xecho -b Usage: /tabkey <sub-command> [arguments]
 			xecho -b   - <sub-command> and [arguments] can be any one of the following.
-			xecho -b        addrule <pattern> <procedure> [word list]
+			xecho -b        addrule <pattern> <procedure> [extra arguments]
 			xecho -b        clear
 			xecho -b        listrules
 			xecho -b        rmrule <pattern>
 			xecho -b        saverules
-			xecho -b   - In all cases, <pattern> and [word list] must be quoted
+			xecho -b   - In all cases, <pattern> and [extra arguments] must be quoted
 			xecho -b See ds:tabkey(3) for details
 		}
 	}
@@ -78,13 +78,14 @@ alias tabkey
 /****** INTERNAL ALIASES ******/
 
 /*
- * tabkey.addrule <pattern> <procedure> [word list]
+ * tabkey.addrule <pattern> <procedure> [extra arguments]
  *
- * Adds a new completion rule. Both <pattern> and [word list] MUST be
- * double quoted or things will break. It is also important to be aware
- * that the [word list] argument will be evaluated just before the
- * completion takes place. The <procedure> argument should be the member
- * name of an existing tabkey procedure (tabkey.proc.<procedure>).
+ * Adds a new completion rule. Both <pattern> and [extra arguments] MUST
+ * be double quoted or things will break. It is also important to be aware
+ * that [extra arguments] will be evaluated just before the completion
+ * takes place. The <procedure> argument should be the member name of an
+ * existing tabkey procedure (tabkey.proc.<procedure>) and [extra arguments]
+ * is given as the arguments to the procedure being executed.
  *
  * Example: tabkey.addrule "/foo *" channel "$mychannels()"
  */
@@ -94,10 +95,10 @@ alias tabkey.addrule
 	/* This is here to deal with a pattern of "" */
 	if (!pattern) {
 		@:proc = word(0 $restw(1 $*))
-		@:list = restw(1 $restw(1 $*))
+		@:extra = restw(1 $restw(1 $*))
 	} else {
 		@:proc = word(1 $*)
-		@:list = word(2 $*)
+		@:extra = word(2 $*)
 	}
 	@:pattern = ["] ## pattern ## ["]
 
@@ -114,7 +115,7 @@ alias tabkey.addrule
 
 	if (aliasctl(alias match tabkey.proc.$proc)) {
 		@ setitem(tabkey.rules $numitems(tabkey.rules) $pattern)
-		@ setitem(tabkey.rinfo $numitems(tabkey.rinfo) $proc${list ? [ $list] : []})
+		@ setitem(tabkey.rinfo $numitems(tabkey.rinfo) $proc${extra ? [ $extra] : []})
 		xecho -s -b Added completion rule #$numitems(tabkey.rules): $pattern \($proc\)
 	} else {
 		xecho -b Error: tabkey.addrule: Invalid completion procedure [$proc]
@@ -145,13 +146,13 @@ alias tabkey.addnick (server, nick, void)
 
 alias tabkey.listrules (void)
 {
-	echo #   Pattern                    Procedure    Word List
+	echo #   Pattern                    Procedure    Extra Arguments
 	for cnt from 0 to ${numitems(tabkey.rules) - 1} {
 		@:pattern = getitem(tabkey.rules $cnt)
 		@:proc = word(0 $getitem(tabkey.rinfo $cnt))
-		@:list = restw(1 $getitem(tabkey.rinfo $cnt))
+		@:extra = restw(1 $getitem(tabkey.rinfo $cnt))
 		@:num = cnt + 1
-		echo $[3]num $[26]pattern $[12]proc ${list ? list : []}
+		echo $[3]num $[26]pattern $[12]proc ${extra ? ["$extra"] : []}
 	}
 }
 
@@ -164,8 +165,8 @@ alias tabkey.process_tabkey (void)
 	if (item > -1) {
 		@:rinfo = getitem(tabkey.rinfo $item)
 		@:proc = word(0 $rinfo)
-		eval ^local list $restw(1 $rinfo)
-		tabkey.proc.$proc $list
+		eval ^local extra $restw(1 $rinfo)
+		tabkey.proc.$proc $extra
 		@ TABKEY.LAST_INPUT = L
 	}
 }
@@ -217,10 +218,10 @@ alias tabkey.saverules (void)
 	{
 		@:pattern = getitem(tabkey.rules $cnt)
 		@:proc = word(0 $getitem(tabkey.rinfo $cnt))
-		@:list = restw(1 $getitem(tabkey.rinfo $cnt))
+		@:extra = restw(1 $getitem(tabkey.rinfo $cnt))
 		@:cmd = [tabkey.addrule ] ## getitem(tabkey.rules $cnt) ## [ ] ## proc
-		if (list) {
-			@:cmd = cmd ## [ "] ## list ## ["]
+		if (extra) {
+			@:cmd = cmd ## [ "] ## extra ## ["]
 		}
 		@ write($fd $cmd)
 	}
@@ -259,6 +260,36 @@ alias tabkey.show_matches (list)
  * structure is being called by something that is.
  */
 
+alias tabkey.proc.aliasctl (type, void)
+{
+	if (!type) {
+		return
+	}
+
+	@:lastc = mid(${strlen($L) - 1} 1 $L)
+	unless (lastc == [ ])
+	{
+		@:lastw = word(${#L - 1} $L)
+
+		/* Deal with the removal of variables correctly. */
+		if (left(1 $lastw) == [-]) {
+			@:rm = 1
+			@:lastw = mid(1 $strlen($lastw) $lastw)
+		}
+
+		@:matches = pattern($lastw% $aliasctl($type match $lastw))
+
+		if (#matches == 1) {
+			parsekey delete_to_previous_space
+			xtype -l ${rm ? [-] : []}$matches${[ ]}
+		} else if (#matches > 1) {
+			parsekey delete_to_previous_space
+			xtype -l ${rm ? [-] : []}$prefix($matches)
+			tabkey.show_matches $matches
+		}
+	}
+}
+
 alias tabkey.proc.array (array, void)
 {
 	^local items
@@ -281,32 +312,6 @@ alias tabkey.proc.array (array, void)
 		parsekey delete_to_previous_space
 		xtype -l $prefix($matches)
 		tabkey.show_matches $matches
-	}
-}
-
-alias tabkey.proc.assign (void)
-{
-	@:lastc = mid(${strlen($L) - 1} 1 $L)
-	unless (lastc == [ ])
-	{
-		@:lastw = word(${#L - 1} $L)
-
-		/* Deal with the removal of variables correctly. */
-		if (left(1 $lastw) == [-]) {
-			@:rm = 1
-			@:lastw = mid(1 $strlen($lastw) $lastw)
-		}
-
-		@:matches = pattern($lastw% $aliasctl(assign match $lastw))
-
-		if (#matches == 1) {
-			parsekey delete_to_previous_space
-			xtype -l ${rm ? [-] : []}$matches${[ ]}
-		} else if (#matches > 1) {
-			parsekey delete_to_previous_space
-			xtype -l ${rm ? [-] : []}$prefix($matches)
-			tabkey.show_matches $matches
-		}
 	}
 }
 
@@ -334,21 +339,22 @@ alias tabkey.proc.channel (list default "$mychannels()")
 
 alias tabkey.proc.command (void)
 {
-	if (strlen($L) == 1)
+	if (numwords($L) == 1)
 	{
 		parsekey command_completion
 	}{
-		@:matches = getcommands($rest(1 $L)%)
+		@:lastw = word(${#L - 1} $L)
+		@:matches = getcommands($lastw%)
 		if (!matches) {
-			@:matches = aliasctl(alias match $rest(1 $L))
+			@:matches = aliasctl(alias match $lastw)
 		}
 
 		if (#matches == 1) {
-			parsekey erase_line
-			xtype -l /$matches${[ ]}
+			parsekey delete_to_previous_space
+			xtype -l $matches${[ ]}
 		} else if (#matches > 1) {
-			parsekey erase_line
-			xtype -l /$prefix($matches)
+			parsekey delete_to_previous_space
+			xtype -l $prefix($matches)
 			tabkey.show_matches $matches
 		}
 	}
@@ -536,6 +542,8 @@ tabkey.addrule "*"                  nick        "$remw($: $onchannel()) $:"
 tabkey.addrule "#%"                 channel
 tabkey.addrule "* #%"               channel
 tabkey.addrule "/%"                 command
+tabkey.addrule "/do %"              command
+tabkey.addrule "/eval %"            command
 tabkey.addrule "/tabkey %"          generic     "addrule clear listrules rmrule saverules"
 tabkey.addrule "/config %"          set         "config"
 tabkey.addrule "/dset %"            set         "config"
@@ -564,11 +572,14 @@ tabkey.addrule "/part *"            channel
 tabkey.addrule "/mode %"            channel
 tabkey.addrule "/m #%"              channel
 tabkey.addrule "/msg #%"            channel
-tabkey.addrule "/assign %"          assign
-tabkey.addrule "/push %"            assign
-tabkey.addrule "/pop %"             assign
-tabkey.addrule "/shift %"           assign
-tabkey.addrule "/unshift %"         assign
+tabkey.addrule "/assign %"          aliasctl    "assign"
+tabkey.addrule "/push %"            aliasctl    "assign"
+tabkey.addrule "/pop %"             aliasctl    "assign"
+tabkey.addrule "/shift %"           aliasctl    "assign"
+tabkey.addrule "/unshift %"         aliasctl    "assign"
+tabkey.addrule "/foreach %"         aliasctl    "assign"
+tabkey.addrule "/foreach -%"        aliasctl    "alias"
+tabkey.addrule "/alias %"           aliasctl    "alias"
 
 /*
  * Load the user's custom rule set if one exists.

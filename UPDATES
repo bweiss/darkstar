@@ -1,3 +1,10 @@
+*** News 2002/06/09 -- tabkey.dsm 0.7.2
+	The assign procedure has been renamed aliasctl and now handles
+	completion for both assign variables and aliases. This will cause
+	old rules that use the assign procedure to be rejected, so check
+	your custom rules if you have any. Several new completion rules
+	were also added to the defaults.
+
 *** News 2002/06/08 -- New config variable: AUTO_SAVE_ON_UNLOAD
 	The name says it all. It has a boolean value that, when true,
 	will cause a module's settings to be saved before it is unloaded.
