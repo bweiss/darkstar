@@ -11,11 +11,6 @@
 
 queue cleanup.channel
 {
-	for alias in ($aliasctl(alias match channel.))
-	{
-		^alias -$alias
-	}
-	
 	for alias in (alldeop alldop allop ban bankick banlist bans bk cmode cycle deop dop devoice dvoice i invite j join k kb key kick kickban l lk massmode mdeop mdop mdevoice mdvoice mop mvoice oldtopic op partall setoldtopic t tban tempban unban unkey untopic voice wall wall2)
 	{
 		^alias -$alias

@@ -11,11 +11,6 @@
 
 queue cleanup.window
 {
-	for alias in ($aliasctl(alias match window.))
-	{
-		^alias -$alias
-	}
-
 	for alias in (swap wb wc wj wk wl wn wp wub)
 	{
 		^alias -$alias

@@ -3,6 +3,10 @@ Darkstar ChangeLog
 
 [0.0.9]
 
+ - [loader.dsc] Variables and aliases in structures named after the module
+   are now automatically removed when a module is unloaded. They no longer
+   need to be removed by the module itself in its cleanup queue. (This is
+   any alias or variable preceded by "modulename.")
  - [tabkey.dsm] File completion can now handle the use of ~ and will now
    display all matches if more than one is found.
  - [tabkey.dsm] Now supports command completion.

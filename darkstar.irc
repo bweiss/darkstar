@@ -24,8 +24,8 @@ eval for array in \($getarrays()\)
       
 /* Important global variables */
 
-assign DS.VER 0.0.8
-assign DS.VERSION 20010424
+assign DS.VER 0.0.9
+assign DS.VERSION 20010915
 
 
 /* Find out where everything is */

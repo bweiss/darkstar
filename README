@@ -1,11 +1,7 @@
 Darkstar README
 Author: Brian Weiss <brian@epicsol.org>
 
-Last modification: 7/4/01
-
-Darkstar and EPIC4 can be obtained from http://www.got.net/~brian/
-
-Official EPIC Website: http://www.epicsol.org/
+Last modification: 9/15/01
 
 
 ABOUT
@@ -16,8 +12,34 @@ take the time to customize their client. The core script itself is quite
 small and provides everything necessary to load/unload modules, configure
 settings, save settings, and browse the help files. All other features
 come in the form of modules that can be loaded or unloaded at any time.
-This gives the script great flexibility and power. Anyway, I hope you find
-this script as useful as I do.
+This gives the script great flexibility and power. I must apologize for
+the lack of real documentation at this time, but the following should
+be enough to get you started. The script is quite usable despite it being
+in the early stages of development. Anyway, I hope you enjoy what I have
+created here.
+
+
+WHERE TO GET DARKSTAR AND EPIC4
+
+Darkstar and EPIC4 can be obtained from the following places:
+
+http://www.got.net/~brian/
+http://www.neglected.net/~brian/
+http://www.epicsol.org/~brian/
+
+A snapshot of my current tree is also available via CVS:
+
+	export CVSROOT=:pserver:anoncvs@epicsol.org:/home/cvs/repository
+	cvs login
+	(password is "anoncvs")
+	cvs co darkstar
+
+  Once you have done a checkout you can just do the following to update it.
+
+	cd darkstar/
+	cvs update
+
+Official EPIC Website: http://www.epicsol.org/
 
 
 GETTING STARTED
@@ -82,7 +104,7 @@ TODO			- To-do list.
 ChangeLog		- The changelog.
 
 darkstar.irc		- The main script. This is what you actually /load
-			  to start using DarkStar.
+			  to start using Darkstar.
 sample.dsrc		- Sample .dsrc file
 
 core/config.dsc		- Configuration manager (/dset and /fset)

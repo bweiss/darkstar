@@ -11,20 +11,13 @@
 
 queue cleanup.tabkey
 {
-	for alias in ($aliasctl(alias match tabkey.))
-	{
-		^alias -$alias
-	}
-	
-	@ delarray(tabkey_nicks)
-
 	^on #msg 420 -"*"
 	^on #send_msg 420 -"*"
 	^on #dcc_chat 420 -"*"
 	^on #send_dcc_chat 420 -"*"
 	^on #dcc_connect 420 -"% CHAT *"
 
-	^assign -TABKEY.LASTNICK
+	@ delarray(tabkey_nicks)
 }
 
 bind ^I parse_command tabkey.process_tabkey

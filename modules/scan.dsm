@@ -9,14 +9,8 @@
 
 queue cleanup.scan
 {
-	for alias in ($aliasctl(alias match scan.))
-	{
-		^alias -$alias
-	}
-	
 	^alias -sc
 	^alias -scan
-	^assign -SCAN.CHAN
 }
 
 alias sc scan

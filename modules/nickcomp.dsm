@@ -15,7 +15,6 @@
 
 queue cleanup.nickcomp
 {
-	^alias -nickcomp.getnick
 	^on input -"%: *"
 }
 

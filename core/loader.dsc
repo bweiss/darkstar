@@ -65,6 +65,8 @@ alias load_module (module, void)
 
 			if (fexist($defaults_file) == 1)
 			{
+				/* Read default settings and setup the needed variables
+				   for the modular dset/fset */
 				@ :fd = open($defaults_file R)
 			
 				while (!eof($fd))
@@ -91,11 +93,13 @@ alias load_module (module, void)
 			
 			@ close($fd)
 					
+			/* Load saved settings */
 			if (fexist($savefile) == 1)
 			{
 				load $savefile
 			}
 
+			/* Load the bugger */
 			load $DS.MODULE_DIR/$module\.dsm
 			@ setitem(loaded_modules $numitems(loaded_modules) $module)
 
@@ -167,8 +171,22 @@ alias unload_module (module)
 		@ :itm = finditem(loaded_modules $module)
 		if (itm > -1)
 		{
+			/* Execute cleanup queue for module */
 			queue -do cleanup.$module
 
+			/* Get rid of any global aliases/variables obviously
+			   related to this module */
+			for alias in ($aliasctl(alias match $module\.))
+			{
+				^alias -$alias
+			}
+			
+			for var in ($aliasctl(assign match $module\.))
+			{
+				^assign -$var
+			}
+
+			/* Remove all dset/fset variables */
 			for var in ($DSET\.$module)
 			{
 				^assign -CONFIG.$var

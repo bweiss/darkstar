@@ -11,11 +11,6 @@
 
 queue cleanup.away
 {
-	for alias in ($aliasctl(alias match away.))
-	{
-		^alias -$alias
-	}
-	
 	for alias in (away back readlog remlog)
 	{
 		^alias -$alias
