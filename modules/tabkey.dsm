@@ -116,7 +116,6 @@ alias tabkey.main (void)
 	}
 	@ :wordind = wordtoindex($curword $L)
 	@ :cmdind = 0
-#	if (32 >= (127 & ascii($mid(${curpos() - 1} 1 $L )))) {
 	if (32 >= (127 & ascii($mid(${curpos - 1} 1 $L)))) {
 		@ curword++
 		@ wordind = curpos
@@ -371,9 +370,6 @@ alias tabkey.cmd.help (...)
 {
 	bless
 	@ :matches = []
-#	@ :path = restw(1 $left($curpos() $L))
-#	if (wordind == curpos()) {@ push(path *)}
-#	@ matches = globi($unsplit(/ $getset(HELP_PATH) $path*))
 	@ :path = restw(1 $left($curpos $L))
 	if (wordind == curpos) {@ push(path *)}
 	repeat $#path @ push(path $shift(path)*)
