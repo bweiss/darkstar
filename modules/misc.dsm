@@ -1,4 +1,4 @@
-#version 0.9
+#version 0.9.1
 /* $Id$ */
 /*
  * misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
@@ -455,7 +455,7 @@ on #-timer 424 "*" {
 			push delete $cnt
 		}
 	}
-	for item in ($reverse($delete)) {
+	for item in ($revw($delete)) {
 		@ delitem(misc.away_users $item)
 		@ delitem(misc.away_users_ts $item)
 	}
@@ -467,7 +467,7 @@ on #-timer 424 "*" {
 			push delete2 $cnt
 		}
 	}
-	for item in ($reverse($delete2)) {
+	for item in ($revw($delete2)) {
 		@ delitem(misc.userhosts $item)
 		@ delitem(misc.userhosts_ts $item)
 	}
