@@ -9,8 +9,6 @@ Author: Brian Weiss <brian@epicsol.org>
    AUTO_BIND_CHANNELS         - If $CONFIG.AUTO_CREATE_WINDOWS is true,
                                 bind the specified channels to windows as
                                 they are created.
-   AUTO_BIND_ON_JOIN          - Boolean. Automatically bind channels to
-                                the current window on join.
    AUTO_CREATE_WINDOW_ARGS    - List of commands to pass to /window when
                                 creating windows according to the following..
    AUTO_CREATE_WINDOWS        - Number of windows to create at load time.
@@ -21,6 +19,8 @@ Author: Brian Weiss <brian@epicsol.org>
                                 the msg window. This determines what actually
                                 goes to the msg window.
    MSG_WINDOW_SIZE            - Size of the msg window.
+   UNBIND_ON_PART             - Boolean. Automatically unbind channels
+                                after you part them.
 
 Commands:
    swap [window name or refnum]

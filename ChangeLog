@@ -3,6 +3,11 @@ DarkStar ChangeLog
 
 2002/05/24
 
+ * [window.dsm 0.4] HEADS UP: The AUTO_BIND_ON_JOIN and AUTO_UNBIND_ON_PART
+   config variables have been renamed to BIND_ON_JOIN and BIND_ON_PART.
+   This is an attempt to get rid of some of the AUTO_* config variables.
+   More of these changes will likely follow.
+
  * Removed the /loadedmodules and /loadedmods aliases.
 
  * The output from /modlist is now configurable via format variables.

@@ -1,4 +1,4 @@
-#version 0.3.3
+#version 0.4
 /* $Id$ */
 /*
  * window.dsm - Window module for DarkStar/EPIC4
@@ -9,6 +9,8 @@
  *
  * This script uses serial number 426 for all /on hooks.
  */
+
+/****** CLEANUP QUEUE ******/
 
 queue cleanup.window
 {
@@ -61,22 +63,26 @@ queue cleanup.window
 }
 
 
+/****** CONFIG/FORMAT VARIABLES ******/
+
 config.add    AUTO_BIND_CHANNELS
-config.add -b AUTO_BIND_ON_JOIN 0
 config.add    AUTO_CREATE_WINDOW_ARGS double on hide
 config.add    AUTO_CREATE_WINDOWS 10
-config.add -b AUTO_UNBIND_ON_PART 0
+config.add -b BIND_ON_JOIN 0
 config.add -b MSG_WINDOW 0
 config.add    MSG_WINDOW_LEVEL msgs,opnotes,wallops
 config.add    MSG_WINDOW_SIZE 5
+config.add -b UNBIND_ON_PART 0
+
 
 /*
- * Make sure the msg window is exempt from status double being turned on.
- * This will only work for status files that are aware of this. Currently
- * both the 'darkstar' and 'feedback' status bars support this.
+ * Add "msgs" to the single_status array to prevent the msg window
+ * from having double turned on.
  */
 @ setitem(single_status $numitems(single_status) msgs)
 
+
+/****** KEY BINDINGS ******/
 
 ^bind ^W META8_CHARACTER
 ^bind ^X SWITCH_CHANNELS
@@ -122,12 +128,16 @@ config.add    MSG_WINDOW_SIZE 5
 ^bind -symbolic key_f12 PARSE_COMMAND if (winnum(msgs) != -1) {window msgs clear}
 
 
-/* Force the loading of saved settings early
-   so the following /if commands can use them. */
+/*
+ * Force the loading of saved settings early
+ * so the following /if commands can use them.
+ */
 module.load_saved_settings
 
-
-if (CONFIG[AUTO_CREATE_WINDOWS])
+/*
+ * Create some windows when the module loads.
+ */
+if (CONFIG.AUTO_CREATE_WINDOWS)
 {
 	for cnt from 0 to $CONFIG.AUTO_CREATE_WINDOWS
 	{
@@ -146,10 +156,9 @@ if (CONFIG[AUTO_CREATE_WINDOWS])
 	}
 }
 
-if (CONFIG[MSG_WINDOW])
+if (CONFIG.MSG_WINDOW)
 {
-	if (winnum(msgs) == -1)
-	{
+	if (winnum(msgs) == -1) {
 		window new name msgs
 		window size $CONFIG.MSG_WINDOW_SIZE
 		window level $CONFIG.MSG_WINDOW_LEVEL
@@ -158,14 +167,14 @@ if (CONFIG[MSG_WINDOW])
 }
 
 
+/****** USER ALIASES ******/
+
 alias swap (winnum, void)
 {
-	if (winnum)
-	{
+	if (winnum) {
 		window swap $winnum
-	}{
-		input "What window should we swap to? "
-		{
+	} else {
+		input "What window should we swap to? " {
 			window swap $0
 		}
 	}
@@ -179,24 +188,21 @@ alias wb (chan default "$C", void)
 alias wc (void)
 {
 	window new_hide swap last
-	if (STATUS[DOUBLE])
-	{
+	if (STATUS.DOUBLE) {
 		window double on
 	}
 }
 
 alias wj (chan)
 {
-	if (!chan)
-	{
+	if (!chan) {
 		xecho -b Usage: /wj <channel> [key]
 		return
 	}
 
 	window new_hide swap last
 	join $chan
-	if (STATUS[DOUBLE])
-	{
+	if (STATUS.DOUBLE) {
 		window double on
 	}
 }
@@ -227,6 +233,8 @@ alias wub (void)
 }
 
 
+/****** INTERNAL ALIASES ******/
+
 alias window.msgwin_up (void)
 {
 	@ :cwin = winnum()
@@ -244,23 +252,22 @@ alias window.msgwin_down (void)
 }
 
 
+/****** ON HOOKS ******/
+
 /*
  * Kill or create msg window on /dset MSG_WINDOW
  */
 on #-hook 426 "CONFIG MSG_WINDOW *"
 {
-	if (CONFIG[MSG_WINDOW])
-	{
-		if (winnum(msgs) == -1)
-		{
+	if (CONFIG.MSG_WINDOW) {
+		if (winnum(msgs) == -1) {
 			window new name msgs
 			window level $CONFIG.MSG_WINDOW_LEVEL
 			window size $CONFIG.MSG_WINDOW_SIZE
 			window last
 		}
-	}{
-		if (winnum(msgs) != -1)
-		{
+	} else {
+		if (winnum(msgs) != -1) {
 			window msgs kill
 		}
 	}
@@ -268,48 +275,42 @@ on #-hook 426 "CONFIG MSG_WINDOW *"
 
 on #-hook 426 "CONFIG MSG_WINDOW_LEVEL *"
 {
-	if (CONFIG[MSG_WINDOW])
-	{
+	if (CONFIG.MSG_WINDOW) {
 		window msgs level $CONFIG.MSG_WINDOW_LEVEL
 	}
 }
 
 on #-hook 426 "CONFIG MSG_WINDOW_SIZE *"
 {
-	if (CONFIG[MSG_WINDOW])
-	{
+	if (CONFIG.MSG_WINDOW) {
 		window msgs size $CONFIG.MSG_WINDOW_SIZE
 	}
 }
 
 on #-join 426 '$servernick() *'
 {
-	if (CONFIG[AUTO_BIND_ON_JOIN])
-	{
+	if (CONFIG.BIND_ON_JOIN) {
 		window bind $1
 	}
 }
 
 on #-leave 426 '$servernick() *'
 {
-	if (CONFIG[AUTO_UNBIND_ON_PART])
-	{
+	if (CONFIG.UNBIND_ON_PART) {
 		window unbind $1
 	}
 }
 
 on #-window_kill 426 "msgs"
 {
-	if (CONFIG[MSG_WINDOW])
-	{
+	if (CONFIG.MSG_WINDOW) {
 		dset MSG_WINDOW OFF
 	}
 }
 
 on #-window_kill 426 "*"
 {
-	if (CONFIG[MSG_WINDOW])
-	{
+	if (CONFIG.MSG_WINDOW) {
 		window previous
 		window show msgs
 		window size $CONFIG.MSG_WINDOW_SIZE
