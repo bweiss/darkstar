@@ -227,5 +227,22 @@ alias uh
 	return $blahblah
 }
 
+/*
+ * Returns the names of all channels belonging a specific window.
+ * If no window is specified the current window is used.
+ */
+alias winchannels (win default "$winnum()", void)
+{
+	^local channels
+	for chan in ($mychannels($winserv($win)))
+	{
+		@ :wref = winchan($chan)
+		if (wref == win) {
+			push channels $chan
+		}
+	}
+	@ function_return = channels
+}
+
 
 /* EOF */

@@ -1,0 +1,13 @@
+Synopsis:
+   $winchannels([winref])
+
+Description:
+   Function to get the names of any channels that belong to a specific window.
+
+Returns:
+   The names of any channels that belong to [winref]. If no arguments are
+   given the current window is used.
+
+See Also:
+   winrefs(6)
+

@@ -7,11 +7,11 @@ FOR 0.3 RELEASE:
   * Using the above mentioned $numlines() function, rewrite /LESS so that
     it correctly handles linewrapped output.
 
-  * Move all (most?) aliases and assigns in the core scripts to the DS
-    or CORE structures and make sure that the module loader does not allow
-    any modules to use names that may interfere with the core scripts.
-    This includes the words: ds, core, config, format, module, dset, fset,
-    status (this may go away), and any others I'm forgetting.
+  * Move all aliases and assigns in the core scripts to the DS or CORE
+    /ASSIGN structures, or a structure prepended with '_', and make sure
+    that the module loader does not allow any modules to use names that may
+    interfere with the core scripts. This includes the words: ds, core,
+    config, format, module, and anything beginning with '_'.
 
   * Move certain key bindings (most importantly, pgup/pgdn) out of
     window.dsm and into the core.

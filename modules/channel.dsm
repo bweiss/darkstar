@@ -1,4 +1,4 @@
-#version 1.0
+#version 1.0.1
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
@@ -10,13 +10,16 @@
 
 /****** CLEANUP QUEUE ******/
 
-queue cleanup.channel {
+queue cleanup.channel
+{
 	for alias in (addtopic alldeop alldop allop ban bankick banlist bans bk cmode cycle deop dop devoice dvoice et etopic i invite j join k kb key kick kickban l leave lk massmode mdeop mdop mdevoice mdvoice mme mop msay mvoice op part partall settopic t tban tempban topics tt ttopic unban unkey untopic voice wall) {
 		^alias -$alias
 	}
+
 	for hook in (332 333 367 368 369 action channel_nick channel_signoff channel_sync invite join kick leave mode public public_other send_public topic) {
 		^on $hook -"*"
 	}
+
 	^on send_action -'\\\\\[#* &* +*\\\\\] *'
 	^on #hook 428 -"CONFIG CHANNEL_WALL_TYPE *"
 	^on #hook 428 -"CONFIG REMEMBER_TOPICS *"
@@ -71,22 +74,30 @@ format.add TOPIC_UNSET $G $1 has changed the topic on channel $2 to
 
 /****** USER ALIASES ******/
 
-alias addtopic (newtopic) {
-	if (!newtopic) {
+alias addtopic (newtopic)
+{
+	if (!newtopic)
+	{
 		xecho -b Usage: /ADDTOPIC <text>
 		return
 	}
-	if (!C) {
-		xecho -b No current channel for this window
+
+	if (!C)
+	{
+		xecho -b No active channel for this window
 		return
 	}
+
 	@ :serv = winserv()
 	@ :array = [channel.topics.$serv\.$C]
 	@ :topic = getitem($array ${numitems($array) - 1})
-	if (topic) {
+
+	if (topic)
+	{
 		//topic $C $topic $CONFIG.ADDTOPIC_DELIMETER $newtopic
-	} else {
+	}{
 		@ CHANNEL.ADDTOPIC = newtopic
+
 		/* No topic set */
 		^on -331 "% $C *" {
 			//topic $1 $CHANNEL.ADDTOPIC
@@ -95,28 +106,37 @@ alias addtopic (newtopic) {
 			defer ^on 332 -"% $1 *"
 			defer ^on 333 -"% $1 *"
 		}
+
 		/* The actual topic */
 		^on ^332 "% $C *" {
 			//topic $1 $2- $CONFIG.ADDTOPIC_DELIMETER $CHANNEL.ADDTOPIC
 			@ CHANNEL.ADDTOPIC = []
 			defer ^on 332 -"% $1 *"
 		}
+
 		/* Topic set by */
 		^on ^333 "% $C *" {
 			defer ^on 333 -"% $1 *"
 		}
+
 		//topic
 	}
 }
 
 alias alldop alldeop
-alias alldeop (nicks) {
-	if (!nicks) {
+
+alias alldeop (nicks)
+{
+	if (!nicks)
+	{
 		xecho -b Usage: /ALLDEOP <nick> ...
 		return
 	}
-	for chan in ($mychannels()) {
-		for nick in ($nicks) {
+
+	for chan in ($mychannels())
+	{
+		for nick in ($nicks)
+		{
 			if (ischanop($servernick() $chan) && ischanop($nick $chan)) {
 				//mode $chan -o $nick
 			}
@@ -124,13 +144,18 @@ alias alldeop (nicks) {
 	}
 }
 
-alias allop (nicks) {
-	if (!nicks) {
+alias allop (nicks)
+{
+	if (!nicks)
+	{
 		xecho -b Usage: /ALLOP <nick> ...
 		return
 	}
-	for chan in ($mychannels()) {
-		for nick in ($nicks) {
+
+	for chan in ($mychannels())
+	{
+		for nick in ($nicks)
+		{
 			if (ischanop($servernick() $chan) && onchannel($nick $chan) && !ischanop($nick $chan)) {
 				//mode $chan +o $nick
 			}
@@ -138,46 +163,63 @@ alias allop (nicks) {
 	}
 }
 
-alias ban (targets) {
-	^local bans,mode
-	if (!targets) {
+alias ban (targets)
+{
+	if (!targets)
+	{
 		xecho -b Usage: /BAN <nick|hostmask> ...
 		return
 	}
-	for target in ($targets) {
-		if (onchannel($target $C)) {
-			push bans $mask($CONFIG.BANTYPE $userhost($target))
+
+	^local bans
+	for target in ($targets)
+	{
+		@ :uhost = userhost($target) == [<UNKNOWN>@<UNKNOWN>] ? uh($target) : userhost($target)
+		/* Check again in case $uh() failed too. */
+		if (uhost != [<UNKNOWN>@<UNKNOWN>]) {
+			push bans $mask($CONFIG.BANTYPE $uhost)
 		} else {
-			push bans $target
+			push bans $target!*@*
 		}
 	}
+
 	massmode $C + b $bans
 }
 
 alias bk bankick
-alias bankick (nick, reason default "$CONFIG.DEFAULT_KICK_REASON") {
-	if (!nick) {
+
+alias bankick (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
+{
+	if (!nick)
+	{
 		xecho -b Usage: /BANKICK <nick> [reason]
 		return
 	}
+
 	ban $nick
 	//kick $C $nick $reason
 }
 
 alias bans banlist
-alias banlist (chan default "$C", void) {
+
+alias banlist (chan default "$C", void)
+{
 	//mode $chan +b
 }
 
-alias cmode (mode, ...) {
-	if (!mode) {
+alias cmode (mode, ...)
+{
+	if (!mode)
+	{
 		xecho -b Usage: /CMODE <modes>
 		return
 	}
+
 	//mode $C $mode $*
 }
 
-alias cycle (chan default "$C", void) {
+alias cycle (chan default "$C", void)
+{
 	@ :key = key($chan)
 	//part $chan
 	wait
@@ -185,66 +227,88 @@ alias cycle (chan default "$C", void) {
 }
 
 alias dop deop
-alias deop (nicks) {
-	if (!nicks) {
+
+alias deop (nicks)
+{
+	if (!nicks)
+	{
 		xecho -b Usage: /DEOP <nick> ...
 		return
 	}
+
 	massmode $C - o $nicks
 }
 
 alias dvoice devoice
-alias devoice (nicks) {
-	if (!nicks) {
+
+alias devoice (nicks)
+{
+	if (!nicks)
+	{
 		xecho -b Usage: /DEVOICE <nick> ...
 		return
 	}
+
 	massmode $C - v $nicks
 }
+
+alias et etopic
 
 /*
  * Edit the current topic. This places "/TOPIC <current topic>" on the
  * input line so that you can edit it and re-set it.
  */
-alias et etopic
-alias etopic (void) {
-	if (C) {
-		/* Attempt to get the current topic from cache but
-		 * if that fails query the server. */
+alias etopic (void)
+{
+	if (C)
+	{
+		/*
+		 * Attempt to get the current topic from a channel.topics array
+		 * but query the server if that fails.
+		 */
 		@ :serv = winserv()
 		@ :array = [channel.topics.$serv\.$C]
 		@ :topic = getitem($array ${numitems($array) - 1})
-		if (topic) {
+
+		if (topic)
+		{
 			parsekey erase_line
 			xtype -l $K\TOPIC $topic
-		} else {
+		}{
 			/* No topic set */
 			^on -331 "% $C *" {
 				defer ^on 331 -"% $1 *"
 				defer ^on 332 -"% $1 *"
 				defer ^on 333 -"% $1 *"
 			}
+
 			/* The actual topic */
 			^on ^332 "% $C *" {
 				parsekey erase_line
 				xtype -l $K\TOPIC $2-
 				defer ^on 332 -"% $1 *"
 			}
+
 			/* Topic set by */
 			^on ^333 "% $C *" {
 				defer ^on 333 -"% $1 *"
 			}
+
 			//topic
 		}
 	}
 }
 
 alias i invite
-alias invite (nick, channel default "$C", void) {
-	if (!nick) {
+
+alias invite (nick, channel default "$C", void)
+{
+	if (!nick)
+	{
 		xecho -b Usage: /INVITE <nick> [channel]
 		return
 	}
+
 	//invite $nick $channel
 }
 
@@ -270,29 +334,40 @@ alias join
 	}
 }
 
-alias key (key, void) {
-	if (!key) {
+alias key (key, void)
+{
+	if (!key)
+	{
 		xecho -b Usage: /KEY <key>
 		return
 	}
+
 	//mode $C +k $key
 }
 
 alias k kick
-alias kick (nick, reason default "$CONFIG.DEFAULT_KICK_REASON") {
-	if (!nick) {
+
+alias kick (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
+{
+	if (!nick)
+	{
 		xecho -b Usage: /KICK <nick> [reason]
 		return
 	}
+
 	//kick $C $nick $reason
 }
 
 alias kb kickban
-alias kickban (nick, reason default "$CONFIG.DEFAULT_KICK_REASON") {
-	if (!nick) {
+
+alias kickban (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
+{
+	if (!nick)
+	{
 		xecho -b Usage: /KICKBAN <nick> [reason]
 		return
 	}
+
 	//kick $C $nick $reason
 	ban $nick
 }
@@ -324,14 +399,20 @@ alias leave
  * Your standard /LK. Kicks everyone but +o and +v users
  * out of the current channel.
  */
-alias lk (reason default "$CONFIG.DEFAULT_KICK_REASON") {
-	if (!ischanop($N $C)) {
+alias lk (reason default "$CONFIG.DEFAULT_KICK_REASON")
+{
+	if (!ischanop($N $C))
+	{
 		xecho -b Sorry, you must be +o to kick people
 		return
 	}
+
 	^local ask $"Kick all non-ops from $C? "
-	if (left(1 $ask) == [y]) {
-		for user in ($channel()) {
+
+	if (left(1 $ask) == [y])
+	{
+		for user in ($channel())
+		{
 			@ :nick = mid(2 $strlen($user) $user)
 			if (match(.. $left(2 $user))) {
 				//kick $C $nick $reason
@@ -342,20 +423,26 @@ alias lk (reason default "$CONFIG.DEFAULT_KICK_REASON") {
 	}
 }
 
-alias massmode (chan, action, mode, args) {
-	if (!args) {
+alias massmode (chan, action, mode, args)
+{
+	if (!args)
+	{
 		xecho -b Usage: /MASSMODE <channel> <+|-> <mode> <mode parameters>
 		return
 	}
-	if (!ischanop($servernick() $chan)) {
+
+	if (!ischanop($servernick() $chan))
+	{
 		xecho -b Sorry, you must be +o to set channel modes
 		return
 	}
+
 	^local tmp
 	for cnt from 1 to $CONFIG.MAX_MODES {
 		push tmp mode.$cnt
 	}
-	fe ($args) $tmp {
+	fe ($args) $tmp
+	{
 		^local nicks
 		for (@:cnt = 1, mode[$cnt], @:cnt++) {
 			eval push nicks \$mode[$cnt]
@@ -365,7 +452,9 @@ alias massmode (chan, action, mode, args) {
 }
 
 alias mdop mdeop
-alias mdeop (chan default "$C", void) {
+
+alias mdeop (chan default "$C", void)
+{
 	if (chops($chan)) {
 		massmode $chan - o $remw($servernick() $chops($chan))
 	} else {
@@ -374,35 +463,45 @@ alias mdeop (chan default "$C", void) {
 }
 
 alias mdvoice mdevoice
-alias mdevoice (chan default "$C", void) {
+
+alias mdevoice (chan default "$C", void)
+{
 	massmode $chan - v $remw($servernick() $onchannel($chan))
 }
 
-alias mme {
-	if (match($0 -a -all)) {
+alias mme
+{
+	if (match($0 -a -all))
+	{
 		@ :all_servers = 1
 		@ :text = [$1-]
-	} else {
+	}{
 		@ :text = [$*]
 	}
-	if (!text) {
+
+	if (!text)
+	{
 		xecho -b Usage: /MME [-all] <text>
 		return
 	}
-	if (all_servers) {
-		for sref in ($serverrefs()) {
+
+	if (all_servers)
+	{
+		for sref in ($serverrefs())
+		{
 			for chan in ($mychannels($sref)) {
 				xeval -s $sref {describe $chan $text}
 			}
 		}
-	} else {
+	}{
 		for chan in ($mychannels()) {
 			describe $chan $text
 		}
 	}
 }
 
-alias mop (chan default "$C", void) {
+alias mop (chan default "$C", void)
+{
 	if (nochops($chan)) {
 		massmode $chan + o $remw($servernick() $nochops($chan))
 	} else {
@@ -410,45 +509,59 @@ alias mop (chan default "$C", void) {
 	}
 }
 
-alias msay {
-	if (match($0 -a -all)) {
+alias msay
+{
+	if (match($0 -a -all))
+	{
 		@ :all_servers = 1
 		@ :text = [$1-]
-	} else {
+	}{
 		@ :text = [$*]
 	}
-	if (!text) {
+
+	if (!text)
+	{
 		xecho -b Usage: /MSAY [-all] <text>
 		return
 	}
-	if (all_servers) {
-		for sref in ($serverrefs()) {
+
+	if (all_servers)
+	{
+		for sref in ($serverrefs())
+		{
 			for chan in ($mychannels($sref)) {
 				xeval -s $sref {msg $chan $text}
 			}
 		}
-	} else {
+	}{
 		for chan in ($mychannels()) {
 			msg $chan $text
 		}
 	}
 }
 
-alias mvoice (chan default "$C", void) {
+alias mvoice (chan default "$C", void)
+{
 	massmode $chan + v $remw($servernick() $onchannel($chan))
 }
 
-alias op (nicks) {
-	if (!nicks) {
+alias op (nicks)
+{
+	if (!nicks)
+	{
 		xecho -b Usage: /OP <nick> ...
 		return
 	}
+
 	massmode $C + o $nicks
 }
 
-alias partall (void) {
-	input "Are you sure you want to part all your channels? " {
-		if (left(1 $0) == [y]) {
+alias partall (void)
+{
+	input "Are you sure you want to part all your channels? "
+	{
+		if (left(1 $0) == [y])
+		{
 			for chan in ($mychannels()) {
 				//part $chan
 			}
@@ -456,115 +569,157 @@ alias partall (void) {
 	}
 }
 
-alias settopic (chan default "$C", void) {
+alias settopic (chan default "$C", void)
+{
 	@ :serv = winserv($winchan($chan))
-	if (serv == -1) {
-		xecho -b Not connected to a server
+	@ :array = [channel.topics.$serv\.$chan]
+
+	if (serv == -1)
+	{
+		xecho -b No server for this window
 		return
 	}
-	@ :array = [channel.topics.$serv\.$chan]
+
 	topics $chan
+
 	^local prompt $"Change topic on $chan? (Enter a # or 'n' for new): "
-	if (prompt == [n]) {
+
+	if (prompt == [n])
+	{
 		^local newtopic $"Enter new topic: "
 		//topic $chan $newtopic
-	} else if (!isnumber($prompt b10)) {
+	}\
+	else if (!isnumber($prompt b10))
+	{
 		xecho -b You must enter an integer or 'n' to set a new topic
-	} else if (prompt > 0 && prompt <= numitems($array)) {
-		@ :itm = word(${prompt-1} $jot(${numitems($array)-1} 0))
-		//topic $chan $getitem($array $itm)
-	} else if (!numitems($array)) {
+	}\
+	else if (prompt > 0 && prompt <= numitems($array))
+	{
+		@ :item = word(${prompt-1} $jot(${numitems($array)-1} 0))
+		//topic $chan $getitem($array $item)
+	}\
+	else if (!numitems($array))
+	{
 		xecho -b No topics stored for $chan
-	} else {
+	}{
 		xecho -b Number out of range
 	}
 }
 
 alias t topic
 
-alias tban (chan default "$C", void) {
+alias tban (chan default "$C", void)
+{
 	@ delarray(channel.tban)
-	^on #^367 424 "% $chan *" {
+
+	^on #^367 424 "% $chan *"
+	{
 		@ setitem(channel.tban $numitems(channel.tban) $*)
 	}
-	^on #^368 424 "% % $chan" {
+
+	^on #^368 424 "% % $chan"
+	{
 		^local bans
 		^local chan $2
 		^local tmp $"Which ban(s) to remove? (1, 2-5, ...) "
-		for bannum in ($tmp) {
+
+		for bannum in ($tmp)
+		{
 			@ :start = before(- $bannum)
 			@ :end = after(- $bannum)
-			if (start < end && start < numitems(channel.tban) && end <= numitems(channel.tban)) {
+			if (start < end && start < numitems(channel.tban) && end <= numitems(channel.tban))
+			{
 				for cnt from $start to $end {
 					push bans $word(2 $getitem(channel.tban ${cnt - 1}))
 				}
-			} else if (bannum <= numitems(channel.tban)) {
+			}\
+			else if (bannum <= numitems(channel.tban))
+			{
 				push bans $word(2 $getitem(channel.tban ${bannum - 1}))
 			}
 		}
-		^local tmp
+
+		@ :tmp = []
 		for cnt from 1 to $CONFIG.MAX_MODES {
 			push tmp mode.$cnt
 		}
-		fe ($bans) $tmp {
+		fe ($bans) $tmp
+		{
 			^local masks
 			for (@:cnt = 1, mode[$cnt], @:cnt++) {
 				eval push masks \$mode[$cnt]
 			}
 			//mode $chan -$repeat($#masks b) $masks
 		}
+
 		^on #^367 424 -"% $chan *"
 		^on #^368 424 -"% % $chan"
 	}
 	//mode $chan +b
 }
 
-alias tempban (time, target, void) {
-	if (!target) {
+alias tempban (time, target, void)
+{
+	if (!target)
+	{
 		xecho -b Usage: /TEMPBAN <seconds> <nick|mask>
 		return
 	}
-	if (onchannel($target $C)) {
-		//mode $C +b $mask($CONFIG.BANTYPE $userhost($target))
-		timer $time //mode $C -b $mask($CONFIG.BANTYPE $userhost($target))
+
+	@ :uhost = userhost($target) == [<UNKNOWN>@<UNKNOWN>] ? uh($target) : userhost($target)
+	/* Check again in case $uh() failed too. */
+	if (uhost != [<UNKNOWN>@<UNKNOWN>]) {
+		@ :banmask = mask($CONFIG.BANTYPE $uhost)
 	} else {
-		//mode $C +b $target
-		timer $time //mode $C -b $target
+		@ :banmask = [$target!*@*]
 	}
+
+	ban $banmask
+	timer $time //mode $C -b $banmask
 }
 
-alias topics (chan default "$C", void) {
+alias topics (chan default "$C", void)
+{
 	@ :serv = winserv($winchan($chan))
+	@ :array = [channel.topics.$serv\.$chan]
+
 	if (serv == -1) {
-		xecho -b Not connected to a server
+		xecho -b No server for this window
 		return
 	}
-	@ :array = [channel.topics.$serv\.$chan]
-	if (numitems($array)) {
+
+	if (numitems($array))
+	{
 		xecho -b Stored topics for $chan (most recent first):
 		@ :num = 1
-		for ii in ($jot(${numitems($array)-1} 0)) {
+		for ii in ($jot(${numitems($array)-1} 0))
+		{
 			@ :topic = getitem($array $ii)
 			echo $[3]num $topic
 			@ :num++
 		}
-	} else {
+	}{
 		xecho -b No topics stored for $chan
 	}
 }
 
 alias tt etopic
+
 alias ttopic etopic
 
-alias unban (bans) {
-	if (!bans) {
+alias unban (bans)
+{
+	if (!bans)
+	{
 		xecho -b Usage: /UNBAN <ban> ...
 		return
 	}
+
 	massmode $C - b $bans
 }
 
-alias unkey (void) {
+alias unkey (void)
+{
 	if (match(*k* $chanmode())) {
 		//mode $C -k
 	} else {
@@ -572,15 +727,19 @@ alias unkey (void) {
 	}
 }
 
-alias untopic (chan default "$C", void) {
+alias untopic (chan default "$C", void)
+{
 	//topic -$chan
 }
 
-alias voice (nicks) {
-	if (!nicks) {
+alias voice (nicks)
+{
+	if (!nicks)
+	{
 		xecho -b Usage: /VOICE <nick> ...
 		return
 	}
+
 	massmode $C + v $nicks
 }
 
@@ -590,36 +749,50 @@ alias voice (nicks) {
  * value of the CHANNEL_WALL_TYPE config variable.
  *
  * The possible types are:
+ *
  *  1 - Send a single NOTICE to @<channel>
  *  2 - Send NOTICEs to all +o users, seven at a time
  *  3 - Send NOTICEs to all +o users, one at a time (USE WITH CARE)
  */
-alias wall (text) {
-	if (!text) {
+alias wall (text)
+{
+	if (!text)
+	{
 		xecho -b Usage: /WALL <text>
 		return
 	}
+
 	@ :chan = winchan($winnum())
-	switch ($CONFIG.CHANNEL_WALL_TYPE) {
-		(1) {
+
+	switch ($CONFIG.CHANNEL_WALL_TYPE)
+	{
+		(1)
+		{
 			notice @$chan [wall/$chan] $text
 		}
-		(2) {
+
+		(2)
+		{
 			fe ($filter($servernick() $chops())) o1 o2 o3 o4 o5 o6 o7 {
 				notice $o1,$o2,$o3,$o4,$o5,$o6,$o7 [wall/$chan] $text
 			}
 		}
-		(3) {
+
+		(3)
+		{
 			/* This is evil and should never be used on large channels. */
 			for nick in ($filter($servernick() $chops())) {
 				notice $nick [wall/$chan] $text
 			}
 		}
-		(*) {
+
+		(*)
+		{
 			xecho -b /WALL: Error sending message: Invalid CHANNEL_WALL_TYPE
 			return
 		}
 	}
+
 	echo $fparse(SEND_WALL $chan $text)
 }
 
@@ -633,7 +806,8 @@ alias wall (text) {
  * The arrays will be named channel.topics.<server>.<channel> and
  * only as many topics as the value of REMEMBER_TOPICS will be kept.
  */
-alias channel.topic (serv, chan, topic) {
+alias channel.topic (serv, chan, topic)
+{
 	@ :array = [channel.topics.$serv\.$chan]
 	@ :head = numitems($array) - 1
 	if ((:item = matchitem($array $topic)) > -1) {
@@ -648,20 +822,23 @@ alias channel.topic (serv, chan, topic) {
 
 /****** ON HOOKS ******/
 
-on ^329 "*" {
+on ^329 "*"
+{
 	if (FORMAT.CHANNEL_TS) {
 		echo $fparse(CHANNEL_TS $*)
 	}
 }
 
-on ^332 "*" {
+on ^332 "*"
+{
 	channel.topic $servernum($0) $1-
 	if (FORMAT.TOPIC) {
 		echo $fparse(TOPIC $*)
 	}
 }
 
-on ^333 "*" {
+on ^333 "*"
+{
 	if (FORMAT.TOPIC_SETBY) {
 		echo $fparse(TOPIC_SETBY $*)
 	}
@@ -670,18 +847,24 @@ on ^333 "*" {
 /*
  * Ban list stuff: 367, 368, 369
  */
-on ^367 "*" {
+on ^367 "*"
+{
 	@ setitem(channel.banlist.$1 $numitems(channel.banlist.$1) $*)
 }
 
-on ^368 "*" {
-	for var in (BANS_HEADER BANS_HEADER1 BANS_HEADER2) {
+on ^368 "*"
+{
+	for var in (BANS_HEADER BANS_HEADER1 BANS_HEADER2)
+	{
 		if (FORMAT[$var]) {
 			echo $fparse($var $*)
 		}
 	}
-	if ([$1] > 0) {
-		if (FORMAT.BANS) {
+
+	if ([$1] > 0)
+	{
+		if (FORMAT.BANS)
+		{
 			@ :endcnt = numitems(channel.banlist.$2) - 1
 			for cnt from 0 to $endcnt {
 				echo $fparse(BANS ${cnt + 1} $getitem(channel.banlist.$2 $cnt))
@@ -689,7 +872,9 @@ on ^368 "*" {
 		}
 		@ delarray(channel.banlist.$2)
 	}
-	for var in (BANS_FOOTER BANS_FOOTER1 BANS_FOOTER2) {
+
+	for var in (BANS_FOOTER BANS_FOOTER1 BANS_FOOTER2)
+	{
 		if (FORMAT[$var]) {
 			echo $fparse($var $*)
 		}
@@ -698,91 +883,111 @@ on ^368 "*" {
 
 on ^369 "*" #
 
-on ^action "*" {
-	if (iscurchan($1)) {
+on ^action "*"
+{
+	if (iscurchan($1))
+	{
 		if (FORMAT.ACTION_CHANNEL) {
 			echo $fparse(ACTION_CHANNEL $*)
 		}
-	} else {
+	}{
 		if (FORMAT.ACTION_CHANNEL_OTHER) {
 			echo $fparse(ACTION_CHANNEL_OTHER $*)
 		}
 	}
 }
 
-on ?channel_nick "*" {
-	if (FORMAT.CHANNEL_NICK) {
+on ?channel_nick "*"
+{
+	if (FORMAT.CHANNEL_NICK)
+	{
 		echo $fparse(CHANNEL_NICK $*)
 		return 1
-	} else {
+	}{
 		/* Allow client to hook the NICKNAME event. */
 		return 0
 	}
 }
 
-on ?channel_signoff "*" {
-	if (FORMAT.CHANNEL_SIGNOFF) {
+on ?channel_signoff "*"
+{
+	if (FORMAT.CHANNEL_SIGNOFF)
+	{
 		echo $fparse(CHANNEL_SIGNOFF $*)
 		return 1
-	} else {
+	}{
 		/* Allow client to hook the SIGNOFF event. */
 		return 0
 	}
 }
 
-on ^channel_sync "*" {
+on ^channel_sync "*"
+{
 	if (FORMAT.CHANNEL_SYNC) {
 		echo $fparse(CHANNEL_SYNC $*)
 	}
 }
 
-on ^invite "*" {
+on ^invite "*"
+{
 	if (FORMAT.INVITE) {
 		echo $fparse(INVITE $*)
 	}
 }
 
-on ^join "*" {
+on ^join "*"
+{
 	if (FORMAT.JOIN) {
 		echo $fparse(JOIN $*)
 	}
 }
 
-on ^kick "*" {
+on ^kick "*"
+{
 	if (FORMAT.KICK) {
 		echo $fparse(KICK $*)
 	}
 }
 
-on ^leave "*" {
+on ^leave "*"
+{
 	if (FORMAT.LEAVE) {
 		echo $fparse(LEAVE $*)
 	}
 }
 
-on ^mode "*" {
+on ^mode "*"
+{
 	if (FORMAT.MODE) {
 		echo $fparse(MODE $*)
 	}
 }
 
-on ^public "*" {
-	if (CONFIG.AUTO_RESPONSE) {
-		if (match(*$servernick()* $2-)) {
+on ^public "*"
+{
+	if (CONFIG.AUTO_RESPONSE)
+	{
+		if (match(*$servernick()* $2-))
+		{
 			@ :do_ar = 1
-		} else {
-			for word in ($CONFIG.AUTO_RESPONSE_STR) {
-				if (match(*$word* $2-)) {
+		}{
+			for word in ($CONFIG.AUTO_RESPONSE_STR)
+			{
+				if (match(*$word* $2-))
+				{
 					@ :do_ar = 1
 					break
 				}
 			}
 		}
-		if (do_ar) {
+
+		if (do_ar)
+		{
 			if (FORMAT.PUBLIC_AR) {
 				echo $fparse(PUBLIC_AR $*)
 			}
-			if (CONFIG.AUTO_RESPONSE_BEEP) {
+			if (CONFIG.AUTO_RESPONSE_BEEP)
+			{
 				^stack push set BEEP
 				^set BEEP ON
 				beep
@@ -793,28 +998,37 @@ on ^public "*" {
 			}
 		}
 	}
+
 	if (FORMAT.PUBLIC && !do_ar) {
 		echo $fparse(PUBLIC $*)
 	}
 }
 
-on ^public_other "*" {
-	if (CONFIG.AUTO_RESPONSE) {
-		if (match(*$servernick()* $2-)) {
+on ^public_other "*"
+{
+	if (CONFIG.AUTO_RESPONSE)
+	{
+		if (match(*$servernick()* $2-))
+		{
 			@ :do_ar = 1
-		} else {
-			for word in ($CONFIG.AUTO_RESPONSE_STR) {
-				if (match(*$word* $2-)) {
+		}{
+			for word in ($CONFIG.AUTO_RESPONSE_STR)
+			{
+				if (match(*$word* $2-))
+				{
 					@ :do_ar = 1
 					break
 				}
 			}
 		}
-		if (do_ar) {
+
+		if (do_ar)
+		{
 			if (FORMAT.PUBLIC_OTHER_AR) {
 				echo $fparse(PUBLIC_OTHER_AR $*)
 			}
-			if (CONFIG.AUTO_RESPONSE_BEEP) {
+			if (CONFIG.AUTO_RESPONSE_BEEP)
+			{
 				^stack push set BEEP
 				^set BEEP ON
 				beep
@@ -825,42 +1039,50 @@ on ^public_other "*" {
 			}
 		}
 	}
+
 	if (FORMAT.PUBLIC_OTHER && !do_ar) {
 		echo $fparse(PUBLIC_OTHER $*)
 	}
 }
 
-on ^send_action '\\[#% &% +% !%\\] *' {
-	if (iscurchan($0)) {
+on ^send_action '\\[#% &% +% !%\\] *'
+{
+	if (iscurchan($0))
+	{
 		if (FORMAT.SEND_ACTION_CHANNEL) {
 			echo $fparse(SEND_ACTION_CHANNEL $servernick() $*)
 		}
-	} else {
+	}{
 		if (FORMAT.SEND_ACTION_CHANNEL_OTHER) {
 			echo $fparse(SEND_ACTION_CHANNEL_OTHER $servernick() $*)
 		}
 	}
 }
 
-on ^send_public "*" {
-	if (iscurchan($0)) {
+on ^send_public "*"
+{
+	if (iscurchan($0))
+	{
 		if (FORMAT.SEND_PUBLIC) {
 			echo $fparse(SEND_PUBLIC $0 $servernick() $1-)
 		}
-	} else {
+	}{
 		if (FORMAT.SEND_PUBLIC_OTHER) {
 			echo $fparse(SEND_PUBLIC_OTHER $servernick() $*)
 		}
 	}
 }
 
-on ^topic "*" {
+on ^topic "*"
+{
 	channel.topic $servernum() $1-
-	if (![$2]) {
+
+	if (![$2])
+	{
 		if (FORMAT.TOPIC_UNSET) {
 			echo $fparse(TOPIC_UNSET $*)
 		}
-	} else {
+	}{
 		if (FORMAT.TOPIC_CHANGE) {
 			echo $fparse(TOPIC_CHANGE $*)
 		}
@@ -871,8 +1093,10 @@ on ^topic "*" {
  * Restrict the value of the CHANNEL_WALL_TYPE config variable.
  * Allowed values: 1, 2, 3
  */
-on #-hook 428 "CONFIG CHANNEL_WALL_TYPE *" {
-	if (!match($CONFIG.CHANNEL_WALL_TYPE 1 2 3)) {
+on #-hook 428 "CONFIG CHANNEL_WALL_TYPE *"
+{
+	if (!match($CONFIG.CHANNEL_WALL_TYPE 1 2 3))
+	{
 		xecho -b Valid types are 1, 2, and 3
 		^assign CONFIG.CHANNEL_WALL_TYPE $2
 		xecho -b Value of $1 set to $CONFIG.CHANNEL_WALL_TYPE
@@ -883,8 +1107,10 @@ on #-hook 428 "CONFIG CHANNEL_WALL_TYPE *" {
  * Restrict the value of the REMEMBER_TOPICS config variable to an integer
  * that is greater than or equal to zero.
  */
-on #-hook 428 "CONFIG REMEMBER_TOPICS *" {
-	if (!isnumber($CONFIG.REMEMBER_TOPICS b10) || CONFIG.REMEMBER_TOPICS < 0) {
+on #-hook 428 "CONFIG REMEMBER_TOPICS *"
+{
+	if (!isnumber($CONFIG.REMEMBER_TOPICS b10) || CONFIG.REMEMBER_TOPICS < 0)
+	{
 		xecho -b Value must be an integer greater than or equal to zero
 		if (CONFIG.REMEMBER_TOPICS == []) {
 			^assign CONFIG.REMEMBER_TOPICS 0
@@ -893,9 +1119,11 @@ on #-hook 428 "CONFIG REMEMBER_TOPICS *" {
 		}
 		xecho -b Value of $1 set to $CONFIG.REMEMBER_TOPICS
 	}
+
 	/* Make sure that the size of all the channel topic arrays is no
 	 * greater than the new value of REMEMBER_TOPICS. */
-	for array in ($getarrays(channel.topics.*)) {
+	for array in ($getarrays(channel.topics.*))
+	{
 		while (numitems($array) > CONFIG.REMEMBER_TOPICS) {
 			@ delitem($array 0)
 		}
