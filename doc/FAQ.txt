@@ -1,0 +1,52 @@
+Darkstar/EPIC4 Frequently Asked Questions
+
+This is a work in progress. I will update it as questions arise. If you have
+a question you feel should be here, please drop me an email.
+
+
+Q: The 'darkstar' status bar is displaying letters with accents instead of
+   straight lines. How can I fix this?
+
+A: You need a font that displays these upper ASCII characters correctly.
+   Any of the vga fonts should work. I have two of the vga fonts available
+   at http://www.got.net/~brian/fonts/ and you can probably find others
+   with a quick search on google.
+
+   If you're using a font that you know works and you still can't get the
+   lines to display correctly, you can try entering the following command
+   at the EPIC input prompt.
+
+     /eval xecho -r $chr(27)\(U
+
+   If this works for you, you can place this command in ~/.epicrc so that
+   it executes on startup.
+
+
+Q: How can I set a default status bar?
+
+A: The status bar is chosen by your theme. If you want to change the status
+   bar that your theme uses, I would recommend creating a new theme based
+   on your current theme which uses the different statbar. This way you won't
+   lose your changes during upgrades. You can follow the directions in
+   the answer of the following question to create a theme.
+
+
+Q: How can I create my own theme?
+
+A: Creating your own theme is fairly easy. Just follow these steps.
+
+   (A '%' at the beginning of a line means to enter the command at your
+   shell prompt.)
+
+   1. Set the theme you want to start from with /theme
+   2. Set the status bar you want to use with /status
+   3. Change whatever /fset variables you want to be different.
+   3. Type "/save" to save all your settings and write the "custom" theme.
+   6. % cd ~/.darkstar/themes/
+      (this is your "user directory", adjust if necessary)
+   7. % cp -R custom/ <new_name>
+   8. Type "/theme <new_name>" to begin using your new theme.
+   9. You may want to /save again so that this theme is used on startup.
+
+
+EOF

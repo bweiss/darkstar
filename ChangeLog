@@ -3,6 +3,8 @@ Darkstar ChangeLog
 
 20020422
 
+ * Added a doc directory as well as the beginnings of a FAQ.
+
  * HEADS UP: The master file for themes is now named main.dst instead of
    being named after the theme. This eliminates the need to rename both the
    theme's directory and the .dst file when copying an existing theme.

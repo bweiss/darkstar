@@ -127,7 +127,8 @@ FILES
   sample.dsrc		- Sample .dsrc file.
   core/*.dsc		- Scripts that make up the core of Darkstar
 			  These are all required.
-  help/*		- The basic documentation for /DINFO
+  doc/*			- Any documentation that is not browsed via /DINFO.
+  help/*		- The basic documentation for /DINFO.
   modules/*.dsm		- The modules that provide most of the features. All
 			  of these are completely optional and are independent
 			  of each other.
