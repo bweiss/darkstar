@@ -1,7 +1,15 @@
 Darkstar ChangeLog
 
 
+1/16/02
+
+ * New command: /dinfo. Displays various information about the OS, client,
+   and script.
+
 1/15/02
+
+ * Added $DS.COMMIT_ID. This is just like EPIC's commit_id. It will be
+   incremented every time I do a CVS commit.
 
  * HEADS UP: Rewrote names.dsc to be a bit more configurable via /dset and
    /fset. This means we have some changes that will affect themes.

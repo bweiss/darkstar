@@ -6,7 +6,7 @@
  * STATUS.DSC - Statbar manager for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/14/02 (bmw)
+ * Last modified: 1/15/02 (bmw)
  */
 
 alias sbar status
@@ -93,7 +93,6 @@ alias status.buildlist (void)
 }
 
 /*
- * STATUS.CHANGE(sbar)
  * Everything involved with actually changing the status. Returns 0 on success
  * and > 0 on failure.
  */

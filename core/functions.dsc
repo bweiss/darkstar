@@ -38,7 +38,6 @@ alias convert.onoff (arg, void)
 }
 
 /*
- * isloaded(module)
  * Returns true if specified module is loaded. I mostly added this for the
  * convenience of module writers.
  */
@@ -53,7 +52,6 @@ alias isloaded (module, void)
 }
 	
 /*
- * is_on(nick)
  * Taken from the "guh" script written by Jeremy Nelson and distributed
  * with EPIC. Returns the person's nick if they are online, or nothing if not.
  */
@@ -69,7 +67,6 @@ alias is_on (nick, void)
 }
 
 /*
- * padleft(size, char, text string)
  * Works like $pad() except that it pads on the left side.
  */
 alias padleft (size, char, text)
@@ -78,7 +75,6 @@ alias padleft (size, char, text)
 }
 
 /*
- * round(num)
  * Rounds a decimal number based on the first digit to the right of the
  * decimal point.
  */

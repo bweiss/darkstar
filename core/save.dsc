@@ -6,7 +6,7 @@
  * SAVE.DSC - Save /CONFIG and /FSET settings for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/14/02 (bmw)
+ * Last modified: 1/15/02 (bmw)
  */
 
 /*
@@ -14,7 +14,8 @@
  * Saves all settings for specified module(s) to either $DS.SAVE_DIR or a
  * directory specified with the -d option. If no modules are specified,
  * "*" (ALL) is assumed and the settings for every currently loaded module
- * will be saved.
+ * will be saved. If "core" is given as a module name, the settings for the
+ * core scripts will be saved.
  */
 alias save (args)
 {
@@ -93,9 +94,8 @@ alias save (args)
 }
 
 /*
- * save_config() - Saves config settings to specified directory. Takes a
- * directory and module name as arguments. Returns 0 if successful or > 0
- * if not.
+ * Saves config settings to specified directory. Returns 0 on success,
+ * and > 0 on failure.
  */
 alias save.save_config (save_dir, module, void)
 {
@@ -134,8 +134,8 @@ alias save.save_config (save_dir, module, void)
 }
 
 /*
- * save_formats() - Writes format settings to $DS.USER_DIR/themes/custom.dst.
- * Takes a list of modules as arguments. Returns 0 if successful or > 0 if not.
+ * Writes format settings to $DS.USER_DIR/themes/custom/. Returns 0 on success,
+ * and > 0 on failure.
  */
 alias save.save_formats (modules)
 {

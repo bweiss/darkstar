@@ -6,7 +6,7 @@
  * CONFIG.DSC - Configuration manager for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/13/02 (bmw)
+ * Last modified: 1/15/02 (bmw)
  */
 
 alias conf dset
@@ -166,6 +166,10 @@ alias config.setcat (var, void)
 }
 
 
+/*
+ * CONFIG.ADD [-boolean] <variable> [value]
+ * Adds a config variable. This should be called by modules at load time.
+ */
 alias config.add
 {
 	^local variable,value
@@ -197,6 +201,10 @@ alias config.add
 	}
 }
 
+/*
+ * FORMAT.ADD <variable> [value]
+ * Addes a format variable.
+ */
 alias format.add (variable, value)
 {
 	@ :module = LOADER.PENDING_MODULE

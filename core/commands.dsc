@@ -6,12 +6,27 @@
  * COMMANDS.DSC - Some useful commands for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/9/02 (bmw)
+ * Last modified: 1/16/02 (bmw)
  *
  * If you have any aliases you feel are useful enough to be in this file,
  * feel free to email me.
  */
 
+alias dinfo (void)
+{
+	@ :divider = repeat(${word(0 $geom()) - 8} -)
+	echo $G $divider
+	xecho -b $uname(%s %r) \($uname(%m)\)
+	echo $G $divider
+	xecho -b ircII $J \($V\) [$info(i)] - PID: $pid()  PPID: $ppid()
+	xecho -b $info(c)
+	xecho -b Client Uptime: $tdiff2(${time() - F})
+	echo $G $divider
+	xecho -b Darkstar $DS.VERSION \($DS.INTERNAL_VERSION\) [$DS.COMMIT_ID]
+	xecho -b Available modules: $numitems(modules), Loaded modules: $numitems(loaded_modules)
+	xecho -b Current theme: $DS.THEME, Current statusbar: $DS.SBAR
+	echo $G $divider
+}
 
 #
 # A file pager.  A demonstration of how to do something useful in ircII.
@@ -20,7 +35,6 @@
 # Modified on Jan 25, 1999 as an example of how to use arglists.
 # Modified on Oct 17, 2001 by Brian Weiss for use with Darkstar/EPIC4
 #
-
 alias more less
 
 alias less (file, void)

@@ -6,7 +6,7 @@
  * LOADER.DSC - Module loader for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/14/02 (bmw)
+ * Last modified: 1/15/02 (bmw)
  */
 
 
@@ -105,6 +105,10 @@ alias unloadmod (modules)
 }
 
 
+/*
+ * Stores available modules in two arrays, one for module names (modules) and
+ * one for module filenames (module_files).
+ */
 alias loader.build_modlist (void)
 {
 	@ delarray(modules)
@@ -122,6 +126,9 @@ alias loader.build_modlist (void)
 	}
 }
 
+/*
+ * Handle module dependencies. This is meant to be called directly from
+ * within modules.
 alias loader.dependency (depmods)
 {
 	@ :module = LOADER.PENDING_MODULE
@@ -175,6 +182,10 @@ alias loader.get_saved_settings (void)
 	}
 }
 
+/*
+ * Loads a module including theme and saved settings. Returns 0 on success,
+ * and > 0 on failure.
+ */
 alias loader.load_module (module, void)
 {
 	if (!numitems(modules))
@@ -229,7 +240,10 @@ alias loader.load_module (module, void)
 	return 3
 }
 
-
+/*
+ * Unloads a module and cleans up after it. Returns 0 on success,
+ * and > 0 on failure.
+ */
 alias loader.unload_module (module, void)
 {
 	if (!numitems(loaded_modules))
@@ -245,6 +259,7 @@ alias loader.unload_module (module, void)
 	}
 
 	@ :item = finditem(loaded_modules $module)
+
 	if (item > -1)
 	{
 		/* Execute cleanup queue for module. */
@@ -288,7 +303,11 @@ alias loader.unload_module (module, void)
 	return 2
 }
 
-
+/*
+ * Converts any number, or range of numbers, to its module equivalent. It can
+ * be passed any combination of module names, numbers, and ranges of numbers
+ * and returns only module names.
+ */
 alias loader.which_mods (array, args)
 {
 	^local modules

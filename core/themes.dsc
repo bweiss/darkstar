@@ -6,7 +6,7 @@
  * THEMES.DSC - Theme support for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/14/02 (bmw)
+ * Last modified: 1/15/02 (bmw)
  *
  * This script uses serial number 1 for all /on hooks.
  */
@@ -45,9 +45,8 @@ alias theme (theme, void)
 }
 
 /*
- * THEMES.BUILDLIST
- * Scans the theme directories and stores available themes in two arrays.
- * One for theme names (themes) and one for theme directories (theme_dirs).
+ * Scans the theme directories and stores available themes in two arrays,
+ * one for theme names (themes) and one for theme directories (theme_dirs).
  */
 alias themes.buildlist (void)
 {
@@ -79,7 +78,6 @@ alias themes.buildlist (void)
 }
 
 /*
- * THEMES.CHANGE(theme)
  * Attempts to change the current theme. Returns 0 if successful or > 0 if not.
  */
 alias themes.change (theme, void)
@@ -124,10 +122,6 @@ alias themes.change (theme, void)
 	return 2
 }
 
-/*
- * THEMES.DISPLAY
- * Displays the currently available themes.
- */
 alias themes.display (void)
 {
 	themes.buildlist
