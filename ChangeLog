@@ -5,10 +5,8 @@ Darkstar ChangeLog
 
  * Various cleanups in loader.dsc and save.dsc.
 
- * Save now writes format (/fset) settings for all modules to a single file
-   in the save diretory called "formats.sav". This file is NOT loaded on
-   startup and is intended mostly to assist in creating themes from changes
-   you've made, while in the client, using /fset.
+ * Save no longer saves any format settings. This is most likely a temporary
+   change.
 
 12/17/01
 

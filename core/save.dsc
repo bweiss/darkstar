@@ -18,7 +18,7 @@
  */
 alias save (args)
 {
-	^local abort,modules,savedir
+	^local abort,modules,save_dir
 	
 	/*
 	 * Find our save directory.
@@ -27,12 +27,12 @@ alias save (args)
 	{
 		(-d)
 		{
-			@ savedir = twiddle($word(1 $args))
+			@ save_dir = twiddle($word(1 $args))
 			@ args = restw(2 $args)
 		}
 		(*)
 		{
-			@ savedir = twiddle($DS.SAVE)
+			@ save_dir = twiddle($DS.SAVE)
 		}
 	}
 	
@@ -61,13 +61,13 @@ alias save (args)
 	/*
 	 * Check our save directory and create it if necessary.
 	 */
-	if (fexist($savedir) == -1)
+	if (fexist($save_dir) == -1)
 	{
-		xecho -b No save directory found. Creating [$savedir] ...
+		xecho -b No save directory found. Creating [$save_dir] ...
 		
-		if (mkdir($savedir) > 0)
+		if (mkdir($save_dir) > 0)
 		{
-			xecho -b SAVE: Error creating directory [$savedir]
+			xecho -b SAVE: Error creating directory [$save_dir]
 
 			^assign abort 1
 		}
@@ -78,11 +78,11 @@ alias save (args)
 	 */
 	unless (abort)
 	{
-		xecho -b Saving settings to [$savedir] ...
+		xecho -b Saving settings to [$save_dir] ...
 		
 		for module in ($modules)
 		{
-			@ save_settings($savedir $module)
+			@ save_settings($save_dir $module)
 		}
 
 		xecho -b Save completed [$strftime(%c)]
@@ -101,13 +101,8 @@ alias save_settings (save_dir, module, void)
 	}
 
 	^local save_file $save_dir/$module\.sav
-	^local formats_file $save_dir/formats.sav
-
 	@ unlink($save_file)
-	@ unlink($formats_file)
-
 	@ :fd = open($save_file W)
-	@ :fd2 = open($formats_file W)
 		
 	if (fd != -1)
 	{
@@ -134,30 +129,7 @@ alias save_settings (save_dir, module, void)
 		return 0
 	}
 
-	if (fd2 != -1)
-	{
-		eval for var in \(\$$aliasctl(assign match FSET.$module)\)
-		{
-			@ :value = aliasctl(assign get FORMAT.$var)
-			if (value != [])
-			{
-				@ write($fd assign FORMAT.$var $value)
-			}{
-				@ write($fd assign -FORMAT.$var)
-			}
-		}
-
-		if (CONFIG[VERBOSE_SAVE])
-		{
-			xecho -b Format settings saved to [$formats_file]
-		}
-	}{
-		xecho -b Error opening formats file [$formats_file]
-		return 0
-	}
-
 	@ close($fd)
-	@ close($fd2)
 	return 1
 }
 
