@@ -39,7 +39,7 @@ set STATUS_QUERY 14\(15query14/16$Q14\)
 set -STATUS_SCROLLBACK
 set -STATUS_SERVER
 set STATUS_UMODE +%#
-set STATUS_USER1 15o14/16$numwords($chanops()) 15n14/16$numwords($nochops()) 15t14/16$numonchannel()
+set STATUS_USER1 15o14/16$numwords($chops()) 15n14/16$numwords($nochops()) 15t14/16$numonchannel()
 set STATUS_USER2 $left(24 $servername($winserv()))
 set STATUS_VOICE +
 set -STATUS_WINDOW
