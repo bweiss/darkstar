@@ -1,4 +1,4 @@
-#version 1.1
+#version 1.1.1
 /* $Id$ */
 /*
  * autocycle.dsm - Auto-Cycle module for Darkstar/EPIC4
@@ -31,7 +31,7 @@ alias autocycle.cycle (chan, void)
 {
 	if (CONFIG[AUTO_CYCLE] && matchitem(synced_channels $chan) > -1 && !ischanop($servernick() $chan) && numonchannel($chan) <= 2)
 	{
-		echo Auto-cycling $chan to gain ops
+		xecho -b Auto-cycling $chan to gain ops
 		@ :key = key($chan)
 		//part $chan
 		wait
