@@ -1,4 +1,4 @@
-#version 0.5.2
+#version 0.5.3
 /* $Id$ */
 /*
  * names.dsm - DarkStar/EPIC4 module to display who's on a channel
@@ -54,7 +54,7 @@ alias scanv (chan default "$C", void) {names.main $chan v}
 
 /*
  * This does most of the real work. It is a bit more expensive than
- * I would like it to be but allows for greater customization.
+ * I would like it to be but allows for a lot of customization.
  */
 alias names.main (chan default "$C", mode default "*", void)
 {
@@ -62,19 +62,18 @@ alias names.main (chan default "$C", mode default "*", void)
 	 * Compile the list of users that we want to display.
 	 * This is also where any sorting takes place.
 	 */
-	^local users
-	switch ($tolower($mode))
-	{
+	switch ($tolower($mode)) {
 		(n) {
-			@:desc = [normal users]
-			@:users = nochops($chan)
+			^local desc normal users
+			^local users $nochops($chan)
 		}
 		(o) {
-			@:desc = [channel operators]
-			@:users = chops($chan)
+			^local desc channel operators
+			^local users $chops($chan)
 		}
 		(v) {
 			^local desc voiced users
+			^local users
 			for nick in ($channel($chan)) {
 				if (mid(1 1 $nick) == [+]) {
 					push users $rest(2 $nick)
@@ -82,7 +81,8 @@ alias names.main (chan default "$C", mode default "*", void)
 			}
 		}
 		(*) {
-			@:desc = [users]
+			^local desc users
+			^local users
 			if (CONFIG.NAMES_SORT_BY_MODE) {
 				push users $chops($chan)
 				push users $nochops($chan)
@@ -97,17 +97,13 @@ alias names.main (chan default "$C", mode default "*", void)
 		return 0
 	}
 
-	/*
-	 * Display the header, if any.
-	 */
 	for var in (NAMES_HEADER NAMES_HEADER1 NAMES_HEADER2) {
 		if (FORMAT[$var]) {
-			echo $fparse($var $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
+			xecho -- $fparse($var $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
 		}
 	}
 
-	if (CONFIG.NAMES_COL)
-	{
+	if (CONFIG.NAMES_COL) {
 		/*
 		 * Create a temporary variable to store the names of the
 		 * variables we'll be using in the /FE below. This allows us
@@ -124,16 +120,12 @@ alias names.main (chan default "$C", mode default "*", void)
 		 * a little tricky because we want certain things evaluated
 		 * before others.
 		 */
-		fe ($users) $tmp
-		{
+		fe ($users) $tmp {
 			^local line
-
 			if (FORMAT.NAMES_LEFT) {
 				push line \$fparse(NAMES_LEFT $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
 			}
-
-			for (@:cnt = 1, cnt <= numwords($tmp), @:cnt++)
-			{
+			for (@ :cnt = 1, cnt <= numwords($tmp), @ cnt++) {
 				/*
 				 * The call to $names.parse() doesn't actually
 				 * happen until the last line of the /FE code block.
@@ -161,12 +153,10 @@ alias names.main (chan default "$C", mode default "*", void)
 					}
 				}
 			}
-
 			if (FORMAT.NAMES_RIGHT) {
 				push line \$fparse(NAMES_RIGHT $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
 			}
-
-			eval echo $line
+			eval xecho -- $line
 		}
 	}{
 		^local line
@@ -176,12 +166,8 @@ alias names.main (chan default "$C", mode default "*", void)
 		for nick in ($users) {
 			push line $names.parse($chan $nick)
 		}
-		echo $line
+		xecho -- $line
 	}
-
-	/*
-	 * Display footer, if any.
-	 */
 	for var in (NAMES_FOOTER NAMES_FOOTER1 NAMES_FOOTER2) {
 		if (FORMAT[$var]) {
 			echo $fparse($var $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
@@ -194,32 +180,26 @@ alias names.main (chan default "$C", mode default "*", void)
  * suitable for final display, according to whether they have
  * +o or +v on the channel.
  */
-alias names.parse (chan, nick, void)
-{
+alias names.parse (chan, nick, void) {
 	if (!chan || !nick) {
-		@ function_return = fparse(NAMES_NONOP $nick)
+		return $fparse(NAMES_NONOP $nick)
 	} else if (ischanop($nick $chan)) {
-		@ function_return = fparse(NAMES_OP $nick)
+		return $fparse(NAMES_OP $nick)
 	} else if (ischanvoice($nick $chan) == 1) {
-		@ function_return = fparse(NAMES_VOICE $nick)
+		return $fparse(NAMES_VOICE $nick)
 	} else {
-		@ function_return = fparse(NAMES_NONOP $nick)
+		return $fparse(NAMES_NONOP $nick)
 	}
 }
 
 
 /****** ON HOOKS ******/
 
-/*
- * Hook the NAMES numerics and call names.main
- */
-on ^353 "*"
-{
+on ^353 "*" {
 	^assign NAMES.CHAN $2
 }
 
-on ^366 "*"
-{
+on ^366 "*" {
 	if (SHOW_CHANNEL_NAMES == [ON]) {
 		names.main $NAMES.CHAN
 	}
@@ -229,8 +209,7 @@ on ^366 "*"
 /*
  * Restrict the value of the NAMES_COL config variable.
  */
-on #-hook 428 "CONFIG NAMES_COL *"
-{
+on #-hook 428 "CONFIG NAMES_COL *" {
 	if (!isnumber($CONFIG.NAMES_COL b10) && CONFIG.NAMES_COL) {
 		xecho -b Value must be an integer
 		if ([$2] != []) {
