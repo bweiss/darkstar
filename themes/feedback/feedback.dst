@@ -1,0 +1,16 @@
+/* $Id$ */
+/*
+ * Feedback theme for Darkstar/EPIC4
+ * Author: Brian Weiss <brian@epicsol.org> - 2001
+ * This is based on the 'darkstar' and 'epic4' themes.
+ */
+
+status -q feedback
+
+set BANNER ***
+
+assign FORMAT.SET $G Current value of $1 is $2-
+assign FORMAT.SET_NOVALUE $G No value for $1 has been set
+
+
+/* EOF */

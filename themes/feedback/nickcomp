@@ -1,0 +1,6 @@
+# Module: nickcomp
+
+assign FORMAT.NICK_COMPLETION $1: $2-
+
+
+/* bmw '02 */
