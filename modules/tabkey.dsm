@@ -1,4 +1,4 @@
-#version 0.5.1
+#version 0.5.2
 /*
  * TABKEY.DSM - Tab key module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
@@ -210,6 +210,11 @@ alias tabkey.proc.command (void)
 		parsekey command_completion
 	}{
 		@ :matches = getcommands($rest(1 $L)%)
+		if (!matches)
+		{
+			@ :matches = aliasctl(alias match $rest(1 $L))
+		}
+
 		if (#matches == 1)
 		{
 			parsekey erase_line
