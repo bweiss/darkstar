@@ -13,3 +13,6 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Make sure window.msgwin.show only operates on windows that actually exist.
 * Use global vars to keep track of boolean config vars, instead of an array.
 * Require EPIC4-2.0 or higher.
+* Keep the list of config/format variables belonging to each module (used by
+  /SAVE) in arrays instead of assign variables. This will hopefully fix that
+  pesky bug that was causing certain settings to not get saved.

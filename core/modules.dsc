@@ -1,7 +1,7 @@
 #
 # $Id$ */
-# modules.dsc - DarkStar module management system
-# Copyright (c) 2002, 2003 Brian Weiss
+# modules.dsc - DarkStar module system
+# Copyright (c) 2002-2004 Brian Weiss
 # See the 'COPYRIGHT' file for more information.
 #
 
@@ -395,18 +395,20 @@ alias _unload_module (module, void)
 	};
 
 	# Remove all metadata for this module.
-	for var in ($_DSET.MODULE[$module])
+	for ii from 0 to ${numitems(_DSET.$module) - 1}
 	{
+		@ :var = getitem(_DSET.$module $ii);
 		^assign -CONFIG.$var;
-		purge _DSET.$var;
+		^assign -_DSET.$var;
 	};
-	for var in ($_FSET[MODULE][$module])
+	for ii from 0 to ${numitems(_FSET.$module) - 1}
 	{
+		@ :var = getitem(_FSET.$module $ii);
 		^assign -FORMAT.$var;
-		purge -_FSET.$var;
+		^assign -_FSET.$var;
 	};
-	^assign -_DSET.MODULE.$module;
-	^assign -_FSET.MODULE.$module;
+	@ delarray(_DSET.$module);
+	@ delarray(_FSET.$module);
 	purge _MODINFO.$module;
 	@ delitem(_loaded_modules $item);
 

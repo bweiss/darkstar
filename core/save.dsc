@@ -1,7 +1,7 @@
 #
 # $Id$ */
 # save.dsc - Save DarkStar settings
-# Copyright (c) 2003 Brian Weiss
+# Copyright (c) 2003, 2004 Brian Weiss
 # See the 'COPYRIGHT' file for more information.
 #
 
@@ -109,9 +109,11 @@ alias _save.write_config_vars (fd, mod, void)
 	if (!mod)
 		return;
 
-	for var in ($aliasctl(assign get _MODULE.$mod\.CONFIG))
+	for ii from 0 to ${numitems(_DSET.$mod) - 1}
 	{
+		@ :var   = getitem(_DSET.$mod $ii);
 		@ :value = aliasctl(assign get CONFIG.$var);
+
 		if (value != []) {
 			@ write($fd assign CONFIG.$var $value);
 		} else {
@@ -126,9 +128,11 @@ alias _save.write_format_vars (fd, mod, void)
 	if (!mod)
 		return;
 
-	for var in ($aliasctl(assign get _MODULE.$mod\.FORMAT))
+	for ii from 0 to ${numitems(_FSET.$mod) - 1}
 	{
+		@ :var   = getitem(_FSET.$mod $ii);
 		@ :value = aliasctl(assign get FORMAT.$var);
+
 		if (value != []) {
 			@ write($fd assign FORMAT.$var $value);
 		} else {

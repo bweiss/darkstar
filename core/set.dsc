@@ -1,7 +1,7 @@
 #
 # $Id$ */
 # set.dsc - Modular set routines for DarkStar/EPIC4
-# Copyright (c) 2002, 2003 Brian Weiss (except where noted)
+# Copyright (c) 2002-2004 Brian Weiss (except where noted)
 # See the 'COPYRIGHT' file for more information.
 #
 
@@ -26,13 +26,17 @@ alias format.add (...) {addformat $*};
 #
 # Data about each variable will be stored in several assign structures.
 #
-# <type>.<var>            = value for <var> (may be empty)
-# <struct>.<var>          = <parentmod> <boolean>
-# _MODULE.<module>.<type> = list of <type> vars belonging to <module>
+# <type>.<var>    = value for <var> (may be empty)
+# <struct>.<var>  = <parentmod> <boolean>
 #
-# <module> is the name of the calling module or "core" if there isn't one
 # <type> can be either "CONFIG" or "FORMAT"
 # <struct> can be either "_DSET" or "_FSET"
+#
+# The <boolean> flag is set for any config vars that were added
+# with the -boolean option.
+#
+# The names of variables belonging to each module will also be stored
+# in arrays named <struct>.<module> (e.g. _DSET.CHANNEL)
 #
 alias _addsetvar (type, ...)
 {
@@ -72,9 +76,9 @@ alias _addsetvar (type, ...)
 	{
 		echo Error: _addsetvar: Duplicate $tolower($type) variable: $variable \(module: $mod\);
 	}{
-		@ push(_MODULE.$mod\.$type $variable);
 		^assign $struct\.$variable $mod $bool;
 		^assign $type\.$variable $value;
+		@ setitem($struct\.$mod $numitems($struct\.$mod) $variable);
 	};
 };
 
