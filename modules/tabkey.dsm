@@ -38,7 +38,7 @@ alias cleartab (void)
 		^assign -$var
 	}
 
-	for var in ($aliasctl(assign match TABKEY.LAST_NICK.))
+	for var in ($aliasctl(assign match TABKEY.INDEX.))
 	{
 		^assign -$var
 	}
@@ -120,7 +120,7 @@ alias tabkey.add_nick (nick, void)
 	}
 
 	@ push(TABKEY.NICKS[$winserv()] $nick)
-	@ TABKEY.LASTNICK.$winserv() = [-1]
+	@ TABKEY.INDEX.$winserv() = [-1]
 
 	return
 }
@@ -247,7 +247,7 @@ alias tabkey.module_routine (array, void)
 alias tabkey.msg_routine (void)
 {
 	@ :nicks = TABKEY.NICKS[$winserv()]
-	@ :last_nick = TABKEY.LAST_NICK[$winserv()]
+	@ :index = TABKEY.INDEX[$winserv()]
 	@ :msg_cmd = CMDCHARS ## [msg]
 	@ :trailing = restw(2 $L)
 
@@ -255,19 +255,19 @@ alias tabkey.msg_routine (void)
 	{
 		^local nick
 
-		if (last_nick > 0)
+		if (index > 0)
 		{
-			@ nick = word(${last_nick - 1} $nicks)
-			@ TABKEY.LAST_NICK.$winserv() = last_nick - 1
+			@ nick = word(${index - 1} $nicks)
+			@ TABKEY.INDEX.$winserv() = index - 1
 		}{
 			@ nick = word(${numwords($nicks) - 1} $nicks)
-			@ TABKEY.LAST_NICK.$winserv() = numwords($nicks) - 1
+			@ TABKEY.INDEX.$winserv() = numwords($nicks) - 1
 		}
 
 		parsekey erase_line
 		xtype -l $msg_cmd $nick $trailing
 	}{
-		@ TABKEY.LASTNICK.$winserv() = [-1]
+		@ TABKEY.INDEX.$winserv() = [-1]
 	}
 
 	return
