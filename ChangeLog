@@ -1,6 +1,21 @@
 Darkstar ChangeLog
 
 
+1/14/02
+
+ * [window.dsm] All keybindings are now returned to their original settings
+   when the module is unloaded. The msg window will also be killed on unload.
+
+ * Added /loader.get_saved_settings to loader.dsc. When executed from a
+   loading module, this will force the saved settings for that module to be
+   loaded before the module finishes loading. This is extremely useful for
+   events occurring at module load time that depend on certain config settings.
+
+ * [tabkey.dsm] Both tabkey.nick_routine() and tabkey.channel_routine() will
+   now work correctly with channels/nicks containing "\". This should be much
+   cleaner than yesterdays attempt at this. :-)
+
+
 !! RELEASE: 0.1.4 (1/13/02) !!
 
 

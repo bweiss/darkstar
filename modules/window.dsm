@@ -6,7 +6,7 @@
  * WINDOW.DSM - Window module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/13/02 (bmw)
+ * Last modified: 1/14/02 (bmw)
  *
  * This script uses serial number 426 for all ON hooks.
  */
@@ -21,6 +21,35 @@ queue cleanup.window
 	^on #join 426 -'\$servernick() *'
 	^on #leave 426 -'\$servernick() *'
 	^on #window_kill 426 -"msgs"
+
+	if (winnum(msgs) != -1)
+	{
+		^window msgs kill
+	}
+
+	for char in ($jot(0 9))
+	{
+		^bind META1-$char NOTHING
+	}
+
+	for char in (n p h c k $jot(0 9))
+	{
+		^bind META8-$char NOTHING
+	}
+
+	for keyb in (META1-^I META5-~ META6-~ META10-~ META11-~ META12-~ META13-~)
+	{
+		^bind $keyb NOTHING
+	}
+
+	^bind ^W NEXT_WINDOW
+	^bind ^X META2_CHARACTER
+	^bind META2-1 META32_CHARACTER
+	^bind META2-2 META39_CHARACTER
+	^bind META2-3 META38_CHARACTER
+	^bind META2-4 META33_CHARACTER
+	^bind META2-5 META30_CHARACTER
+	^bind META2-6 META31_CHARACTER
 }
 
 config.add    AUTO_BIND_CHANNELS
@@ -31,6 +60,10 @@ config.add    AUTO_CREATE_WINDOWS 10
 config.add -b AUTO_UNBIND_ON_PART 0
 config.add -b MSG_WINDOW 0
 config.add    MSG_WINDOW_ARGS size 5 level dcc,msgs,opnotes,wallops last
+
+/* Force the loading of saved settings early so the two /if statements
+   below will work. */
+loader.get_saved_settings
 
 
 if (CONFIG[AUTO_CREATE_WINDOWS])
@@ -189,9 +222,27 @@ alias window.msgwin_down (void)
 }
 
 
-^bind META1-^I parse_command ^window next
 ^bind ^W META8_CHARACTER
 ^bind ^X SWITCH_CHANNELS
+^bind META1-^I parse_command ^window next
+^bind META1-1 PARSE_COMMAND ^window swap 1
+^bind META1-2 PARSE_COMMAND ^window swap 2
+^bind META1-3 PARSE_COMMAND ^window swap 3
+^bind META1-4 PARSE_COMMAND ^window swap 4
+^bind META1-5 PARSE_COMMAND ^window swap 5
+^bind META1-6 PARSE_COMMAND ^window swap 6
+^bind META1-7 PARSE_COMMAND ^window swap 7
+^bind META1-8 PARSE_COMMAND ^window swap 8
+^bind META1-9 PARSE_COMMAND ^window swap 9
+^bind META1-0 PARSE_COMMAND ^window swap 10
+^bind META2-1 META10_CHARACTER
+^bind META2-2 META12_CHARACTER
+^bind META2-3 META13_CHARACTER
+^bind META2-4 META11_CHARACTER
+^bind META2-5 META5_CHARACTER
+^bind META2-6 META6_CHARACTER
+^bind META5-~ SCROLL_BACKWARD
+^bind META6-~ SCROLL_FORWARD
 ^bind META8-n PARSE_COMMAND ^window next
 ^bind META8-p PARSE_COMMAND ^window previous
 ^bind META8-h PARSE_COMMAND ^window hide
@@ -207,24 +258,6 @@ alias window.msgwin_down (void)
 ^bind META8-8 PARSE_COMMAND ^window swap 8
 ^bind META8-9 PARSE_COMMAND ^window swap 9
 ^bind META8-0 PARSE_COMMAND ^window swap 10
-^bind META1-1 PARSE_COMMAND ^window swap 1
-^bind META1-2 PARSE_COMMAND ^window swap 2
-^bind META1-3 PARSE_COMMAND ^window swap 3
-^bind META1-4 PARSE_COMMAND ^window swap 4
-^bind META1-5 PARSE_COMMAND ^window swap 5
-^bind META1-6 PARSE_COMMAND ^window swap 6
-^bind META1-7 PARSE_COMMAND ^window swap 7
-^bind META1-8 PARSE_COMMAND ^window swap 8
-^bind META1-9 PARSE_COMMAND ^window swap 9
-^bind META1-0 PARSE_COMMAND ^window swap 10
-^bind META2-5 META5_CHARACTER
-^bind META2-6 META6_CHARACTER
-^bind META5-~ SCROLL_BACKWARD
-^bind META6-~ SCROLL_FORWARD
-^bind META2-1 META10_CHARACTER
-^bind META2-2 META12_CHARACTER
-^bind META2-4 META11_CHARACTER
-^bind META2-3 META13_CHARACTER
 ^bind META10-~ SCROLL_START
 ^bind META11-~ SCROLL_END
 ^bind META12-~ PARSE_COMMAND window.msgwin_up

@@ -6,7 +6,7 @@
  * TABKEY.DSM - Tab key module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/13/02 (bmw)
+ * Last modified: 1/14/02 (bmw)
  *
  * This script uses serial number 420 for all ON hooks.
  */
@@ -140,6 +140,7 @@ alias tabkey.channel_routine (void)
 	unless (lastc == [ ])
 	{
 		@ :lastw = word(${#L - 1} $L)
+		@ lastw = sar(g/\\/\\\\\/$lastw)
 		@ :findchan = pattern($lastw% $mychannels())
 		
 		if (match($lastw $findchan))
@@ -287,17 +288,9 @@ alias tabkey.nick_routine (void)
 	
 	unless (lastc == [ ])
 	{
-		/*
- 		 * Nasty hack time. Convert all \ into ' so that $pattern() will
-		 * work correctly, then convert back to \. This is safe here
-		 * because ' is not allowed in nicks.
-		 */
-		^local list $remw($: $onchannel()) $:
 		@ :lastw = word(${#L - 1} $L)
-		@ list = sar(g/\\/'/$list)
-		@ lastw = sar(g/\\/'/$lastw)
-		@ :findnick = pattern($lastw% $list)
-		@ findnick = sar(g/'/\\/$findnick)
+		@ lastw = sar(g/\\/\\\\\/$lastw)
+		@ :findnick = pattern($lastw% $remw($: $onchannel()) $:)
 
 		if (match($word(1 $L) $findnick))
 		{

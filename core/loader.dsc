@@ -174,6 +174,21 @@ alias loader.display_modlist (void)
 	return
 }
 
+/*
+ * This allows modules to force saved settings to be loaded before the module
+ * is finished loading. Very useful for events happening at module load time
+ * that depend on certain config settings.
+ */
+alias loader.get_saved_settings (void)
+{
+	@ :module = LOADER[PENDING_MODULE]
+	^local save_file $DS.SAVE_DIR/$module\.sav
+
+	if (fexist($save_file) == 1)
+	{
+		^load $save_file
+	}
+}
 
 alias loader.load_module (module, void)
 {
