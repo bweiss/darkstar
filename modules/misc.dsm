@@ -23,6 +23,7 @@ queue cleanup.misc
 		^on $hook -"*"
 	}
 
+	^on action -'% \$servernick() *'
 	^on #connect 424 -"*"
 	^on mode -'\$servernick() \$servernick() *' 
 	^on send_ctcp -"PRIVMSG *"
@@ -128,7 +129,6 @@ alias wii (nick default "$servernick()", void)
 /*
  * WHOIS/WHOWAS related hooks.
  */
-
 on #-timer 424 "*"
 {
 	^local delete
@@ -259,6 +259,14 @@ on #^connect 424 "*" //mode $servernick() $CONFIG.DEFAULT_UMODES
 /*
  * Other /FSET related hooks
  */
+on ^action '% $servernick() *'
+{
+	if (FORMAT[ACTION_USER])
+	{
+		echo $fparse(ACTION_USER $*)
+	}
+}
+
 on ^ctcp "*"
 {
 	if (FORMAT[CTCP])

@@ -6,9 +6,9 @@
  * CHANNEL.DSM - Channel related stuff for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/12/01 (bmw)
+ * Last modified: 12/23/01 (bmw)
  *
- * This script uses serial number 424 for all ON hooks.
+ * This script uses serial numbers 0 and 424 for all ON hooks.
  */
 
 queue cleanup.channel
@@ -24,7 +24,7 @@ queue cleanup.channel
 	^on public -'% % *\\\\\[\${CONFIG[AUTO_RESPONSE_STR]}\\\\\]*'
 	^on public_other -'% % *\\\\\[\${CONFIG[AUTO_RESPONSE_STR]}\\\\\]*'
 
-	for hook in (332 333 367 368 369 channel_signoff channel_sync join leave mode public public_other send_public topic)
+	for hook in (332 333 367 368 369 action channel_signoff channel_sync join leave mode public public_other send_public topic)
 	{
 		^on $hook -"*"
 	}
@@ -486,8 +486,9 @@ alias wall2 (text)
 }
 
 
-/* Functions */
-
+/*
+ * Functions
+ */
 alias channel.show_ov (nick, chan, void)
 {
 	if (CONFIG[SHOW_OPVOICE_IN_PUBLICS])
@@ -502,7 +503,6 @@ alias channel.show_ov (nick, chan, void)
 /*
  * ON hooks
  */
-
 on ^329 "*"
 {
 	if (FORMAT[CHANNEL_TS])
@@ -518,9 +518,7 @@ on ^332 "*"
 		echo $fparse(TOPIC $*)
 	}
 
-	@ :matches = getmatches(topics $1*)
-
-	if (matches == [])
+	if (!getmatches(topics $1*))
 	{
 		@ setitem(topics $numitems(topics) $1-)
 	}
@@ -572,13 +570,29 @@ on ^368 "*"
 	}
 }
 
-on ^369 ^"*"
+on ^369 "*" #
+
+on ^action "*"
+{
+	if (iscurchan($1))
+	{
+		if (FORMAT[ACTION_CHANNEL])
+		{
+			echo $fparse(ACTION_CHANNEL $*)
+		}
+	}{
+		if (FORMAT[ACTION_CHANNEL_OTHER])
+		{
+			echo $fparse(ACTION_CHANNEL_OTHER $*)
+		}
+	}
+}
 
 on ^channel_signoff "*"
 {
 	if (FORMAT[CHANNEL_SIGNOFF])
 	{
-		echo $fparse(CHANNEL_SIGNOFF $1 $0 $2-)
+		echo $fparse(CHANNEL_SIGNOFF $*)
 	}
 }
 
@@ -586,7 +600,7 @@ on ^channel_sync "*"
 {
 	if (FORMAT[CHANNEL_SYNC])
 	{
-		echo $fparse(CHANNEL_SYNC $0 $1)
+		echo $fparse(CHANNEL_SYNC $*)
 	}
 }
 
@@ -594,7 +608,7 @@ on ^join "*"
 {
 	if (FORMAT[JOIN])
 	{
-		echo $fparse(JOIN $0 $2 $1)
+		echo $fparse(JOIN $*)
 	}
 }
 
@@ -602,7 +616,7 @@ on ^leave "*"
 {
 	if (FORMAT[LEAVE])
 	{
-		echo $fparse(LEAVE $0 $2 $1 $3-)
+		echo $fparse(LEAVE $*)
 	}
 }
 
@@ -671,8 +685,9 @@ on ^topic "*"
 	@ setitem(topics $numitems(topics) $1-)
 }
 
-/* Auto-response */
-
+/*
+ * Auto-response
+ */
 on ^public '% % *\\[${CONFIG[AUTO_RESPONSE_STR]}\\]*'
 {
 	if (CONFIG[AUTO_RESPONSE])

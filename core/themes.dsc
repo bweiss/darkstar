@@ -8,7 +8,7 @@
  *
  * Last modified: 12/22/01 (bmw)
  *
- * This script uses serial number 1 for ALL /on hooks.
+ * This script uses serial number 1 for all ON hooks.
  */
 
 /*

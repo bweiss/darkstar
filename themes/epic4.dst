@@ -9,14 +9,16 @@ status -q epic4
 set BANNER ***
 
 /* Module: channel */
+fset ACTION_CHANNEL * $1 $3-
+fset ACTION_CHANNEL_OTHER * $1/$2 $3-
 fset BANS $G $1-
 fset BANS_FOOTER $G Total number of bans on $3 - $2
 fset -BANS_HEADER
-fset CHANNEL_SIGNOFF $G SignOff $1: \($3-%n\)
+fset CHANNEL_SIGNOFF $G SignOff $2: \($3-%n\)
 fset CHANNEL_SYNC $G Channel $1 synced in $2 seconds
 fset CHANNEL_TS $G Channel $2 was created at $strftime($3 %%a %%b %%T %%Z %%Y)
-fset JOIN $G $1 \($2\) has joined $3
-fset LEAVE $G $1 \($2\) has left $3
+fset JOIN $G $1 \($3\) has joined $2
+fset LEAVE $G $1 \($3\) has left $2
 fset MODE $G Mode change \"$3-\" on channel $2 by $1
 fset PUBLIC <$1> $3-
 fset PUBLIC_AR <%W$1%n> $3-
@@ -33,6 +35,7 @@ fset SET $G Current value of $1 is $2-
 fset SET_NOVALUE $G No value for $1 has been set
 
 /* Module: misc */
+fset ACTION_USER *> $1 $3-
 fset CTCP $G CTCP $3 from $1: $4-
 fset CTCP_REPLY $G CTCP $3 reply from $1: $4-
 fset DCC_CHAT =$1= $2-

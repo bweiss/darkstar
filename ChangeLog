@@ -1,6 +1,21 @@
 Darkstar ChangeLog
 
 
+12/24/01
+
+ * [channel.dsm] Added 2 new format variables: ACTION_CHANNEL and
+   ACTION_CHANNEL_OTHER.
+
+ * [misc.dsm] New format variable: ACTION_USER.
+
+ * Regrettably I must break some some themes by changing the arguments passed
+   to $fparse() for some of channel.dsm's format sets. The list of affected
+   variables is as follows: CHANNEL_SIGNOFF, CHANNEL_SYNC, JOIN, and LEAVE.
+   If your theme(s) use any of these variables you may need to adjust them
+   slightly. I apologize for the inconvenience but this should make things
+   much better in the long run.
+
+
 !! RELEASE: 0.1.1 (12/23/01) !!
 
 
