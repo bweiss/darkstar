@@ -1,7 +1,7 @@
-README file for Darkstar/EPIC4
+README file for DarkStar/EPIC4
 $Id$
 
-Darkstar written by Brian Weiss <brian@epicsol.org>
+DarkStar written by Brian Weiss <brian@epicsol.org>
 Copyright (c) 2002 Brian Weiss
 Please see the 'COPYRIGHT' file for licensing information.
 See the bottom of this file for a list of contributors.
@@ -9,7 +9,7 @@ See the bottom of this file for a list of contributors.
 
 ABOUT
 
-Darkstar is a modular script pack for EPIC4, specifically versions 1.1
+DarkStar is a modular script pack for EPIC4, specifically versions 1.1
 and up. It is highly extensible and includes theme support, advanced tab
 completion, and a whole bunch of other goodies. The modular design offers
 many benefits (and a few drawbacks) and allows for a very high level of
@@ -32,7 +32,7 @@ You have been warned.
 
 WHERE TO GET DARKSTAR AND EPIC4
 
-Recent versions of both Darkstar and EPIC4 can be found at the
+Recent versions of both DarkStar and EPIC4 can be found at the
 following URLs:
 
   http://www.epicsol.org/~brian/darkstar/
@@ -66,7 +66,7 @@ There are a few things that get set at load time that you may want to
 change. This can be accomplished by setting the following environment
 variables.
 
-  DARKSTAR_HOME - Darkstar home directory (default: ~/darkstar)
+  DARKSTAR_HOME - DarkStar home directory (default: ~/darkstar)
                   *** You are no longer required to set this if you install
                       somewhere other than the default. It will now use
                       $loadinfo() to determine the home directory.
@@ -97,7 +97,7 @@ If you don't want to create these variables every time you login, I recommend
 putting them in a shell startup script. (~/.bash_profile, ~/.profile,
 ~/.zshrc, ~/.cshrc, etc.)
 
-Nothing else is required to begin using Darkstar. However, I would recommend
+Nothing else is required to begin using DarkStar. However, I would recommend
 having a look at sample.dsrc in the main directory.
 
 At this point you can just type '/load /path/to/darkstar.irc' to begin
@@ -105,7 +105,7 @@ using the script. The available modules will be displayed and you will be
 prompted about which ones to load. Just pushing enter will load all modules
 on the Auto-Load list (/dset AUTO_LOAD_MODULES).
 
-If you would like to load Darkstar automatically on client startup, you can
+If you would like to load DarkStar automatically on client startup, you can
 place the following code in ~/.epicrc
 
   load /path/to/darkstar.irc
@@ -123,9 +123,9 @@ FILES
   TODO			- To-do list.
   ChangeLog		- The changelog.
   darkstar.irc		- The startup script. This is the file that you /LOAD
-			  to begin using Darkstar.
+			  to begin using DarkStar.
   sample.dsrc		- Sample .dsrc file.
-  core/*.dsc		- Scripts that make up the core of Darkstar
+  core/*.dsc		- Scripts that make up the core of DarkStar.
 			  These are all required.
   doc/*			- Any documentation that is not browsed via /DINFO.
   help/*		- The basic documentation for /DINFO.

@@ -30,7 +30,7 @@ if (!epic() || V < 20011203)
 	xecho -b Official EPIC Homepage:     http://www.epicsol.org/
 	xecho -b Official EPIC FTP site:     ftp://ftp.epicsol.org/
 	xecho -b
-	xecho -b Current versions of both Darkstar and EPIC4 can also be found
+	xecho -b Current versions of both DarkStar and EPIC4 can also be found
 	xecho -b at the following URL.
 	xecho -b
 	xecho -b http://www.got.net/~brian/epic4/
