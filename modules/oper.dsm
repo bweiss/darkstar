@@ -1,4 +1,4 @@
-# version:0.6 loader:pf
+# version:0.6.1 loader:pf
 # $Id$
 #
 # oper.dsm - IRC Operator module for DarkStar/EPIC4
@@ -356,7 +356,7 @@ on #-381 427 "*"
 #
 on #-464 427 "*"
 {
-	@ OPER.FAILED.$servernum($0) = time();
+	@ OPER.FAILED.$encode($servernum($0)) = time();
 };
 
 on #-connect 427 "*"
@@ -410,7 +410,7 @@ on #-timer 427 "*"
 		{
 			@ :servname = servername($serv);
 			@ :item = matchitem(oper.challenge $servname *);
-			if (serv > -1 && item > -1 && !OPER[FAILED][$serv])
+			if (serv > -1 && item > -1 && !OPER[FAILED][$encode($serv)])
 			{
 				if (!pass(oO $usermode($serv)))
 				{

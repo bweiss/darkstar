@@ -1,4 +1,4 @@
-# version:0.2 loader:pf
+# version:0.2.1 loader:pf
 # $Id$
 #
 # nickmgr.dsm - Nick management module for DarkStar/EPIC4
@@ -181,9 +181,9 @@ alias nickmgr.scan (void)
 	{
 		if (serv > -1 && isconnected($serv))
 		{
-			if (!NICKMGR.SCAN[$serv])
+			if (!NICKMGR.SCAN[$encode(serv)])
 			{
-				@ NICKMGR.SCAN.$serv = time();
+				@ NICKMGR.SCAN.$encode($serv) = time();
 				for ii from 1 to $numwords($nlist)
 				{
 					@ :nick = word(${ii-1} $nlist);
@@ -200,7 +200,7 @@ alias nickmgr.scan (void)
 						};
 					};
 				};
-				^assign -NICKMGR.SCAN.$serv;
+				^assign -NICKMGR.SCAN.$encode($serv);
 			};
 		};
 	};
@@ -315,10 +315,10 @@ on #-timer 422 "*"
 
 	foreach NICKMGR.SCAN serv
 	{
-		@ :ts = NICKMGR.SCAN[$serv];
+		@ :ts = NICKMGR.SCAN[$encode($serv)];
 		@ :diff = time() - ts;
 		if (diff > CONFIG.NICKMGR_SCAN_TIMEOUT) {
-			^assign -NICKMGR.SCAN.$serv;
+			^assign -NICKMGR.SCAN.$encode($serv);
 		};
 	};
 };

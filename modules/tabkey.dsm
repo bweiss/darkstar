@@ -1,4 +1,4 @@
-# version:0.5.1 loader:pf
+# version:0.5.2 loader:pf
 # $Id$
 #
 # tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -238,14 +238,14 @@ alias tabkey.msg_handler (serv, nick, void)
 		return;
 	};
 
-	if (match($nick $TABKEY.MSGHIST[$serv])) {
-		@ TABKEY.MSGHIST.$serv = remw($nick $TABKEY.MSGHIST[$serv]);
+	if (match($nick $TABKEY.MSGHIST[$encode($serv)])) {
+		@ TABKEY.MSGHIST.$encode($serv) = remw($nick $TABKEY.MSGHIST[$encode($serv)]);
 	};
-	if (numwords($TABKEY.MSGHIST[$serv]) == CONFIG.TABKEY_MAX_MSG_HISTORY) {
-		shift TABKEY.MSGHIST.$serv;
+	if (numwords($TABKEY.MSGHIST[$encode($serv)]) == CONFIG.TABKEY_MAX_MSG_HISTORY) {
+		shift TABKEY.MSGHIST.$encode($serv);
 	};
-	push TABKEY.MSGHIST.$serv $nick;
-	@ TABKEY.MSGHIST_INDEX.$serv = -1;
+	push TABKEY.MSGHIST.$encode($serv) $nick;
+	@ TABKEY.MSGHIST_INDEX.$encode($serv) = -1;
 };
 
 #
@@ -452,30 +452,30 @@ alias tabkey.cmd.msg (...)
 	bless;
 	if (curword == 1)
 	{
-		@ :retval = pattern("$word*" $sort($uniq($TABKEY.MSGHIST[$winserv()] $tabkey.method.nickchan($*))));
+		@ :retval = pattern("$word*" $sort($uniq($TABKEY.MSGHIST[$encode($winserv())] $tabkey.method.nickchan($*))));
 	}{
 		@ :cmd = word(0 $L);
 		if (!cmd) {
 			@ :cmd = [$K\MSG];
 		};
-		@ :nicks = TABKEY.MSGHIST[$winserv()];
-		@ :index = TABKEY.MSGHIST_INDEX[$winserv()];
+		@ :nicks = TABKEY.MSGHIST[$encode($winserv())];
+		@ :index = TABKEY.MSGHIST_INDEX[$encode($winserv())];
 		@ :trailing = restw(2 $L);
 		if (nicks)
 		{
 			if (index > 0)
 			{
 				@ :nick = word(${index - 1} $nicks);
-				@ TABKEY.MSGHIST_INDEX.$winserv() = index - 1;
+				@ TABKEY.MSGHIST_INDEX.$encode($winserv()) = index - 1;
 			}{
 				@ :nick = word(${numwords($nicks) - 1} $nicks);
-				@ TABKEY.MSGHIST_INDEX.$winserv() = numwords($nicks) - 1;
+				@ TABKEY.MSGHIST_INDEX.$encode($winserv()) = numwords($nicks) - 1;
 			};
 			parsekey erase_line;
 			xtype -l $cmd $nick $trailing;
 			@ :retval = [ ];
 		}{
-			@ TABKEY.MSGHIST_INDEX.$winserv() = -1;
+			@ TABKEY.MSGHIST_INDEX.$encode($winserv()) = -1;
 		};
 	};
 
@@ -504,7 +504,7 @@ alias tabkey.cmd.q (...)
 
 alias tabkey.cmd.query (...)
 {
-	@ function_return = pattern("$0*" $sort($uniq($TABKEY.MSGHIST[$winserv()] $tabkey.method.nickchan($*))));
+	@ function_return = pattern("$0*" $sort($uniq($TABKEY.MSGHIST[$encode($winserv())] $tabkey.method.nickchan($*))));
 };
 
 alias tabkey.cmd.reloadmod (...)
