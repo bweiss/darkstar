@@ -15,6 +15,7 @@ assign -FORMAT.WHO_FOOTER2
 assign -FORMAT.WHO_HEADER
 assign -FORMAT.WHO_HEADER1
 assign -FORMAT.WHO_HEADER2
+assign FORMAT.WHOIS_ADMIN $G %Wa%ndmin      %K:%n IRC Administrator.
 assign FORMAT.WHOIS_AWAY $G %Wa%nway       %K:%n $2-
 assign FORMAT.WHOIS_BOT $G %Wb%not       %K:%n $2-
 assign FORMAT.WHOIS_CHANNELS $G %Wc%nhannels   %K:%n $3-
@@ -29,7 +30,7 @@ assign FORMAT.WHOIS_IDENTIFIED $G %Wi%ndentified %K:%n $2-
 assign FORMAT.WHOIS_IDLE $G %Wi%ndle       %K:%n $tdiff($3)
 assign FORMAT.WHOIS_NAME $G %Wi%nrcname    %K:%n $6-
 assign FORMAT.WHOIS_NICK $G $2 %K\(%n$3@$4%K\)%n
-assign FORMAT.WHOIS_OPER $G %Wo%nperator   %K:%n $2 is an IRC Operator
+assign FORMAT.WHOIS_OPER $G %Wo%nperator   %K:%n IRC Operator
 assign FORMAT.WHOIS_SERVER $G %Ws%nerver     %K:%n $3 %K\(%n$4-%K\)%n
 assign FORMAT.WHOIS_SIGNON $G %Ws%nignon     %K:%n $strftime($4 %%a %%b %%d %%T %%Z %%Y)
 assign FORMAT.WHOWAS_NAME $G %Wi%nrcname    %K:%n $6-

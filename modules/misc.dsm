@@ -1,4 +1,4 @@
-#version 0.8.2
+#version 0.9
 /* $Id$ */
 /*
  * misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
@@ -54,6 +54,7 @@ format.add WHO_FOOTER2
 format.add WHO_HEADER
 format.add WHO_HEADER1
 format.add WHO_HEADER2
+format.add WHOIS_ADMIN $G $2 : $3-\(from $1\)
 format.add WHOIS_AWAY $G $1 is away: $2-
 format.add WHOIS_BOT $G $2 : $3-
 format.add WHOIS_CHANNELS $G on channels: $3-
@@ -184,6 +185,12 @@ on ^301 "*" {
 on ^307 "*" {
 	if (FORMAT.WHOIS_IDENTIFIED) {
 		echo $fparse(WHOIS_IDENTIFIED $*)
+	}
+}
+
+on ^308 "*" {
+	if (FORMAT.WHOIS_ADMIN) {
+		echo $fparse(WHOIS_ADMIN $*)
 	}
 }
 

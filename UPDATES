@@ -1,6 +1,11 @@
 DarkStar 0.3
 
 
+*** News 2002/10/07 -- misc.dsm 0.9 - New format variable: WHOIS_ADMIN
+	Support for a new WHOIS numeric (308) has been added. This numeric
+	is sent by Hybrid7 servers (and some modified Hyb6 servers) when
+        the user being /WHOISed is an administrator.
+
 *** News 2002/10/06 -- New, non-recursive /LESS
 	The /LESS file pager has been rewritten so that it uses iteration
 	instead of recursion and should now be safe to use within other
