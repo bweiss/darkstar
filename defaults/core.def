@@ -1,4 +1,5 @@
 config AUTO_LOAD_MODULES away channel keepnick misc nickcomp scan tabkey window
+config AUTO_LOAD_PROMPT 1
 config DEFAULT_STATUS 2
 config VERBOSE_SAVE 1
 fset SET Current value of $1 is $2-

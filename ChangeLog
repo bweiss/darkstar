@@ -3,6 +3,10 @@ Darkstar ChangeLog
 
 [0.0.9]
 
+ - New dset variable: AUTO_LOAD_PROMPT - If true, you will be asked on startup
+   which modules you would like to load (old behaviour). If false, the modules
+   listed in AUTO_LOAD_MODULES will be loaded without prompting the user.
+   (Requested by tokage)
  - Slight change to the format of the defaults files.
  - Fixed a bug in auto-response where public_other's would display the nick
    twice. (Discovered by myke)

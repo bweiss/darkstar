@@ -301,51 +301,65 @@ if (CONFIG[AUTO_LOAD_MODULES])
 
 	modlist
 
-	input "Modules to load? ([A]uto / [N]one / 1 2-4 ...) [A] "
+	if (CONFIG[AUTO_LOAD_PROMPT])
 	{
-		if ([$0] == [])
+		input "Modules to load? ([A]uto / [N]one / 1 2-4 ...) [A] "
 		{
-			^assign ugh A
-		}{
-			^assign ugh $0
-		}
-
-		switch ($toupper($ugh))
-		{
-			(A)
+			if ([$0] == [])
 			{
-				xecho -b Auto-Loading modules...
-				for module in ($CONFIG.AUTO_LOAD_MODULES)
-				{
-					if (load_module($module))
-					{
-						xecho -b Module [$module] has been loaded successfully
-					}{
-						xecho -b Error loading module [$module]
-					}
-				}
-				xecho -b Auto-Load completed [$strftime(%c)]
+				^assign ugh A
+			}{
+				^assign ugh $0
 			}
-			(N) { # Do nuh-thing! }
-			(*)
-			{ 
-				for module in ($which_mods(load $*))
-				{
-					if (load_module($module))
-					{
-						xecho -b Module [$module] has been successfully loaded
-					}{
-						xecho -b Error loading module [$module]
-					}
-				}
 
-				xecho -b Load complete [$strftime(%c)]
+			switch ($toupper($ugh))
+			{
+				(A)
+				{
+					xecho -b Auto-Loading modules...
+					for module in ($CONFIG.AUTO_LOAD_MODULES)
+					{
+						if (load_module($module))
+						{
+							xecho -b Module [$module] has been loaded successfully
+						}{
+							xecho -b Error loading module [$module]
+						}
+					}
+					xecho -b Auto-Load completed [$strftime(%c)]
+				}
+				(N) { # Do nuh-thing! }
+				(*)
+				{ 
+					for module in ($which_mods(load $*))
+					{
+						if (load_module($module))
+						{
+							xecho -b Module [$module] has been successfully loaded
+						}{
+							xecho -b Error loading module [$module]
+						}
+					}
+					xecho -b Load complete [$strftime(%c)]
+				}
+			}
+
+			@ ugh = []
+		}
+	}{
+		xecho -b Auto-Loading modules...
+		for module in ($CONFIG.AUTO_LOAD_MODULES)
+		{
+			if (load_module($module))
+			{
+				xecho -b Module [$module] has been loaded successfully
+			}{
+				xecho -b Error loading module [$module]
 			}
 		}
-
-		@ ugh = []
+		xecho -b Auto-Load completed [$strftime(%c)]
 	}
-
+	
 	wait -cmd for hook in (250 251 252 254 255 265 266)
 	{
 		^on ^$hook -"*"
