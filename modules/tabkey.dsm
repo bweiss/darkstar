@@ -1,8 +1,8 @@
-# version:0.5.4 loader:pf
+# version:0.6 loader:pf
 # $Id$
 #
 # tabkey.dsm - Tab key completion module for DarkStar/EPIC4
-# Copyright (c) 2002, 2003 EPIC Software Labs
+# Copyright (c) 2002-2005 EPIC Software Labs
 # See the 'COPYRIGHT' file for more information.
 #
 # This script is based on the tabkey.ce script written by CrazyEddy and
@@ -10,7 +10,7 @@
 # are what made this script possible. Many thanks. :-)
 #
 # This version is being extended and maintained by Brian Weiss.
-# Please send all questions and comments to brian@epicsol.org.
+# Please send all bug reports, questions, and comments to brian@epicsol.org.
 #
 # This script uses serial number 420 for all /ON hooks.
 #
@@ -84,16 +84,29 @@ queue cleanup.tabkey
 	^on #send_ctcp 420 -"PRIVMSG % DCC CHAT *";
 };
 
-
-addconfig -b TABKEY_CYCLE_MATCHES 1;
+addconfig    TABKEY_CYCLE_MATCHES 1;
 addconfig    TABKEY_MAX_MSG_HISTORY 6;
 addconfig    TABKEY_NICKCOMP_SUFFIX ,;
 
+#
+# The following functions are to be used with the /BIND command
+# to cause a particular key sequence to perform completion on the
+# current input line.
+#
+@ bindctl(function TABKEY_COMPLETION create "tabkey.main");
+@ bindctl(function TABKEY_COMPLETION_FORWARD create "tabkey.main +");
+@ bindctl(function TABKEY_COMPLETION_BACKWARD create "tabkey.main -");
 
-bind ^I parse_command tabkey.main;
-
-
-alias tabkey.main (void)
+#
+# tabkey.main [+|-]
+#
+# This is the main alias that will be called by the bind functions
+# created with $bindctl() above. Match cycling can be enabled by
+# passing either '+' or '-' as the first argument ('+' for forward
+# cycling, '-' for backward cycling). If no argument is given then
+# matches will not be cycled.
+#
+alias tabkey.main (cycle, void)
 {
 	@ :oxd = xdebug(extractw);
 	xdebug extractw;
@@ -108,18 +121,33 @@ alias tabkey.main (void)
 	@ :word = mid($wordind ${curpos-wordind} $L);
 
 	#
-	# Attempt to cycle through the list of matches if the tabkey is
-	# pressed a second time with no change. -bmw
+	# Attempt to cycle through the list of matches if tabkey.main is
+	# run a second time without any change in the input line. -bmw
 	#
-	if (CONFIG.TABKEY_CYCLE_MATCHES && #TABKEY.LASTMATCHES && L == TABKEY.LASTLINE)
+	if (cycle && #TABKEY.LAST_MATCHES && L == TABKEY.LAST_LINE)
 	{
-		if (TABKEY.INDEX == #TABKEY.LASTMATCHES)
+		# Adjust the index if we change directions.
+		if (TABKEY.LAST_CYCLE_DIRECTION && cycle != TABKEY.LAST_CYCLE_DIRECTION)
+			repeat 2 @ TABKEY.INDEX${repeat(2 $cycle)};
+
+		if (cycle == [+] && (TABKEY.INDEX == #TABKEY.LAST_MATCHES || TABKEY.INDEX < 0)) {
 			@ TABKEY.INDEX = 0;
-		@ :nextword = word($TABKEY.INDEX $TABKEY.LASTMATCHES);
+		} else if (cycle == [-] && (TABKEY.INDEX == [] || TABKEY.INDEX < 0)) {
+			@ TABKEY.INDEX = #TABKEY.LAST_MATCHES - 1;
+		};
+
+		@ :nextword = word($TABKEY.INDEX $TABKEY.LAST_MATCHES);
 		parsekey delete_to_previous_space;
 		xtype -l $nextword;
-		@ TABKEY.INDEX++;
-		@ TABKEY.LASTLINE = L;
+
+		if (cycle == [+]) {
+			@ TABKEY.INDEX++;
+		} else {
+			@ TABKEY.INDEX--;
+		};
+
+		@ TABKEY.LAST_LINE = L;
+		@ TABKEY.LAST_CYCLE_DIRECTION = cycle;
 		xdebug $oxd;
 		return;
 	};
@@ -150,9 +178,10 @@ alias tabkey.main (void)
 		if (word == prefix)
 		{
 			echo Completions for \"$word\": $matches;
-			@ TABKEY.INDEX = 0;
-			@ TABKEY.LASTLINE = L;
-			@ TABKEY.LASTMATCHES = matches;
+			@ TABKEY.INDEX = -1;
+			@ TABKEY.LAST_LINE = L;
+			@ TABKEY.LAST_MATCHES = matches;
+			@ TABKEY.LAST_CYCLE_DIRECTION = [];
 		}
 		else if (strlen($word) <= strlen($prefix))
 		{
@@ -772,6 +801,35 @@ on #^send_ctcp 420 "PRIVMSG % DCC CHAT *"
 {
 	for serv in ($myservers(0)) {
 		tabkey.msg_handler $serv =$1;
+	};
+};
+
+on #-hook 420 "CONFIG TABKEY_CYCLE_MATCHES *"
+{
+	@ :curval = CONFIG.TABKEY_CYCLE_MATCHES;
+	@ :oldval = [$2];
+
+	if (curval != [] && (!isnumber(b10 $curval) || curval < 0 || curval > 2))
+	{
+		xecho -b Value must be either 0, 1, or 2;
+		defer dset TABKEY_CYCLE_MATCHES $oldval;
+	}{
+		switch ($CONFIG.TABKEY_CYCLE_MATCHES)
+		{
+			() (0) {^bind ^I TABKEY_COMPLETION};
+			(1)    {^bind ^I TABKEY_COMPLETION_FORWARD};
+			(2)    {^bind ^I TABKEY_COMPLETION_BACKWARD};
+		};
+	};
+};
+
+defer
+{
+	switch ($CONFIG.TABKEY_CYCLE_MATCHES)
+	{
+		() (0) {^bind ^I TABKEY_COMPLETION};
+		(1)    {^bind ^I TABKEY_COMPLETION_FORWARD};
+		(2)    {^bind ^I TABKEY_COMPLETION_BACKWARD};
 	};
 };
 

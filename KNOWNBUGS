@@ -21,3 +21,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Fix /TOPICS so that it numbers the list of topics correctly.
 * Always delete the 'nickmgr' timer in nickmgr.add_timer before creating a
   new timer.
+* Add support for backward match cycling in the tabkey module.
