@@ -13,17 +13,27 @@ alias sbar status
 alias statbar status
 
 /*
- * /STATUS [statbarname] [verbosity]
+ * /STATUS [-q] [statbarname]
  * Scans $DS.STATUS_DIR for statbar files and changes to [statbar]
  * if it exists. If no statbar is specified, the list of available choices
  * will be displayed and the user will be prompted to choose one. Either
  * literal statbar names or a number corresponding to the desired statbar
- * will be accepted. The [verbosity] argument determines whether or not
- * we echo a message to the screen notifying the user of the status change.
- * This was mostly added so that themes could change statbars quietly.
+ * will be accepted. The 'q' option tells /status to be silent about the
+ * change. This was mostly added so that themes could change statbars quietly.
  */
-alias status (sbar, verbosity default "1", void)
+alias status (args)
 {
+	^local sbar,quiet
+
+	if (left(1 $word(0 $args)) == [-])
+	{
+		@ sbar = word(1 $args)
+		if (word(0 $args) == [-q])
+		{
+			^assign quiet 1
+		}
+	}
+
 	/*
 	 * Build our list of available statbars and store them in $sfiles.
 	 * Directories are ignored.
@@ -48,13 +58,13 @@ alias status (sbar, verbosity default "1", void)
 	{
 		@ :item = matchitem(status $sbar*)
 		@ :file = word(1 $getitem(status $item))
-		@ status.change($file $verbosity)
+		@ status.change($file $quiet)
 	} \
 	elsif (isnumber($sbar) && sbar > 0 && sbar <= numitems(status))
 	{
 		@ :item = sbar - 1
 		@ :file = word(1 $getitem(status $item))
-		@ status.change($file $verbosity)
+		@ status.change($file $quiet)
 	}{
 		xecho -b Available status bars:
 		for cnt from 0 to ${numitems(status) - 1}
@@ -69,12 +79,12 @@ alias status (sbar, verbosity default "1", void)
 			{
 				@ :item = [$0] - 1
 				@ :file = word(1 $getitem(status $item))
-				@ status.change($file $verbosity)
+				@ status.change($file $quiet)
 			} \
 			elsif (matchitem(status $0*))
 			{
 				@ :file = word(1 $getitem(status $matchitem(status $0*)))
-				@ status.change($file $verbosity)
+				@ status.change($file $quiet)
 			}
 		}
 	}
@@ -84,14 +94,14 @@ alias status (sbar, verbosity default "1", void)
  * status.change() - Everything involved with actually changing the status.
  * Takes a filename as its only argument.
  */
-alias status.change (file, verbosity, void)
+alias status.change (file, quiet, void)
 {
 	if (fexist($file) == 1)
 	{
 		load $file
 		parsekey refresh_screen
 
-		if (verbosity)
+		if (!quiet)
 		{
 			xecho -b Now using status: $after(-1 / $file)
 		}

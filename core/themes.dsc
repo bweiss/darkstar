@@ -6,7 +6,7 @@
  * THEMES.DSC - Theme support for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/11/01 (bmw)
+ * Last modified: 10/14/01 (bmw)
  */
 
 /*
@@ -87,26 +87,7 @@ alias theme.change (theme, void)
 
 		if (fexist($theme_file) == 1)
 		{
-			@ :fd = open($theme_file R)
-			
-			while (!eof($fd))
-			{
-				@ :line = read($fd)
-				@ :keyword = word(0 $line)
-				@ :variable = word(1 $line)
-				@ :value = restw(2 $line)
-
-				if (keyword == [status])
-				{
-					status $word(1 $line) 0
-				} \
-				elsif (keyword == [format])
-				{
-					^assign FORMAT.$variable $value
-				}
-			}
-
-			@ close($fd)
+			//load $theme_file
 			^assign DS.THEME $theme
 			return 1
 		}

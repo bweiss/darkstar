@@ -56,20 +56,14 @@ alias names.showusers (chan default "$C", mode default "*", void)
 			return 0
 		}
 
-		if (FORMAT[NAMES_HEADER])
-		{
-			xecho -b $fparse(NAMES_HEADER $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
-		}
+		if (FORMAT[NAMES_HEADER]) echo $fparse(NAMES_HEADER $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
 
 		fe ($users) n1 n2 n3 n4 n5 n6
 		{
 			xecho -b $names.getov($chan $n1)$[9]n1 $names.getov($chan $n2)$[9]n2 $names.getov($chan $n3)$[9]n3 $names.getov($chan $n4)$[9]n4 $names.getov($chan $n5)$[9]n5 $names.getov($chan $n6)$[9]n6
 		}
 
-		if (FORMAT[NAMES_FOOTER])
-		{
-			xecho -b $fparse(NAMES_FOOTER $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
-		}
+		if (FORMAT[NAMES_FOOTER]) echo $fparse(NAMES_FOOTER $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
 
 		return 1
 	}

@@ -125,14 +125,14 @@ alias setcat (var, void)
 	
 	eval if \($var != []\)
 	{
-		if (before(. $var) == [CONFIG] && aliasctl(assign get DSET.BOOL.$var2))
+		if (FORMAT[SET] && before(. $var) == [CONFIG] && aliasctl(assign get DSET.BOOL.$var2))
 		{
-			xecho -b $fparse(SET $toupper($var2) $toupper($convert.num($($var))))
+			echo $fparse(SET $toupper($var2) $toupper($convert.num($($var))))
 		}{
-			xecho -b $fparse(SET $toupper($var2) $($var))
+			echo $fparse(SET $toupper($var2) $($var))
 		}
 	}{
-		xecho -b $fparse(SET_NOVALUE $toupper($var2))
+		if (FORMAT[SET_NOVALUE]) echo $fparse(SET_NOVALUE $toupper($var2))
 	}
 	
 	return

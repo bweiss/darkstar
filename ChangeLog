@@ -3,6 +3,16 @@ Darkstar ChangeLog
 
 [10/14/01]
 
+ * [status.dsc] /status now supports the "-q" option which causes it to
+   be quiet about the statbar change.
+
+ * Major changes to theme support. Theme files are now just /load'd rather
+   than parsed for keywords. This means that the format of the theme files has
+   changed. See one of the included themes for details. The reason for all of
+   this is so that themes can remove format variables, thus causing their
+   hooks not to echo anything to the screen. This also involved changing
+   a bunch of code in various modules.
+
  * [misc.dsm] New format variable SEND_CTCP.
 
  * [misc.dsm] New config variables SHOW_AWAY_ONCE and SHOW_AWAY_ONCE_TIMEOUT.
