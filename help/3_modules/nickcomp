@@ -11,6 +11,9 @@ Original author: shade <shade@chemlab.org>
                                being entered at the input prompt is this
                                character, a completion based on the nicks
                                in the current channel will be attempted.
+   NICK_COMPLETION_PATTERNS  - Space separated list of patterns to use when
+                               looking for matching nicks. This allows for
+                               greater control over what constitutes a match.
    NICK_COMPLETION_THRESHOLD - This is the maximum number of matches that
                                will trigger nick completion. You can adjust
                                this to change the accuracy of the completion.

@@ -17,6 +17,9 @@ Author: CrazyEddy / Brian Weiss <brian@epicsol.org>
                               first word on the input prompt, append this
                               to it.
 
+Key Bindings:
+   ^I (Tab)                   tabkey.main
+
 History:
    This module is based on the tabkey.ce script written by CrazyEddy and
    distributed with EPIC4. His ingenious design and code are responsible

@@ -1,0 +1,140 @@
+Module: formats
+Author: Brian Weiss <brian@epicsol.org>
+
+Description:
+   Formatting stuff including /NAMES output and message highlighting
+   (previously known as auto-response).
+
+Config Variables:
+   HIGHLIGHT                 - Boolean. Turns highlight on/off.
+   HIGHLIGHT_BEEP            - Boolean. If true, the client will beep once
+                               when something is highlighted.
+   HIGHLIGHT_IGNORE_CHANNELS - Space separated list of channels that should
+                               be ignored for highlighting.
+   HIGHLIGHT_IGNORE_NICKS    - Space separated list of nicks that should
+                               never be highlighted.
+   HIGHLIGHT_LIST            - Space separated list of words that should
+                               trigger highlight.
+   HIGHLIGHT_NOTIFY          - Boolean. If true, a notification will
+                               be echoed to the current window whenever
+                               auto-response is triggered in another
+                               window.
+   NAMES_COL                 - Integer. Number of columns to display.
+                               An empty or "0" value allows infinite columns.
+   NAMES_SORT_BY_MODE        - Boolean. If true, users will be sorted by mode
+                               before being displayed.
+   SHOW_AWAY_ONCE            - Boolean. If true it will prevent the WHOIS_AWAY
+                               numeric from being displayed each time you
+                               msg/notice someone. This will not stop you
+                               from seeing it when you /WHOIS them.
+   SHOW_AWAY_ONCE_TIMEOUT    - Seconds until items are removed from the
+                               away_users arrays.
+   SHOW_HOST_ONCE            - Boolean. If true the hostnames of users that
+                               are sending you private msgs or notices will
+                               only be displayed once every 30 mins.
+                               (Just the default. See below.)
+   SHOW_HOST_ONCE_TIMEOUT    - Seconds until items are removed from the
+                               userhosts arrays.
+
+Format Variables:
+   ACTION_CHANNEL            - Actions sent to the current channel.
+   ACTION_CHANNEL_OTHER      - Actions sent to a non-current channel.
+   ACTION_USER               - Actions sent to a specific user, namely, you.
+   BANS                      - Output from the channel ban list numerics.
+   BANS_FOOTER[1|2]          - Channel ban list footers.
+   BANS_HEADER[1|2]          - Channel ban list headers.
+   CHANNEL_NICK              - Nickchange in one or more of your
+                               channels. This displays once per channel
+                               that it relates to, and is window-aware.
+   CHANNEL_SIGNOFF           - Signoffs. Works like CHANNEL_NICK.
+   CHANNEL_SYNC              - Channel sync.
+   CHANNEL_TS                - Channel timestamp.
+   CTCP                      - CTCP requests.
+   CTCP_REPLY                - CTCP replies.
+   DCC_CHAT                  - Messages received over a DCC CHAT connection.
+   INVITE                    - Invitations to join a channel.
+   JOIN                      - Channel joins.
+   KICK                      - Channel kicks.
+   LEAVE                     - Channel parts.
+   MODE                      - Channel mode changes.
+   MSG                       - Private messages.
+   NAMES_FOOTER[1|2]         - Footers for /NAMES output.
+   NAMES_HEADER[1|2]         - Headers for /NAMES output.
+   NAMES_LEFT                - String to preceed each line of output.
+   NAMES_MID                 - String to be inserted between each nick
+                               in the /NAMES output.
+   NAMES_NONOP               - Formatting for users not oped or voiced.
+   NAMES_OP                  - Formatting for users that are oped.
+   NAMES_RIGHT               - String to be appended to the end of each line.
+   NAMES_VOICE               - Formatting for users that are voiced.
+   NOTICE                    - Notices.
+   PUBLIC                    - Publics in a current channel.
+   PUBLIC_HL                 - Publics in a current channel that trigger
+                               a highlight.
+   PUBLIC_OTHER              - Publics in a non-current channel.
+   PUBLIC_OTHER_HL           - Publics in a non-current channel that
+                               trigger a highlight.
+   SEND_ACTION_CHANNEL       - Actions sent to a current channel.
+   SEND_ACTION_CHANNEL_OTHER - Actions sent to a non-current channel.
+   SEND_ACTION_USER          - Actions sent to a specific user.
+   SEND_CTCP                 - Sent CTCPs.
+   SEND_DCC_CHAT             - Messages sent over a DCC CHAT connection.
+   SEND_MSG                  - Sent private messages.
+   SEND_NOTICE               - Sent notices.
+   SEND_PUBLIC               - Publics sent to a current channel.
+   SEND_PUBLIC_OTHER         - Publics sent to a non-current channel.
+   SIGNOFF                   - Signoff messages. This is suppressed by
+                               the channel module if CHANNEL_SIGNOFF has
+                               a value.
+   TOPIC                     - Topic display.
+   TOPIC_CHANGE              - Topic change. 
+   TOPIC_SETBY               - Information about who set the topic
+                               and when.
+   WHO                       - Output from a WHO request.
+   WHO_FOOTER[1|2]           - WHO output footers.
+   WHO_HEADER[1|2]           - WHO output headers.
+   WHOIS_AWAY                - Output from a WHOIS request. User is away.
+   WHOIS_CHANNELS            - Output from a WHOIS request. User's channels.
+   WHOIS_CHANNELS_WRAP       - Same as WHOIS_CHANNELS, but attempts to do
+                               some intelligent line wrapping with the user's
+                               channels, if a value for the variable exists.
+                               The WHOIS_CHANNELS variable will still be used
+                               for the first line, and WHOIS_CHANNELS_WRAP
+                               for all the remaining lines.
+   WHOIS_FOOTER[1|2]         - WHOIS output footers.
+   WHOIS_HEADER[1|2]         - WHOIS output headers.
+   WHOIS_IDENTIFIED          - Output from a WHOIS request. Tells you if the
+                               user has identified with services. This is
+                               known to work on the DALnet and OpenProjects
+                               IRC networks.
+   WHOIS_IDLE                - Output from a WHOIS request. User's idle time.
+   WHOIS_NAME                - Output from a WHOIS request. User's real name.
+   WHOIS_NICK                - Output from a WHOIS request. User's nickname.
+   WHOIS_OPER                - Output from a WHOIS request. User is an
+                               IRC operator.
+   WHOIS_SERVER              - Output from a WHOIS request. User's server.
+   WHOIS_SIGNON              - Output from a WHOIS request. Users's signon
+                               time.
+   WHOWAS_NAME               - Output from a WHOWAS request. User's real name.
+   WHOWAS_NICK               - Output from a WHOWAS request. User's nickname.
+   UMODE                     - User mode change.
+
+Commands:
+   names [channel]
+     - Displays the nicks of everyone on [channel] (or the current channel
+       if one is not specified).
+
+   scan [channel]
+     - Same as /NAMES above.
+       * Aliases: sc
+
+   scann [channel]
+     - Displays all "normal" users (those not +o or +v) on [channel] (or the
+       current channel if none specified).
+
+   scano [channel]
+     - Displays all channel operators (+o) on [channel].
+
+   scanv [channel]
+     - Displays all voiced (+v) users on [channel].
+

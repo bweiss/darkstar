@@ -3,7 +3,7 @@ Author: Brian Weiss <brian@epicsol.org>
 
 Description:
    Provides various commands, key bindings, and other features to assist
-   in window management.
+   in window management. 
 
 Config Variables:
    AUTO_BIND_CHANNELS         - If $CONFIG.AUTO_CREATE_WINDOWS is true,
@@ -22,18 +22,17 @@ Author: Brian Weiss <brian@epicsol.org>
                                 new channel.
    JOIN_NEW_WINDOW_ARGS       - Extra arguments to be passed to /WINDOW
                                 when the new window is created.
-   MSG_WINDOW                 - Boolean. Creates a new window called "msgs"
-                                in which all incoming private messages will
-                                be displayed. This feature is not recommended
-                                for use with multiple server connections in
-                                a single client process.
-   MSG_WINDOW_HIDDEN          - Boolean. Determines whether the msg window
-                                will be hidden or split.
+   MSG_WINDOW                 - Boolean. When true, a new split window
+                                dedicated to private messages will be created
+                                for each active server connection. These
+                                special windows are "fixed" and are not
+                                swappable as normal windows are.
    MSG_WINDOW_LEVEL           - Comma-separated list of window levels for
                                 the msg window. This determines what actually
                                 goes to the msg window.
-   MSG_WINDOW_SIZE            - Size of the msg window. This only applies
-                                when MSG_WINDOW_HIDDEN is false.
+   MSG_WINDOW_NUMBER          - Determines the starting window number that
+                                will be used for msg windows.
+   MSG_WINDOW_SIZE            - Size of the msg window.
    PART_KILL_WINDOW           - Boolean. If true, leaving a channel will
                                 cause its window to be killed.
    UNBIND_ON_PART             - Boolean. Automatically unbind channels
@@ -42,6 +41,8 @@ Author: Brian Weiss <brian@epicsol.org>
 Key Bindings:
    ^R       (Ctrl+R)           next_window
    ^W       (Ctrl+W)           delete_previous_word
+   ^[[1~    (Home)             scroll_start
+   ^[[4~    (End)              scroll_end
    ^[^I     (Esc+Tab)          parse_command window next
    ^[<0-9>  (Esc+<0-9>)        parse_command window swap <num> (0 is win #10)
    ^[^[[5~  (Esc+PgUp)         parse_command window.last.scroll backward
@@ -85,6 +86,6 @@ Author: Brian Weiss <brian@epicsol.org>
 
 Other Notes:
    In addition to the above commands, this module will automatically
-   add and remove shortcut aliases (of the form /1, /2, /3, etc.) for
+   add (and remove) shortcut aliases (of the form /1, /2, /3, etc.) for
    all existing windows.
 

@@ -2,66 +2,12 @@ Module: misc
 Author: Brian Weiss <brian@epicsol.org>
 
 Description:
-   Miscellaneous features and formatting.
+   Miscellaneous features that don't seem to belong anywhere else.
 
 Config Variables:
    DEFAULT_UMODES          - Default user modes when connecting to a server.
    IGNORE_CTCP_FINGER      - Boolean. If true all CTCP FINGER requests
                              will be ignored.
-   SHOW_AWAY_ONCE          - Boolean. If true it will prevent the WHOIS_AWAY
-                             numeric from being displayed each time you
-                             msg/notice someone. This will not stop you
-                             from seeing it when you /WHOIS them.
-   SHOW_AWAY_ONCE_TIMEOUT  - Seconds until items are removed from the
-                             away_users arrays.
-   SHOW_HOST_ONCE          - Boolean. If true the hostnames of users that
-                             are sending you private msgs or notices will
-                             only be displayed once every 30 mins.
-                             (Just the default. See below.)
-   SHOW_HOST_ONCE_TIMEOUT  - Seconds until items are removed from the
-                             userhosts arrays.
-
-Format Variables:
-   ACTION_USER             - Actions sent to a specific user, namely, you.
-   CTCP                    - CTCP requests.
-   CTCP_REPLY              - CTCP replies.
-   MSG                     - Private messages.
-   NOTICE                  - Notics.
-   SEND_ACTION_USER        - Actions sent to a specific user.
-   SEND_CTCP               - Sent CTCPs.
-   SEND_MSG                - Sent private messages.
-   SEND_NOTICE             - Sent notices.
-   SIGNOFF                 - Signoff messages. This is suppressed by
-                             the channel module if CHANNEL_SIGNOFF has
-                             a value.
-   WHO                     - Output from a WHO request.
-   WHO_FOOTER[1|2]         - WHO output footers.
-   WHO_HEADER[1|2]         - WHO output headers.
-   WHOIS_AWAY              - Output from a WHOIS request. User is away.
-   WHOIS_CHANNELS          - Output from a WHOIS request. User's channels.
-   WHOIS_CHANNELS_WRAP     - Same as WHOIS_CHANNELS, but attempts to do
-                             some intelligent line wrapping with the user's
-                             channels, if a value for the variable exists.
-                             The WHOIS_CHANNELS variable will still be used
-                             for the first line, and WHOIS_CHANNELS_WRAP
-                             for all the remaining lines.
-   WHOIS_FOOTER[1|2]       - WHOIS output footers.
-   WHOIS_HEADER[1|2]       - WHOIS output headers.
-   WHOIS_IDENTIFIED        - Output from a WHOIS request. Tells you if the
-                             user has identified with services. This is known
-                             to work on the DALnet and OpenProjects IRC
-                             networks.
-   WHOIS_IDLE              - Output from a WHOIS request. User's idle time.
-   WHOIS_NAME              - Output from a WHOIS request. User's real name.
-   WHOIS_NICK              - Output from a WHOIS request. User's nickname.
-   WHOIS_OPER              - Output from a WHOIS request. User is an
-                             IRC operator.
-   WHOIS_SERVER            - Output from a WHOIS request. User's server.
-   WHOIS_SIGNON            - Output from a WHOIS request. Users's signon
-                             time.
-   WHOWAS_NAME             - Output from a WHOWAS request. User's real name.
-   WHOWAS_NICK             - Output from a WHOWAS request. User's nickname.
-   UMODE                   - User mode change.
 
 Commands:
    colors

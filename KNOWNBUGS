@@ -45,3 +45,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Add two new config vars for exempting channels/nicks from triggering a
   highlight: HIGHLIGHT_IGNORE_CHANNELS and HIGHLIGHT_IGNORE_NICKS. rb larne.
 * Add /DSET NICK_COMPLETION_PATTERNS to make nick completion more configurable.
+* Fix /TOPICS. You can't count down with /for x from n to n { ... }, only up.

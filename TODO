@@ -18,8 +18,6 @@ FOR 0.3 RELEASE:
 
   * Add highlight formats for actions.
 
-  * Fix the topic cache (/SET REMEMBER_TOPICS, /TOPICS, /SETTOPIC)
-
 
 AFTER 0.3 RELEASE:
 

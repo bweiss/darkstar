@@ -2,7 +2,7 @@ Module: relay
 Author: Brian Weiss <brian@epicsol.org>
 
 Description:
-   Relays your last sent/received messages of various types.
+   Relays previously sent or received messages to a new target.
 
 Config Variables:
    RELAY_BUFFER_SIZE       - This determines the number of items that
@@ -58,4 +58,7 @@ Author: Brian Weiss <brian@epicsol.org>
 
 Other Notes:
    This module depends on both the channel and misc modules.
+
+See Also:
+   ds:channel(3);  ds:misc(3)
 

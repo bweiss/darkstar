@@ -1,4 +1,4 @@
-# version:1.2.1 loader:pf
+# version:1.2.2 loader:pf
 # $Id$
 #
 # channel.dsm - Channel related module for DarkStar/EPIC4
@@ -418,8 +418,8 @@ alias leave
 };
 
 # 
-# Your standard /LK. Kicks everyone but +o and +v users
-# out of the current channel.
+# Your standard /LK. Kicks everyone but +[o|h|v] users out of
+# the current channel.
 #
 alias lk (reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
@@ -428,7 +428,7 @@ alias lk (reason default "$CONFIG.DEFAULT_KICK_REASON")
 		return;
 	};
 
-	^local ask $"Kick all non-ops from $C? ";
+	^local ask $"Kick all lusers from $C? ";
 
 	if (left(1 $ask) == [y])
 	{
@@ -742,7 +742,7 @@ alias topics (chan default "$C", void)
 	if (numitems($array))
 	{
 		xecho -b Stored topics for $chan (most recent first):;
-		for ii from $numitems($array) to 1
+		for ii in ($jot($numitems($array) 1))
 		{
 			@ :topic = getitem($array ${ii-1});
 			echo $[3]ii $topic;
@@ -863,7 +863,6 @@ alias channel.topic (serv, chan, topic)
 	if (isnumber(b10 $CONFIG.REMEMBER_TOPICS) && CONFIG.REMEMBER_TOPICS > 0)
 	{
 		@ :array = [channel.topics.$serv\.$chan];
-		@ :head = numitems($array) - 1;
 		if ((:item = matchitem($array $topic)) > -1) {
 			@ delitem($array $item);
 		};

@@ -8,21 +8,22 @@ Author: Brian Weiss <brian@epicsol.org>
    DCC_AUTOGET             - Boolean. If true, all DCC SEND requests to you
                              will be automatically accepted.
 
-Format Variables:
-   DCC_CHAT                - Messages received over a DCC CHAT connection.
-   SEND_DCC_CHAT           - Messages sent over a DCC CHAT connection.
-
 Commands:
    chat <nick>
      - Alias to /dcc chat.
 
+   dcc
+     - Wrapper alias to the internal DCC command that will automatically close
+       quoted filenames in a DCC SEND. See dcc(1) in the EPIC help files for
+       details regarding the internal command.
+
 Other Notes:
    It is wise, especially if you enable autoget, to change the value of
-   /set DCC_STORE_PATH to something other than your home directory. This
+   /SET DCC_STORE_PATH to something other than your home directory. This
    will prevent people from overwriting files there and also helps to
    maintain your sanity. I use ~/incoming, but you are free to make up
    anything you like.
 
 See Also:
-   set(4) dcc_store_path
+   dcc(1);  set(4) dcc_store_path
 

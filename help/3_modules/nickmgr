@@ -34,6 +34,11 @@ Author: Brian Weiss <brian@epicsol.org>
      - Wrapper to the builtin nick(1) command. If NICK_MANAGER_AUTO_ADD_NICKS
        is true, it will automatically add nicks to the nicklist.
 
+   nickmgr [-a|-d] [nick ...]
+     - Adds or removes nicks from NICKMGR_NICKLIST. The -a and -d options
+       specify which action to perform (add/delete). The default is to add.
+       If no arguments are given then the current list is displayed.
+
    nickscan
      - Performs a scan for available nicks on all active server connections.
        This will also be run automatically every so often according to the
