@@ -56,7 +56,7 @@ assign FORMAT.PUBLIC_OTHER_HL %b<%Y$1%K:%n$2%b>%n $3-
 assign FORMAT.SEND_ACTION_CHANNEL %Kð %W$1%n $3-
 assign FORMAT.SEND_ACTION_CHANNEL_OTHER %Kð%n -> %W$1%n/%c$2%n $3-
 assign FORMAT.SEND_ACTION_USER %Kð%n -> %W$1%n/%c$2%n $3-
-assign FORMAT.SEND_CTCP %K[%rctcp%K\(%R$2%K\)]%n $3
+assign FORMAT.SEND_CTCP %K[%rctcp%K\(%R$2%K\)]%n $3-
 assign FORMAT.SEND_DCC_CHAT %K[%rdcc%K\(%R$1%K\)]%n $2-
 assign FORMAT.SEND_MSG %K[%rmsg%K\(%R$1%K\)]%n $2-
 assign FORMAT.SEND_NOTICE %K[%rnotice%K\(%R$1%K\)]%n $2-
