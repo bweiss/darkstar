@@ -2,6 +2,7 @@ Darkstar ChangeLog
 
 [current]
 
+ - Fixed a bunch of bugs in the "epic4" statbar (Thanks to Jeremy Nelson).
  - [status.dsc] /status now displays a list of available statbars and prompts
    the user to choose one if no arguments are given.
  - Global variable renaming: DS.VERSION -> DS.INTERNAL_VERSION,
