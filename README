@@ -35,6 +35,7 @@ WHERE TO GET DARKSTAR AND EPIC4
 There is now an official DarkStar website, which can be found here:
 
   http://darkstar.epicsol.org/
+  http://darkstar.nuthouse.org/  (mirror)
 
 Recent versions of both DarkStar and EPIC4 can also be found at the
 following URLs:
@@ -54,7 +55,7 @@ A snapshot of my current tree (as well as EPIC) is also available via CVS:
 
 Once you have done a checkout you can just do the following to update it.
 
-  cd darkstar/     (or epic4)
+  cd darkstar/     (or epic4/)
   cvs update -dP
 
 

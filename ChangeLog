@@ -3,6 +3,14 @@ DarkStar ChangeLog
 
 2002/06/04
 
+ * Minor fix in the echoes status bar. The server was not always being
+   displayed properly. Reported by keerf.
+
+ * [tabkey.dsm 0.6.10] A single space is no longer appended to
+   TABKEY_NICKCOMP_SUFFIX when a nickname is succesfully completed.
+   If you still want the space, it will need to be part of the value
+   of the TABKEY_NICKCOMP_SUFFIX config variable. This is now the default.
+
  * [channel.dsm 0.5.4] New format variable: INVITE
 
 2002/06/02

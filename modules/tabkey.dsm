@@ -1,4 +1,4 @@
-#version 0.6.9
+#version 0.6.10
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key module for DarkStar/EPIC4
@@ -28,7 +28,7 @@ queue cleanup.tabkey
 /****** CONFIG/FORMAT VARIABLES ******/
 
 config.add TABKEY_NICK_HISTORY 6
-config.add TABKEY_NICKCOMP_SUFFIX ,
+config.add TABKEY_NICKCOMP_SUFFIX , 
 
 
 /****** INIT ******/
@@ -366,9 +366,7 @@ alias tabkey.proc.nick (list)
 		/* This allows us to complete nicks with "\" in them. */
 		@:lastw = sar(g/\\/\\\\\/$lastw)
 		if (#L < 2) {
-			@:suffix = CONFIG.TABKEY_NICKCOMP_SUFFIX ## [ ]
-		} else {
-			@:suffix = [ ]
+			@:suffix = CONFIG.TABKEY_NICKCOMP_SUFFIX
 		}
 		@:matches = pattern($lastw% $list)
 	}
