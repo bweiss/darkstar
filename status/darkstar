@@ -5,8 +5,6 @@
 
 assign STATUS.DOUBLE 1
 
-#eval xecho -r $chr(27)\(U
-
 set INPUT_PROMPT 36Àל-1 
 set REVERSE_STATUS_LINE OFF
 set STATUS_AWAY 36[-1A${AWAY[NEWMSGS] ? [36!-1$AWAY.NEWMSGS] : []}36]-1
