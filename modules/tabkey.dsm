@@ -6,7 +6,7 @@
  * TABKEY.DSM - Tab key module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/15/01 (bmw)
+ * Last modified: 10/21/01 (bmw)
  *
  * This script uses serial number 420 for all ON hooks.
  */
@@ -19,20 +19,31 @@ queue cleanup.tabkey
 	^on #send_dcc_chat 420 -"*"
 	^on #dcc_connect 420 -"% CHAT *"
 
-	@ delarray(tabkey_nicks)
+	^cleartab
+	^alias -cleartab
+
+	^bind ^I toggle_insert_mode
 }
+
 
 bind ^I parse_command tabkey.process_tabkey
 
-@ delarray(tabkey_nicks)
 
 alias cleartab (void)
 {
-	@ delarray(tabkey_nicks)
-	^assign -TABKEY.LASTNICK
+	xecho -s -b Clearing tabkey history...
 
-	xecho -b Clearing tabkey history...
+	for var in ($aliasctl(assign match TABKEY.NICKS.))
+	{
+		^assign -$var
+	}
+
+	for var in $(aliasctl(assign match TABKEY.LAST_NICK.))
+	{
+		^assign -$var
+	}
 }
+
 
 alias tabkey.process_tabkey (void)
 {
@@ -47,47 +58,42 @@ alias tabkey.process_tabkey (void)
 				{
 					parsekey command_completion
 				}
-				(channel %)
-				(j %)
-				(join %)
-				(l %)
-				(leave %)
-				(mode %)
-				(part %)
+
+				(channel %) (j %) (join %) (l %) (leave %) (mode %) (part %)
 				{
 					@ tabkey.channel_routine()
 				}			
-				(dcc send % %)
-				(exec *)
-				(less %)
-				(load %)
+
+				(dcc send % %) (exec *) (less %) (load %)
 				{
 					@ tabkey.file_routine()
 				}
+
 				(loadmod %)
 				{
 					@ tabkey.module_routine(modules)
 				}
-				(reloadmod %)
-				(save *)
-				(unloadmod %)
+
+				(reloadmod %) (save *) (unloadmod %)
 				{
 					@ tabkey.module_routine(loaded_modules)
 				}
-				(m % *)
-				(msg % *)
+
+				(m % *) (msg % *)
 				{
 					@ tabkey.msg_routine()
 				}
-				(config %)
-				(dset %)
+
+				(config %) (dset %)
 				{
 					@ tabkey.set_routine(CONFIG)
 				}
+
 				(fset %)
 				{
 					@ tabkey.set_routine(FORMAT)
 				}
+
 				(*)
 				{
 					@ tabkey.nick_routine()
@@ -103,21 +109,18 @@ alias tabkey.process_tabkey (void)
 	
 alias tabkey.add_nick (nick, void)
 {
-	if (numwords($getmatches(tabkey_nicks $nick)))
+	if (match($nick $TABKEY.NICKS[$winserv()]))
 	{
-		for nickitm in ($getmatches(tabkey_nicks $nick))
-		{
-			@ delitem(tabkey_nicks $nickitm)
-		}
+		@ TABKEY.NICKS.$winserv() = remw($nick $TABKEY.NICKS[$winserv()])
 	}
 
-	if (numitems(tabkey_nicks) == CONFIG[TABKEY_NICK_HISTORY])
+	if (numwords($TABKEY.NICKS[$winserv()]) == CONFIG[TABKEY_NICK_HISTORY])
 	{
-		@ delitem(tabkey_nicks 0)
+		shift TABKEY.NICKS.$winserv()
 	}
 
-	@ setitem(tabkey_nicks $numitems(tabkey_nicks) $nick)
-	@ TABKEY.LASTNICK = [-1]
+	@ push(TABKEY.NICKS[$winserv()] $nick)
+	@ TABKEY.LASTNICK.$winserv() = [-1]
 
 	return
 }
@@ -243,24 +246,28 @@ alias tabkey.module_routine (array, void)
 
 alias tabkey.msg_routine (void)
 {
-	@ :itm = numitems(tabkey_nicks) - 1
-	@ :msgcmd = CMDCHARS ## [msg]
+	@ :nicks = TABKEY.NICKS[$winserv()]
+	@ :last_nick = TABKEY.LAST_NICK[$winserv()]
+	@ :msg_cmd = CMDCHARS ## [msg]
 	@ :trailing = restw(2 $L)
-	
-	if (numitems(tabkey_nicks))
+
+	if (nicks)
 	{
-		if (TABKEY[LASTNICK] >= 0)
+		^local nick
+
+		if (last_nick > 0)
 		{
-			parsekey erase_line
-			xtype -l $msgcmd $getitem(tabkey_nicks $TABKEY.LASTNICK) $trailing
-			@ TABKEY.LASTNICK = TABKEY.LASTNICK - 1
+			@ nick = word(${last_nick - 1} $nicks)
+			@ TABKEY.LAST_NICK.$winserv() = last_nick - 1
 		}{
-			parsekey erase_line
-			xtype -l $msgcmd $getitem(tabkey_nicks $itm) $trailing
-			@ TABKEY.LASTNICK = itm - 1
+			@ nick = word(${numwords($nicks) - 1} $nicks)
+			@ TABKEY.LAST_NICK.$winserv() = numwords($nicks) - 1
 		}
+
+		parsekey erase_line
+		xtype -l $msg_cmd $nick $trailing
 	}{
-		@ TABKEY.LASTNICK = [-1]
+		@ TABKEY.LASTNICK.$winserv() = [-1]
 	}
 
 	return

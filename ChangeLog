@@ -1,6 +1,19 @@
 Darkstar ChangeLog
 
 
+[10/21/01]
+
+ * [tabkey.dsm] Rewrite of tabkey.msg_routine() to be server-aware. This means
+   you will now have separate nick histories for each server you are connected
+   to. (requested by whitefang)
+
+[10/19/01]
+
+ * [functions.dsc] Added the $isloaded() function for determining whether
+   a specific module is loaded or not. The $padright() function was also
+   removed as it is identical to the builtin $pad() function, oops.
+
+
 !! RELEASE: 0.0.12 (10/18/01) !!
 
 

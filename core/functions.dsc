@@ -6,12 +6,17 @@
  * FUNCTIONS.DSC - Some useful functions for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/17/01 (bmw)
+ * Last modified: 10/19/01 (bmw)
  *
  * If you have any functions you feel are useful enough to be in this file,
  * feel free to email me.
  */
 
+/*
+ * convert.num(0|1)
+ * convert.onoff(off|on)
+ * Convert between 0/1 and OFF/ON. These are mostly used by /dset.
+ */ 
 alias convert.num (arg, void)
 {
 	switch ($arg)
@@ -32,14 +37,34 @@ alias convert.onoff (arg, void)
 	}
 }
 
+/*
+ * getstrftime(time)
+ * Returns the time according to $FORMAT.STRFTIME
+ */
 alias getstrftime (time, void)
 {
-	@ function_return = strftime($FORMAT.STRFTIME)
+	@ function_return = strftime(${time ? time : time()} $FORMAT.STRFTIME)
 }
 
 /*
- * Taken from the "guh" script distributed with EPIC4.
- * Written by Jeremy Nelson.
+ * isloaded(module)
+ * Returns true if specified module is loaded. I mostly added this for the
+ * convenience of module writers. It is not used anywhere in the core scripts.
+ */
+alias isloaded (module, void)
+{
+	if (finditem(loaded_modules $module) > -1)
+	{
+		return 1
+	}{
+		return 0
+	}
+}
+	
+/*
+ * is_on(nick)
+ * Taken from the "guh" script written by Jeremy Nelson and distributed
+ * with EPIC. Returns the person's nick if they are online, or nothing if not.
  */
 alias is_on (nick, void)
 {
@@ -52,14 +77,13 @@ alias is_on (nick, void)
 	wait for ison $nick
 }
 
+/*
+ * padleft(size, char, text string)
+ * Works like $pad() except that it pads on the left side.
+ */
 alias padleft (size, char, text)
 {
 	@ function_return = repeat(${size - strlen($text)} $char) ## text
-}
-
-alias padright (size, char, text)
-{
-	@ function_return = text ## repeat(${size - strlen($text)} $char)
 }
 
 
