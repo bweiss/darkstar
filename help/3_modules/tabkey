@@ -5,11 +5,7 @@ Author: Brian Weiss <brian@epicsol.org>
    Advanced tab key completion that tries to be very extensible and
    configurable. Includes completion for commands, channels, nicks, files,
    modules, and config, format, and set variables. Also keeps track of
-   things like private msgs and DCC chats for easy replies. While this is
-   still very much a work in progress, and doesn't have an easy interface
-   for configuration, it should work quite well for most people. If you
-   wish to tweak with things, please see the comments in tabkey.dsm and/or
-   contact me.
+   things like private msgs and DCC chats for easy replies.
 
 Config Variables:
    TABKEY_NICK_HISTORY      - Number of nicks to remember for msg completion.
@@ -18,6 +14,27 @@ Author: Brian Weiss <brian@epicsol.org>
                               to it.
 
 Commands:
-   cleartab
-     - Clear the tabkey nick history.
+   tabkey addrule <pattern> <procedure> [word list]
+     - Adds a new completion rule that calls <procedure> when completing
+       anything that matches <pattern>. The [word list] argument is
+       optional and is used to pass extra words to a completion procedure.
+       It is important to be aware that the word list is evaluated before
+       being processed by the procedure. It is also very important that
+       both the <pattern> and [word list] arguments are quoted.
+
+   tabkey clear
+     - Clears the msg history. This replaces the old /cleartab alias.
+
+   tabkey listrules
+     - Display a list of all completion rules currently loaded.
+
+   tabkey rmrule <pattern>
+     - Removes a completion rule. As with addrule, the <pattern> argument
+       must be quoted. If "all" is given as a pattern (it does not need to
+       be quoted) then the entire list of completion rules will be cleared.
+
+   tabkey saverules
+     - Writes the current list of completion rules to the file tabkey.rules
+       in your save directory. If this file exists, it will override the
+       default rules.
 
