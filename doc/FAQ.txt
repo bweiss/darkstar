@@ -6,6 +6,18 @@ updated as questions come up. Eventually, I will write a better, more
 organized version. For now, this will have to do.
 
 
+Q: How can I make DarkStar load the modules I want on startup without
+   asking me first?
+
+A: First you may want to edit the list of modules that will be loaded
+   automatically. You can do this by typing '/DSET AUTO_LOAD_MODULES'.
+   When this is to your liking, type the following commands.
+
+   /DSET AUTO_LOAD_PROMPT OFF
+   /SAVE
+
+--
+
 Q: What should I do when upgrading to new versions of DarkStar?
 
 A: This depends heavily on the amount of customization you do. If you have
