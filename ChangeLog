@@ -1,6 +1,13 @@
 Darkstar ChangeLog
 
 
+20020407
+
+ * We weren't cleaning up our file descriptors in /LESS thus causing the
+   client to eventually give an error message like "Unable to open file,
+   too many files open", and not open the file. This also affects the
+   away module since /READLOG uses /LESS to display the log. Major oops.
+
 20020405
 
  * [tabkey.dsm 0.6.3] Fixed a bug where nicks were not being properly added

@@ -106,7 +106,7 @@ alias _less (fd, count, winnum default 0, void)
 			if ([$0] != [q]) {_less $LESS.FD $LESS.NL $LESS.W}
 		}
 	}{
-		@ close($file)
+		@ close($fd)
 		for var in ($aliasctl(assign match LESS.))
 		{
 			^assign -$var
