@@ -1,9 +1,9 @@
 /* $Id$ */
 /*
- * The 'echoes' status bar for LiCe, adapted for DarkStar/EPIC4
+ * The "echoes" status bar for LiCe, adapted for DarkStar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org>
  *
- * This is here to go along with the 'echoes' theme, and happens
+ * This is here to go along with the echoes theme, and happens
  * to be a pretty awesome statbar. I was able to take this straight
  * from LiCe with very few modifications, so I deserve little credit
  * for it. The original comment follows.
@@ -16,30 +16,30 @@ assign STATUS.DOUBLE 1
 # port of "echoes" theme from rain by trey
 
 
-SET REVERSE_STATUS_LINE OFF
-SET STATUS_AWAY 15away14[16${AWAY.NEWMSGS ? AWAY.NEWMSGS : [0]}14] 
-SET STATUS_CHANNEL $C
-SET STATUS_CHANOP @
-SET STATUS_CLOCK %T
-SET STATUS_FORMAT1 15Ú16Â15Ä14[ 10%@15%N14/16%#10: 15%514[16+%214] %>%Q%F15win14/16%R 14]15Ä16¿
-SET STATUS_FORMAT2 16³15À14[ %C14/16%+10: %4 %>%H%M%A15time14/16%T 14]15Ù
-SET STATUS_HOLD 14(more14) 
-SET -STATUS_HOLD_LINES
-SET STATUS_MAIL 15mail14[16%M14] 
-SET STATUS_MODE +%+
-SET STATUS_NICKNAME $N
-SET STATUS_NOTIFY 15act14/16%F 
-SET STATUS_OPER *
-SET -STATUS_OVERWRITE
-SET STATUS_QUERY 14(15query14/16$Q14) 
-SET -STATUS_SCROLLBACK
-SET STATUS_SERVER %S
-SET STATUS_UMODE +%#
-SET STATUS_DOES_EXPANDOS ON
-SET STATUS_USER4 15o14/16$numwords($chanops()) 15n14/16$numwords($nochops()) 15t14/16$numonchannel()
-SET STATUS_USER5 $servername($winserv())
-SET STATUS_VOICE +
-SET INPUT_PROMPT 16À15Ä14Ä15> 
+set REVERSE_STATUS_LINE OFF
+set STATUS_AWAY 15away14[16${AWAY.NEWMSGS ? AWAY.NEWMSGS : [0]}14] 
+set STATUS_CHANNEL $left(24 $C)
+set STATUS_CHANOP @
+set STATUS_CLOCK %T
+set STATUS_FORMAT1 15Ú16Â15Ä14[ 10%@15%N14/16%#10: 15%514[16+%214] %>%Q%F15win14/16%R 14]15Ä16¿
+set STATUS_FORMAT2 16³15À14[ %C14/16%+10: %4 %>%H%M%A15time14/16%T 14]15Ù
+set STATUS_HOLD 14\(more14\) 
+set -STATUS_HOLD_LINES
+set STATUS_MAIL 15mail14[16%M14] 
+set STATUS_MODE +%+
+set STATUS_NICKNAME $N
+set STATUS_NOTIFY 15act14/16%F 
+set STATUS_OPER *
+set -STATUS_OVERWRITE
+set STATUS_QUERY 14\(15query14/16$Q14\) 
+set -STATUS_SCROLLBACK
+set STATUS_SERVER %S
+set STATUS_UMODE +%#
+set STATUS_DOES_EXPANDOS ON
+set STATUS_USER4 15o14/16$numwords($chanops()) 15n14/16$numwords($nochops()) 15t14/16$numonchannel()
+set STATUS_USER5 $left(24 $servername())
+set STATUS_VOICE +
+set INPUT_PROMPT 16À15Ä14Ä15> 
 
 
 /* EOF */

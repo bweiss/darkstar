@@ -3,7 +3,12 @@ DarkStar ChangeLog
 
 2002/05/31
 
- * Added a theme and statbar called 'echoes' by special request from keerf.
+ * The darkstar, feedback, bitchx, echoes, and scrollz status bars now
+   limit the number of characters that will be displayed for channels and
+   servers. The benefits of this are pretty obvious if you join a channel
+   with 30+ characters in its name.
+   
+ * Added a theme and statbar called "echoes" by special request from keerf.
    This is a near exact clone of the theme/statbar by the same name, included
    with LiCe.
 

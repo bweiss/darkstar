@@ -13,7 +13,7 @@ assign STATUS.DOUBLE 1
 set INPUT_PROMPT [$T] 
 set REVERSE_STATUS_LINE OFF
 set STATUS_AWAY  36\(52zZzZ ${AWAY[NEWMSGS] ? [57$AWAY.NEWMSGS] : [570]}36\)37
-set STATUS_CHANNEL $C
+set STATUS_CHANNEL $left(24 $C)
 set STATUS_CHANOP 57@37
 set STATUS_CLOCK 36[57%T36]37
 set STATUS_CPU_SAVER  \(%L\)
@@ -33,7 +33,7 @@ set STATUS_OPER 51*37
 set STATUS_OVERWRITE \(overtype\)
 set STATUS_QUERY  36[37Query: 57%Q36]37
 set STATUS_SCROLLBACK  \(Scroll\)
-set STATUS_SERVER 36[37%S36]37
+set STATUS_SERVER 36[37$left(24 $servername())36]37
 set STATUS_TRUNCATE_RHS ON
 set STATUS_UMODE 57\(36+37%#57\)37
 set STATUS_USER ${numonchannel() ? [36[37T36/57$numonchannel()37 O36/57$#chops()37 N36/57$#nochops()36]37  ] : []}

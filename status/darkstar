@@ -10,7 +10,7 @@ assign STATUS.DOUBLE 1
 set INPUT_PROMPT 36Àì-1 
 set REVERSE_STATUS_LINE OFF
 set STATUS_AWAY 36[-1A${AWAY[NEWMSGS] ? [36!-1$AWAY.NEWMSGS] : []}36]-1
-set STATUS_CHANNEL 36-[-1$C${chanmode() != [*] ? [36\(-1+$chanmode()36\)-1] : []}36]-1
+set STATUS_CHANNEL 36-[-1$left(24 $C)${chanmode() != [*] ? [36\(-1+$chanmode()36\)-1] : []}36]-1
 set STATUS_CHANOP 36@-1
 set STATUS_CLOCK %T
 set STATUS_DOES_EXPANDOS ON
@@ -25,7 +25,7 @@ set STATUS_NO_REPEAT OFF
 set STATUS_NOTIFY 36\(-1w36!-1%F36\)-1
 set STATUS_OPER 56*-1
 set STATUS_QUERY 36\(-1q36!-1$Q36\)-1
-set STATUS_SERVER 36[-1%S36]-1
+set STATUS_SERVER 36[-1$left(24 $servername())36]-1
 set STATUS_UMODE 36\(-1+%#36\)-1
 set STATUS_USER ${numonchannel() ? [36[-1t36/-1$numonchannel() o36/-1$#chops() n36/-1$#nochops()36]ÄÄ-1] : []}
 set STATUS_VOICE 36+-1
