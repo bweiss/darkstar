@@ -254,7 +254,9 @@ alias window.msgwin.purge (void)
 	for ii from 1 to $numitems(window.msgwins)
 	{
 		@ :msgwin = getitem(window.msgwins ${ii-1});
-		if (winnum($msgwin) != -1 && findw($winserv($msgwin) $servers) < 0) {
+		if ((winnum($msgwin) != -1 && findw($winserv($msgwin) $servers) < 0) ||
+		    winserv($msgwin) != after(1 : $winnam($msgwin)))
+		{
 			window.msgwin.destroy $msgwin;
 		};
 	};
