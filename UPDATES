@@ -1,3 +1,8 @@
+*** News 2002/06/11 -- channel.dsm 0.5.5
+	Added an alias called /etopic that will allow you to edit the
+	current topic by placing it on the input line preceded by "/topic".
+	The /tt and /ttopic aliases point to /etopic.
+
 *** News 2002/06/09 -- tabkey.dsm 0.7.2
 	The assign procedure has been renamed aliasctl and now handles
 	completion for both assign variables and aliases. This will cause

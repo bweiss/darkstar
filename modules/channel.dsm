@@ -1,4 +1,4 @@
-#version 0.5.4
+#version 0.5.5
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
@@ -14,7 +14,7 @@
 
 queue cleanup.channel
 {
-	for alias in (alldeop alldop allop ban bankick banlist bans bk cmode cycle deop dop devoice dvoice i invite j join k kb key kick kickban l leave lk massmode mdeop mdop mdevoice mdvoice mme mop msay mvoice oldtopic op part partall setoldtopic t tban tempban unban unkey untopic voice wall wall2) {
+	for alias in (alldeop alldop allop ban bankick banlist bans bk cmode cycle deop dop devoice dvoice etopic i invite j join k kb key kick kickban l leave lk massmode mdeop mdop mdevoice mdvoice mme mop msay mvoice oldtopic op part partall setoldtopic t tban tempban tt ttopic unban unkey untopic voice wall wall2) {
 		^alias -$alias
 	}
 	for hook in (332 333 367 368 369 action channel_nick channel_signoff channel_sync invite join kick leave mode public public_other send_public topic) {
@@ -73,7 +73,7 @@ alias alldop alldeop
 alias alldeop (nicks)
 {
 	if (!nicks) {
-		xecho -b Usage: /alldeop <nick1> [nick2] [nick3] ...
+		xecho -b Usage: /alldeop <nick> ...
 		return
 	}
 
@@ -180,6 +180,37 @@ alias devoice (nicks)
 	massmode $C - v $nicks
 }
 
+alias tt etopic
+alias ttopic etopic
+alias etopic (void)
+{
+	if (C) {
+		@:cur_topic = restw(1 $gettmatch(channel.topics $C*))
+		if (cur_topic) {
+			parsekey erase_line
+			xtype -l /topic $cur_topic
+		} else {
+			/* No topic set */
+			^on -331 "% $C *" {
+				defer ^on 331 -"% $1 *"
+				defer ^on 332 -"% $1 *"
+				defer ^on 333 -"% $1 *"
+			}
+			/* The actual topic */
+			^on ^332 "% $C *" {
+				parsekey erase_line
+				xtype -l /topic $2-
+				defer ^on 332 -"% $1 *"
+			}
+			/* Topic set by */
+			^on ^333 "% $C *" {
+				defer ^on 333 -"% $1 *"
+			}
+			//topic
+		}
+	}
+}
+
 alias i invite
 alias invite (nick, channel default "$C", void)
 {
@@ -270,8 +301,8 @@ alias leave
 }
 
 /* 
- * Your standard /LK. Kicks everyone but +o and +v people out of the current
- * channel.
+ * Your standard /LK. Kicks everyone but +o and +v users
+ * out of the current channel.
  */
 alias lk (reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
@@ -394,9 +425,9 @@ alias mvoice (chan default "$C", void)
 
 alias oldtopic (chan default "$C", void)
 {
-	@:oldtopic = gettmatch(channel.oldtopics $chan*)
+	@:oldtopic = restw(1 $gettmatch(channel.oldtopics $chan*))
 	if (oldtopic) {
-		xecho -b Last topic for $chan: $restw(1 $oldtopic)
+		xecho -b Last topic for $chan: $oldtopic
 	} else {
 		xecho -b There is no old topic for $chan
 	}
@@ -426,7 +457,7 @@ alias partall (void)
 
 alias setoldtopic (chan default "$C", void)
 {
-	@:oldtopic = gettmatch(channel.oldtopics $chan*)
+	@:oldtopic = restw(1 $gettmatch(channel.oldtopics $chan*))
 	if (oldtopic) {
 		//topic $oldtopic
 	} else {

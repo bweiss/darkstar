@@ -89,6 +89,11 @@ Author: Brian Weiss <brian@epicsol.org>
      - Sets -v on the current channel for all nicks specified.
        * Aliases: dvoice
 
+   etopic
+     - Allows you to edit the current topic by placing it on the input
+       line preceded by "/topic".
+       * Aliases: tt ttopic
+
    invite <nick> [channel]
      - Invites <nick> to [channel]. If no channel given, assumes current.
        * Aliases: i
