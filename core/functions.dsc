@@ -131,27 +131,5 @@ alias pipe
 }
 #hop '97
 
-/*
- * Rounds a decimal number based on the first digit to the right of the
- * decimal point.
- */
-alias round (num, void)
-{
-	@ :left = before(-1 . $num)
-	@ :right = left(1 $after(-1 . $num))
-
-	if (isnumber($left b10) && isnumber($right b10))
-	{
-		if (right > 4)
-		{
-			@ left++
-		}
-
-		@ function_return = left
-	}
-
-	return
-}
-
 
 /* EOF */

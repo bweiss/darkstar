@@ -1,6 +1,11 @@
 Darkstar ChangeLog
 
 
+20020416
+
+ * Removed $round()
+
+
 !! RELEASE: 0.2.2 (20020415) !!
 
 
