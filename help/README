@@ -27,10 +27,9 @@ Topics viewed via /HELP will appear like normal:        whois(2)
 Topics viewed via /DHELP will appear as:                ds:dset(1)
 
 Examples:
-
    > /dhelp 1 dset
    1_Core Help? dset
 
 See Also:
-   Introduction(7);  New_User(7);  help(1)
+   Introduction(7); New_User(7); help(1)
 
