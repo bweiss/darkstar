@@ -92,7 +92,7 @@ alias getnick.cleanup (void)
 {
 	^on #-notify_signoff 422 -'$_GETNICK'
 	^on #-timer 422 -"*"
-	^notify -$_GETNICK
+	defer ^notify -$_GETNICK
 	^assign -_GETNICK
 
 	return

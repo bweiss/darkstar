@@ -3,6 +3,10 @@ Darkstar ChangeLog
 
 [10/17/01]
 
+ * [keepnick.dsm] Fixed a bug discovered by whitefang and hop. Bad things
+   can happen if you remove a /notify entry from within the notify_signoff
+   hook. Instead we use /defer to execute it at a safer point in time.
+
  * [nickcomp.dsm] Now using $sar() instead of $tr() to strip "-1" out of
    text being sent to the channel. We also now look for "^C-1" and replace
    it with "^C" instead of just stripping all occurrences of "-1". Doing
