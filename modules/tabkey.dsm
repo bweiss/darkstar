@@ -1,4 +1,4 @@
-#version 0.1.1
+#version 0.2
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -110,6 +110,17 @@ alias tabkey.main {
 		@ wordind = curpos()
 	}
 	@ :word = mid($wordind ${curpos() - wordind} $L)
+	if (word == TABKEY.LASTWORD) {
+		if (TABKEY.INDEX == numwords($TABKEY.LASTMATCHES)) {
+			@ TABKEY.INDEX = 0
+		}
+		@ nextword = word($TABKEY.INDEX $TABKEY.LASTMATCHES)
+		parsekey delete_to_previous_space
+		xtype -l $nextword
+		@ TABKEY.INDEX++
+		@ TABKEY.LASTWORD = nextword
+		return
+	}
 	@ :matches = []
 	if (!index($cmdchars $L)) {
 		wait for @ :matches = tabkey.cmd($word)
@@ -119,6 +130,9 @@ alias tabkey.main {
 	@ :prefix = prefix($matches)
 	if (1 < numwords($matches) && word == prefix) {
 		echo Completions for \"$word\": $matches
+		@ TABKEY.INDEX = 0
+		@ TABKEY.LASTMATCHES = matches
+		@ TABKEY.LASTWORD = word
 	} elsif (#matches && strlen($word) <= strlen($prefix)) {
 		repeat ${curpos()-wordind} parsekey backspace
 		xtype -l $prefix${1 < #matches ? [] : [ ]}

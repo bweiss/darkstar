@@ -2,10 +2,10 @@ Module: tabkey
 Author: CrazyEddy / Brian Weiss <brian@epicsol.org>
 
 Description:
-   Advanced tab key completion that tries to be very extensible.
-   Includes completion for commands, channels, nicks, files, modules,
-   and config, format, and set variables. Also keeps track of private
-   msgs and DCC chats for easy replies.
+   Advanced tab key completion that is very extensible and attempts to
+   complete just about everything, including: commands, channels, nicks,
+   files, modules, and config, format, and set variables. It also keeps
+   track of private msgs and DCC CHAT connections for easy replies.
 
 Config Variables:
    TABKEY_MAX_NICKHIST      - Number of nicks to remember for msg completion.
