@@ -6,7 +6,7 @@
  * SAVE.DSC - Save /CONFIG and /FSET settings for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/22/01 (bmw)
+ * Last modified: 12/23/01 (bmw)
  */
 
 /*
@@ -67,7 +67,7 @@ alias save (args)
 		
 		if (mkdir($save_dir) > 0)
 		{
-			xecho -b Error creating directory [$save_dir]
+			xecho -b ERROR: Unable to create directory [$save_dir]
 			xecho -b Aborting save...
 			return
 		}
@@ -83,7 +83,7 @@ alias save (args)
 		switch ($save.save_config($save_dir $module))
 		{
 			(0) {if (CONFIG[VERBOSE_SAVE]) {xecho -b Settings for [$module] saved to [$save_dir/$module\.sav]}}
-			(*) {xecho -b Error saving settings for [$module]}
+			(*) {xecho -b ERROR: Unable to save settings for [$module]}
 		}
 	}
 
@@ -96,7 +96,7 @@ alias save (args)
 	{
 		if (CONFIG[VERBOSE_SAVE]) {xecho -b Format settings saved to [$fmt_file]}
 	}{
-		xecho -b Error writing formats file [$fmt_file]
+		xecho -b ERROR: Unable to write formats file [$fmt_file]
 	}
 
 	xecho -b Save completed [$strftime(%c)]

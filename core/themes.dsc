@@ -30,7 +30,7 @@ alias theme (theme, void)
 		switch ($themes.change($theme))
 		{
 			(0) {xecho -b Now using theme: $DS.THEME}
-			(*) {xecho -b Error: Invalid theme.}
+			(*) {xecho -b ERROR: Invalid theme}
 		}
 
 		defer ^alias -_change_theme

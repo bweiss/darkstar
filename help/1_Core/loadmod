@@ -1,5 +1,5 @@
 Synopsis:
-   loadmod [<module>]
+   loadmod [<module> [<module> ...]]
 
 Description:
    This command is used to load a new module into Darkstar, thus adding new

@@ -1,7 +1,16 @@
 Darkstar ChangeLog
 
 
+!! RELEASE: 0.1.1 (12/23/01) !!
+
+
 12/23/01
+
+ * Rewrote large parts of the module loader (loader.dsc). Improvements include:
+	- Greatly improved error checking.
+	- /loadmod and /unloadmod can now take multiple arguments.
+	- Increased efficiency.
+	- Down to 7449 bytes from 8962 bytes.
 
  * Added help pages for /less, /reload, /sv, and /uptime.
 

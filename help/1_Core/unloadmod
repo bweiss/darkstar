@@ -1,5 +1,5 @@
 Synopsis:
-   unloadmod [<module>]
+   unloadmod [<module> [<module> ...]]
 
 Description:
    This command is used to unload a module from Darkstar, thus removing

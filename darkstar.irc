@@ -64,8 +64,8 @@ do
 /*
  * Important global variables
  */
-assign DS.VERSION 0.1.0
-assign DS.INTERNAL_VERSION 20011222
+assign DS.VERSION 0.1.1
+assign DS.INTERNAL_VERSION 20011223
 
 
 /*
@@ -216,34 +216,4 @@ if (fexist($DS.RC) == 1)
 }
 
       
-/*
- * Some useful aliases
- */
-alias reload (void)
-{
-	@ :home = DS.HOME
-	
-	timer -del all
-
-	for cnt from 1 to $numitems(loaded_modules)
-	{
-		@ :itm = cnt - 1
-		queue -flush cleanup.$getitem(loaded_modules $itm)
-	}
-	
-	^load $home/darkstar.irc
-}
-
-alias sv (whom default "$C", void)
-{
-	msg $whom ircII $J $uname() - $CLIENT_INFORMATION
-}
-
-alias uptime (void)
-{
-	xecho -b ircII $J $uname() - $CLIENT_INFORMATION
-	xecho -b Client Uptime: $tdiff(${time() - F})
-}
-
-
 /* bmw '01 */

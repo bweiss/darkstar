@@ -6,7 +6,7 @@
  * LOADER.DSC - Module loader for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/21/01 (bmw)
+ * Last modified: 12/23/01 (bmw)
  */
 
 
@@ -14,42 +14,14 @@ alias listmods modlist
 alias modules modlist
 
 
-alias loadmod (module, void)
+alias loadmod (modules)
 {
-	if (module && !isnumber($module))
+	@ loader.build_modlist()
+	@ modules = loader.which_mods(modules $modules)
+
+	if (!modules)
 	{
-		@ loader.build_modlist()
-
-		if (loader.load_module($module))
-		{
-			xecho -b Module [$module] has been successfully loaded
-		}{
-			xecho -b Error loading module [$module]
-		}
-	}{
-		if (isnumber($module))
-		{
-			@ loader.build_modlist()
-
-			if (module > 0 && module <= numitems(modules))
-			{
-				@ :item = module - 1
-				@ :mod = getitem(modules $item)
-
-				if (loader.load_module($mod))
-				{
-					xecho -b Module [$mod] has been successfully loaded
-				}{
-					xecho -b Error loading module [$mod]
-				}
-			}
-
-			return
-		}
-
-
 		^local mods
-
 		modlist
 
 		while (!mods)
@@ -61,17 +33,21 @@ alias loadmod (module, void)
 			}
 		}
 
-		unless (tolower(mods) == [q])
+		unless (tolower($mods) == [q])
 		{
-			for module in ($loader.which_mods(load $mods))
-			{
-				if (loader.load_module($module))
-				{
-					xecho -b Module [$module] has been successfully loaded
-				}{
-					xecho -b Error loading module [$module]
-				}
-			}
+			@ modules = loader.which_mods(modules $mods)
+		}
+	}
+
+	for module in ($modules)
+	{
+		switch ($loader.load_module($module))
+		{
+			(0) {xecho -b Module [$module] has been loaded}
+			(1) {xecho -b ERROR: No modules found}
+			(2) {xecho -b ERROR: Module [$module] is already loaded}
+			(3) {xecho -b ERROR: Module [$module] not found}
+			(*) {xecho -b ERROR: Unknown}
 		}
 	}
 }
@@ -88,37 +64,11 @@ alias reloadmod (module, void)
 	loadmod $module
 }
 
-alias unloadmod (module, void)
+alias unloadmod (modules)
 {
-	if (module)
+	if (!modules)
 	{
-		if (loader.unload_module($module))
-		{
-			xecho -b Module [$module] has been successfully unloaded
-		}{
-			xecho -b Error unloading module [$module]
-		}
-	}{
-		if (isnumber($module))
-		{
-			if (module > 0 && module <= numitems(loaded_modules))
-			{
-				@ :item = module - 1
-				@ :mod = getitem(modules $item)
-
-				if (loader.load_module($mod))
-				{
-					xecho -b Module [$mod] has been successfully loade
-				}{
-					xecho -b Error loading module [$mod]
-				}
-			}
-
-			return
-		}
-
 		^local mods
-
 		@ loader.display_loaded()
 
 		while (!mods)
@@ -130,17 +80,20 @@ alias unloadmod (module, void)
 			}
 		}
 
-		unless (tolower(mods) == [q])
+		unless (tolower($mods) == [q])
 		{
-			for module in ($loader.which_mods(unload $mods))
-			{
-				if (loader.unload_module($module))
-				{
-					xecho -b Module [$module] has been successfully unloaded
-				}{
-					xecho -b Error unloading module [$module]
-				}
-			}
+			@ modules = loader.which_mods(modules $mods)
+		}
+	}
+
+	for module in ($modules)
+	{
+		switch ($loader.unload_module($module))
+		{
+			(0) {xecho -b Module [$module] has been unloaded}
+			(1) {xecho -b ERROR: No modules are currently loaded}
+			(2) {xecho -b ERROR: Module [$module] is not loaded}
+			(*) {xecho -b ERROR: Unknown}
 		}
 	}
 }
@@ -192,9 +145,9 @@ alias loader.display_modlist (void)
 		@ :loaded = finditem(loaded_modules $module) > -1 ? [*] : []
 		echo $[3]num $[25]module $[-12]fsize($file)     $[8]loaded $[8]auto_load
 	}
-	xecho -b Type '/dset AUTO_LOAD' to modify the Auto-Load list
-	xecho -b Type '/loadmod [module]' to load a module
-	xecho -b Type '/unloadmod [module]' to unload a module
+	xecho -b Type '/dset AUTO_LOAD_MODULES' to modify the Auto-Load list
+	xecho -b Type '/loadmod [<module> ...]' to load a module
+	xecho -b Type '/unloadmod [<module> ...]' to unload a module
 
 	return
 }
@@ -202,189 +155,198 @@ alias loader.display_modlist (void)
 
 alias loader.load_module (module, void)
 {
+	/* Make sure there are modules available */
+	if (!numitems(modules))
+	{
+		return 1
+	}
+
+	/* Remove the extension if necessary */
 	if (before(-1 . $module))
 	{
 		@ module = before(-1 . $module)
 	}
 
-	if (numitems(modules))
+	/* Make sure module isn't already loaded */
+	if (finditem(loaded_modules $module) > -1)
 	{
-		@ :file = getitem(module_files $finditem(modules $module)))
+		return 2
+	}
 
-		if (finditem(modules $module) > -1 && finditem(loaded_modules $module) < 0)
+	@ :item = finditem(modules $module)
+
+	if (item > -1)
+	{
+		@ :file = getitem(module_files $item)
+		@ :dir = before(-1 / $before(-1 / $file))
+		^local defaults_file $dir/def/$module\.def
+		^local save_file $DS.SAVE_DIR/$module\.sav
+
+		if (fexist($defaults_file) == 1)
 		{
-			@ :dir = before(-1 / $before(-1 / $file))
-			^local defaults_file $dir/def/$module\.def
-			^local save_file $DS.SAVE_DIR/$module\.sav
-
-			if (fexist($defaults_file) == 1)
-			{
-				/* Read default settings and setup the needed variables
-				   for the modular dset/fset */
-				@ :fd = open($defaults_file R)
+			/* Read default settings and setup the needed variables
+			   for the modular dset/fset */
+			@ :fd = open($defaults_file R)
 			
-				while (!eof($fd))
+			while (!eof($fd))
+			{
+				@ :line = read($fd)
+				@ :type = word(0 $line)
+				@ :variable = word(1 $line)
+				@ :value = restw(2 $line)
+
+				switch ($type)
 				{
-					@ :line = read($fd)
-					@ :type = word(0 $line)
-					@ :variable = word(1 $line)
-					@ :value = restw(2 $line)
-
-					switch ($type)
+					(dset)
+					(config)
 					{
-						(dset)
-						(config)
+						if (word(1 $line) == [bool])
 						{
-							if (word(1 $line) == [bool])
-							{
-								@ variable = word(2 $line)
-								@ value = restw(3 $line)
-								
-								^assign DSET.BOOL.$variable 1
-							}
-							
-							@ push(DSET.MODULES.$module $variable)
-							^assign DSET.CONFIG.$variable 1
-							^assign CONFIG.$variable $value
+							@ variable = word(2 $line)
+							@ value = restw(3 $line)
+
+							^assign DSET.BOOL.$variable 1
 						}
 
-						(fset)
-						(format)
-						{
-							@ push(FSET.MODULES.$module $variable)
-							^assign FSET.FORMAT.$variable 1
-							^assign FORMAT.$variable $value
-						}
+						@ push(DSET.MODULES.$module $variable)
+						^assign DSET.CONFIG.$variable 1
+						^assign CONFIG.$variable $value
+					}
+
+					(fset)
+					(format)
+					{
+						@ push(FSET.MODULES.$module $variable)
+						^assign FSET.FORMAT.$variable 1
+						^assign FORMAT.$variable $value
 					}
 				}
 			}
+		}
 			
-			@ close($fd)
+		@ close($fd)
 					
-			/* Load saved settings */
-			if (fexist($save_file) == 1)
-			{
-				load $save_file
-			}
-
-			/* Load the bugger */
-			load $file
-			@ setitem(loaded_modules $numitems(loaded_modules) $module)
-
-			return 1
+		/* Load saved settings */
+		if (fexist($save_file) == 1)
+		{
+			load $save_file
 		}
+
+		/* Load the bugger */
+		load $file
+		@ setitem(loaded_modules $numitems(loaded_modules) $module)
+
+		return 0
 	}
 
-	return 0
+	/* No such module */
+	return 3
 }
 
 
-alias loader.unload_module (module)
+alias loader.unload_module (module, void)
 {
-	if (numitems(loaded_modules))
+	/* Make sure we have modules loaded */
+	if (!numitems(loaded_modules))
 	{
-		@ :item = finditem(loaded_modules $module)
-
-		if (item > -1)
-		{
-			/* Execute cleanup queue for module */
-			queue -do cleanup.$module
-
-			/* Get rid of any global aliases/variables obviously
-			   related to this module */
-			for alias in ($aliasctl(alias match $module\.))
-			{
-				^alias -$alias
-			}
-			
-			for var in ($aliasctl(assign match $module\.))
-			{
-				^assign -$var
-			}
-
-			/* Remove all config and format variables */
-			for var in ($DSET[$module])
-			{
-				^assign -CONFIG.$var
-				^assign -DSET.CONFIG.$var
-				^assign -DSET.BOOL.$var
-			}
-			
-			for var in ($FSET.MODULES[$module])
-			{
-				^assign -FORMAT.$var
-				^assign -FSET.FORMAT.$var
-			}
-
-			^assign -DSET.MODULES.$module
-			^assign -FSET.MODULES.$module
-			
-			/* Remove from loaded_modules array */
-			@ delitem(loaded_modules $item)
-
-			return 1
-		}
+		return 1
 	}
 
-	return 0
+	/* Remove the extension if necessary */
+	if (before(-1 . $module))
+	{
+		@ module = before(-1 . $module)
+	}
+
+	@ :item = finditem(loaded_modules $module)
+
+	if (item > -1)
+	{
+		/* Execute cleanup queue for module */
+		queue -do cleanup.$module
+
+		/* Get rid of any global aliases/variables obviously
+		   related to this module */
+		for alias in ($aliasctl(alias match $module\.))
+		{
+			^alias -$alias
+		}
+			
+		for var in ($aliasctl(assign match $module\.))
+		{
+			^assign -$var
+		}
+
+		/* Remove all config and format variables */
+		for var in ($DSET[$module])
+		{
+			^assign -CONFIG.$var
+			^assign -DSET.CONFIG.$var
+			^assign -DSET.BOOL.$var
+		}
+			
+		for var in ($FSET.MODULES[$module])
+		{
+			^assign -FORMAT.$var
+			^assign -FSET.FORMAT.$var
+		}
+
+		^assign -DSET.MODULES.$module
+		^assign -FSET.MODULES.$module
+			
+		/* Remove from loaded_modules array */
+		@ delitem(loaded_modules $item)
+
+		return 0
+	}
+
+	/* Module is not loaded */
+	return 2
 }
 
 
-alias loader.which_mods (action, args)
+alias loader.which_mods (array, args)
 {
-	if (args && isnumber($strip(- $args)))
-	{
-		^local modlist
-		@ :array = action == [load] ? [modules] : [loaded_modules]
+	^local modules
 
-		for modnum in ($args)
+	for tmp in ($args)
+	{
+		if (isnumber($strip(- $tmp)))
 		{
-			if (match(%-% $modnum))
+			if (match(%-% $tmp))
 			{
-				@ :startmod = before(- $modnum)
-				@ :endmod = after(- $modnum)
+				@ :startmod = before(- $tmp)
+				@ :endmod = after(- $tmp)
 
 				if (startmod < endmod && startmod < numitems($array) && endmod <= numitems($array))
 				{
 					for cnt from $startmod to $endmod
 					{
 						@ :item = cnt - 1
-						@ :module = getitem($array $item)
-
-						@ push(modlist $module)
+						push modules $getitem($array $item)
 					}
 				}{
-					xecho -b Illegal range specified!
+					xecho -b loader.which_mods(): Illegal range specified!
 				}
 			}{
-				if (modnum <= numitems($array))
+				if (tmp <= numitems($array))
 				{
-					@ :item = modnum - 1
-					@ :module = getitem($array $item)
-
-					@ push(modlist $module)
+					@ :item = tmp - 1
+					push modules $getitem($array $item)
 				}{
-					xecho -b No such module [$modnum]
+					xecho -b loader.which_mods(): Module not found [$tmp]
 				}
 			}
-		}
-
-		@ function_return = modlist
-	}{
-		if ([$0])
-		{
-			xecho -b \"$*\" is not valid
+		}{
+			push modules $tmp
 		}
 	}
 
-	return
+	@ function_return = modules
 }
 
 
-/*
- * Find out what modules to load on startup.
- */
-if (CONFIG[AUTO_LOAD_MODULES])
+if (CONFIG[AUTO_LOAD_PROMPT])
 {
 	/*
 	 * Keep things quiet while we list available modules.
@@ -400,78 +362,23 @@ if (CONFIG[AUTO_LOAD_MODULES])
 	/*
 	 * Prompt user or go ahead and load everything on the auto-load list.
 	 */
-	if (CONFIG[AUTO_LOAD_PROMPT])
+	^local mods
+	modlist
+
+	while (!mods)
 	{
-		modlist
-
-		input "Modules to load? ([A]uto / [N]one / 1 2-4 ...) [A] "
+		^assign mods $"Modules to load? ([A]uto / [N]one / 1 2-4 ...) [A] "
+		if (mods == [])
 		{
-			if ([$0] == [])
-			{
-				^assign ugh A
-			}{
-				^assign ugh $0
-			}
-
-			switch ($toupper($ugh))
-			{
-				(A)
-				{
-					xecho -b Auto-Loading modules...
-					for module in ($CONFIG.AUTO_LOAD_MODULES)
-					{
-						if (loader.load_module($module))
-						{
-							xecho -b Module [$module] has been loaded successfully
-						}{
-							xecho -b Error loading module [$module]
-						}
-					}
-					xecho -b Auto-Load completed [$strftime(%c)]
-
-					theme $CONFIG.THEME
-				}
-
-				(N)
-				{
-					theme $CONFIG.THEME
-				}
-
-				(*)
-				{ 
-					for module in ($loader.which_mods(load $*))
-					{
-						if (loader.load_module($module))
-						{
-							xecho -b Module [$module] has been successfully loaded
-						}{
-							xecho -b Error loading module [$module]
-						}
-					}
-					xecho -b Load complete [$strftime(%c)]
-
-					theme $CONFIG.THEME
-				}
-			}
-
-			@ ugh = []
+			^assign mods A
 		}
-	}{
-		@ loader.build_modlist()
+	}
 
-		xecho -b Auto-Loading modules...
-		for module in ($CONFIG.AUTO_LOAD_MODULES)
-		{
-			if (loader.load_module($module))
-			{
-				xecho -b Module [$module] has been loaded successfully
-			}{
-				xecho -b Error loading module [$module]
-			}
-		}
-		xecho -b Auto-Load completed [$strftime(%c)]
-
-		theme $CONFIG.THEME
+	switch ($toupper($mods))
+	{
+		(N) {#}
+		(A) {@ modules = CONFIG[AUTO_LOAD_MODULES]}
+		(*) {@ modules = loader.which_mods(modules $mods)}
 	}
 	
 	/*
@@ -483,7 +390,21 @@ if (CONFIG[AUTO_LOAD_MODULES])
 	}
 
 	^stack pop set SUPPRESS_SERVER_MOTD
-}	
+
+	/*
+	 * Load 'em
+	 */
+	if (modules)
+	{
+		loadmod $modules
+	}
+} \
+elsif (CONFIG[AUTO_LOAD_MODULES])
+{
+	loadmod $CONFIG.AUTO_LOAD_MODULES
+}
+
+eval theme $CONFIG.THEME
 
 
 /* bmw '01 */
