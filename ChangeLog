@@ -1,6 +1,9 @@
 DarkStar ChangeLog
 
 
+!! RELEASE: 0.2.4 (2002/05/16) !!
+
+
 2002/05/16
 
  * Bug in help.dsc, involving /defer, discovered and fixed by whitefang.
