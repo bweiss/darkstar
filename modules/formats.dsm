@@ -356,7 +356,7 @@ on ^319 "*"
 				# each channel name to prevent color codes from extending to
 				# the next channel.
 				#
-				@ :chans = []
+				@ :chans = [];
 				for chan in ($tmp) {
 					push chans $chan-1;
 				};

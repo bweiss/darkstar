@@ -152,7 +152,7 @@ alias nickmgr.nickchange (nick, serv default "$servernum()", void)
 	if (!nick || serv < 0 || !isconnected($serv) || nick == servernick($serv))
 		return;
 
-	xecho -b NICKMGR: Changing nick on server $serv to $nick;
+	xecho -b NICKMGR: Changing nick on $servername($serv) to $nick;
 	xeval -s $serv {
 		nick $nick;
 	};
