@@ -6,7 +6,7 @@
  * TABKEY.DSM - Tab key module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/21/01 (bmw)
+ * Last modified: 12/3/01 (bmw)
  *
  * This script uses serial number 420 for all ON hooks.
  */
@@ -49,8 +49,13 @@ alias tabkey.process_tabkey (void)
 {
 	if (L)
 	{
-		/* Check for $CMDCHARS */
-		if (index($left(1 $L) $K) > -1)
+		@ :lastw = word(${numwords($L) - 1} $L)
+
+		if (left(1 $lastw) == [#])
+		{
+			@ tabkey.channel_routine()
+		} \
+		elsif (index($left(1 $L) $K) > -1)
 		{
 			switch ($rest(1 $L))
 			{

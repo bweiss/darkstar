@@ -4,7 +4,14 @@ Darkstar ChangeLog
 !! RELEASE: 0.0.13 (12/3/01) !!
 
 
-12/02/01
+12/3/01
+
+ * Improved support for channel completion in the tabkey module. If the first
+   character of the last word on the input line is "#" the channel routine will
+   be used. I add this at the last minute only because it is a very simple
+   change, and a big improvement. I don't expect anything to break as a result.
+
+12/2/01
 
  * The arguments passed to CTCP_REPLY have changed as of EPIC4-1.1 so themes
    will need to be adjusted accordingly.
