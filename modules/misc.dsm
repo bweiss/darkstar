@@ -1,4 +1,4 @@
-#version 0.7.7
+#version 0.7.8
 /* $Id$ */
 /*
  * misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
@@ -15,7 +15,7 @@ queue cleanup.misc
 	for alias in (dns disco m nslookup ping q tig umode ver whois wi wii ww) {
 		^alias -$alias
 	}
-	for hook in (301 307 $jot(310 315) $jot(317 320) 378 ctcp ctcp_reply msg nickname notice send_msg send_notice) {
+	for hook in (301 307 $jot(310 315) $jot(317 320) 335 378 ctcp ctcp_reply msg nickname notice send_msg send_notice) {
 		^on $hook -"*"
 	}
 	^on action -'% \$servernick() *'
@@ -56,6 +56,7 @@ format.add WHO_HEADER
 format.add WHO_HEADER1
 format.add WHO_HEADER2
 format.add WHOIS_AWAY $G AWAY       %c:%n $1 - $2-
+format.add WHOIS_BOT $G BOT        %c:%n $2-
 format.add WHOIS_CHANNELS $G CHANNELS   %c:%n $3-
 format.add WHOIS_CHANNELS_WRAP
 format.add WHOIS_FOOTER $G $2 : End of /WHOIS list.
@@ -202,7 +203,7 @@ on ^301 "*"
 }
 
 /*
- * For DALnet and OPN.
+ * For DALnet and servers running UnrealIRCd.
  * Shows you that the user has identified with services.
  */
 on ^307 "*"
@@ -337,11 +338,23 @@ on ^319 "*"
 	}
 }
 
-/* OPN */
+/*
+ * OPN
+ */
 on ^320 "*"
 {
 	if (FORMAT.WHOIS_IDENTIFIED) {
 		echo $fparse(WHOIS_IDENTIFIED $*)
+	}
+}
+
+/*
+ * UnrealIRCd's WHOISBOT numeric
+ */
+on ^335 "*"
+{
+	if (FORMAT.WHOIS_BOT) {
+		echo $fparse(WHOIS_BOT $*)
 	}
 }
 
