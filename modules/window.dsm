@@ -18,6 +18,7 @@ queue cleanup.window
 	};
 
 	^on #connect 426 -"*";
+	^on #disconnect 426 -"*";
 	^on #hook 426 -"CONFIG MSG_WINDOW *";
 	^on #hook 426 -"CONFIG MSG_WINDOW_NUMBER *";
 	^on #hook 426 -"CONFIG MSG_WINDOW_SIZE *";
@@ -296,6 +297,13 @@ on #-connect 426 "*"
 {
 	if (CONFIG.MSG_WINDOW) {
 		defer window.msgwin.create $servernum();
+	};
+};
+
+on #-disconnect 426 "*"
+{
+	if (CONFIG.MSG_WINDOW) {
+		defer window.msgwin.purge;
 	};
 };
 

@@ -42,7 +42,7 @@ if (!epic() || V < 20031214)
 	echo http://www.got.net/~brian/epic4/;
 	echo;
 
-	^local pause $'Press \'a\' to abort load, \'q\' to quit, or any other key to continue.';
+	^local pause $'Press `a` to abort load, `q` to quit, or any other key to continue.';
 
 	if (pause == [a])
 	{
@@ -76,7 +76,7 @@ for array in ($getarrays()) {
 # This will be incremented every time a change takes place in
 # the core scripts (this file and any *.dsc files in $DS.HOME/core/).
 #
-@ DS.CORE_ID = 112;
+@ DS.CORE_ID = 113;
 
 xecho -b -c Loading DarkStar $DS.VERSION;
 
