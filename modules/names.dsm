@@ -1,4 +1,4 @@
-#version 0.2
+#version 0.2.1
 /* $Id$ */
 /*
  * names.dsm - Darkstar/EPIC4 module to display who's on a channel
@@ -16,6 +16,9 @@ queue cleanup.names
 	{
 		^alias -$alias
 	}
+	^on 353 -"*"
+	^on 366 -"*"
+	^on #hook 428 -"CONFIG NAMES_COL *"
 }
 
 config.add NAMES_COL 6
