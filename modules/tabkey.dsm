@@ -1,4 +1,4 @@
-#version 0.2.5
+#version 0.2.6
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -290,7 +290,7 @@ alias tabkey.cmd.m tabkey.cmd.msg
 alias tabkey.cmd.msg {
 	bless
 	if (curword == 1) {
-		@ :ret = sort($uniq($TABKEY.MSGHIST[$winserv()] $tabkey.method.nickchan($*)))
+		@ :ret = pattern("$word*" $sort($uniq($TABKEY.MSGHIST[$winserv()] $tabkey.method.nickchan($*))))
 	} else {
 		@ :cmd = word(0 $L)
 		if (!cmd) {
@@ -323,7 +323,7 @@ alias tabkey.cmd.pop       { return $tabkey.method.variables(assign); }
 alias tabkey.cmd.push      { return $tabkey.method.variables(assign); }
 
 alias tabkey.cmd.q tabkey.cmd.query
-alias tabkey.cmd.query     { return $sort($uniq($TABKEY.MSGHIST[$winserv()] $tabkey.method.nickchan($*))); }
+alias tabkey.cmd.query     { return $pattern("$0*" $sort($uniq($TABKEY.MSGHIST[$winserv()] $tabkey.method.nickchan($*)))); }
 
 alias tabkey.cmd.reloadmod { return $tabkey.method.arrays(loaded_modules); }
 
