@@ -1,7 +1,7 @@
 /*
  * Default theme for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
- * Last modified: 12/22/01 (bmw)
+ * Last modified: 12/23/01 (bmw)
  */
 
 status -q darkstar
@@ -57,6 +57,7 @@ fset WHOWAS_NICK %c[**]%n $2 was %c\(%n$3@$4%c\)%n
 fset UMODE $G Mode change \"$3-\" for user $2 by $1
 
 /* Module: names */
+fset -NAMES_FOOTER
 fset NAMES_HEADER $G Users on $1: \(total/$2 - ops/$3 normal/$4\)
 fset NAMES_OP %c@%n
 fset NAMES_VOICE %m+%n

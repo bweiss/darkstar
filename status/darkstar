@@ -1,7 +1,7 @@
 /*
  * Created by Brian Weiss <brian@epicsol.org> for Darkstar/EPIC4
  *
- * Last modified: 12/22/01 (bmw)
+ * Last modified: 12/23/01 (bmw)
  */
 
 eval xecho -r $chr(27)\(U
