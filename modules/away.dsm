@@ -1,4 +1,4 @@
-#version 1.3.1
+#version 1.3.2
 /* $Id$ */
 /*
  * away.dsm - Away module for DarkStar/EPIC4
@@ -61,7 +61,7 @@ if (A) {
 
 /*
  * /READLOG [filename]
- * Displays your away log to the current window using /LESS.
+ * Displays your away log to the current window using /LESS
  */
 alias readlog (file default "$CONFIG.AWAY_LOGFILE", void)
 {
@@ -69,7 +69,7 @@ alias readlog (file default "$CONFIG.AWAY_LOGFILE", void)
 	if (fexist($file) == 1) {
 		less $file
 	} else {
-		xecho -b Logfile [$file] does not exist
+		xecho -b Logfile $file does not exist
 	}
 }
 
@@ -82,9 +82,9 @@ alias remlog (file default "$CONFIG.AWAY_LOGFILE", void)
 	^assign -AWAY.NEWMSGS
 	if (fexist($file)) {
 		@ unlink($file)
-		xecho -b Removed logfile [$file]
+		xecho -b Removed logfile $file
 	} else {
-		xecho -b Logfile [$file] does not exist
+		xecho -b Logfile $file does not exist
 	}	
 }
 
@@ -143,7 +143,7 @@ on #-305 421 "*"
 }
 
 /*
- * Restrict the value of AWAY_LOG_LEVEL.
+ * Restrict the value of the AWAY_LOG_LEVEL config variable.
  */
 on #-hook 421 "CONFIG AWAY_LOG_LEVEL *"
 {
@@ -264,7 +264,7 @@ alias away.send_notice (nick default "0", void)
 {
 	if (CONFIG.SEND_AWAY_NOTICE && finditem(away.sent_away_notice $nick) < 0) {
 		@ setitem(away.sent_away_notice $numitems(away.sent_away_notice) $nick)
-		notice $nick I am currently away. \($A\) [Gone since: $strftime($AWAY.TIME %c)] [Log/${CONFIG[AWAY_LOG] ? [ON] : [OFF]}]
+		notice $nick I am currently away \($A\) [Gone since: $strftime($AWAY.TIME %c)] [Log/${CONFIG[AWAY_LOG] ? [ON] : [OFF]}]
 	}
 }
 

@@ -26,6 +26,7 @@ assign FORMAT.SEND_ACTION_CHANNEL %Kð %W$1%n $3-
 assign FORMAT.SEND_ACTION_CHANNEL_OTHER %Kð%n -> %W$1%n/%c$2%n $3-
 assign FORMAT.SEND_PUBLIC %M<%n$2%M>%n $3-
 assign FORMAT.SEND_PUBLIC_OTHER %m<%n$1%K:%n$2%m>%n $3-
+assign FORMAT.SEND_WALL [%GBX-Wall%n/%W$1%n] $2-
 assign FORMAT.TOPIC $G Topic %K\(%c$2%K\):%n $3-
 assign FORMAT.TOPIC_CHANGE $G Topic %K\(%c$2%K\):%n changed by %c$1%K:%n $3-
 assign FORMAT.TOPIC_SETBY $G Topic %K\(%c$2%K\):%n set by %c$3%n at %c$strftime($4 %%a %%b %%d %%T %%Y)%n

@@ -24,6 +24,7 @@ assign FORMAT.SEND_ACTION_CHANNEL * $1 $3-
 assign FORMAT.SEND_ACTION_CHANNEL_OTHER * $1/$2 $3-
 assign FORMAT.SEND_PUBLIC %K<%n$2%K>%n $3-
 assign FORMAT.SEND_PUBLIC_OTHER %K<%n$1%K:%n$2%K>%n $3-
+assign FORMAT.SEND_WALL %K[%n$Z%K] [%nwall%K\(%n$1%K\)]%n $2-
 assign FORMAT.TOPIC $G Topic for $2: $3-
 assign FORMAT.TOPIC_CHANGE $G $1 has changed the topic on channel $2 to $3-
 assign FORMAT.TOPIC_SETBY $G The topic was set by $3 on $strftime($4 %%a %%b %%d %%T %%Z %%Y)
