@@ -1,4 +1,4 @@
-#version 0.3.2
+#version 0.3.3
 /* $Id$ */
 /*
  * names.dsm - DarkStar/EPIC4 module to display who's on a channel
@@ -50,53 +50,32 @@ alias sc scan
 
 alias scan (chan, void)
 {
-	names.showusers $chan
+	names.main $chan
 }
 
 alias scann (chan default "$C", void)
 {
-	names.showusers $chan n
+	names.main $chan n
 }
 
 alias scano (chan default "$C", void)
 {
-	names.showusers $chan o
+	names.main $chan o
 }
 
 alias scanv (chan default "$C", void)
 {
-	names.showusers $chan v
+	names.main $chan v
 }
 
 
 /****** INTERNAL ALIASES ******/
 
 /*
- * This returns a formatted string for the nick passed to it,
- * suitable for final display, according to whether they have
- * +o or +v on the channel.
- */
-alias names.parse (chan, nick, void)
-{
-	if (!chan || !nick) {
-		xecho -b Error: names.parse(): Not enough arguments
-		return
-	}
-
-	if (ischanop($nick $chan)) {
-		@ function_return = fparse(NAMES_OP $nick)
-	} else if (ischanvoice($nick $chan) == 1) {
-		@ function_return = fparse(NAMES_VOICE $nick)
-	} else {
-		@ function_return = fparse(NAMES_NONOP $nick)
-	}
-}
-
-/*
  * This does most of the real work. It is a bit more expensive than
  * I would like it to be, but it allows for greater customization.
  */
-alias names.showusers (chan default "$C", mode default "*", void)
+alias names.main (chan default "$C", mode default "*", void)
 {
 	if (match($chan $mychannels()))
 	{
@@ -167,11 +146,12 @@ alias names.showusers (chan default "$C", mode default "*", void)
 		fe ($users) $tmp
 		{
 			^local line
+
 			if (FORMAT.NAMES_LEFT) {
 				push line \$fparse(NAMES_LEFT)
 			}
 
-			for (@ :cnt = 1, nick[$cnt], @ cnt++)
+			for (@ :cnt = 1, cnt <= numwords($tmp), @ cnt++)
 			{
 				/*
 				 * The call to $names.parse() doesn't actually
@@ -181,11 +161,22 @@ alias names.showusers (chan default "$C", mode default "*", void)
 
 				/*
 				 * Insert NAMES_MID inbetween each nick, if it exists.
+				 * We check for NAMES_RIGHT because we don't want to
+				 * add NAMES_MID for nicknames that aren't there
+				 * unless we have an outer border. This is way more
+				 * work than I want to do here, but it seems to be
+				 * the only way to get correct behavior.
 				 */
-				@ :foo = cnt + 1
-				if (nick[$foo]) {
-					if (FORMAT.NAMES_MID) {
-						push line \$FORMAT.NAMES_MID
+				if (FORMAT.NAMES_MID) {
+					if (FORMAT.NAMES_RIGHT) {
+						unless (cnt == CONFIG.NAMES_COL) {
+							push line \$FORMAT.NAMES_MID
+						}
+					} else {
+						@ :foo = cnt + 1
+						if (nick[$foo]) {
+							push line \$FORMAT.NAMES_MID
+						}
 					}
 				}
 			}
@@ -208,6 +199,24 @@ alias names.showusers (chan default "$C", mode default "*", void)
 	}
 }
 
+/*
+ * This returns a formatted string for the nick passed to it,
+ * suitable for final display, according to whether they have
+ * +o or +v on the channel.
+ */
+alias names.parse (chan, nick, void)
+{
+	if (!chan || !nick) {
+		@ function_return = fparse(NAMES_NONOP $nick)
+	} else if (ischanop($nick $chan)) {
+		@ function_return = fparse(NAMES_OP $nick)
+	} else if (ischanvoice($nick $chan) == 1) {
+		@ function_return = fparse(NAMES_VOICE $nick)
+	} else {
+		@ function_return = fparse(NAMES_NONOP $nick)
+	}
+}
+
 
 /****** ON HOOKS ******/
 
@@ -221,7 +230,7 @@ on ^353 "*"
 
 on ^366 "*"
 {
-	names.showusers $NAMES.CHAN
+	names.main $NAMES.CHAN
 	^assign -NAMES.CHAN
 }
 
