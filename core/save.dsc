@@ -83,6 +83,7 @@ alias save (args)
 				$mod\._save $fd
 			}
 
+			@ write($fd )
 			@ close($fd)
 		}
 	}

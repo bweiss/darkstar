@@ -1,7 +1,7 @@
 #version 0.10
 /* $Id$ */
 /*
- * window.dsm - Window module for DarkStar/EPIC4
+ * window.dsm - Window related module for DarkStar/EPIC4
  * Copyright (c) 2002, 2003 Brian Weiss
  * See the 'COPYRIGHT' file for more information.
  *
@@ -12,7 +12,7 @@
 
 queue cleanup.window
 {
-	for alias in (swap wb wc wj wk wl wn wp wq wub) {
+	for alias in (q query swap wb wc wj wk wl wn wp wq wub) {
 		^alias -$alias
 	}
 	for wref in ($winrefs()) {
@@ -22,13 +22,14 @@ queue cleanup.window
 	^on #hook 426 -"CONFIG MSG_WINDOW *"
 	^on #join 426 -'\$servernick() *'
 	^on #leave 426 -'\$servernick() *'
-	^on #msg 426 -"*"
+	^on #raw_irc 426 -"% NICK *"
+	^on #raw_irc 426 -'% PRIVMSG \$servernick() *'
+	^on #send_msg 426 -"*"
 	^on #window_create 426 -"*"
 	^on #window_kill 426 -"*"
-	^on #window_kill 426 -"msgs"
+	^on #window_kill 426 -"% msgs"
 
 	^bind ^R nothing
-	^bind ^W next_window
 	for char in ($jot(0 9)) {
 		^bind ^[$char nothing
 	}
@@ -45,26 +46,21 @@ queue cleanup.window
 
 addconfig    AUTO_BIND_CHANNELS
 addconfig    AUTO_CREATE_WINDOWS 2
-addconfig -b AUTO_QUERY 0
 addconfig -b AUTO_QUERY_UPDATE 1
+addconfig -b AUTO_QUERY_WINDOW 0
+addconfig    AUTO_QUERY_WINDOW_ARGS double off fixed on hide swap last
 addconfig -b BIND_ON_JOIN 0
 addconfig -b JOIN_NEW_WINDOW 0
 addconfig    JOIN_NEW_WINDOW_ARGS hide_others
 addconfig -b MSG_WINDOW 0
-addconfig    MSG_WINDOW_ARGS number 426 double off fixed on skip on size 5 level msgs last
+addconfig    MSG_WINDOW_ARGS number 426 double off fixed on skip on swappable off size 5 level msgs last
 addconfig -b PART_KILL_WINDOW 0
 addconfig -b UNBIND_ON_PART 0
 
 
-/****** INIT ******/
-
-/*
- * Key bindings.
- */
+/****** KEY BINDINGS ******/
 
 ^bind ^R next_window
-/* This should probably be changed or moved to some other module. */
-^bind ^W delete_previous_word
 
 ^bind ^[^I parse_command ^window next
 ^bind ^[1 parse_command ^window swap 1
@@ -86,7 +82,10 @@ addconfig -b UNBIND_ON_PART 0
 ^bind ^[^[[5~ parse_command window.last.scroll backward
 ^bind ^[^[[6~ parse_command window.last.scroll forward
 
-^bind -symbolic key_f12 parse_command window.last.clear
+^bind -symbolic key_f12 parse_command window last clear last
+
+
+/****** INIT ******/
 
 /*
  * Add shortcut aliases for all existing windows.
@@ -97,6 +96,18 @@ for wref in ($winrefs()) {
 
 
 /****** USER ALIASES ******/
+
+alias q query
+
+/*
+ * Wrapper alias to ensure that queries are always set using
+ * /WINDOW QUERY. This lets us keep track of queries using the
+ * window_command hook.
+ */
+alias query (target, void)
+{
+	window query $target
+}
 
 alias swap (winnum, void)
 {
@@ -125,11 +136,28 @@ alias wub (...)                      { window unbind; }
 
 /****** INTERNAL ALIASES ******/
 
-alias window.last.clear (void)
+alias window.get_query_by_uhost (serv, uhost, void)
 {
-	window last
-	window clear
-	window last
+	if (!uhost || uhost == [<UNKNOWN>@<UNKNOWN>]) {
+		return
+	}
+
+	foreach WINDOW.QUERY win
+	{
+		if (winserv($win) == serv)
+		{
+			@ :tmp = word(1 $WINDOW.QUERY[$win])
+			if (tmp == [<UNKNOWN>@<UNKNOWN>]) {
+				continue
+			}
+			if (tmp == uhost) {
+				@ :ret = win
+				@ push(ret $WINDOW.QUERY[$win])
+			}
+		}
+	}
+
+	@ function_return = ret
 }
 
 alias window.last.scroll (direction, void)
@@ -151,8 +179,8 @@ alias window.msgwin.create (void)
 
 alias window.msgwin.destroy (void)
 {
-	if (winnum(msgs) != -1) {
-		window msgs kill
+	if ((:win = winnum(msgs)) != -1) {
+		window $win kill
 	}
 }
 
@@ -191,34 +219,79 @@ on #-leave 426 '$servernick() *'
 	}
 }
 
-on #-msg 426 "*"
+on #-raw_irc 426 "% NICK *"
 {
-	if ((:item = matchitem(window.queries.$lastserver() %!$userhost())) > -1)
+	if (CONFIG.AUTO_QUERY_UPDATE)
 	{
-		if (getitem(window.queries.$lastserver() $item) != [$0!$userhost()])
-		{
-			if (CONFIG.AUTO_QUERY_UPDATE)
-			{
-				@ :oldnick = before(-1 ! $getitem(window.queries.$lastserver() $item))
-				if ((:win = querywin($oldnick $lastserver())) > -1)
-				{
-					window $win query $0
-					xecho -b -w $win Query window for $oldnick changed to $0
-				}
-			}
-			@ setitem(window.queries.$lastserver() $item $0!$userhost())
+		@ :old_nick = before(1 ! $0)
+		@ :new_nick = after(1 : $2)
+		@ :querywin = querywin($old_nick $lastserver())
+		if (querywin > -1) {
+			xecho -b -w 0 Changing query in window $querywin from $old_nick to $new_nick
+			window $querywin query $new_nick
 		}
-	}{
-		@ setitem(window.queries.$lastserver() $numitems(window.queries.$lastserver()) $0!$userhost())
-	}
-
-	if (CONFIG.AUTO_QUERY && querywin($0 $lastserver()) == -1)
-	{
-		window new_hide swap last
-		query $0
-		xecho -b New query window created for $0
 	}
 }
+
+on #-raw_irc 426 '% PRIVMSG $servernick() *'
+{
+	@ :nick = before(1 ! $0)
+	@ :uhost = after(1 ! $0)
+
+	if (CONFIG.AUTO_QUERY_UPDATE)
+	{
+		@ :tmp = window.get_query_by_uhost($lastserver() $uhost)
+		@ :querywin = word(0 $tmp)
+		@ :old_nick = word(1 $tmp)
+
+		if (querywin && nick != old_nick)
+		{
+			xecho -b -w 0 Changing query in window $querywin from $old_nick to $nick
+			window $querywin query $nick
+		}
+	}
+
+	if (CONFIG.AUTO_QUERY_WINDOW && querywin($nick $lastserver()) == -1)
+	{
+		xecho -b -w 0 Creating new window for query with $nick
+		^window new query $nick $CONFIG.AUTO_QUERY_WINDOW_ARGS
+	}
+}
+
+on #-send_msg 426 "*"
+{
+	if (CONFIG.AUTO_QUERY_UPDATE)
+	{
+		@ :tmp = window.get_query_by_uhost($lastserver() $userhost($0))
+		@ :querywin = word(0 $tmp)
+		@ :old_nick = word(1 $tmp)
+
+		if (querywin && [$0] != old_nick)
+		{
+			xecho -b -w 0 Changing query in window $querywin from $old_nick to $0
+			window $querywin query $0
+		}
+	}
+}
+
+/*
+ * Keep track of active queries.
+ */
+on #-window_command 426 "*"
+{
+	if ([$0] == [$1])
+	{
+		@ :query_nick = windowctl(GET $0 QUERY_NICK)
+		if (query_nick)
+		{
+			@ :uhost = userhost($query_nick)
+			^assign WINDOW.QUERY.$0 $query_nick $uhost
+		}{
+			^assign -WINDOW.QUERY.$0
+		}
+	}
+}
+
 
 /*
  * Dynamic window swap aliases.
@@ -231,13 +304,12 @@ on #-window_create 426 "*"
 on #-window_kill 426 "*"
 {
 	^alias -$0
+	^assign -WINDOW.QUERY.$0
 }
 
-on #-window_kill 426 "msgs"
+on #-window_kill 426 "% msgs"
 {
-	if (CONFIG.MSG_WINDOW) {
-		dset MSG_WINDOW OFF
-	}
+	dset MSG_WINDOW OFF
 }
 
 

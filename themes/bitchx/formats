@@ -64,6 +64,12 @@ assign FORMAT.SEND_PUBLIC_OTHER %m<%n$1%K:%n$2%m>%n $3-
 assign FORMAT.SEND_WALL [%GBX-Wall%n/%W$1%n] $2-
 assign FORMAT.TOPIC $G Topic %K\(%c$1%K\):%n $2-
 assign FORMAT.TOPIC_CHANGE $G Topic %K\(%c$1%K\):%n changed by %c$1%K:%n $3-
+assign -FORMAT.TOPIC_FOOTER
+assign -FORMAT.TOPIC_FOOTER1
+assign -FORMAT.TOPIC_FOOTER2
+assign -FORMAT.TOPIC_HEADER
+assign -FORMAT.TOPIC_HEADER1
+assign -FORMAT.TOPIC_HEADER2
 assign FORMAT.TOPIC_SETBY $G Topic %K\(%c$1%K\):%n set by %c$2%n at %c$strftime($3 %%a %%b %%d %%T %%Y)%n
 assign FORMAT.TOPIC_UNSET $G Topic %K\(%c$1%K\):%n unset by %c$2%n
 assign FORMAT.UMODE $G Mode Change %K[%W$3-%K]%n for user %c$2
@@ -98,5 +104,3 @@ assign -FORMAT.WHOIS_SIGNON
 assign FORMAT.WHOWAS_NAME %G³ %Wi%nrcname    : $6-
 assign FORMAT.WHOWAS_NICK %G| %W$2%n was %K\(%n$3@$4%K\)%n %K\(%W$tld($after(-1 . $4))%K\)%n
 
-
-/* EOF */

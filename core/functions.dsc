@@ -106,6 +106,16 @@ alias fmtfsize (bytes, void)
 	^stack pop set FLOATING_POINT_MATH
 }
 
+alias fparse (...)
+{
+	eval return $cparse($(FORMAT.$0))
+}
+
+alias fparse2 (...)
+{
+	eval return $(FORMAT.$0)
+}
+
 /*
  * Retrieves the values of a list of item numbers and/or ranges of numbers
  * (e.g. "3-7") from an array. The value of the offset argument will be added

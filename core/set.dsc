@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * set.dsc - Modular DSET/FSET for DarkStar/EPIC4
+ * set.dsc - Modular set routines for DarkStar/EPIC4
  * Copyright (c) 2002, 2003 Brian Weiss (except where noted)
  * See the 'COPYRIGHT' file for more information.
  */
@@ -13,9 +13,6 @@ alias format fset
 
 alias dset (...) {_set CONFIG $*}
 alias fset (...) {_set FORMAT $*}
-
-alias fparse  {eval return $cparse($(FORMAT.$0))}
-alias fparse2 {eval return $(FORMAT.$0)}
 
 /*
  * These aliases are deprecated. The new addconfig and addformat aliases
@@ -35,10 +32,9 @@ alias format.add addformat
  *  <type2>.<var>           = name of parent module
  *  _MODULE.<module>.<type> = list of <type> vars belonging to <module>
  *
- *  <module> is the name of the calling module or "core" if there isn't one
- *  <type> is either "CONFIG" or "FORMAT"
- *  <type2> is either "_DSET" or "_FSET"
- *  <var> is the name of the variable
+ * <module> is the name of the calling module or "core" if there isn't one
+ * <type> can be either "CONFIG" or "FORMAT"
+ * <type2> can be either "_DSET" or "_FSET"
  *
  * A list of config variables that are boolean will also be stored in the
  * _boolcfgvars array.
@@ -62,8 +58,7 @@ alias _addsetvar (type, ...)
 		^local mod core
 	}
 
-	if (![$0])
-	{
+	if (![$0]) {
 		echo Error: _addsetvar: Not enough arguments \(module: $mod\)
 		return
 	}
@@ -116,7 +111,7 @@ alias _set (type, variable, value)
 
 		if (#matches > 1 && !bingo)
 		{
-			xecho -b -s \"$toupper($var)\" is ambiguous
+			xecho -s $fparse(SET_AMBIGUOUS $toupper($var))
 			for tmp in ($matches) {
 				_setcat $type\.$after(1 . $tmp)
 			}
@@ -129,40 +124,32 @@ alias _set (type, variable, value)
 
 			if (variable =~ [-%])
 			{
-				/*
-				 *Empty the variable's value.
-				 */
 				^assign -$realvar
-				xecho -b -s Value of $toupper($var) set to <EMPTY>
-
+				xecho -s $fparse(SET_CHANGE $toupper($var) <EMPTY>)
 				/* Hook the changes so modules can act on it. */
 				hook $type $var $old_value
 			}\
 			else if (value == [])
 			{
-				/*
-				 * No new value specified. Display current value.
-				 */
 				_setcat $realvar
 			}\
 			else
 			{
-				/*
-				 * Set to new, user supplied, value.
-				 */
 				if (type == [CONFIG] && finditem(_boolcfgvars $var) > -1)
 				{
 					switch ($toupper($value))
 					{
 						(0) (1) (OFF) (ON) {
 							^assign $realvar $bool2num($value)
-							xecho -b -s Value of $toupper($var) set to $toupper($bool2word($value))
+							xecho -s $fparse(SET_CHANGE $toupper($var) $toupper($bool2word($value)))
 						}
-						(*) { xecho -b -s Value must be either ON, OFF, 1, or 0; }
+						(*) {
+							xecho -b -s Value must be either ON, OFF, 1, or 0
+						}
 					}
 				}{
 					^assign $realvar $value
-					xecho -b -s Value of $toupper($var) set to $value
+					xecho -s $fparse(SET_CHANGE $toupper($var) $value)
 				}
 				hook $type $var $old_value
 			}
@@ -179,29 +166,29 @@ alias _set (type, variable, value)
  */
 alias _setcat (realvar, void)
 {
-	^local var $after(1 . $realvar)
-	eval if \($realvar != []\)
+	@ :var = after(1 . $realvar)
+	if ($realvar == [])
 	{
-		if (FORMAT.SET)
-		{
+		if (FORMAT.SET_NOVALUE) {
+			xecho -s $fparse(SET_NOVALUE $toupper($var))
+		}
+	}{
+		if (FORMAT.SET) {
 			if (before(. $realvar) == [CONFIG] && finditem(_boolcfgvars $var) > -1) {
 				xecho -s $fparse(SET $toupper($var) $toupper($bool2word($($realvar))))
 			} else {
 				xecho -s $fparse(SET $toupper($var) $($realvar))
 			}
 		}
-	}{
-		if (FORMAT.SET_NOVALUE) {
-			xecho -s $fparse(SET_NOVALUE $toupper($var))
-		}
 	}
 }
 
 
-/****** STARTUP ******/
-
 addformat SET $G Current value of $1 is $2-
+addformat SET_AMBIGUOUS $G "$1" is ambiguous
+addformat SET_CHANGE $G Value of $1 set to $2-
+addformat SET_FOOTER
+addformat SET_HEADER
 addformat SET_NOVALUE $G No value for $1 has been set
 
 
-/* EOF */

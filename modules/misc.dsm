@@ -12,7 +12,9 @@
 
 queue cleanup.misc
 {
-	for alias in (dns disco m nslookup ping q tig umode ver whois wi wii ww) {
+	^bind ^W next_window
+
+	for alias in (dns disco m nslookup ping tig umode ver whois wi wii ww) {
 		^alias -$alias
 	}
 
@@ -25,6 +27,11 @@ queue cleanup.misc
 
 addconfig    DEFAULT_UMODES iw
 addconfig -b IGNORE_CTCP_FINGER 1
+
+
+/****** KEY BINDINGS ******/
+
+^bind ^W delete_previous_word
 
 
 /****** USER ALIASES ******/
@@ -65,8 +72,6 @@ alias ping (target default "$servernick()", void)
 {
 	//ping $target
 }
-
-alias q query
 
 alias tig (void)
 {

@@ -23,7 +23,7 @@ queue cleanup.oper
 	^on #hook 427 -"CONFIG OPERVIEW *"
 	^on #hook 427 -"LOADMOD tabkey"
 	^on #timer 427 -"*"
-	^on #window_kill 427 -"operview"
+	^on #window_kill 427 -"% operview"
 
 	oper.operview.destroy
 
@@ -39,7 +39,7 @@ addconfig -b OPER_AUTO_CHALLENGE 0
 addconfig    OPER_RSA_RESPOND_TOOL
 addconfig    OPER_UMODES wzsky
 addconfig -b OPERVIEW 0
-addconfig    OPERVIEW_ARGS number 427 double off fixed on skip on size 5 level opnotes,snotes,wallops last
+addconfig    OPERVIEW_ARGS number 427 double off fixed on skip on swappable off size 5 level opnotes,snotes,wallops last
 
 
 /****** USER ALIASES ******/
@@ -442,11 +442,9 @@ on #-timer 427 "*"
 	}
 }
 
-on #-window_kill 427 "operview"
+on #-window_kill 427 "% operview"
 {
-    if (CONFIG.OPERVIEW) {
-        dset OPERVIEW OFF
-    }
+	dset OPERVIEW OFF
 }
 
 

@@ -5,8 +5,6 @@
  * See the 'COPYRIGHT' file for more information.
  */
 
-/****** CONFIG/FORMAT VARIABLES ******/
-
 addconfig    AUTO_LOAD_MODULES away channel dcc formats misc nickmgr nickcomp tabkey theme window
 addconfig -b SAVE_ON_UNLOAD 0
 addconfig -b LOAD_PROMPT 1
@@ -19,8 +17,6 @@ addformat MODLIST_HEADER1 ------------------------------------------------------
 addformat MODLIST_HEADER2
 addformat MODLIST_MODULE  $[3]1 $[16]2 $[7]3 $[-7]4    ${[$5] ? [\[*\]] : [\[\ \]]}     ${[$6] ? [\[*\]] : [\[ \]]}
 
-
-/****** USER ALIASES ******/
 
 /*
  * /AUTOLOAD [[-a|-d] <module> ...] ...
@@ -251,8 +247,6 @@ alias unloadmod (modules)
 }
 
 
-/****** INTERNAL ALIASES ******/
-
 alias _build_modlist (void)
 {
 	for dir in ($DS.MODULE_DIRS) {
@@ -398,55 +392,6 @@ alias _unload_module (module, void)
 
 	^assign -MODULE.UNLOADING
 	return 0
-}
-
-
-/****** STARTUP ******/
-
-defer
-{
-	if (CONFIG.LOAD_PROMPT)
-	{
-		modlist
-
-		@ :holdslider = windowctl(GET $winnum() HOLD_SLIDER)
-		@ :holdmode   = windowctl(GET $winnum() HOLDING_DISTANCE) > -1 ? [ON] : [OFF]
-		^window hold_slider 0
-		^window hold_mode on
-
-		^local ask $"Enter modules to load ('a' for auto-load, '*' for all): "
-		switch ($ask)
-		{
-			(a) {
-				if (CONFIG.AUTO_LOAD_MODULES) {
-					loadmod $CONFIG.AUTO_LOAD_MODULES
-				} else {
-					xecho -b No modules on the auto-load list
-					xecho -b Type /AUTOLOAD or /DSET AUTO_LOAD_MODULES to add a module
-				}
-			}
-			(\\*) {
-				for ii from 1 to $numitems(_modules) {
-					@ push(:mods $getitem(_modules ${ii-1}))
-				}
-				loadmod $mods
-			}
-			(*) {
-				@ :mods = getitems(_modules -1 $ask)
-				if (mods) {
-					loadmod $mods
-				}
-			}
-		}
-
-		^window hold_slider $holdslider
-		^window hold_mode $holdmode
-	}\
-	else if (CONFIG.AUTO_LOAD_MODULES)
-	{
-		xecho -b Loading all modules on the auto-load list...
-		loadmod $CONFIG.AUTO_LOAD_MODULES
-	}
 }
 
 

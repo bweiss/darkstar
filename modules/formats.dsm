@@ -94,6 +94,12 @@ addformat SEND_WALL -@$1-> $2-
 addformat SIGNOFF $G SignOff $1: \($2-%n\)
 addformat TOPIC $G Topic for $1: $2-
 addformat TOPIC_CHANGE $G $2 has changed the topic on channel $1 to $3-
+addformat TOPIC_FOOTER
+addformat TOPIC_FOOTER1
+addformat TOPIC_FOOTER2
+addformat TOPIC_HEADER
+addformat TOPIC_HEADER1
+addformat TOPIC_HEADER2
 addformat TOPIC_SETBY $G The topic was set by $2 $3 sec ago
 addformat TOPIC_UNSET $G $2 has changed the topic on channel $1 to
 addformat UMODE $G Mode change \"$3-\" for user $2 by $1
@@ -393,6 +399,7 @@ on ^329 "*" { formats.echo CHANNEL_TS $*; }
 
 on ^332 "*"
 {
+	formats.echo TOPIC_HEADER,TOPIC_HEADER1,TOPIC_HEADER2 $*
 	formats.echo TOPIC $1-
 	/*
 	 * XXX - Make sure that there aren't any hooks to suppress the output
@@ -405,7 +412,11 @@ on ^332 "*"
 	^on 333 -"$servername() $1 *"
 }
 
-on ^333 "*" { formats.echo TOPIC_SETBY $1-; }
+on ^333 "*"
+{
+	formats.echo TOPIC_SETBY $1-
+	formats.echo TOPIC_FOOTER,TOPIC_FOOTER1,TOPIC_FOOTER2 $*
+}
 
 /*
  * UnrealIRCd's WHOISBOT numeric
@@ -688,12 +699,6 @@ on ^topic "*"
 		formats.echo TOPIC_UNSET $1 $0
 	}{
 		formats.echo TOPIC_CHANGE $1 $0 $2-
-		/*
-		 * XXX - Make sure that there aren't any hooks to suppress the output
-		 * of the 333 numeric (topic set by). See the 332 hook for a longer
-		 * explanation of this miserable hack.
-		 */
-		^on 333 -"$servername() $1 *"
 	}
 }
 
@@ -704,7 +709,6 @@ on ^who "* % % % % *"
 	if (!FORMATS.WHO_HEADER_DONE)
 	{
 		formats.echo WHO_HEADER,WHO_HEADER1,WHO_HEADER2 $*
-
 		/*
 		 * This prevents the header from being displayed more than once.
 		 * It is removed by the 315 hook (WHO_FOOTER).

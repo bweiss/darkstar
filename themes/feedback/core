@@ -50,7 +50,9 @@ assign FORMAT.MODLIST_HEADER1 --------------------------------------------------
 assign -FORMAT.MODLIST_HEADER2
 assign FORMAT.MODLIST_MODULE  $[3]1 $[16]2 $[7]3 $[-7]4    ${[$5] ? [\[*\]] : [\[\ \]]}     ${[$6] ? [\[*\]] : [\[ \]]}
 assign FORMAT.SET $G Current value of $1 is $2-
+assign FORMAT.SET_AMBIGUOUS $G "$1" is ambiguous
+assign FORMAT.SET_CHANGE $G Value of $1 set to $2-
+assign -FORMAT.SET_FOOTER
+assign -FORMAT.SET_HEADER
 assign FORMAT.SET_NOVALUE $G No value for $1 has been set
 
-
-/* EOF */

@@ -12,30 +12,39 @@ addconfig -b DOUBLE_STATUS 0
 bind ^[[5~ scroll_backward
 bind ^[[6~ scroll_forward
 
-alias _double_all_windows (void)
+alias _window_double_all (...)
 {
-	if (CONFIG.DOUBLE_STATUS != []) {
-		for wref in ($winrefs()) {
-			if (!windowctl(GET $wref FIXED)) {
-				^window $wref double $bool2word($CONFIG.DOUBLE_STATUS)
+	switch ($0)
+	{
+		(ON) (OFF) (1) (0) {
+			for wref in ($winrefs()) {
+				if (!windowctl(GET $wref FIXED)) {
+					^window $wref double $bool2word($0)
+				}
 			}
+		}
+		(*) {
+			echo Error: _window_double_all: Invalid argument: $0
+			return
 		}
 	}
 }
 
 on #-hook 2 "CONFIG DOUBLE_STATUS *"
 {
-	_double_all_windows
+	if (CONFIG.DOUBLE_STATUS) {
+		_window_double_all on
+	} else {
+		_window_double_all off
+	}
 }
 
 on #-window_create 2 "*"
 {
-	if (CONFIG.DOUBLE_STATUS != [] && !windowctl(GET $0 FIXED)) {
+	if (CONFIG.DOUBLE_STATUS && !windowctl(GET $0 FIXED)) {
 		^window $0 double on
 	}
 }
-
-defer _double_all_windows
 
 
 /* EOF */

@@ -64,6 +64,12 @@ assign FORMAT.SEND_PUBLIC_OTHER %K<%W$1%K/%W$2%K>%n $3-
 assign FORMAT.SEND_WALL %K-> %nwall%K[%W$1%K]%c:%n $2-
 assign FORMAT.TOPIC $G topic%K/%W$1%c:%n $2-
 assign FORMAT.TOPIC_CHANGE $G topic%K/%W$1%c: %W$2%K[%n$3-%K]%n
+assign -FORMAT.TOPIC_FOOTER
+assign -FORMAT.TOPIC_FOOTER1
+assign -FORMAT.TOPIC_FOOTER2
+assign -FORMAT.TOPIC_HEADER
+assign -FORMAT.TOPIC_HEADER1
+assign -FORMAT.TOPIC_HEADER2
 assign FORMAT.TOPIC_SETBY $G topic%K/%W$1%c:%n created %K[%W$tolower($strftime($3 %%a %%b %%d %%T %%Y))%K]%n
 assign FORMAT.TOPIC_UNSET $G topic%K/%W$1%c:%n unset %K[%n$2%K]%n
 assign FORMAT.UMODE $G mode%K/%W$2%c: %W$servername()%K[%n$3-%K]%n
@@ -98,5 +104,3 @@ assign FORMAT.WHOIS_SIGNON ³ %K[   %Ws%nignon%K]%n ³ $strftime($4 %%a %%b %%d %%
 assign FORMAT.WHOWAS_NAME ³%KÚ[  %Wi%nrcname%K]%nÄÙ $6-
 assign FORMAT.WHOWAS_NICK %W³ %K[%W$[-9]2%K] ³ [%n$3%c@%n$4%K]%n
 
-
-/* EOF */

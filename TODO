@@ -11,10 +11,6 @@ FOR 0.3 RELEASE:
     config variable, a format variable of the same name, and a $ts() function
     for use in themes.
 
-  * Add BOX_{HEADER|FOOTER|LEFT|RIGHT} formats to the core. If defined, these
-    will be used for drawing borders around things like whois replies and
-    names output instead of the normal feature-specific format vars.
-
   * Write a new_users help page for /DHELP
 
   * Add support for "paste mode" either as a module or as part of the core.

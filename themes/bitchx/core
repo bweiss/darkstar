@@ -49,7 +49,9 @@ assign FORMAT.MODLIST_HEADER1 %KÄÄ%nÄ%WÄ%nÄ%KÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ%nÄ%WÄ%nÄ%KÄÄÄÄÄÄÄ%
 assign -FORMAT.MODLIST_HEADER2
 assign FORMAT.MODLIST_MODULE  $[2]1   $[16]2   $[7]3   $[-8]4     ${[$5] ? [%K\[%n*%K\]] : [%K\[\ \]]}       ${[$6] ? [%K\[%n*%K\]] : [%K\[ \]]}
 assign FORMAT.SET %g$pad(-30 . $1)%n $2-
+assign FORMAT.SET_AMBIGUOUS $G $1 is ambiguous
+assign FORMAT.SET_CHANGE $G Value of $1 set to $2-
+assign -FORMAT.SET_FOOTER
+assign -FORMAT.SET_HEADER
 assign FORMAT.SET_NOVALUE %g$pad(-30 . $1) has no value
 
-
-/* EOF */

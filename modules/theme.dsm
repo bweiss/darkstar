@@ -131,6 +131,7 @@ alias theme.scan_dir (dir, void)
 		}
 		if ((:item = finditem(theme.names $name)) > -1) {
 			@ delitem(theme.names $item)
+			@ delitem(theme.dirs $item)
 		}
 		@ setitem(theme.names $numitems(theme.names) $name)
 		@ setitem(theme.dirs $numitems(theme.dirs) $tdir)

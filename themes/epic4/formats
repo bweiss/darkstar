@@ -61,6 +61,12 @@ assign FORMAT.SEND_PUBLIC_OTHER $2> $3-
 assign FORMAT.SEND_WALL -@$1-> $2-
 assign FORMAT.TOPIC $G Topic for $1: $2-
 assign FORMAT.TOPIC_CHANGE $G $2 has changed the topic on channel $1 to $3-
+assign -FORMAT.TOPIC_FOOTER
+assign -FORMAT.TOPIC_FOOTER1
+assign -FORMAT.TOPIC_FOOTER2
+assign -FORMAT.TOPIC_HEADER
+assign -FORMAT.TOPIC_HEADER1
+assign -FORMAT.TOPIC_HEADER2
 assign FORMAT.TOPIC_SETBY $G The topic was set by $2 $3 sec ago
 assign FORMAT.TOPIC_UNSET $G $2 has changed the topic on channel $1 to
 assign FORMAT.UMODE $G Mode change \"$3-\" for user $2 by $1
@@ -95,5 +101,3 @@ assign -FORMAT.WHOIS_SIGNON
 assign -FORMAT.WHOWAS_NAME
 assign FORMAT.WHOWAS_NICK $G $2 was $3@$4 \($6-\)
 
-
-/* EOF */
