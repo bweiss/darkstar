@@ -39,9 +39,10 @@ alias chat (nick, void)
 /*
  * DCC autoget.
  */
-^on #-dcc_request 450 -"% SEND *"
+on #-dcc_request 450 "% SEND *"
 {
 	if (CONFIG[DCC_AUTOGET]) {
+		xecho -b DCC AutoGet: Accepting SEND of $2 from $0
 		dcc get $0 $2
 	}
 }
