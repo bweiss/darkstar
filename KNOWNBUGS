@@ -24,3 +24,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
   to a server.
 * Add a MSG_WINDOW_LEVEL config variable.
 * Make /TBAN support comma delimited lists of ban numbers.
+* Add context sensitive completion alias for /IG (tabkey.cmd.ig)

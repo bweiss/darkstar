@@ -1,4 +1,4 @@
-# version:0.5.2 loader:pf
+# version:0.5.3 loader:pf
 # $Id$
 #
 # tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -383,6 +383,11 @@ alias tabkey.cmd.help (...)
 	@ matches = globi($unsplit(/ $getset(HELP_PATH) $path));
 	repeat $#matches @ push(matches $rightw(1 $remws(/ $split(/ $shift(matches)))));
 	@ function_return = tabkey.nofallback($remw(CVS $matches));
+};
+
+alias tabkey.cmd.ig (...)
+{
+	tabkey.cmd.ignore $*;
 };
 
 alias tabkey.cmd.ignore (...)
