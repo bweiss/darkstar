@@ -6,7 +6,7 @@
  * MISC.DSM - The 'miscellaneous stuff' module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/14/01 (bmw)
+ * Last modified: 10/15/01 (bmw)
  *
  * This script uses serial number 424 for all ON hooks.
  */
@@ -297,12 +297,9 @@ on ^notice "*"
 
 on ^send_ctcp "PRIVMSG *"
 {
-	unless ([$2] == [ACTION])
+	if (FORMAT[SEND_CTCP] && [$2] != [ACTION])
 	{
-		if (FORMAT[SEND_CTCP])
-		{
-			echo $fparse(SEND_CTCP $*)
-		}
+		echo $fparse(SEND_CTCP $*)
 	}
 }
 
