@@ -55,17 +55,16 @@ alias less (files) {
 		if (fexist($file) == 1) {
 			@ :fd = open($file R)
 			if (fd != -1) {
-				@ :maxlines = winsize() - 1
 				while (!eof($fd)) {
 					@ :line = 0
-					while (line++ < maxlines) {
+					while (line++ < winsize()) {
 						@ :foo = read($fd)
 						unless (eof($fd) && foo == []) {
 							echo $foo
 						}
 					}
 					if (!eof($fd)) {
-						^local pause $'Hit q to quit, or anything else to continue. '
+						^local pause $'Hit q to quit, or anything else to continue.'
 						if (tolower($pause) == [q]) { return; }
 					}
 				}

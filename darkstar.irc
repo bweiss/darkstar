@@ -33,7 +33,7 @@ if (!epic() || V < 20020819) {
 	echo http://darkstar.epicsol.org/
 	echo http://www.got.net/~brian/epic4/
 	echo
-	^local pause $'Press any key to continue or "q" to quit.'
+	^local pause $'Press q to quit, or any other key to continue.'
 	if (pause == [q]) {
 		echo Bye!
 		echo
@@ -60,7 +60,7 @@ for array in ($getarrays()) {
  * This will be incremented every time a change takes place in
  * the core scripts (this file and any .dsc files in core/).
  */
-@ DS.CORE_ID = 76
+@ DS.CORE_ID = 77
 
 eval xecho -b Loading DarkStar $DS.VERSION
 
@@ -129,7 +129,7 @@ if (fexist($DS.USER_DIR) == -1) {
 	echo gone into them. Please feel free to contact me if you have any
 	echo questions or comments. This message will not be displayed again.
 	echo
-	^local pause $'Press any key to continue. '
+	^local pause $'Press any key to continue.'
 }
 
 /* 
