@@ -243,6 +243,11 @@ alias loader.unload_module (module, void)
 		purge $module
 		purgealias $module
 
+		/* Get rid of any arrays obviously related to this module. */
+		for array in ($pattern($module\.* $getarrays())) {
+			@ delarray($array)
+		}
+
 		/* Remove all config and format variables. */
 		for var in ($DSET.MODULES[$module]) {
 			^assign -CONFIG.$var

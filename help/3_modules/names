@@ -7,11 +7,17 @@ Author: Brian Weiss <brian@epicsol.org>
 
 Config Variables:
    NAMES_COL           - Determines how many columns to display.
+   NAMES_SORT_BY_MODE  - Boolean. If true, +o users will be displayed
+                         before everyone else.
 
 Format Variables:
-   NAMES_FOOTER, NAMES_HEADER, NAMES_NONOP, NAMES_OP, NAMES_VOICE
+   NAMES_FOOTER[1|2], NAMES_HEADER[1|2], NAMES_NONOP, NAMES_OP, NAMES_VOICE
 
 Commands:
+   names [channel]
+     - Alias to /scan. If you want to use the builtin names command,
+       try //names instead.
+
    scan [channel]
      - Displays the nicks of everyone on [channel] (or the current channel
        if one is not specified).

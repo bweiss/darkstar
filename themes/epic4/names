@@ -3,7 +3,11 @@
 assign CONFIG.NAMES_COL 6
 
 assign -FORMAT.NAMES_FOOTER
+assign -FORMAT.NAMES_FOOTER1
+assign -FORMAT.NAMES_FOOTER2
 assign FORMAT.NAMES_HEADER $G Users on $1: \(total/$2 - ops/$3 normal/$4\)
+assign -FORMAT.NAMES_HEADER1
+assign -FORMAT.NAMES_HEADER2
 assign FORMAT.NAMES_LEFT $G
 assign FORMAT.NAMES_NONOP $chr(32)$[9]1
 assign FORMAT.NAMES_OP @$[9]1

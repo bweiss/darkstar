@@ -1,4 +1,4 @@
-#version 0.2.1
+#version 0.3
 /* $Id$ */
 /*
  * names.dsm - DarkStar/EPIC4 module to display who's on a channel
@@ -9,6 +9,8 @@
  *
  * This script uses serial numbers 0 and 428 for /on hooks.
  */
+
+/****** CLEANUP QUEUE ******/
 
 queue cleanup.names
 {
@@ -21,10 +23,18 @@ queue cleanup.names
 	^on #hook 428 -"CONFIG NAMES_COL *"
 }
 
-config.add NAMES_COL 6
+
+/****** CONFIG/FORMAT VARIABLES ******/
+
+config.add    NAMES_COL 6
+config.add -b NAMES_SORT_BY_MODE 0
 
 format.add NAMES_FOOTER
+format.add NAMES_FOOTER1
+format.add NAMES_FOOTER2
 format.add NAMES_HEADER $G Users on $1: \(total/$2 - ops/$3 normal/$4\)
+format.add NAMES_HEADER1
+format.add NAMES_HEADER2
 format.add NAMES_LEFT $G
 format.add NAMES_NONOP $chr(32)$[9]1
 format.add NAMES_OP %c@%n$[9]1
@@ -32,117 +42,164 @@ format.add NAMES_RIGHT
 format.add NAMES_VOICE %m+%n$[9]1
 
 
+/****** USER ALIASES ******/
+
 alias names scan
 alias sc scan
 
 alias scan (chan, void)
 {
-	@ names.showusers($chan)
+	names.showusers $chan
 }
 
 alias scann (chan default "$C", void)
 {
-	@ names.showusers($chan n)
+	names.showusers $chan n
 }
 
 alias scano (chan default "$C", void)
 {
-	@ names.showusers($chan o)
+	names.showusers $chan o
 }
 
 alias scanv (chan default "$C", void)
 {
-	@ names.showusers($chan v)
+	names.showusers $chan v
 }
 
 
+/****** INTERNAL ALIASES ******/
+
+/*
+ * This returns a formatted string for the nick passed to it,
+ * suitable for final display, according to whether they have
+ * +o or +v on the channel.
+ */
 alias names.parse (chan, nick, void)
 {
-	if (ischanop($nick $chan))
-	{
+	if (!chan || !nick) {
+		xecho -b Error: names.parse(): Not enough arguments
+		return
+	}
+
+	if (ischanop($nick $chan)) {
 		@ function_return = fparse(NAMES_OP $nick)
-	}\
-	else if (ischanvoice($nick $chan) == 1)
-	{
+	} else if (ischanvoice($nick $chan) == 1) {
 		@ function_return = fparse(NAMES_VOICE $nick)
-	}{
+	} else {
 		@ function_return = fparse(NAMES_NONOP $nick)
 	}
 }
 
+/*
+ * This does most of the real work. It is a bit more expensive than
+ * I would like it to be, but it allows for greater customization.
+ */
 alias names.showusers (chan default "$C", mode default "*", void)
 {
 	if (match($chan $mychannels()))
 	{
+		/*
+		 * Compile the list of users that we want to display.
+		 * This is also where any sorting takes place.
+		 */
 		^local users
-
 		switch ($tolower($mode))
 		{
-			(n)
-			{
-				^local desc normal users
-				@ users = nochops($chan)
+			(n) {
+				@ :desc = [normal users]
+				@ :users = nochops($chan)
 			}
-			(o)
-			{
-				^local desc channel operators
-				@ users = chops($chan)
+			(o) {
+				@ :desc = [channel operators]
+				@ :users = chops($chan)
 			}
-			(v)
-			{
+			(v) {
 				^local desc voiced users
-				for nick in ($channel($chan))
-				{
-					if (mid(1 1 $nick) == [+])
-					{
-						@ push(users $rest(2 $nick))
+				for nick in ($channel($chan)) {
+					if (mid(1 1 $nick) == [+]) {
+						push users $rest(2 $nick)
 					}
 				}
 			}
-			(*) {@ :users = onchannel($chan)}
+			(*) {
+				@ :desc = [users]
+				if (CONFIG.NAMES_SORT_BY_MODE) {
+					push users $chops($chan)
+					push users $nochops($chan)
+				} else {
+					push users $onchannel($chan)
+				}
+			}
 		}
 
-		if (#users < 1)
-		{
+		if (#users < 1) {
 			xecho -b No $desc were found on $chan
 			return 0
 		}
 
-		if (FORMAT[NAMES_HEADER]) {echo $fparse(NAMES_HEADER $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))}
+		/*
+		 * Display the header, if any.
+		 */
+		for var in (NAMES_HEADER NAMES_HEADER1 NAMES_HEADER2) {
+			if (FORMAT.$var) {
+				echo $fparse($var $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
+			}
+		}
 
+		/*
+		 * Create a temporary variable to store the names of the
+		 * variables we'll be using in the /fe below. This allows us
+		 * to resize the number of columns in the output according to
+		 * the NAMES_COL config variable.
+		 */
 		^local tmp
-		for cnt from 1 to $CONFIG.NAMES_COL
-		{
+		for cnt from 1 to $CONFIG.NAMES_COL {
 			push tmp nick.$cnt
 		}
 
+		/*
+		 * Break the list of users into multiple lines. This gets
+		 * a little tricky because we want certain things evaluated
+		 * before others.
+		 */
 		fe ($users) $tmp
 		{
 			^local line
-			if (FORMAT[NAMES_LEFT])
-			{
-				@ :line = [\$fparse(NAMES_LEFT)]
+			if (FORMAT[NAMES_LEFT]) {
+				push line \$fparse(NAMES_LEFT)
 			}
 
-			for (@ :cnt = 1, nick[$cnt], @ cnt++)
-			{
+			/* The call to $names.parse() doesn't actually happen
+			   until the last line of this /fe block. */
+			for (@ :cnt = 1, nick[$cnt], @ cnt++) {
 				eval push line \\\$names.parse\(\$chan \$nick[$cnt]\)
 			}
 
-			if (FORMAT[NAMES_RIGHT])
-			{
+			if (FORMAT[NAMES_RIGHT]) {
 				push line \$fparse(NAMES_RIGHT)
 			}
 
 			eval echo $line
 		}
 
-		if (FORMAT[NAMES_FOOTER]) {echo $fparse(NAMES_FOOTER $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))}
+		/*
+		 * Display footer, if any.
+		 */
+		for var in (NAMES_FOOTER NAMES_FOOTER1 NAMES_FOOTER2) {
+			if (FORMAT.$var) {
+				echo $fparse($var $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
+			}
+		}
 	}
-
-	return
 }
 
+
+/****** ON HOOKS ******/
+
+/*
+ * Hook the NAMES numerics and call names.showusers
+ */
 on ^353 "*"
 {
 	^assign NAMES.CHAN $2
@@ -150,10 +207,13 @@ on ^353 "*"
 
 on ^366 "*"
 {
-	@ names.showusers($NAMES.CHAN)
+	names.showusers $NAMES.CHAN
 	^assign -NAMES.CHAN
 }
 
+/*
+ * Restrict the value of the NAMES_COL config variable.
+ */
 on #-hook 428 "CONFIG NAMES_COL *"
 {
 	if (!isnumber($CONFIG.NAMES_COL b10))

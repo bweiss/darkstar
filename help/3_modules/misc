@@ -6,20 +6,21 @@ Author: Brian Weiss <brian@epicsol.org>
 
 Config Variables:
    DEFAULT_UMODES          - Default user modes when connecting to a server.
-   IGNORE_CTCP_FINGER      - Boolean. If true, all CTCP FINGER requests will
-                             be ignored.
-   SHOW_AWAY_ONCE          - Boolean. If true, prevents the WHOIS_AWAY numeric
-                             from being displayed each time you msg/notice
-                             someone. This will not stop you from seeing it
-                             when you /whois them.
+   IGNORE_CTCP_FINGER      - Boolean. If true, all CTCP FINGER requests
+                             will be ignored.
+   SHOW_AWAY_ONCE          - Boolean. If true, prevents the WHOIS_AWAY
+                             numeric from being displayed each time you
+                             msg/notice someone. This will not stop you
+                             from seeing it when you /whois them.
    SHOW_AWAY_ONCE_TIMEOUT  - Seconds until nicks are removed from the
                              away_users array.
 
 Format Variables:
    ACTION_USER, CTCP, CTCP_REPLY, MSG, NOTICE, SEND_ACTION_USER, SEND_CTCP,
-   SEND_MSG, SEND_NOTICE, WHO, WHOIS_AWAY, WHOIS_CHANNELS, WHOIS_FOOTER,
-   WHOIS_HEADER, WHOIS_IDENTIFIED, WHOIS_IDLE, WHOIS_NAME, WHOIS_NICK,
-   WHOIS_OPER, WHOIS_SERVER, WHOIS_SIGNON, WHOWAS_NAME, WHOWAS_NICK, UMODE
+   SEND_MSG, SEND_NOTICE, WHO, WHO_FOOTER[1|2], WHO_HEADER[1|2], WHOIS_AWAY,
+   WHOIS_CHANNELS, WHOIS_FOOTER[1|2], WHOIS_HEADER[1|2], WHOIS_IDENTIFIED,
+   WHOIS_IDLE, WHOIS_NAME, WHOIS_NICK, WHOIS_OPER, WHOIS_SERVER,
+   WHOIS_SIGNON, WHOWAS_NAME, WHOWAS_NICK, UMODE
 
 Commands:
    colors

@@ -4,7 +4,11 @@ assign FORMAT.ACTION_CHANNEL * $1 $3-
 assign FORMAT.ACTION_CHANNEL_OTHER * $1/$2 $3-
 assign FORMAT.BANS $G $1-
 assign FORMAT.BANS_FOOTER $G Total number of bans on $3 - $2
+assign -FORMAT.BANS_FOOTER1
+assign -FORMAT.BANS_FOOTER2
 assign -FORMAT.BANS_HEADER
+assign -FORMAT.BANS_HEADER1
+assign -FORMAT.BANS_HEADER2
 assign FORMAT.CHANNEL_SIGNOFF $G SignOff $2: \($3-%n\)
 assign FORMAT.CHANNEL_SYNC $G Channel $1 synced in $2 seconds
 assign FORMAT.CHANNEL_TS $G Channel $2 was created at $strftime($3 %%a %%b %%d %%T %%Z %%Y)

@@ -1,6 +1,24 @@
 DarkStar ChangeLog
 
 
+2002/05/20
+
+ * The relay module has been added to the default auto-load list.
+
+ * Added extra header and footer format variables in channel.dsm,
+   misc.dsm, and names.dsm. This will allow for multi-line headers
+   and footers. Requested by dh.
+
+ * [names.dsm 0.3] New boolean config variable: NAMES_SORT_BY_MODE.
+   If true, +o users will be displayed before everyone else.
+
+ * The module loader will now remove any arrays that are obviously
+   associated with a specific module, as is done for aliases and
+   assigns already.
+   e.g. An array named foo.bar would be removed automatically when
+   the module named foo was unloaded. An array named foobar would
+   not be removed automatically.
+
 2002/05/18
 
  * Attemping to name a module "core" will now result in an error,
