@@ -14,6 +14,8 @@ Author: Brian Weiss <brian@epicsol.org>
                                prompt.
    AWAY_LOG                  - Boolean. If true, private msgs and notices
                                will be logged when away.
+   AWAY_LOG_LEVEL            - Determines what gets logged while away.
+                               Possible values: MSGS NOTICES PUBLICS
    AWAY_LOGFILE              - Where to write the away log.
    PUBLIC_AWAY               - Boolean. Determines whether we should send
                                an action letting everyone know you are

@@ -1,4 +1,4 @@
-#version 1.2.7
+#version 1.3
 /* $Id$ */
 /*
  * away.dsm - Away module for DarkStar/EPIC4
@@ -19,9 +19,12 @@ queue cleanup.away
 
 	^on #305 421 -"*"
 	^on #306 421 -"*"
+	^on #hook 421 -"CONFIG AWAY_LOG_LEVEL *"
+	^on #input 421 -"*"
 	^on #msg 421 -"*"
 	^on #notice 421 -"*"
-	^on #input 421 -"*"
+	^on #public 421 -'% % *\$servernick()*'
+	^on #public_other 421 -'% % *\$servernick()*'
 	^on #timer 421 -"*"
 
 	@ delarray(away.sent_away_notice)
@@ -32,6 +35,7 @@ config.add -b AUTO_AWAY 1
 config.add    AUTO_AWAY_TIME 1200
 config.add -b AUTO_UNSET_AWAY 0
 config.add -b AWAY_LOG 1
+config.add    AWAY_LOG_LEVEL MSGS NOTICES PUBLICS
 config.add    AWAY_LOGFILE ~/.darkstar/away.log
 config.add -b PUBLIC_AWAY 0
 config.add    PUBLIC_AWAY_CHANNELS
@@ -151,12 +155,35 @@ on #-305 421 "*"
 }
 
 /*
+ * Restrict the value of AWAY_LOG_LEVEL.
+ */
+on #-hook 421 "CONFIG AWAY_LOG_LEVEL *"
+{
+	@ CONFIG.AWAY_LOG_LEVEL = toupper($CONFIG.AWAY_LOG_LEVEL)
+	@ :levels = CONFIG.AWAY_LOG_LEVEL
+	for lvl in ($levels)
+	{
+		if (!match($lvl MSGS NOTICES PUBLICS))
+		{
+			xecho -b Unknown level: $lvl
+			xecho -b Valid levels: MSGS NOTICES PUBLICS
+			@ :levels = remw($lvl $levels)
+		}
+	}
+
+	if (levels != CONFIG.AWAY_LOG_LEVEL)
+	{
+		@ CONFIG.AWAY_LOG_LEVEL = levels ? levels : [$2-]
+		echo $fparse(SET AWAY_LOG_LEVEL $CONFIG.AWAY_LOG_LEVEL)
+	}
+}
+
+/*
  * Update TS for last input and check for auto-unset-away.
  */
-on #^input 421 "*"
+on #-input 421 "*"
 {
-	@ AWAY.LAST_INPUT = time()
-	
+	@ AWAY.LAST_INPUT = time()	
 	if (A && CONFIG[AUTO_UNSET_AWAY])
 	{
 		//away -a
@@ -164,22 +191,41 @@ on #^input 421 "*"
 }
 
 /*
- * Process incoming msgs and notices appropriately.
+ * Process incoming msgs, notices, and publics appropriately.
  */
 on #-msg 421 "*"
 {
 	if (A)
 	{
-		@ away.log(MSG $userhost() $*)
-		@ away.send_notice($0)
+		away.send_notice $0
+		if (match(MSGS $CONFIG.AWAY_LOG_LEVEL))
+		{
+			away.log MSG $userhost() $* 
+		}
 	}
 }
 
 on #-notice 421 "*"
 {
-	if (A)
+	if (A && match(NOTICES $CONFIG.AWAY_LOG_LEVEL))
 	{
-		@ away.log(NOTICE $userhost() $*)
+		away.log NOTICE $userhost() $*
+	}
+}
+
+on #-public 421 '% % *$servernick()*'
+{
+	if (A && match(PUBLICS $CONFIG.AWAY_LOG_LEVEL))
+	{
+		away.log PUBLIC $userhost() $*
+	}
+}
+
+on #-public_other 421 '% % *$servernick()*'
+{
+	if (A && match(PUBLICS $CONFIG.AWAY_LOG_LEVEL))
+	{
+		away.log PUBLIC $userhost() $*
 	}
 }
 
@@ -187,13 +233,12 @@ on #-notice 421 "*"
  * Set ourselves away if auto-away is enabled and we have been idle longer
  * than $CONFIG.AUTO_AWAY_TIME.
  */
-on #^timer 421 "*"
+on #-timer 421 "*"
 {
 	if (!A && CONFIG[AUTO_AWAY] && CONFIG[AUTO_AWAY_TIME] > 0)
 	{
 		@ :diff = time() - CONFIG[AUTO_AWAY_TIME]
 		@ :minutes = CONFIG[AUTO_AWAY_TIME] / 60
-
 		if (diff >= AWAY[LAST_INPUT])
 		{
 			//away -a Auto-away after $minutes minute${minutes > 1 ? [s] : []}
@@ -204,30 +249,38 @@ on #^timer 421 "*"
 
 /*
  * This handles the actual writing of messages to your logfile.
- * Returns 0 on success and > 0 on failure.
  */
-alias away.log (type, userhost, nick, msg)
+alias away.log (type, userhost, nick, ...)
 {
+	if (type == [PUBLIC])
+	{
+		@ :channel = [$0]
+		@ :msg = [$1-]
+	}{
+		@ :msg = [$*]
+	}
+
 	if (!type || !userhost || !nick || !msg)
 	{
-		return 1
+		xecho -b Error: away.log: Not enough arguments
+		return
 	}
 
 	if (CONFIG[AWAY_LOG])
 	{
 		@ :fd = open($CONFIG.AWAY_LOGFILE W)
-
 		if (fd != -1)
 		{
-			@ write($fd [$strftime(%x %X)] $type [$nick!$userhost] $msg)
+			if (type == [PUBLIC])
+			{
+				@ write($fd [$strftime(%x %X)] $type <$nick!$userhost/$channel> $msg)
+			}{
+				@ write($fd [$strftime(%x %X)] $type [$nick!$userhost] $msg)
+			}
 			@ close($fd)
 			@ AWAY.NEWMSGS++
-		}{
-			return 2
 		}
 	}
-
-	return 0
 }
 
 /*
@@ -240,8 +293,6 @@ alias away.send_notice (nick default "0", void)
 		@ setitem(away.sent_away_notice $numitems(away.sent_away_notice) $nick)
 		notice $nick I am currently away. \($A\) [Gone since: $strftime($AWAY.TIME %c)] [Log/${CONFIG[AWAY_LOG] ? [ON] : [OFF]}]
 	}
-
-	return
 }
 
 
