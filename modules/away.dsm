@@ -1,4 +1,4 @@
-#version 1.5.1
+#version 1.5.2
 /* $Id$ */
 /*
  * away.dsm - Away module for DarkStar/EPIC4
@@ -228,7 +228,7 @@ on #-timer 421 "*" {
 			for server in ($serverrefs()) {
 				if (!isaway($server)) {
 					xeval -s $server {
-						//away Auto-away \$ after $minutes minute${minutes > 1 ? [s] : []}
+						//away Auto-away after $minutes minute${minutes > 1 ? [s] : []}
 					}
 				}
 			}
