@@ -1,4 +1,4 @@
-#version 0.7.3
+#version 0.7.4
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key module for DarkStar/EPIC4
@@ -424,11 +424,11 @@ alias tabkey.proc.mask (void)
 	}
 }
 
-alias tabkey.proc.msg (void)
+alias tabkey.proc.msg (cmd default "msg", void)
 {
+	@:cmd = CMDCHARS ## cmd
 	@:nicks = TABKEY.NICKS[$winserv()]
 	@:index = TABKEY.INDEX[$winserv()]
-	@:msg_cmd = CMDCHARS ## [msg]
 	@:trailing = restw(2 $L)
 
 	if (nicks) {
@@ -440,7 +440,7 @@ alias tabkey.proc.msg (void)
 			@ TABKEY.INDEX.$winserv() = numwords($nicks) - 1
 		}
 		parsekey erase_line
-		xtype -l $msg_cmd $nick $trailing
+		xtype -l $cmd $nick $trailing
 	} else {
 		@ TABKEY.INDEX.$winserv() = [-1]
 	}
@@ -477,39 +477,89 @@ alias tabkey.proc.nick (list)
 	}
 }
 
+/*
+ * The type argument for the following set related aliases should be
+ * either "config", "format", or "set".
+ */
 alias tabkey.proc.set (type, void)
 {
-	@:lastc = mid(${strlen($L) - 1} 1 $L)
-	unless (lastc == [ ])
-	{
-		@:lastw = word(${#L - 1} $L)
+	if (!type) {
+		xecho -b Error: tabkey.proc.set: No type argument specified
+		return
+	}
 
-		/* Deal with the removal of variables correctly. */
-		if (left(1 $lastw) == [-]) {
-			@:rm = 1
-			@:lastw = mid(1 $strlen($lastw) $lastw)
-		}
+	if (!match($type config format set)) {
+		xecho -b Error: tabkey.proc.set: Invalid type argument
+		return
+	}
+
+	@:lastc = mid(${strlen($L) - 1} 1 $L)
+	@:lastw = word(${#L - 1} $L)
+
+	if (#L == 1 && lastc == [ ]) {
+		tabkey.set_var_comp $type
+	} else if (#L == 2 && lastc == [ ]) {
+		tabkey.set_value_comp $type
+	} else if (#L > 1) {
+		tabkey.set_var_comp $type
+	}
+}
+
+alias tabkey.set_var_comp (type, void)
+{
+	@:lastc = mid(${strlen($L) - 1} 1 $L)
+	@:lastw = word(${#L - 1} $L)
+
+	if (lastc == [ ]) {
+		@:var = []
+	} else {
+		@:var = lastw
+	}
+
+	/* Deal with the removal of variables correctly. */
+	if (left(1 $var) == [-]) {
+		@:rm = 1
+		@:var = mid(1 $strlen($var) $var)
+	}
 		
-		switch ($tolower($type))
-		{
-			(set) {
-				@:matches = getsets($lastw%)
-			}
-			(config) (format) {
-				^local matches
-				for var in ($aliasctl(assign match $type\.$lastw)) {
-					push matches $after(1 . $var)
-				}
-			}
+	if (tolower($type) == [set]) {
+		@:matches = getsets($var%)
+	} else {
+		^local matches
+		for foo in ($aliasctl(assign match $type\.$var)) {
+			push matches $after(1 . $foo)
 		}
+	}
 		
-		if (#matches == 1) {
-			parsekey delete_to_previous_space
-			xtype -l ${rm ? [-] : []}$matches${[ ]}
-		} else if (#matches > 1) {
-			parsekey delete_to_previous_space
-			xtype -l ${rm ? [-] : []}$prefix($matches)
-			tabkey.show_matches $matches
+	if (#matches == 1) {
+		parsekey delete_to_previous_space
+		xtype -l ${rm ? [-] : []}$matches${[ ]}
+	} else if (#matches > 1) {
+		parsekey delete_to_previous_space
+		xtype -l ${rm ? [-] : []}$prefix($matches)
+		tabkey.show_matches $matches
+	}
+}
+
+alias tabkey.set_value_comp (type, void)
+{
+	@:lastc = mid(${strlen($L) - 1} 1 $L)
+	@:var = word(1 $L)
+
+	if (lastc == [ ] && var)
+	{
+		if (tolower($type) == [set]) {
+			eval ^local value \$$var
+		} else {
+			eval ^local value \$$type\.$var
+		}
+		if (value == []) {
+			return
+		}
+		if (tolower($type) == [config] && DSET.BOOL[$var]) {
+			xtype -l $bool_to_onoff($value)
+		} else if (value) {
+			xtype -l $value
 		}
 	}
 }
@@ -570,11 +620,11 @@ tabkey.addrule "/%"                 command
 tabkey.addrule "/do %"              command
 tabkey.addrule "/eval %"            command
 tabkey.addrule "/tabkey %"          generic     "addrule clear listrules rmrule saverules"
-tabkey.addrule "/config %"          set         "config"
-tabkey.addrule "/dset %"            set         "config"
-tabkey.addrule "/format %"          set         "format"
-tabkey.addrule "/fset %"            set         "format"
-tabkey.addrule "/set %"             set         "set"
+tabkey.addrule "/config *"          set         "config"
+tabkey.addrule "/dset *"            set         "config"
+tabkey.addrule "/format *"          set         "format"
+tabkey.addrule "/fset *"            set         "format"
+tabkey.addrule "/set *"             set         "set"
 tabkey.addrule "/loadmod *"         array       "modules"
 tabkey.addrule "/reloadmod *"       array       "loaded_modules"
 tabkey.addrule "/save *"            array       "loaded_modules"
@@ -585,10 +635,12 @@ tabkey.addrule "/dcc send % %"      file
 tabkey.addrule "/less *"            file
 tabkey.addrule "/load *"            file
 tabkey.addrule "/exec *"            file
-tabkey.addrule "/msg %"             nick        "$remw($: $onchannel()) $:"
 tabkey.addrule "/m %"               nick        "$remw($: $onchannel()) $:"
+tabkey.addrule "/m % *"             msg         "m"
+tabkey.addrule "/msg %"             nick        "$remw($: $onchannel()) $:"
 tabkey.addrule "/msg % *"           msg
-tabkey.addrule "/m % *"             msg
+tabkey.addrule "/q *"               msg         "q"
+tabkey.addrule "/query *"           msg         "query"
 tabkey.addrule "/channel *"         channel
 tabkey.addrule "/join *"            channel
 tabkey.addrule "/j *"               channel
