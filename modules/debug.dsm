@@ -23,7 +23,7 @@ bind -symbolic key_f10 PARSE_COMMAND debug.toggle
 	
 /****** INTERNAL ALIASES ******/
 
-debug.toggle (void)
+alias debug.toggle (void)
 {
 	if (DEBUG) {
 		set DEBUG 0
