@@ -1,12 +1,10 @@
-/* $Id$ */
-/*
- * Feedback theme for DarkStar/EPIC4
- * Author: Brian Weiss <brian@epicsol.org> - 2001
- * Module: core
- *
- * This is a cross between the astral and epic4 themes. It is intended to
- * be just like astral but without the colors or upper ASCII characters.
- */
+# $Id$
+# Feedback theme for DarkStar/EPIC4
+# Author: Brian Weiss <brian@epicsol.org> - 2001
+# Module: core
+#
+# This is a cross between the astral and epic4 themes. It is intended to
+# be just like astral but without the colors or upper ASCII characters.
 
 dset DOUBLE_STATUS ON
 
@@ -38,7 +36,7 @@ set STATUS_SCROLLBACK  \(Scroll\)
 set STATUS_SERVER [$left(24 $servername($winserv()))]
 set STATUS_TRUNCATE_RHS ON
 set STATUS_UMODE \(+%#\)
-set STATUS_USER ${numonchannel() ? [[t/$numonchannel() o/$#chops() n/$#nochops()]  ] : []}
+set STATUS_USER ${numonchannel() ? [[t/$numonchannel() o/$#chops() v/$#chvoices() n/$#nochops()]  ] : []}
 set STATUS_VOICE +
 set STATUS_WINDOW -
 

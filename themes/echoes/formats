@@ -1,19 +1,20 @@
-/* $Id$ */
-/*
- * Clone of the LiCe theme named "echoes" for DarkStar/EPIC4
- * Author: Brian Weiss <brian@epicsol.org>
- * Module: formats
- *
- * This mimics the echoes theme for LiCe. I wrote this as a personal
- * favor for keerf in an attempt to get him to use DarkStar ;-).
- */
+# $Id$
+# Clone of the LiCe theme named "echoes" for DarkStar/EPIC4
+# Author: Brian Weiss <brian@epicsol.org>
+# Module: formats
+#
+# This mimics the echoes theme for LiCe. I wrote this as a personal
+# favor for keerf in an attempt to get him to use DarkStar ;-)
 
 assign CONFIG.NAMES_COL 6
 assign CONFIG.NAMES_SORT_BY_MODE 0
 
 assign FORMAT.ACTION_CHANNEL %K>%n $1 $3-
+assign FORMAT.ACTION_CHANNEL_HL %K>%n %W$1%n $3-
 assign FORMAT.ACTION_CHANNEL_OTHER %K>%n $2%K/%n$1 $3-
+assign FORMAT.ACTION_CHANNEL_OTHER_HL %K>%n %W$2%K/%n$1 $3-
 assign FORMAT.ACTION_USER %K>%n $2%K/%c$1 %W$3-%n
+assign FORMAT.ACTION_USER_HL %K>%n %W$2%K/%c$1 %W$3-%n
 assign FORMAT.BANS $[2]1 $strftime($6 %%B%%d %%T) $4 \($5\)
 assign -FORMAT.BANS_FOOTER
 assign -FORMAT.BANS_FOOTER1

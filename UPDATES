@@ -2,6 +2,14 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://www.epicsol.org/darkstar/UPDATES
 
 
+*** News 2004/08/24 -- formats.dsm 0.4 - Highlighting in actions
+	The HIGHLIGHT feature now supports highlighting in actions, both
+	public and private. As a result, there are 3 new format variables:
+	ACTION_CHANNEL_HL, ACTION_CHANNEL_OTHER_HL, and ACTION_USER_HL.
+	Theme authors will want to add these to their themes so that they
+	are formatted properly.
+
+
 DarkStar 0.3 (20040814)
 
 

@@ -1,19 +1,20 @@
-/* $Id$ */
-/*
- * BitchX theme for DarkStar/EPIC4
- * Author: Brian Weiss <brian@epicsol.org>
- * Module: formats
- *
- * This attempts to mimic BX where possible. It is not perfect, but it
- * comes pretty close.
- */
+# $Id$
+# BitchX theme for DarkStar/EPIC4
+# Author: Brian Weiss <brian@epicsol.org>
+# Module: formats
+#
+# This attempts to mimic BX where possible. It is not perfect, but it
+# comes pretty close.
 
 assign CONFIG.NAMES_COL 5
 assign CONFIG.NAMES_SORT_BY_MODE 0
 
 assign FORMAT.ACTION_CHANNEL %Kð %Y$1/$2%n $3-
+assign FORMAT.ACTION_CHANNEL_HL %Kð %Y$1/$2%n $3-
 assign FORMAT.ACTION_CHANNEL_OTHER %K*%n >%c$1$%n $2-
+assign FORMAT.ACTION_CHANNEL_OTHER_HL %K*%n >%c$1$%n $2-
 assign FORMAT.ACTION_USER %Kð %W$1%n $3-
+assign FORMAT.ACTION_USER_HL %Kð %W$1%n $3-
 assign FORMAT.BANS $[2]1 $[10]3 $[8]before(1 ! $5) $[-7]{time() - [$6]}  $4
 assign -FORMAT.BANS_FOOTER
 assign -FORMAT.BANS_FOOTER1

@@ -1,19 +1,20 @@
-/* $Id$ */
-/*
- * Feedback theme for DarkStar/EPIC4
- * Author: Brian Weiss <brian@epicsol.org> - 2001
- * Module: formats
- *
- * This is a cross between the astral and epic4 themes. It is intended to
- * be just like astral but without the colors or upper ASCII characters.
- */
+# $Id$
+# Feedback theme for DarkStar/EPIC4
+# Author: Brian Weiss <brian@epicsol.org> - 2001
+# Module: formats
+#
+# This is a cross between the astral and epic4 themes. It is intended to
+# be just like astral but without the colors or upper ASCII characters.
 
 assign CONFIG.NAMES_COL 6
 assign CONFIG.NAMES_SORT_BY_MODE 0
 
 assign FORMAT.ACTION_CHANNEL * $1 $3-
+assign FORMAT.ACTION_CHANNEL_HL * $1 $3-
 assign FORMAT.ACTION_CHANNEL_OTHER * $1/$2 $3-
+assign FORMAT.ACTION_CHANNEL_OTHER_HL * $1/$2 $3-
 assign FORMAT.ACTION_USER *> $1 $3-
+assign FORMAT.ACTION_USER_HL *> $1 $3-
 assign FORMAT.BANS $[3]1 $[12]5  $strftime($6 %%x@%%X)  $4
 assign FORMAT.BANS_FOOTER $G Total bans on $3: $2
 assign -FORMAT.BANS_FOOTER1

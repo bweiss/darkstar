@@ -4,49 +4,11 @@ KNOWN ERRATA (eg, bugs, or unresolved requests):
 ------------------------------------------------
 <none>
 
+[See http://darkstar.prbh.org/CHANGELOG for things that changed in the past]
+
 THE CHANGELOG SINCE THE LAST RELEASE:
 -------------------------------------
-* Remove takbkey.cmd.mhelp; /MHELP was removed in a previous commit.
-* Fix /MASSMODE
-* Make sure to reset the value of extractw when exiting tabkey.main early.
-* Remove $serverrefs() and replace all calls to it with calls to $myservers().
-* Make sure window.msgwin.show only operates on windows that actually exist.
-* Use global vars to keep track of boolean config vars, instead of an array.
-* Require EPIC4-2.0 or higher.
-* Keep the list of config/format variables belonging to each module (used by
-  /SAVE) in arrays instead of assign variables. This will hopefully fix that
-  pesky bug that was causing certain settings to not get saved.
-* Change the way msg windows are named from msgs/serv:<#> to msgs/<#>
-* Fix missing semi-colons in /TIG alias.
-* Make sure to $encode() any server refnums that are being used in /ASSIGN
-  variable names.
-* Prevent nickmgr.nickchange from sending more than one request at a time
-  to a server.
-* Add a MSG_WINDOW_LEVEL config variable.
-* Make /TBAN support comma delimited lists of ban numbers.
-* Add context sensitive completion alias for /IG (tabkey.cmd.ig)
-* Fix /THEME -SAVE
-* Add a SIGNOFF format to all themes.
-* Fix the default SEND_WALL format (also in epic4 theme).
-* Add a SERVER_NOTICE format variable.
-* Add YELL hook to suppress the annoying getaddrinfo() messages.
-* Fix the away module so that away time is displayed properly. This was
-  caused by a missing call to $encode() in the 305 hook.
-* Add $chhops(), $nochhops(), and $nochvoices().
-* Rename $chanvoice() to $chvoices() for consistency.
-* Make $getdsets()/$getfsets() support multiple patterns like $getsets().
-* Make $loadedmods() and $mods() take pattern arguments like $getsets().
-* Add a $ts() function and 2 new config vars: TIMESTAMP and TIMESTAMP_FORMAT.
-* Fix auto-response-notify behavior with wserv windows. A notification will
-  only be displayed for windows that are NOT visible.
-* Rename auto-response feature. It is now called "highlight". All config
-  vars are now prefixed with "HIGHLIGHT" instead of "AUTO_RESPONSE" and
-  all format vars are now suffixed with "_HL" instead of "_AR".
-* Add two new config vars for exempting channels/nicks from triggering a
-  highlight: HIGHLIGHT_IGNORE_CHANNELS and HIGHLIGHT_IGNORE_NICKS. rb larne.
-* Add /DSET NICK_COMPLETION_PATTERNS to make nick completion more configurable.
-* Fix /TOPICS. You can't count down with /for x from n to n { ... }, only up.
-* Don't bind pgup/pgdn in window.dsc -- They are bound by default.
-* Add $chnormal().
-* Rewrite and optimize $chhops(), $nochhops(), $chvoices(), and $nochvoices().
-* DarkStar 0.3 released here.
+* Display number of voiced users on all statbars that show user totals.
+* Move highlight code into formats.do_highlight alias.
+* Add support for highlighting in actions, public and private.
+

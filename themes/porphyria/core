@@ -1,6 +1,7 @@
-#
-# porphyria
-#
+# $Id$
+# porphyria theme for DarkStar/EPIC4
+# Author: Daniel S <shattah@EFNET>
+# Module: core
 
 dset DOUBLE_STATUS OFF
 

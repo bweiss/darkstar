@@ -1,9 +1,7 @@
-/* $Id$ */
-/*
- * EPIC4 theme for DarkStar/EPIC4
- * Maintainer: Brian Weiss <brian@epicsol.org>
- * Module: core
- */
+# $Id$
+# EPIC4 theme for DarkStar/EPIC4
+# Maintainer: Brian Weiss <brian@epicsol.org>
+# Module: core
 
 dset DOUBLE_STATUS OFF
 

@@ -1,12 +1,10 @@
-/* $Id$ */
-/*
- * Clone of the LiCe theme named "echoes" for DarkStar/EPIC4
- * Author: Brian Weiss <brian@epicsol.org>
- * Module: core
- *
- * This mimics the echoes theme for LiCe. I wrote this as a personal
- * favor for keerf in an attempt to get him to use DarkStar ;-).
- */
+# $Id$
+# Clone of the LiCe theme named "echoes" for DarkStar/EPIC4
+# Author: Brian Weiss <brian@epicsol.org>
+# Module: core
+#
+# This mimics the echoes theme for LiCe. I wrote this as a personal
+# favor for keerf in an attempt to get him to use DarkStar ;-)
 
 dset DOUBLE_STATUS ON
 
@@ -37,7 +35,7 @@ set STATUS_QUERY 14\(15query14/16$Q14\)
 set -STATUS_SCROLLBACK
 set -STATUS_SERVER
 set STATUS_UMODE +%#
-set STATUS_USER1 15o14/16$numwords($chops()) 15n14/16$numwords($nochops()) 15t14/16$numonchannel()
+set STATUS_USER1 15o14/16$#chops() 15v14/16$#chvoices() 15n14/16$#nochops() 15t14/16$numonchannel()
 set STATUS_USER2 $left(24 $servername($winserv()))
 set STATUS_VOICE +
 set -STATUS_WINDOW

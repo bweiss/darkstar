@@ -1,18 +1,18 @@
 TODO:
 
+  * Incorporate CrazyEddy's CEOP script.
+
   * Add some sort of function to return a list of all the channels that you
     and the specified nick are both joined to. Maybe something like
     $commonchans() or $sharedchans()?
 
   * Add /ALLKICK and /ALLBAN aliases.
 
-  * Add highlight formats for actions.
-
   * Add support for "paste mode" either as a module or as part of the core.
 
   * Add support for a topic bar.
 
-  * Write a log management module. It should provide basic log management,   
+  * Write a log management module. It should provide basic log management,
     such as setting up automatic logging for various things (channels, nicks,
     windows, etc.) as well as log rotation features.
 
@@ -21,7 +21,7 @@ TODO:
   * [memo.dsm] Add the ability to group memos.
 
   * [channel.dsm] The REMEMBER_TOPICS feature should also store the nick
-    of the person that set the topic as well as the timestamp for it.   
+    of the person that set the topic as well as the timestamp for it.
 
   * Write a userlist module.
 
@@ -38,6 +38,8 @@ TODO:
     parameter from the 005 numeric to determine the allowed channel prefixes.
 
   * Write a server management module.
+
+  * Incorporate howl's new /HELP script to prepare for the migration to EPIC5.
 
 
 OTHER NOTES/IDEAS:

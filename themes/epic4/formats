@@ -1,16 +1,17 @@
-/* $Id$ */
-/*
- * EPIC4 theme for DarkStar/EPIC4
- * Maintainer: Brian Weiss <brian@epicsol.org>
- * Module: formats
- */
+# $Id$
+# EPIC4 theme for DarkStar/EPIC4
+# Maintainer: Brian Weiss <brian@epicsol.org>
+# Module: formats
 
 assign -CONFIG.NAMES_COL
 assign CONFIG.NAMES_SORT_BY_MODE 0
 
 assign FORMAT.ACTION_CHANNEL * $1 $3-
+assign FORMAT.ACTION_CHANNEL_HL * $1 $3-
 assign FORMAT.ACTION_CHANNEL_OTHER * $1/$2 $3-
+assign FORMAT.ACTION_CHANNEL_OTHER_HL * $1/$2 $3-
 assign FORMAT.ACTION_USER *> $1 $3-
+assign FORMAT.ACTION_USER *> $1 $3-
 assign FORMAT.BANS $G $1-
 assign FORMAT.BANS_FOOTER $G Total number of bans on $3 - $2
 assign -FORMAT.BANS_FOOTER1

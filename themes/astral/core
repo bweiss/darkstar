@@ -1,9 +1,7 @@
-/* $Id$ */
-/*
- * Astral theme for DarkStar/EPIC4
- * Author: Brian Weiss <brian@epicsol.org>
- * Module: core
- */
+# $Id$
+# Astral theme for DarkStar/EPIC4
+# Author: Brian Weiss <brian@epicsol.org>
+# Module: core
 
 dset DOUBLE_STATUS ON
 
@@ -30,7 +28,7 @@ set STATUS_QUERY 36\(-1q36!-1$Q36\)-1
 set -STATUS_SCROLLBACK
 set STATUS_SERVER 36[-1$left(24 $servername($winserv()))36]-1
 set STATUS_UMODE 36\(-1+%#36\)-1
-set STATUS_USER ${numonchannel() ? [36[-1t36/-1$numonchannel() o36/-1$#chops() n36/-1$#nochops()36]ÄÄ-1] : []}
+set STATUS_USER ${numonchannel() ? [36[-1t36/-1$numonchannel() o36/-1$#chops() v36/-1$#chvoices() n36/-1$#nochops()36]ÄÄ-1] : []}
 set STATUS_VOICE 36+-1
 set STATUS_WINDOW 56*-1
 

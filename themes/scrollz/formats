@@ -1,20 +1,21 @@
-/* $Id$ */
-/*
- * ScrollZ theme for DarkStar/EPIC4
- * Authors: Joshua Hamor <silicon@ircpimps.fuckedyourmom.com>
- *          Brian Weiss <brian@epicsol.org>
- * Module: formats
- *
- * This attempts to mimic ScrollZ where possible. It's not perfect
- * but it comes pretty close.
- */
+# $Id$
+# ScrollZ theme for DarkStar/EPIC4
+# Authors: Joshua Hamor <silicon@ircpimps.fuckedyourmom.com>
+#          Brian Weiss <brian@epicsol.org>
+# Module: formats
+#
+# This attempts to mimic ScrollZ where possible. It's not perfect
+# but it comes pretty close.
 
 assign -CONFIG.NAMES_COL
 assign CONFIG.NAMES_SORT_BY_MODE 0
 
 assign FORMAT.ACTION_CHANNEL %W* %c$1%n $3-
-assign FORMAT.ACTION_CHANNEL_OTHER <%C$2%n> %W*%n %c$1$%n $3-
+assign FORMAT.ACTION_CHANNEL_HL %W* %c$1%n $3-
+assign FORMAT.ACTION_CHANNEL_OTHER <%C$2%n> %W*%n %c$1%n $3-
+assign FORMAT.ACTION_CHANNEL_OTHER_HL <%C$2%n> %W*%n %c$1%n $3-
 assign FORMAT.ACTION_USER %W*%n> %c$1%n $3-
+assign FORMAT.ACTION_USER_HL %W*%n> %c$1%n $3
 assign FORMAT.BANS $G $3-
 assign -FORMAT.BANS_FOOTER
 assign -FORMAT.BANS_FOOTER1
