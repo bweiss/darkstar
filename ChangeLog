@@ -1,6 +1,13 @@
 Darkstar ChangeLog
 
 
+[10/15/01]
+
+ * Added a def/ directory in DS.USER. I accidentally left this out when I
+   added user directory support. This is required in order for user directory
+   modules to create /dset and /fset variables. Supporting this involved
+   some changes in the way the module loader keeps track of modules.
+
 [10/14/01]
 
  * [status.dsc] /status now supports the "-q" option which causes it to
@@ -21,7 +28,6 @@ Darkstar ChangeLog
  * I removed %D (DCC status) from the "darkstar" status bar as it caused rapid
    screen redraws. These redraws were enough to saturate the bandwidth on
    dialup connections.
-
 
 [10/12/01]
 

@@ -65,6 +65,7 @@ if (fexist($DS.USER) == -1)
 {
 	xecho -b Creating user directory: $DS.USER
 	@ mkdir($DS.USER)
+	@ mkdir($DS.USER/def)
 	@ mkdir($DS.USER/modules)
 	@ mkdir($DS.USER/status)
 	@ mkdir($DS.USER/themes)
@@ -89,7 +90,7 @@ set INDENT ON
  */
 do
 {
-	^local file $DS.DEF/core.def
+	^local file $DS.HOME/def/core.def
 
 	if (fexist($file) != -1)
 	{

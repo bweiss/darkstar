@@ -6,7 +6,7 @@
  * LOADER.DSC - Module loader for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/11/01 (bmw)
+ * Last modified: 10/15/01 (bmw)
  */
 
 alias listmods modlist
@@ -16,6 +16,8 @@ alias loadmod (module, void)
 {
 	if (module && !isnumber($module))
 	{
+		@ loader.build_modlist()
+
 		if (loader.load_module($module))
 		{
 			xecho -b Module [$module] has been successfully loaded
@@ -115,7 +117,7 @@ alias unloadmod (module, void)
 
 		^local mods
 
-		@ display_loaded()
+		@ loader.display_loaded()
 
 		while (!mods)
 		{
@@ -151,8 +153,7 @@ alias loader.build_modlist (void)
 		@ :dir = twiddle($dir)
 		for file in ($glob($dir\/\*.dsm))
 		{
-			@ :name = before(. $after(-1 / $file))
-			@ setitem(modules $numitems(modules) $name $file)
+			@ setitem(modules $numitems(modules) $file)
 		}
 	}
 
@@ -167,7 +168,7 @@ alias loader.display_loaded (void)
 	for cnt from 0 to $endcnt
 	{
 		@ :num = cnt + 1
-		echo $[3]num $word(0 $getitem(loaded_modules $cnt))
+		echo $[3]num $getitem(loaded_modules $cnt)
 	}
 
 	return
@@ -180,8 +181,8 @@ alias loader.display_modlist (void)
 	for cnt from 0 to $endcnt
 	{
 		@ :num = cnt + 1
-		@ :module = word(0 $getitem(modules $cnt))
-		@ :file = word(1 $getitem(modules $cnt))
+		@ :file = getitem(modules $cnt))
+		@ :module = before(-1 . $after(-1 / $file))
 		@ :auto_load = common($module / $CONFIG.AUTO_LOAD_MODULES) ? [*] : []
 		@ :loaded = finditem(loaded_modules $module) > -1 ? [*] : []
 		echo $[3]num $[25]module $[-12]fsize($file)     $[8]loaded $[8]auto_load
@@ -196,13 +197,19 @@ alias loader.display_modlist (void)
 
 alias loader.load_module (module, void)
 {
+	if (before(-1 . $module))
+	{
+		@ module = before(-1 . $module)
+	}
+
 	if (numitems(modules))
 	{
-		@ :file = word(1 $getitem(modules $matchitem(modules $module*)))
+		@ :file = getitem(modules $matchitem(modules *$module*)))
 
-		if (matchitem(modules $module*) > -1 && finditem(loaded_modules $module) < 0)
+		if (matchitem(modules *$module*) > -1 && finditem(loaded_modules $module) < 0)
 		{
-			^local defaults_file $DS.DEF/$module\.def
+			@ :dir = before(-1 / $before(-1 / $file))
+			^local defaults_file $dir/def/$module\.def
 			^local savefile $DS.SAVE/$module\.sav
 
 			if (fexist($defaults_file) == 1)
