@@ -17,21 +17,7 @@
  */
 alias theme (theme, void)
 {
-	/*
-	 * Find available themes and dump them in the themes array.
-	 */
-	@ delarray(themes)
-
-	for dir in ($DS.THEMES)
-	{
-		@ :dir = twiddle($dir)
-		for file in ($glob($dir\/\*.dst))
-		{
-			@ :name = before(. $after(-1 / $file))
-			@ setitem(themes $numitems(themes) $name $file)
-		}
-	}
-
+	@ themes.buildlist()
 
 	if (theme)
 	{
@@ -47,7 +33,7 @@ alias theme (theme, void)
 		for cnt from 0 to ${numitems(themes) - 1}
 		{
 			@ :num = cnt + 1
-			echo $[3]num $word(1 $getitem(themes $cnt))
+			echo $[3]num $getitem(themes $cnt)
 		}
 
 		input "$INPUT_PROMPT\Which theme would you like to use? " if ([$0])
@@ -60,7 +46,7 @@ alias theme (theme, void)
 					(1) {xecho -b Now using theme: $DS.THEME}
 				}
 			} \
-			elsif (matchitem(themes $0*) > -1)
+			elsif (finditem(themes $0) > -1)
 			{
 				switch ($theme.change($0))
 				{
@@ -74,17 +60,58 @@ alias theme (theme, void)
 	}
 }
 
+/*
+ * theme.buildlist() - Scans the theme directories and stores available themes
+ * in two arrays. One for theme names (themes) and one for theme files
+ * (theme_files). Does not take any arguments. Returns "1" if successful, and
+ * "0" if not.
+ */
+alias themes.buildlist (void)
+{
+	@ delarray(themes)
+	@ delarray(theme_files)
+
+	for dir in ($DS.THEMES)
+	{
+		@ :dir = twiddle($dir)
+
+		if (fexist($dir) == 1)
+		{
+			for file in ($glob($dir\/\*.dst))
+			{
+				@ :name = before(. $after(-1 / $file))
+
+				if (finditem(themes $name) > -1)
+				{
+					xecho -b themes.buildlist(): Duplicate theme name: $name
+				}{
+					@ setitem(themes $numitems(themes) $name)
+					@ setitem(theme_files $numitems(theme_files) $file)
+				}
+			}
+
+			return 1
+		}
+	}
+
+	return 0
+}
+
+/*
+ * themes.change() - Attempts to change the current theme. Takes a theme
+ * name as its only argument. Returns "1" if successful, "0" if not.
+ */
 alias theme.change (theme, void)
 {
-	@ :item = matchitem(themes $theme*)
+	@ :item = finditem(themes $theme)
 
 	if (item > -1)
 	{
-		@ :theme_file = word(1 $getitem(themes $item))
+		@ :file = getitem(theme_files $item)
 
-		if (fexist($theme_file) == 1)
+		if (fexist($file) == 1)
 		{
-			//load $theme_file
+			//load $file
 			^assign DS.THEME $theme
 			return 1
 		}

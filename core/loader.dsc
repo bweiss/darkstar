@@ -147,13 +147,16 @@ alias unloadmod (module, void)
 alias loader.build_modlist (void)
 {
 	@ delarray(modules)
+	@ delarray(module_files)
 
 	for dir in ($DS.MODULES)
 	{
 		@ :dir = twiddle($dir)
 		for file in ($glob($dir\/\*.dsm))
 		{
-			@ setitem(modules $numitems(modules) $file)
+			@ :name = before(-1 . $after(-1 / $file))
+			@ setitem(modules $numitems(modules) $name)
+			@ setitem(module_files $numitems(module_files) $file)
 		}
 	}
 
@@ -181,8 +184,8 @@ alias loader.display_modlist (void)
 	for cnt from 0 to $endcnt
 	{
 		@ :num = cnt + 1
-		@ :file = getitem(modules $cnt))
-		@ :module = before(-1 . $after(-1 / $file))
+		@ :file = getitem(module_files $cnt)
+		@ :module = getitem(modules $cnt)
 		@ :auto_load = common($module / $CONFIG.AUTO_LOAD_MODULES) ? [*] : []
 		@ :loaded = finditem(loaded_modules $module) > -1 ? [*] : []
 		echo $[3]num $[25]module $[-12]fsize($file)     $[8]loaded $[8]auto_load
@@ -204,9 +207,9 @@ alias loader.load_module (module, void)
 
 	if (numitems(modules))
 	{
-		@ :file = getitem(modules $matchitem(modules *$module*)))
+		@ :file = getitem(module_files $finditem(modules $module)))
 
-		if (matchitem(modules *$module*) > -1 && finditem(loaded_modules $module) < 0)
+		if (finditem(modules $module) > -1 && finditem(loaded_modules $module) < 0)
 		{
 			@ :dir = before(-1 / $before(-1 / $file))
 			^local defaults_file $dir/def/$module\.def

@@ -6,7 +6,7 @@
  * STATUS.DSC - Statbar manager for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/11/01 (bmw)
+ * Last modified: 10/15/01 (bmw)
  */
 
 alias sbar status
@@ -28,49 +28,35 @@ alias status (args)
 	if (left(1 $word(0 $args)) == [-])
 	{
 		@ sbar = word(1 $args)
+
 		if (word(0 $args) == [-q])
 		{
 			^assign quiet 1
 		}
+	}{
+		@ sbar = args
 	}
 
-	/*
-	 * Build our list of available statbars and store them in $sfiles.
-	 * Directories are ignored.
-	 */
-	@ delarray(status)
-
-	for dir in ($DS.STATUS)
-	{
-		@ :dir = twiddle($dir)
-		for file in ($glob($dir\/\*))
-		{
-			@ :lastc = mid(${strlen($file) - 1} 1 $file)
-			unless (lastc == [/])
-			{
-				@ :name = after(-1 / $file)
-				@ setitem(status $numitems(status) $name $file)
-			}
-		}
-	}
+	@ status.buildlist()
 
 	if (sbar && !isnumber($sbar))
 	{
-		@ :item = matchitem(status $sbar*)
-		@ :file = word(1 $getitem(status $item))
+		@ :item = finditem(status $sbar)
+		@ :file = getitem(status_files $item))
 		@ status.change($file $quiet)
 	} \
 	elsif (isnumber($sbar) && sbar > 0 && sbar <= numitems(status))
 	{
 		@ :item = sbar - 1
-		@ :file = word(1 $getitem(status $item))
+		@ :file = getitem(status_files $item))
 		@ status.change($file $quiet)
 	}{
 		xecho -b Available status bars:
 		for cnt from 0 to ${numitems(status) - 1}
 		{
+			@ :name = getitem(status $cnt)
 			@ :num = cnt + 1
-			echo $[3]num $word(1 $getitem(status $cnt))
+			echo $[3]num $name
 		}
 
 		input "$INPUT_PROMPT\Which status bar would you like to use? "
@@ -78,14 +64,50 @@ alias status (args)
 			if (isnumber($0) && [$0] > 0 && [$0] <= numitems(status))
 			{
 				@ :item = [$0] - 1
-				@ :file = word(1 $getitem(status $item))
+				@ :file = getitem(status_files $item)
 				@ status.change($file $quiet)
 			} \
-			elsif (matchitem(status $0*))
+			elsif (finditem(status $0))
 			{
-				@ :file = word(1 $getitem(status $matchitem(status $0*)))
+				@ :file = getitem(status_files $finditem(status $0))
 				@ status.change($file $quiet)
 			}
+		}
+	}
+}
+
+/*
+ * status.buildlist() - Scans the status directories and dumps all available
+ * statbars into an array containing the name (status) and an array containing
+ * the complete filename (status_files). Takes no arguments and returns "1"
+ * if successful, "0" if not.
+ */
+alias status.buildlist (void)
+{
+	@ delarray(status)
+	@ delarray(status_files)
+
+	for dir in ($DS.STATUS)
+	{
+		@ :dir = twiddle($dir)
+
+		if (fexist($dir) == 1)
+		{
+			for file in ($glob($dir\/\*))
+			{
+				@ :lastc = mid(${strlen($file) - 1} 1 $file)
+
+				unless (lastc == [/])
+				{
+					@ :name = after(-1 / $file)
+					@ setitem(status $numitems(status) $name)
+					@ setitem(status_files $numitems(status_files) $file)
+				}
+			}
+
+			return 1
+		}{
+			return 0
 		}
 	}
 }
