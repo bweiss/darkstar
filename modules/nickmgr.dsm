@@ -1,4 +1,4 @@
-#version 0.1.2
+#version 0.1.3
 /* $Id$ */
 /*
  * nickmgr.dsm - Nick management module for DarkStar/EPIC4
@@ -14,11 +14,13 @@ queue cleanup.nickmgr
 {
 	^alias -nick
 	^alias -nickscan
+
 	^on #hook 422 -"CONFIG NICK_MANAGER_SCAN_INTERVAL *"
 	^on #join 422 -"*"
 	^on #raw_irc 422 -"% NICK *"
 	^on #raw_irc 422 -"% QUIT *"
 	^on #timer 422 -"*"
+
 	@ timerctl(DELETE nickmgr)
 }
 
@@ -132,7 +134,7 @@ alias nickmgr.is_on (nick, serv default "$servernum()", void)
 
 alias nickmgr.nickchange (nick, serv default "$servernum()", void)
 {
-	if (!nick || serv < 0 || nick == servernick($serv)) {
+	if (!nick || serv < 0 || !isconnected($serv) || nick == servernick($serv)) {
 		return
 	}
 	xecho -b Nick Manager: Changing nick on server $serv to $nick
@@ -160,7 +162,7 @@ alias nickmgr.scan (void)
 
 	for serv in ($serverrefs())
 	{
-		if (serv > -1)
+		if (serv > -1 && isconnected($serv))
 		{
 			if (!NICKMGR.SCAN[$serv])
 			{
