@@ -19,9 +19,9 @@ assign FORMAT.KICK $G ${[$1] == servernick() ? [%cYou%n have] : [%c$1%n has]} be
 assign FORMAT.LEAVE $G %c$1%n has left channel %C$2%n
 assign FORMAT.MODE $G %WMode change%n \"$3-\" on channel %C$2%n by %c$1%n
 assign FORMAT.PUBLIC %c<%n$1%c>%n $3-
-assign FORMAT.PUBLIC_AR %c<%W$1%c>%n $3-
+assign FORMAT.PUBLIC_AR %c<%n$1%c>%n $3-
 assign FORMAT.PUBLIC_OTHER %c<%n$1:%C$2%c>%n $3-
-assign FORMAT.PUBLIC_OTHER_AR %c<%W$1%n:%C$2%c>%n $3-
+assign FORMAT.PUBLIC_OTHER_AR %c<%n$1:%C$2%c>%n $3-
 assign FORMAT.SEND_ACTION_CHANNEL %W*%n %C$1%n $3-
 assign FORMAT.SEND_ACTION_CHANNEL_OTHER <%C$2%n> %W*%n %C$1%n $3-
 assign FORMAT.SEND_PUBLIC %c<$2>%n $3-
