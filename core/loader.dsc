@@ -57,7 +57,7 @@ alias loadmod (modules)
 
 	if (!CONFIG.VERBOSE_LOAD) {
 		^set INPUT_PROMPT $oldprompt
-		xecho -b LOADMODULE: $pass loaded${fail ? [, $fail failed] : []}
+		xecho -b LOADMODULE: $pass module${pass == 1 ? [] : [s]} loaded${fail ? [, $fail failed] : []}
 	}
 }
 
@@ -154,7 +154,7 @@ alias unloadmod (modules)
 
 	if (!CONFIG.VERBOSE_LOAD) {
 		^set INPUT_PROMPT $oldprompt
-		xecho -b UNLOADMODULE: $pass unloaded${fail ? [, $fail failed] : []}
+		xecho -b UNLOADMODULE: $pass module${pass == 1 ? [] : [s]} unloaded${fail ? [, $fail failed] : []}
 	}
 }
 
