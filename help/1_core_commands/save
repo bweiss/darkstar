@@ -1,21 +1,25 @@
 Synopsis:
-   save [-d <directory>] [<*> | <module> <module> ...]
+   save [-d <directory>] [*|<module> ...]
 
 Description:
-   This command writes all your config settings (/DSET and /FSET) for the
+   This command saves all your config (/DSET), format (/FSET), and
+   status (/SET STATUS*) settings.
    specified module(s) to your save directory (or <directory> if '-d' is
    specified).
 
-   If "*" is given as a module name, the settings for all currently loaded
-   modules, as well as the core scripts, will be saved.
-
-   If "core" is given as a module name, the settings for the core scripts
-   will be saved.
+    - If the '-d' option is given as the first argument an alternate
+      save directory for config settings may be specified. This does NOT
+      affect format and status settings.
+    - If "*" is given as a module name, the settings for all currently
+      loaded modules, as well as the core scripts, will be saved.
+    - If "core" is given as a module name, the settings for the core
+      scripts will be saved.
 
    Config variable settings are saved to files according to their module
    name in the specified save directory. Format variables are also saved to
-   files according to their modules, but are placed in
-   $DS.USER_DIR/themes/custom/
+   files according to their modules, but are instead placed in
+   $DS.USER_DIR/themes/custom/. The current status bar settings are written
+   to $DS.USER_DIR/status/custom.
 
 See Also:
    ds:dset(1);  ds:fset(1);  ds:theme(1);
