@@ -1,7 +1,19 @@
 Darkstar ChangeLog
 
 
+[10/17/01]
+
+ * [tabkey.dsm] Added support for file completion with /less.
+
+ * [away.dsm] /readlog now uses /less provided by commands.dsc.
+
+ * New core file: commands.dsc. This file is just like functions.dsc except
+   that it will contain commands not functions. I added a /less written by
+   hop and I moved /purge from functions.dsc to commands.dsc.
+
 [10/16/01]
+
+ * [channel.dsm] Removed the join alias.
 
  * [nickcomp.dsm] Now strips off trailing "-1" that $cparse() adds. This is
    mostly because mIRC doesn't understand ^C-1 so users actually see the

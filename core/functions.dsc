@@ -6,7 +6,7 @@
  * FUNCTIONS.DSC - Some useful functions for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 8/27/01 (bmw)
+ * Last modified: 10/17/01 (bmw)
  *
  * If you have any functions you feel are useful enough to be in this file,
  * feel free to email me.
@@ -60,14 +60,6 @@ alias padleft (size, char, text)
 alias padright (size, char, text)
 {
 	@ function_return = text ## repeat(${size - strlen($text)} $char)
-}
-
-alias purge
-{
-	for  $0 _purge {
-		purge $0.$_purge
-	}
-	^assign -$0
 }
 
 

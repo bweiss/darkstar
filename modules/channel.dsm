@@ -13,7 +13,7 @@
 
 queue cleanup.channel
 {
-	for alias in (alldeop alldop allop ban bankick banlist bans bk cmode cycle deop dop devoice dvoice i invite j join k kb key kick kickban l lk massmode mdeop mdop mdevoice mdvoice mop mvoice oldtopic op partall setoldtopic t tban tempban unban unkey untopic voice wall wall2)
+	for alias in (alldeop alldop allop ban bankick banlist bans bk cmode cycle deop dop devoice dvoice i invite j k kb key kick kickban l lk massmode mdeop mdop mdevoice mdvoice mop mvoice oldtopic op partall setoldtopic t tban tempban unban unkey untopic voice wall wall2)
 	{
 		^alias -$alias
 	}
@@ -156,21 +156,6 @@ alias invite (nick, channel default "$C", void)
 		//invite $nick $channel
 	}{
 		xecho -b Usage: /invite <nick> [channel]
-	}
-}
-
-alias join (channel, key, void)
-{
-	if (channel)
-	{
-		if (!match(#* $channel) && !match(&* $channel))
-		{
-			//join #$channel $key
-		}{
-			//join $channel $key
-		}
-	}{
-		xecho -b Usage: /join <#channel> [key]
 	}
 }
 

@@ -151,6 +151,7 @@ if (fexist($DS.SAVE/core.sav) == 1)
  * Load the rest of the core scripts
  */
 eval load $DS.HOME/core/functions.dsc
+eval load $DS.HOME/core/commands.dsc
 eval load $DS.HOME/core/config.dsc
 eval load $DS.HOME/core/save.dsc
 eval load $DS.HOME/core/status.dsc

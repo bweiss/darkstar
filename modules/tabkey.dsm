@@ -59,6 +59,7 @@ alias tabkey.process_tabkey (void)
 				}			
 				(dcc send % %)
 				(exec *)
+				(less %)
 				(load %)
 				{
 					@ tabkey.file_routine()

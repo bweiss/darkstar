@@ -80,34 +80,7 @@ alias readlog (void)
 {
 	if (fexist($CONFIG.AWAY_LOGFILE) == 1)
 	{
-		@ done = 0
-		@ line = 0
-		@ fd = open($CONFIG.AWAY_LOGFILE r)
-		@ rows = winsize() - 1
-
-		while (!eof($fd) && (pause != [q]))
-		{
-			while (line++ != rows)
-			{
-				@ ugh = read($fd)
-				if (eof($fd))
-				{
-					@ done = 1
-					@ line = rows
-				}{
-					echo $ugh
-				}
-			}
-
-			if (!done)
-			{
-				^assign pause $"Enter q to quit, or anything else to continue "
-				@ line = 0
-			}
-		}
-
-		@ close($fd)	
-		@ fd = line = done = rows = pause = ugh = []
+		less $CONFIG.AWAY_LOGFILE
 	}{
 		xecho -b Logfile [$CONFIG.AWAY_LOGFILE] does not exist.
 	}
