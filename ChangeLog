@@ -3,6 +3,8 @@ Darkstar ChangeLog
 
 [10/12/01]
 
+ * Theme support now actually works ;)
+
  * Now supports what I call a "user directory." This is just a place where
    you can store your own modules, statbars, and themes, as well as saved
    settings. This involved changes to most of the core scripts.

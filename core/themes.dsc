@@ -48,7 +48,7 @@ alias theme (theme, void)
 		for cnt from 0 to ${numitems(themes) - 1}
 		{
 			@ :num = cnt + 1
-			echo $[3]num $word(0 $getitem(themes $cnt))
+			echo $[3]num $word(1 $getitem(themes $cnt))
 		}
 
 		input "$INPUT_PROMPT\Which theme would you like to use? " if ([$0])
@@ -81,7 +81,7 @@ alias theme.change (theme, void)
 {
 	@ :item = matchitem(themes $theme*)
 
-	if (items > -1 && theme != DS.THEME)
+	if (item > -1 && theme != DS.THEME)
 	{
 		@ :theme_file = word(1 $getitem(themes $item))
 
@@ -91,35 +91,18 @@ alias theme.change (theme, void)
 			
 			while (!eof($fd))
 			{
-				^local chformat
 				@ :line = read($fd)
 				@ :keyword = word(0 $line)
+				@ :variable = word(1 $line)
+				@ :value = restw(2 $line)
 
-				if (match([* $keyword) && match(*] $keyword))
+				if (keyword == [status])
 				{
-					@ :module = before(-1 ] $after(-1 [ $keyword))
-
-					if (finditem(loaded_modules $module) > -1)
-					{
-						^assign chformat 1
-					}{
-						^assign -chformat
-					}
+					status $word(1 $line) 0
 				} \
-				elsif (keyword == [status])
+				elsif (keyword == [format])
 				{
-					status $word(1 $line)
-				}
-
-				if (chformat)
-				{
-					@ :variable = word(1 $line)
-					@ :value = restw(2 $line)
-
-					if (keyword == [format])
-					{
-						^assign FORMAT.$variable $value
-					}
+					^assign FORMAT.$variable $value
 				}
 			}
 
