@@ -1,9 +1,9 @@
-#version 0.2.1
+#version 0.2.2
 /*
  * CHANNEL.DSM - Channel related stuff for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 2/19/02 (bmw)
+ * Last modified: 2/21/02 (bmw)
  *
  * This script uses serial numbers 0 and 424 for /on hooks.
  */
@@ -224,9 +224,17 @@ alias join
 {
 	switch ($*)
 	{
-		(#*) (&*) (0) (-*) (!*) (*,*) {//join $*}
-		() {//join -i}
-		(*) {//join #$*}
+		(*,*)
+		{
+			join $before(, $0) $1-
+			join $after(, $0) $1-
+		}
+		(#*) (&*) (0) (-*) (!*) (+*)
+			{ //join $* }
+		()
+			{ //join -i }
+		(*)
+			{ //join #$* }
 	}
 }
 
@@ -271,9 +279,17 @@ alias leave
 {
 	switch ($0)
 	{
-		(#*) (&*) (0) (-*) (!*) (*,*) {//leave $*}
-		() (\*) {//leave * $1-}
-		(*) {//leave #$*}
+		(*,*)
+		{
+			leave $before(, $0) $1-
+			leave $after(, $0) $1-
+		}
+		(#*) (&*) (0) (-*) (!*) (+*)
+			{ //leave $* }
+		() (\*)
+			{ //leave * $1- }
+		(*)
+			{ //leave #$* }
 	}
 }
 
@@ -296,7 +312,6 @@ alias lk (reason default "$CONFIG.DEFAULT_KICK_REASON")
 		for user in ($channel())
 		{
 			@ :nick = mid(2 $strlen($user) $user)
-
 			if (match(.. $left(2 $user)))
 			{
 				//kick $C $nick $reason
