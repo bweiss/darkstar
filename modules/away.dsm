@@ -18,6 +18,8 @@ queue cleanup.away
 		^alias -$alias
 	}
 
+      ^on #msg 421 -"*"
+      ^on #notice 421 -"*"
 	^on #input 421 -"*"
 	^on #timer 421 -"*"
 	^on #timer 421 -"12:00"
@@ -25,8 +27,10 @@ queue cleanup.away
 	@ delarray(sent_away)
 }
 
+/*
+ * Timestamp for last user input. Needed for auto-away.
+ */
 @ AWAY.LAST_INPUT = time()
-@ delarray(sent_away)
 
 alias away (reason default "$CONFIG.DEFAULT_AWAY_REASON")
 {
@@ -56,7 +60,24 @@ alias away (reason default "$CONFIG.DEFAULT_AWAY_REASON")
 			}
 		}
 
-		@ away.add_logging()
+		/*
+		 * Create the hooks needed for message and notice logging.
+		 */
+		^on #^msg 421 "*"
+		{
+			if (A)
+			{
+				@ away.process_incoming(MSG $*)
+			}
+		}
+		^on #^notice 421 "*"
+		{
+			if (A)
+			{
+				@ away.process_incoming(NOTICE $*)
+			}
+		}
+
 		^assign AWAY.TIME $time()
 		//away $reason
 	}{
@@ -91,7 +112,12 @@ alias back (reason default "$CONFIG.DEFAULT_BACK_REASON")
 			}
 		}
 
-		@ away.cleanup_logging()
+		/*
+		 * Cleanup our logging hooks.
+		 */
+		^on #msg 421 -"*"
+		^on #notice 421 -"*"
+
 		@ delarray(sent_away)
 		^assign -AWAY.TIME
 		//away
@@ -168,6 +194,9 @@ alias remlog (void)
 	}
 }
 
+/*
+ * Update TS for last input and check for auto-unset-away.
+ */
 on #^input 421 "*"
 {
 	@ AWAY.LAST_INPUT = time()
@@ -178,6 +207,10 @@ on #^input 421 "*"
 	}
 }
 
+/*
+ * Set ourselves away if auto-away is enabled and we have been idle longer
+ * than $CONFIG.AUTO_AWAY_TIME.
+ */
 on #^timer 421 "*"
 {
 	if (!A && CONFIG[AUTO_AWAY] && CONFIG[AUTO_AWAY_TIME] > 0)
@@ -192,6 +225,10 @@ on #^timer 421 "*"
 	}
 }
 
+/*
+ * Timestamp our logfile at noon if we are away. This is important because
+ * logged messages do not contain the date.
+ */
 on #^timer 421 "12:00"
 {
 	if (A && CONFIG[AWAY_LOG])
@@ -202,26 +239,10 @@ on #^timer 421 "12:00"
 	}
 }
 
-/* Functions */
-alias away.add_logging (void)
-{
-	^on #^msg 421 "*"
-	{
-		if (A)
-		{
-			@ away.process_incoming(MSG $*)
-		}
-	}
-
-	^on #^notice 421 "*"
-	{
-		if (A)
-		{
-			@ away.process_incoming(NOTICE $*)
-		}
-	}
-}
-
+/*
+ * This handles the actual writing of messages to your logfile as well
+ * as notifying users that you are away.
+ */
 alias away.process_incoming (type, nick, msg)
 {
 	if (CONFIG[AWAY_LOG])
@@ -259,13 +280,5 @@ alias away.prompt_readlog (void)
 	return
 }
 
-alias away.cleanup_logging (void)
-{
-	^on #^msg 421 -"*"
-	^on #^notice 421 -"*"
 
-	return
-}
-
-
-/* bmw '00 */
+/* bmw '01 */
