@@ -134,7 +134,7 @@ alias theme.save (name, void)
 					@ write($fd );
 					for setvar in (BANNER INPUT_PROMPT REVERSE_STATUS_LINE $getsets(STATUS_*))
 					{
-						eval ^local value \$$setvar;
+						@ :value = $setvar;
 						@ write($fd set $setvar $value);
 					};
 					@ write($fd );

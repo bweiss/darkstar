@@ -1,12 +1,10 @@
-/*
- * If copied to ~/.epicrc this file will automatically load DarkStar on
- * client startup. If you install DarkStar to somewhere other than
- * ~/darkstar be sure to change the /LOAD line below.
- */
-
-# Uncomment the following line to cause EPIC to dump core whenever it crashes.
-# This is only useful for debugging purposes.
-#xdebug +crash
+#
+# This is a sample rc file for EPIC. It just changes a few default settings
+# to values that the average user will probably like better. It will also
+# cause DarkStar to be loaded automatically on client startup.
+#
+# To use this file, simply copy it to ~/.epicrc or ~/.ircrc
+#
 
 # In most EPIC builds the default level of window 1 is ALL, a setting
 # that is usually undesirable for users that open multiple windows.
@@ -14,6 +12,25 @@ window 1 level none
 
 # The first window is often named "ircII" by default, uncomment the
 # following to have this name removed.
-#window 1 name -
+window 1 name -
 
+# Change some default EPIC settings to more reasonable values.
+set AUTO_WHOWAS OFF
+set BEEP OFF  
+set BEEP_MAX 0
+set CLOCK_24HOUR ON
+set -CONTINUED_LINE
+set DCC_STORE_PATH ~/incoming
+set INDENT ON   
+set LASTLOG 1024
+set LOAD_PATH ~/.epic4:/usr/local/share/epic:.
+set MANGLE_LOGFILES ALL
+set NEW_SERVER_LASTLOG_LEVEL NONE
+set NO_FAIL_DISCONNECT ON
+set SCROLLBACK 1024
+set SWITCH_CHANNELS_BETWEEN_WINDOWS OFF
+set WORD_BREAK ,;
+
+# Load DarkStar on client startup.
 load ~/darkstar/darkstar.irc
+

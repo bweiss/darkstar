@@ -13,6 +13,8 @@
 #  See the 'COPYRIGHT' file for licensing information.
 #
 
+if (DS.HOME) {return};
+
 if (word(2 $loadinfo()) != [pf])
 {
 	load -pf $word(1 $loadinfo());
@@ -76,7 +78,7 @@ for array in ($getarrays()) {
 # This will be incremented every time a change takes place in
 # the core scripts (this file and any *.dsc files in $DS.HOME/core/).
 #
-@ DS.CORE_ID = 114;
+@ DS.CORE_ID = 115;
 
 xecho -b -c Loading DarkStar $DS.VERSION;
 
@@ -85,7 +87,6 @@ xecho -b -c Loading DarkStar $DS.VERSION;
 #
 @ DS.HOME        = getenv(DARKSTAR_HOME) ? getenv(DARKSTAR_HOME) : before(-1 / $word(1 $loadinfo()));
 @ DS.USER_DIR    = getenv(DARKSTAR_USERDIR) ? getenv(DARKSTAR_USERDIR) : [~/.darkstar];
-@ DS.RC          = getenv(DARKSTAR_RC) ? getenv(DARKSTAR_RC) : [~/.dsrc];
 @ DS.HELP_DIR    = [$DS.HOME/help];
 @ DS.SAVE_DIR    = [$DS.USER_DIR/save];
 @ DS.MODULE_DIRS = [$DS.HOME/modules $DS.USER_DIR/modules];
@@ -165,10 +166,6 @@ for file in (set.dsc globals.dsc functions.dsc commands.dsc help.dsc modules.dsc
 
 if (fexist($DS.SAVE_DIR/core) == 1) {
 	^load $DS.SAVE_DIR/core;
-};
-
-if (fexist($DS.RC) == 1) {
-	load $DS.RC;
 };
 
 #
