@@ -25,8 +25,7 @@ alias fparse2 {eval return $(FORMAT.$0)}
  * They should only be called by modules at load time.
  *
  * The variable is "owned" by the calling module and will be automatically
- * removed when the module is unloaded. This ownership is transparent to
- * the user except that the variable(s) are removed with their module.
+ * removed when the module is unloaded.
  */
 alias config.add {config.add_variable CONFIG $*}
 alias format.add {config.add_variable FORMAT $*}
@@ -149,7 +148,7 @@ alias config.add_variable (type, ...) {
 		}
 	}
 	^local foo $word(1 $loadinfo())
-	if (match(*darkstar.irc $foo)) {
+	if (match(*config.dsc $foo)) {
 		^local module core
 	} else {
 		^local module $after(-1 / $before(-1 . $foo))
@@ -178,6 +177,31 @@ alias config.add_variable (type, ...) {
 		^assign $type\.$variable $value
 	}
 }
+
+
+/****** STARTUP ******/
+
+/*
+ * Add all the config and format variables that are part of the core.
+ */
+config.add -b AUTO_LOAD_DEPENDENCIES 1
+config.add    AUTO_LOAD_MODULES away channel dcc keepnick misc names nickcomp relay tabkey window
+config.add -b AUTO_LOAD_PROMPT 1
+config.add -b AUTO_SAVE_ON_UNLOAD 0
+config.add -b LOADMODULE_VERBOSE 0
+config.add -b SAVE_VERBOSE 0
+config.add    THEME epic4
+
+format.add MODLIST_FOOTER -------------------------------------------------------
+format.add MODLIST_FOOTER1 $G Available modules: $numitems(modules), Loaded modules: $numitems(loaded_modules)
+format.add MODLIST_FOOTER2
+format.add MODLIST_HEADER #   Module           Version    Size  Loaded Auto-Load
+format.add MODLIST_HEADER1 -------------------------------------------------------
+format.add MODLIST_HEADER2
+format.add MODLIST_MODULE  $[3]1 $[16]2 $[7]3 $[-7]4    ${[$5] ? [\[*\]] : [\[\ \]]}     ${[$6] ? [\[*\]] : [\[ \]]}
+format.add SET $G Current value of $1 is $2-
+format.add SET_NOVALUE $G No value for $1 has been set
+
 
 
 /* EOF */

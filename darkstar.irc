@@ -6,7 +6,7 @@
  *  \__,_| \__,_||_|   |_|\_\|___/ \__| \__,_||_|
  *
  *  DarkStar - A modular script pack for the EPIC4 IRC client.
- *  Copyright (c) 2002 Brian Weiss <brian@epicsol.org>
+ *  Copyright (c) 2002, 2003 Brian Weiss <brian@epicsol.org>
  *
  *  Designed for use with EPIC4-1.1.7 and up.
  *  See the 'README' file for general information.
@@ -27,10 +27,11 @@ if (!epic() || V < 20020819) {
 	echo Official EPIC Homepage:     http://www.epicsol.org/
 	echo Official EPIC FTP site:     ftp://ftp.epicsol.org/
 	echo
-	echo Current versions of both DarkStar and EPIC4 can also be found
+	echo Current versions of DarkStar and EPIC4 can also be found
 	echo at the following URLs.
 	echo
 	echo http://darkstar.epicsol.org/
+	echo http://darkstar.nuthouse.org/
 	echo http://www.got.net/~brian/epic4/
 	echo
 	^local pause $'Press q to quit, or any other key to continue.'
@@ -58,42 +59,23 @@ for array in ($getarrays()) {
 
 /*
  * This will be incremented every time a change takes place in
- * the core scripts (this file and any .dsc files in core/).
+ * the core scripts (this file and any *.dsc files in $DS.HOME/core/).
  */
-@ DS.CORE_ID = 85
+@ DS.CORE_ID = 86
 
 eval xecho -b Loading DarkStar $DS.VERSION
 
 /*
  * Find out where everything is and store it in the DS structure.
  */
-if (getenv(DARKSTAR_HOME)) {
-	@ DS.HOME = getenv(DARKSTAR_HOME)
-} else {
-	/* Attempt to get the directory from $loadinfo() */
-	@ DS.HOME = before(-1 / $word(1 $loadinfo()))
-	if (fexist($DS.HOME/darkstar.irc) == -1) {
-		@ DS.HOME = [~/darkstar]
-	}
-}
-
-if (getenv(DARKSTAR_USERDIR)) {
-	@ DS.USER_DIR = getenv(DARKSTAR_USERDIR)
-} else {
-	@ DS.USER_DIR = [~/.darkstar]
-}
-
-if (getenv(DARKSTAR_RC)) {
-	@ DS.RC = getenv(DARKSTAR_RC)
-} else {
-	@ DS.RC = [~/.dsrc]
-}
-
-@ DS.HELP_DIR = [$DS.HOME/help]
+@ DS.HOME       = getenv(DARKSTAR_HOME) ? getenv(DARKSTAR_HOME) : before(-1 / $word(1 $loadinfo()))
+@ DS.USER_DIR   = getenv(DARKSTAR_USERDIR) ? getenv(DARKSTAR_USERDIR) : [~/.darkstar]
+@ DS.RC         = getenv(DARKSTAR_RC) ? getenv(DARKSTAR_RC) : [~/.dsrc]
+@ DS.HELP_DIR   = [$DS.HOME/help]
 @ DS.MODULE_DIR = [$DS.HOME/modules $DS.USER_DIR/modules]
 @ DS.STATUS_DIR = [$DS.HOME/status $DS.USER_DIR/status]
-@ DS.THEME_DIR = [$DS.HOME/themes $DS.USER_DIR/themes]
-@ DS.SAVE_DIR = [$DS.USER_DIR/save]
+@ DS.THEME_DIR  = [$DS.HOME/themes $DS.USER_DIR/themes]
+@ DS.SAVE_DIR   = [$DS.USER_DIR/save]
 
 /*
  * Check for a "user directory" and create it if necessary.
@@ -105,6 +87,7 @@ if (fexist($DS.USER_DIR) == -1) {
 	@ mkdir($DS.USER_DIR/status)
 	@ mkdir($DS.USER_DIR/themes)
 	@ mkdir($DS.USER_DIR/save)
+
 	/*
 	 * This could be a first time user, so we'll display
 	 * some extra information for them.
@@ -132,16 +115,14 @@ if (fexist($DS.USER_DIR) == -1) {
 }
 
 /* 
- * Important /SET's
+ * Some important /SETs
  * If you want to change these, it should be done via .dsrc
  */
 eval set CLIENT_INFORMATION DarkStar $DS.VERSION
-set -CONTINUED_LINE
 set CONTROL_C_COLOR ON
 set DISPLAY_PC_CHARACTERS 4
 set FLOATING_POINT_MATH ON
 set HIGH_BIT_ESCAPE 0
-set INDENT ON
 
 /*
  * Enable the new math parser.
@@ -149,46 +130,29 @@ set INDENT ON
 xdebug +NEW_MATH
 
 /*
- * Load the core scripts.
+ * Load all of the core scripts
  */
-eval load $DS.HOME/core/globals.dsc
-eval load $DS.HOME/core/functions.dsc
-eval load $DS.HOME/core/commands.dsc
-eval load $DS.HOME/core/config.dsc
-eval load $DS.HOME/core/help.dsc
-eval load $DS.HOME/core/save.dsc
-eval load $DS.HOME/core/status.dsc
+for fname in (globals.dsc functions.dsc commands.dsc help.dsc save.dsc config.dsc) {
+	^load $DS.HOME/core/$fname
+}
 
-/* Default settings for the core scripts */
-config.add -b AUTO_LOAD_DEPENDENCIES 1
-config.add    AUTO_LOAD_MODULES away channel dcc keepnick misc names nickcomp relay tabkey window
-config.add -b AUTO_LOAD_PROMPT 1
-config.add -b AUTO_SAVE_ON_UNLOAD 0
-config.add -b LOADMODULE_VERBOSE 0
-config.add -b SAVE_VERBOSE 0
-config.add    THEME epic4
-
-format.add MODLIST_FOOTER -------------------------------------------------------
-format.add MODLIST_FOOTER1 $G Available modules: $numitems(modules), Loaded modules: $numitems(loaded_modules)
-format.add MODLIST_FOOTER2
-format.add MODLIST_HEADER #   Module           Version    Size  Loaded Auto-Load
-format.add MODLIST_HEADER1 -------------------------------------------------------
-format.add MODLIST_HEADER2
-format.add MODLIST_MODULE  $[3]1 $[16]2 $[7]3 $[-7]4    ${[$5] ? [\[*\]] : [\[\ \]]}     ${[$6] ? [\[*\]] : [\[ \]]}
-format.add SET $G Current value of $1 is $2-
-format.add SET_NOVALUE $G No value for $1 has been set
-
+/*
+ * The rest of the core scripts reference config and format variables
+ * at load time, so we need to load the user's saved settings first.
+ */
 if (fexist($DS.SAVE_DIR/core.sav) != -1) {
 	^load $DS.SAVE_DIR/core.sav
 }
 
-eval load $DS.HOME/core/themes.dsc
-eval load $DS.HOME/core/loader.dsc
+for fname in (status.dsc themes.dsc loader.dsc) {
+	^load $DS.HOME/core/$fname
+}
 
 if (fexist($DS.RC) != -1) {
 	^load $DS.RC
 }
 
+/* One final sanity check. This should never happen. */
 if (fexist($DS.HOME/darkstar.irc) == -1) {
 	echo WARNING! We were unable to detect our location.
 	echo You may need to set the DARKSTAR_HOME environment variable.

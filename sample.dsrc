@@ -27,10 +27,11 @@ set WORD_BREAK ,;
 
 
 /*
- * Those of you who don't like typing /away
- * to unset away may want this.
+ * Those of you who don't like typing /away to unset away, may want this.
+ * The -a option causes the client to apply the change to all server
+ * connections.
  */
-alias back //away
+alias back //away -a
 
 
 /* EOF */
