@@ -1,4 +1,4 @@
-#version 0.2.1
+#version 0.2.2
 /*     _             _        _
  *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
  * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
@@ -7,7 +7,7 @@
  * TABKEY.DSM - Tab key module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/21/02 (bmw)
+ * Last modified: 1/22/02 (bmw)
  *
  * This script uses serial number 420 for all /on hooks.
  */
@@ -65,8 +65,6 @@ alias cleartab (void)
  */
 alias tabkey.addrule
 {
-	/* Use $word() instead of prototypes to remove any unwanted
-	   white-space. */
 	@ :pattern = word(0 $*)
 	^local pattern \"$pattern\"
 	@ :routine = word(1 $*)
@@ -107,6 +105,28 @@ alias tabkey.addrule
 	}
 }
 
+/*
+ * Adds nicks to the msg_routine history. This will keep separate lists for
+ * each server you are connected to.
+ */
+alias tabkey.addnick (nick, void)
+{
+	if (match($nick $TABKEY.NICKS[$winserv()]))
+	{
+		@ TABKEY.NICKS.$winserv() = remw($nick $TABKEY.NICKS[$winserv()])
+	}
+
+	if (numwords($TABKEY.NICKS[$winserv()]) == CONFIG[TABKEY_NICK_HISTORY])
+	{
+		shift TABKEY.NICKS.$winserv()
+	}
+
+	@ push(TABKEY.NICKS[$winserv()] $nick)
+	@ TABKEY.INDEX.$winserv() = [-1]
+
+	return
+}
+
 alias tabkey.display_rules (void)
 {
 	echo #   Pattern                      Routine    Word List
@@ -132,15 +152,15 @@ alias tabkey.process_tabkey (void)
 
 		switch ($tolower($routine))
 		{
-			(channel) {@ tabkey.channel_routine($list)}
-			(command) {parsekey command_completion}
-			(config) {@ tabkey.set_routine(CONFIG)}
-			(file) {@ tabkey.file_routine()}
-			(format) {@ tabkey.set_routine(FORMAT)}
-			(lmods) {@ tabkey.module_routine(loaded_modules)}
-			(mods) {@ tabkey.module_routine(modules)}
-			(msg) {@ tabkey.msg_routine()}
-			(nick) {@ tabkey.nick_routine($list)}
+			(channel) { @ tabkey.channel_routine($list) }
+			(command) { parsekey command_completion }
+			(config)  { @ tabkey.set_routine(CONFIG) }
+			(file)    { @ tabkey.file_routine() }
+			(format)  { @ tabkey.set_routine(FORMAT) }
+			(lmods)   { @ tabkey.module_routine(loaded_modules) }
+			(mods)    { @ tabkey.module_routine(modules) }
+			(msg)     { @ tabkey.msg_routine() }
+			(nick)    { @ tabkey.nick_routine($list) }
 			(*) {
 				xecho -b Illegal completion routine specified [$routine] \(item: $item\)
 			}
@@ -148,23 +168,12 @@ alias tabkey.process_tabkey (void)
 	}
 }
 	
-alias tabkey.add_nick (nick, void)
-{
-	if (match($nick $TABKEY.NICKS[$winserv()]))
-	{
-		@ TABKEY.NICKS.$winserv() = remw($nick $TABKEY.NICKS[$winserv()])
-	}
 
-	if (numwords($TABKEY.NICKS[$winserv()]) == CONFIG[TABKEY_NICK_HISTORY])
-	{
-		shift TABKEY.NICKS.$winserv()
-	}
-
-	@ push(TABKEY.NICKS[$winserv()] $nick)
-	@ TABKEY.INDEX.$winserv() = [-1]
-
-	return
-}
+/*
+ * COMPLETION ROUTINES
+ * These do all the dirty work. Currently there is a lot of duplicate code
+ * so this could probably use some optimization.
+ */
 
 alias tabkey.channel_routine (list)
 {
@@ -201,7 +210,6 @@ alias tabkey.channel_routine (list)
 			xtype -l $prefix($findchan)
 			
 			@ :lastw = word(${#L - 1} $L)
-			
 			if (!match($lastw $findchan))
 			{
 				xecho -b Matches:
@@ -225,8 +233,6 @@ alias tabkey.file_routine (void)
 		if (#findfile == 1)
 		{
 			@ :lastc = mid(${strlen($findfile) - 1} 1 $findfile)
- 			@ :space = [ ]
-			
 			parsekey delete_to_previous_space
 			xtype -l $findfile${lastc == [/] ? [] : [ ]}
 		} \
@@ -272,7 +278,6 @@ alias tabkey.module_routine (array, void)
 		if (#findmod == 1)
 		{
 			@ :space = [ ]
-			
 			parsekey delete_to_previous_space
 			xtype -l $findmod$space
 		} \
@@ -301,14 +306,12 @@ alias tabkey.msg_routine (void)
 
 	if (nicks)
 	{
-		^local nick
-
 		if (index > 0)
 		{
-			@ nick = word(${index - 1} $nicks)
+			@ :nick = word(${index - 1} $nicks)
 			@ TABKEY.INDEX.$winserv() = index - 1
 		}{
-			@ nick = word(${numwords($nicks) - 1} $nicks)
+			@ :nick = word(${numwords($nicks) - 1} $nicks)
 			@ TABKEY.INDEX.$winserv() = numwords($nicks) - 1
 		}
 
@@ -346,15 +349,12 @@ alias tabkey.nick_routine (list)
 		
 		if (#findnick == 1)
 		{
-			^local space
-
 			if (#L == 1)
 			{
-				@ space = CONFIG[TABKEY_NICKCOMP_SUFFIX] ## [ ]
+				@ :space = CONFIG[TABKEY_NICKCOMP_SUFFIX] ## [ ]
 			}{
-				@ space = [ ]
+				@ :space = [ ]
 			}
-		
 			parsekey delete_to_previous_space
 			xtype -l $findnick$space
 		} \
@@ -377,17 +377,17 @@ alias tabkey.nick_routine (list)
 alias tabkey.set_routine (type, void)
 {
 	@ :lastc = mid(${strlen($L) - 1} 1 $L)
-	
+
 	unless (lastc == [ ])
 	{
-		^local newvars,rmflag,word1
-		
+		^local newvars
+
 		if (left(1 $word(1 $L)) == [-])
 		{
-			^assign rmflag 1
-			@ word1 = strip(- $word(1 $L))
+			@ :rmflag = 1
+			@ :word1 = strip(- $word(1 $L))
 		}{
-			@ word1 = word(1 $L)
+			@ :word1 = word(1 $L)
 		}
 		
 		@ :cur_value = aliasctl(assign get $type\.$word1)
@@ -407,7 +407,6 @@ alias tabkey.set_routine (type, void)
 		if (#newvars == 1)
 		{
 			@ :space = [ ]
-			
 			parsekey delete_to_previous_space
 			xtype -l ${rmflag ? [-] : []}$newvars$space
 		} \
@@ -433,11 +432,15 @@ alias tabkey.set_routine (type, void)
 }
 
 
+/*
+ * Passes the nicks of people you are chatting with through $tabkey.addnick()
+ * to put them into the msg_routine history.
+ */
 for hook in (msg send_msg)
 { 
 	on #^$hook 420 "*"
 	{
-		@ tabkey.add_nick($0)
+		@ tabkey.addnick($0)
 	}
 }
 
@@ -445,13 +448,13 @@ for hook in (dcc_chat send_dcc_chat)
 {
 	on #^$hook 420 "*"
 	{
-		@ tabkey.add_nick(=$0)
+		@ tabkey.addnick(=$0)
 	}
 }
 
 on #^dcc_connect 420 "% CHAT *"
 {
-	@ tabkey.add_nick(=$0)
+	@ tabkey.addnick(=$0)
 }
 
 
@@ -459,7 +462,7 @@ on #^dcc_connect 420 "% CHAT *"
  * DEFAULT COMPLETION RULES
  * I will add a user interface to add/remove these in the near future.
  *
- * We have to add rule 0  manually because $word() sees "" as a missing
+ * We have to add rule 0 manually because $word() sees "" as a missing
  * argument and fails. This rule is also exempt from tabkey.addrule's
  * duplicate rule check since $matchitem() matches "" and "*".
  */
