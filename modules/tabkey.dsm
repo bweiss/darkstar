@@ -1,4 +1,4 @@
-#version 0.2
+#version 0.2.1
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -88,16 +88,16 @@ bind ^I parse_command tabkey.main
 alias tabkey.default {
 	bless
 	if (L == []) {
-		@:ret = tabkey.cmd.msg($*)
+		@ :ret = tabkey.cmd.msg($*)
 	} else if (curword == 0) {
-		@:matches = tabkey.method.nick($*)
+		@ :matches = tabkey.method.nick($*)
 		if (#matches == 1) {
-			@:ret = matches ## CONFIG.TABKEY_NICKCOMP_SUFFIX
+			@ :ret = matches ## CONFIG.TABKEY_NICKCOMP_SUFFIX
 		} else {
-			@:ret = matches
+			@ :ret = matches
 		}
 	} else {
-		@:ret = tabkey.method.nickchan($*)
+		@ :ret = tabkey.method.nickchan($*)
 	}
 	return $ret
 }
@@ -110,7 +110,7 @@ alias tabkey.main {
 		@ wordind = curpos()
 	}
 	@ :word = mid($wordind ${curpos() - wordind} $L)
-	if (word == TABKEY.LASTWORD) {
+	if (word != [] && word == TABKEY.LASTWORD) {
 		if (TABKEY.INDEX == numwords($TABKEY.LASTMATCHES)) {
 			@ TABKEY.INDEX = 0
 		}
@@ -194,15 +194,15 @@ alias tabkey.cmd {
 
 # Context sensitive completion goes here.
 
-alias tabkey.cmd.alias  { return $tabkey.method.aliasctl(alias); }
+alias tabkey.cmd.alias    { return $tabkey.method.variables(alias); }
 
-alias tabkey.cmd.assign { return $tabkey.method.aliasctl(assign); }
+alias tabkey.cmd.assign   { return $tabkey.method.variables(assign); }
 
-alias tabkey.cmd.channel tabkey.cmd.join
+alias tabkey.cmd.channel  { return $tabkey.method.chan($*); }
 
-alias tabkey.cmd.config tabkey.cmd.dset
+alias tabkey.cmd.config   { return $tabkey.method.variables(config); }
 
-alias tabkey.cmd.dcc    { return $pattern("$0*" CHAT CLOSE CLOSEALL GET LIST RAW RENAME RESUME SEND); }
+alias tabkey.cmd.dcc      { return $pattern("$0*" CHAT CLOSE CLOSEALL GET LIST RAW RENAME RESUME SEND); }
 alias tabkey.cmd.dcc.resume tabkey.cmd.dcc.send
 alias tabkey.cmd.dcc.send {
 	bless
@@ -216,23 +216,23 @@ alias tabkey.cmd.dcc.send {
 
 alias tabkey.cmd.do tabkey.cmd.eval
 
-alias tabkey.cmd.dset { return $tabkey.method.config(CONFIG); }
+alias tabkey.cmd.dset    { return $tabkey.method.variables(config); }
 
-alias tabkey.cmd.eval { return $tabkey.method.commands($*); }
+alias tabkey.cmd.eval    { return $tabkey.method.commands($*); }
 
-alias tabkey.cmd.exec { return $tabkey.method.filei($*); }
+alias tabkey.cmd.exec    { return $tabkey.method.file($*); }
 
 alias tabkey.cmd.foreach {
 	bless
 	if (curword == 1 && left(1 $word) == [-]) {
-		@:ret = tabkey.method.aliasctl(alias)
+		@ :ret = tabkey.method.aliasctl(alias)
 	} else if (curword == 1) {
-		@:ret = tabkey.method.aliasctl(assign)
+		@ :ret = tabkey.method.aliasctl(assign)
 	}
 	return $ret
 }
 
-alias tabkey.cmd.fset { return $tabkey.method.config(FORMAT); }
+alias tabkey.cmd.fset { return $tabkey.method.variables(format); }
 
 alias tabkey.cmd.help {
 	bless
@@ -247,9 +247,9 @@ alias tabkey.cmd.help {
 alias tabkey.cmd.ignore {
 	bless
 	if (curword == 1) {
-		@:ret = tabkey.method.mask($*)
+		@ :ret = tabkey.method.mask($*)
 	} else if (curword > 1) {
-		@:ret = pattern("$0*" ALL CRAP CTCPS INVITES JOINS MSGS NICKS NONE NOTES NOTICES PARTS PUBLIC TOPICS WALLS WALLOPS)
+		@ :ret = pattern("$0*" ALL CRAP CTCPS INVITES JOINS MSGS NICKS NONE NOTES NOTICES PARTS PUBLIC TOPICS WALLS WALLOPS)
 	}
 	return $ret
 }
@@ -260,9 +260,9 @@ alias tabkey.cmd.join    { return $tabkey.method.chan($*); }
 alias tabkey.cmd.l tabkey.cmd.leave
 alias tabkey.cmd.leave   { return $tabkey.method.chan($*); }
 
-alias tabkey.cmd.less    { return $tabkey.method.filei($*); }
+alias tabkey.cmd.less    { return $tabkey.method.file($*); }
 
-alias tabkey.cmd.load    { return $tabkey.method.filei($*); }
+alias tabkey.cmd.load    { return $tabkey.method.file($*); }
 
 alias tabkey.cmd.loadmod { return $tabkey.method.arrays(modules); }
 
@@ -280,26 +280,26 @@ alias tabkey.cmd.m tabkey.cmd.msg
 alias tabkey.cmd.msg {
 	bless
 	if (curword == 1) {
-		@:ret = tabkey.method.nickchan($*)
+		@ :ret = tabkey.method.nickchan($*)
 	} else {
-		@:cmd = word(0 $L)
+		@ :cmd = word(0 $L)
 		if (!cmd) {
-			@:cmd = [$K\MSG]
+			@ :cmd = [$K\MSG]
 		}
-		@:nicks = TABKEY.MSGHIST[$winserv()]
-		@:index = TABKEY.HISTINDEX[$winserv()]
-		@:trailing = restw(2 $L)
+		@ :nicks = TABKEY.MSGHIST[$winserv()]
+		@ :index = TABKEY.HISTINDEX[$winserv()]
+		@ :trailing = restw(2 $L)
 		if (nicks) {
 			if (index > 0) {
-				@:nick = word(${index - 1} $nicks)
+				@ :nick = word(${index - 1} $nicks)
 				@ TABKEY.HISTINDEX.$winserv() = index - 1
 			} else {
-				@:nick = word(${numwords($nicks) - 1} $nicks)
+				@ :nick = word(${numwords($nicks) - 1} $nicks)
 				@ TABKEY.HISTINDEX.$winserv() = numwords($nicks) - 1
 			}
 			parsekey erase_line
 			xtype -l $cmd $nick $trailing
-			@:ret = [ ]
+			@ :ret = [ ]
 		} else {
 			@ TABKEY.HISTINDEX.$winserv() = -1
 		}
@@ -309,8 +309,8 @@ alias tabkey.cmd.msg {
 
 alias tabkey.cmd.part tabkey.cmd.leave
 
-alias tabkey.cmd.pop       { return $tabkey.method.aliasctl(assign); }
-alias tabkey.cmd.push      { return $tabkey.method.aliasctl(assign); }
+alias tabkey.cmd.pop       { return $tabkey.method.variables(assign); }
+alias tabkey.cmd.push      { return $tabkey.method.variables(assign); }
 
 alias tabkey.cmd.q tabkey.cmd.query
 alias tabkey.cmd.query     { return $tabkey.method.nickchan($*); }
@@ -319,18 +319,9 @@ alias tabkey.cmd.reloadmod { return $tabkey.method.arrays(loaded_modules); }
 
 alias tabkey.cmd.save      { return $tabkey.method.arrays(loaded_modules); }
 
-alias tabkey.cmd.set {
-	bless
-	if (curword == 1) {
-		@:ret = getsets($word%)
-	} else if (curword == 2 && word == []) {
-		eval xtype -l \$$word(${curword - 1} $L)
-		@:ret = [ ]
-	}
-	return $ret
-}
+alias tabkey.cmd.set       { return $tabkey.method.variables(set); }
 
-alias tabkey.cmd.shift     { return $tabkey.method.aliasctl(assign); }
+alias tabkey.cmd.shift     { return $tabkey.method.variables(assign); }
 
 alias tabkey.cmd.status    { return $tabkey.method.arrays(status); }
 
@@ -338,45 +329,45 @@ alias tabkey.cmd.theme     { return $tabkey.method.arrays(themes); }
 
 alias tabkey.cmd.unloadmod { return $tabkey.method.arrays(loaded_modules); }
 
-alias tabkey.cmd.unshift   { return $tabkey.method.aliasctl(assign); }
+alias tabkey.cmd.unshift   { return $tabkey.method.variables(assign); }
 
 alias tabkey.cmd.window {
 	bless
-	@:windowcmds        = [ADD BACK BALANCE BEEP_ALWAYS BIND CHANNEL CLEAR CREATE DELETE DESCRIBE DISCON DOUBLE ECHO FIXED FLUSH GOTO GROW HIDE HIDE_OTHERS HOLD_INTERVAL HOLD_MODE KILL KILL_OTHERS KILLSWAP LAST LASTLOG LASTLOG_LEVEL LEVEL LIST LOG LOGFILE MOVE NAME NEW NEW_HIDE NEXT NOSERV NOTIFIED NOTIFY NOTIFY_LEVEL NUMBER POP PREVIOUS PROMPT PUSH QUERY REFNUM REFNUM_OR_SWAP REFRESH REMOVE SCRATCH SCROLL SCROLLBACK SERVER SHOW SHOW_ALL SHRINK SIZE SKIP STACK STATUS_FORMAT STATUS_FORMAT1 STATUS_FORMAT2 STATUS_SPECIAL SWAP UNBIND]
+	@ :windowcmds        = [ADD BACK BALANCE BEEP_ALWAYS BIND CHANNEL CLEAR CREATE DELETE DESCRIBE DISCON DOUBLE ECHO FIXED FLUSH GOTO GROW HIDE HIDE_OTHERS HOLD_INTERVAL HOLD_MODE KILL KILL_OTHERS KILLSWAP LAST LASTLOG LASTLOG_LEVEL LEVEL LIST LOG LOGFILE MOVE NAME NEW NEW_HIDE NEXT NOSERV NOTIFIED NOTIFY NOTIFY_LEVEL NUMBER POP PREVIOUS PROMPT PUSH QUERY REFNUM REFNUM_OR_SWAP REFRESH REMOVE SCRATCH SCROLL SCROLLBACK SERVER SHOW SHOW_ALL SHRINK SIZE SKIP STACK STATUS_FORMAT STATUS_FORMAT1 STATUS_FORMAT2 STATUS_SPECIAL SWAP UNBIND]
 	if (curword == 1) {
-		@:cmd = [WINDOW]
+		@ :cmd = [WINDOW]
 	} else {
-		@:cmd = word(${curword - 1} $L)
+		@ :cmd = word(${curword - 1} $L)
 	}
 	switch ($toupper($cmd)) {
 		(ADD) (QUERY) (REMOVE) {
-			@:ret = tabkey.method.nickchan($*)
+			@ :ret = tabkey.method.nickchan($*)
 		}
 		(BEEP_ALWAYS) (DOUBLE) (FIXED) (HOLD_MODE) (LOG) (SCRATCH) (SCROLL) (SKIP) {
-			@:ret = pattern("$word*" ON OFF TOGGLE)
+			@ :ret = pattern("$word*" ON OFF TOGGLE)
 		}
 		(BIND) (CHANNEL) {
-			@:ret = tabkey.method.chan($*)
+			@ :ret = tabkey.method.chan($*)
 		}
 		(ECHO) (GOTO) (GROW) (HOLD_INTERVAL) (LASTLOG) (MOVE) (NAME) (NUMBER) (PROMPT) (REFNUM) (REFNUM_OR_SWAP) (SCROLLBACK) (SERVER) (SHRINK) (SIZE) (STATUS_%) (SWAP) {
-			@:nocomp = 1
+			@ :nocomp = 1
 		}
 		(LASTLOG_LEVEL) (LEVEL) (NOTIFY_LEVEL) {
 			if (match(%,% $word)) {
-				@:word_a = before(-1 , $word)
-				@:word_b = after(-1 , $word)
+				@ :word_a = before(-1 , $word)
+				@ :word_b = after(-1 , $word)
 			}
-			@:list = [ACTIONS CRAP CTCP DCC MSGS NOTES NOTICES OPNOTES PUBLIC SNOTES USERLOG1 USERLOG2 USERLOG3 USERLOG4 WALLOPS WALLS]
+			@ :list = [ACTIONS CRAP CTCP DCC MSGS NOTES NOTICES OPNOTES PUBLIC SNOTES USERLOG1 USERLOG2 USERLOG3 USERLOG4 WALLOPS WALLS]
 		}
 		(LOGFILE) {
-			@:list = tabkey.method.file($*)
+			@ :list = tabkey.method.file($*)
 		}
 		(*) {
-			@:list = windowcmds
+			@ :list = windowcmds
 		}
 	}
 	if (word_a) {
-		@:matches = pattern("$word_b*" $list)
+		@ :matches = pattern("$word_b*" $list)
 		if (#matches == 1) {
 			parsekey delete_to_previous_space
 			xtype -l $word_a\,$matches${[ ]}
@@ -385,11 +376,11 @@ alias tabkey.cmd.window {
 			xtype -l $word_a\,$prefix($matches)
 			echo Completions for \"$word_b\": $matches
 		}
-		@:ret = [ ]
+		@ :ret = [ ]
 	} else if (nocomp) {
-		@:ret = [ ]
+		@ :ret = [ ]
 	} else {
-		@:ret = pattern("$word*" $list)
+		@ :ret = pattern("$word*" $list)
 	}
 	return $ret
 }
@@ -397,45 +388,17 @@ alias tabkey.cmd.window {
 
 # Methods.
 
-alias tabkey.method.aliasctl (type, void) {
-	bless
-	if (!type) {
-		return
-	}
-	if (curword == 1) {
-		if (left(1 $word) == [-]) {
-			@:rm = 1
-			@:foo = rest(1 $word)
-		} else {
-			@:foo = word
-		}
-		@:matches = pattern("$foo*" $aliasctl($type match $foo))
-		if (#matches == 1) {
-			@:ret = rm ? [-$matches] : matches
-		} else if (#matches > 1) {
-			parsekey delete_to_previous_space
-			xtype -l ${rm ? [-] : []}$prefix($matches)
-			echo Completions for \"$foo\": $matches
-			@:ret = [ ]
-		}
-	} else if (curword == 2 && word == []) {
-		eval xtype -l \$$word(${curword - 1} $L)
-		@:ret = [ ]
-	}
-	return $ret
-}
-
 alias tabkey.method.arrays (array, void) {
 	bless
-	@:list = []
+	@ :list = []
 	for ii from 0 to ${numitems($array) - 1} {
 		push list $getitem($array $ii)
 	}
-	@:list = sort($uniq($list))
+	@ :list = sort($uniq($list))
 	if (word == []) {
-		@:ret = list
+		@ :ret = list
 	} else {
-		@:ret = pattern("$word*" $list)
+		@ :ret = pattern("$word*" $list)
 	}
 	return $ret
 }
@@ -445,35 +408,8 @@ alias tabkey.method.commands {
 	return $ret
 }
 
-alias tabkey.method.config (struct, void) {
-	bless
-	if (curword == 1) {
-		if (left(1 $word) == [-]) {
-			@:rm = 1
-			@:foo = rest(1 $word)
-		} else {
-			@:foo = word
-		}
-		@:matches = []
-		for var in ($aliasctl(assign match $struct\.$foo)) {
-			push matches $after(1 . $var)
-		}
-		if (#matches == 1) {
-			@:ret = rm ? [-$matches] : matches
-		} else if (#matches > 1) {
-			parsekey delete_to_previous_space
-			xtype -l ${rm ? [-] : []}$prefix($matches)
-			echo Completions for \"$foo\": $matches
-			@:ret = [ ]
-		}
-	} else if (curword == 2 && word == [] && (left(1 $word(${curword - 1} $L)) != [-])) {
-		eval xtype -l \$$struct\.$word(${curword - 1} $L)
-		@:ret = [ ]
-	}
-	return $ret
-}
+alias tabkey.method.chan   { return $pattern("$0*" $mychannels()); }
 
-alias tabkey.method.chan { return $pattern("$0*" $mychannels()); }
 alias tabkey.method.notify { return $pattern("$0*" $notify(on)); }
 
 alias alias.foo alias $*;alias $sar(g/globi/glob/$sar(g/filei/file/$*))
@@ -489,12 +425,12 @@ alias -alias.foo
 alias tabkey.method.mask {
 	bless
 	if (word) {
-		@:uhost = userhost($word)
+		@ :uhost = userhost($word)
 		if (uhost == [<UNKNOWN>@<UNKNOWN>]) {
-			@:uhost = uh($word)
+			@ :uhost = uh($word)
 		}
 		unless (uhost == [<UNKNOWN>@<UNKNOWN>]) {
-			@:ret = word ## [!] ## uhost
+			@ :ret = word ## [!] ## uhost
 		}
 	}
 	return $ret
@@ -518,6 +454,51 @@ alias tabkey.method.nickchan {
 
 alias tabkey.method.nickchannotify {
 	return $remws(/ $tabkey.method.chan($*) $sort($uniq($tabkey.method.nick($*) $tabkey.method.notify($*))))
+}
+
+alias tabkey.method.variables (type, void) {
+	bless
+	if (!type) {
+		return
+	}
+	if (curword == 1) {
+		if (left(1 $word) == [-]) {
+			@ :rm = 1
+			@ :foo = rest(1 $word)
+		} else {
+			@ :foo = word
+		}
+		switch ($toupper($type)) {
+			(ALIAS) (ASSIGN) {
+				@ :matches = aliasctl($type match $foo)
+			}
+			(CONFIG) (FORMAT) {
+				@ :matches = []
+				for var in ($aliasctl(assign match $type\.$foo)) {
+					push matches $after(1 . $var)
+				}
+			}
+			(SET) {
+				@ :matches = getsets($foo%)
+			}
+		}
+		if (#matches == 1) {
+			@ :ret = rm ? [-$matches] : matches
+		} else if (#matches > 1) {
+			parsekey delete_to_previous_space
+			xtype -l ${rm ? [-] : []}$prefix($matches)
+			echo Completions for \"$foo\": $matches
+			@ :ret = [ ]
+		}
+	} else if (curword == 2 && word == [] && (left(1 $word(${curword - 1} $L)) != [-])) {
+		if (toupper($type) == [CONFIG] || toupper($type) == [FORMAT]) {
+			eval xtype -l \$$type\.$word(${curword - 1} $L)
+		} else {
+			eval xtype -l \$$word(${curword - 1} $L)
+		}
+		@ :ret = [ ]
+	}
+	return $ret
 }
 
 
