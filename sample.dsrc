@@ -1,6 +1,6 @@
 /*
  * This is a sample initilization file for Darkstar. By default it should be
- * copied to ~/.epic4/.dsrc
+ * copied to ~/.dsrc
  *
  * If you wish to change its location/filename please set the environment
  * variable DARKSTAR_RC
@@ -9,10 +9,17 @@
 set AUTO_WHOWAS OFF
 set BEEP OFF
 set CLOCK_24HOUR ON
+set -CONTINUED_LINE
+set DCC_STORE_PATH ~/incoming
+set INDENT ON
 set LASTLOG 1024
 set LOAD_PATH ~/.epic4:/usr/local/share/epic:.
+set NEW_SERVER_LASTLOG_LEVEL NONE
 set NO_FAIL_DISCONNECT ON
 set SCROLLBACK 1024
+
+bind META1-a BEGINNING_OF_LINE
+bind META1-e END_OF_LINE
 
 
 /* Debugging stuff */
