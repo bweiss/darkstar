@@ -1,4 +1,4 @@
-config lit DEFAULT_UMODES iw
+config DEFAULT_UMODES iw
 fset CTCP CTCP $3 from $1 to $2: $4-
 fset CTCP_REPLY CTCP $2 reply from $1: $3-
 fset DCC_CHAT [$Z] %W.%n$1%W[%cdcc%W]%n $2-

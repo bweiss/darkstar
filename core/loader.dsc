@@ -80,12 +80,12 @@ alias load_module (module, void)
 					{
 						(config)
 						{
-							if (word(1 $line) == [lit])
+							if (word(1 $line) == [bool])
 							{
 								@ variable = word(2 $line)
 								@ value = restw(3 $line)
 								
-								^assign DSET.LIT.$variable 1
+								^assign DSET.BOOL.$variable 1
 							}
 							
 							@ push(DSET.$module $variable)
@@ -214,6 +214,7 @@ alias unload_module (module)
 			^assign -DSET.$module
 			^assign -FSET.$module
 			
+			/* Remove from loaded_modules array */
 			@ delitem(loaded_modules $itm)
 
 			return 1

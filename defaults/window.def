@@ -1,8 +1,8 @@
-config     AUTO_BIND_CHANNELS 
-config     AUTO_BIND_ON_JOIN 0
-config     AUTO_BIND_ON_WINDOW_JOIN 0
-config     AUTO_CREATE_MSG_WINDOW 1
-config lit AUTO_CREATE_MSG_WINDOW_ARGS size 5 level dcc,msgs,opnotes,wallops last
-config lit AUTO_CREATE_WINDOW_ARGS double on hide
-config lit AUTO_CREATE_WINDOWS 10
-config     AUTO_UNBIND_ON_PART 0
+config      AUTO_BIND_CHANNELS 
+config bool AUTO_BIND_ON_JOIN 0
+config bool AUTO_BIND_ON_WINDOW_JOIN 0
+config bool AUTO_CREATE_MSG_WINDOW 1
+config      AUTO_CREATE_MSG_WINDOW_ARGS size 5 level dcc,msgs,opnotes,wallops last
+config      AUTO_CREATE_WINDOW_ARGS double on hide
+config      AUTO_CREATE_WINDOWS 10
+config bool AUTO_UNBIND_ON_PART 0

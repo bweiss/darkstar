@@ -1,0 +1,85 @@
+/*     _             _        _
+ *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
+ * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
+ * \__,_|\__,_||_|  |_\_\/__/ \__|\__,_||_|
+ *
+ * NAMES.DSM - Module to reformat /NAMES output for Darkstar/EPIC4
+ * Author: Brian Weiss <brian@epicsol.org> - 2001
+ */
+
+queue cleanup.names
+{
+	for alias in (sc scan scann scano)
+	{
+		^alias -$alias
+	}
+}
+
+alias names.showusers (chan default "$C", mode default "*", void)
+{
+	if (match($chan $mychannels()))
+	{
+		^local users
+
+		switch ($tolower($mode))
+		{
+			(n) {@ users = nochops($chan)}
+			(o) {@ users = chops($chan)}
+			(*) {@ users = onchannel($chan)}
+		}
+
+		if (FORMAT[NAMES_HEADER])
+		{
+			xecho -b $fparse(NAMES_HEADER $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
+		}
+
+		fe ($users) n1 n2 n3 n4 n5 n6
+		{
+			xecho -b $names.getov($chan $n1)$[9]n1 $names.getov($chan $n2)$[9]n2 $names.getov($chan $n3)$[9]n3 $names.getov($chan $n4)$[9]n4 $names.getov($chan $n5)$[9]n5 $names.getov($chan $n6)$[9]n6
+		}
+
+		if (FORMAT[NAMES_FOOTER])
+		{
+			xecho -b $fparse(NAMES_FOOTER $chan $#onchannel($chan) $#chops($chan) $#nochops($chan))
+		}
+
+		return 1
+	}
+	return 0
+}
+
+alias sc scan
+
+alias scan (chan, void)
+{
+	@ names.showusers($chan)
+}
+
+alias scann (chan default "$C", void)
+{
+	@ names.showusers($chan n)
+}
+
+alias scano (chan default "$C", void)
+{
+	@ names.showusers($chan o)
+}
+
+on ^353 "*"
+{
+	^assign NAMES.CHAN $2
+}
+
+on ^366 "*"
+{
+	@ names.showusers($NAMES.CHAN)
+	^assign -NAMES.CHAN
+}
+
+alias names.getov (chan, nick, void)
+{
+	@ function_return = ischanop($nick $chan) ? fparse(NAMES_OP) : (ischanvoice($nick $chan) == 1 ? fparse(NAMES_VOICE) : [ ])
+}
+
+
+/* bmw '01 */

@@ -62,13 +62,13 @@ alias set_routine (type, variable, value)
 			} \
 			elsif (value != [])
 			{
-				if (struct2 == [CONFIG] && aliasctl(assign get DSET.LIT.$var2))
+				if (struct2 == [CONFIG] && aliasctl(assign get DSET.BOOL.$var2))
 				{
+					^assign $var $convert.onoff($value)
+					xecho -s -b Value of $toupper($var2) set to $toupper($convert.num($value))
+				}{
 					^assign $var $value
 					xecho -s -b Value of $toupper($var2) set to $value
-				}{
-					^assign $var $booltonum($value)
-					xecho -s -b Value of $toupper($var2) set to $toupper($numtobool($value))
 				}
 			} \
 			elsif (value == [])
@@ -106,11 +106,11 @@ alias setcat (var, void)
 	
 	eval if \($var != []\)
 	{
-		if (before(. $var) == [CONFIG] && aliasctl(assign get DSET.LIT.$var2))
+		if (before(. $var) == [CONFIG] && aliasctl(assign get DSET.BOOL.$var2))
 		{
-			xecho -b $fparse(SET $toupper($var2) $($var))
+			xecho -b $fparse(SET $toupper($var2) $toupper($convert.num($($var))))
 		}{
-			xecho -b $fparse(SET $toupper($var2) $toupper($numtobool($($var))))
+			xecho -b $fparse(SET $toupper($var2) $($var))
 		}
 	}{
 		xecho -b $fparse(SET_NOVALUE $toupper($var2))

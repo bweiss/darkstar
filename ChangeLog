@@ -2,6 +2,10 @@ Darkstar ChangeLog
 
 [current]
 
+ - Changes to the format of the defaults files. Boolean config variables now
+   need to be specified with the "bool" keyword. Everything else is taken as
+   a literal config variable (opposite of old behaviour).
+ - Module renaming: scan.dsm -> names.dsm. /scano and /scann were also added. 
  - [core] Status bar directory moved from statbars/ to status/. Complete
    rewrite of the /status command (/statbar). Status files can now have any
    name they want instead of status.1, status.2, etc. The DEFAULT_STATUS
@@ -9,8 +13,8 @@ Darkstar ChangeLog
  - [core] Changes to allow the use of ON/OFF and 1/0 with /dset. The defaults
    files can now take an optional argument to the "config" command: lit
    This tells the script that that variable has a literal value and should not
-   be converted to/from on/off/1/0. Two new functions: $booltonum() and
-   $numtobool().
+   be converted to/from on/off/1/0. Two new functions: $convert.num() and
+   $convert.onoff().
  - [tabkey.dsm] Support for /save module completion added.
  - [save.dsc] Now allows you to specify a save directory as well as a list of
    modules. Usage: /save [-d <dir>] [*|module1] [module2] [...]

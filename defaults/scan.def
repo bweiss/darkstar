@@ -1,5 +1,0 @@
-fset SCAN $scan.getov($1 $2)$[9]2 $scan.getov($1 $3)$[9]3 $scan.getov($1 $4)$[9]4 $scan.getov($1 $5)$[9]5 $scan.getov($1 $6)$[9]6 $scan.getov($1 $7)$[9]7
-fset SCAN_FOOTER 
-fset SCAN_HEADER Users on $1: \(total/$2 - ops/$3 normal/$4\)
-fset SCAN_OP %c@%n
-fset SCAN_VOICE %m+%n
