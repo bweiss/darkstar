@@ -1,4 +1,4 @@
-#version 0.2.4
+#version 0.2.5
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for Darkstar/EPIC4
@@ -135,7 +135,7 @@ alias ban (targets)
 	}
 }
 
-alias bk
+alias bk bankick
 alias bankick (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
 	if (!nick)
