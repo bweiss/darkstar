@@ -1,4 +1,4 @@
-#version 0.5.3
+#version 0.5.4
 /* $Id$ */
 /*
  * window.dsm - Window module for DarkStar/EPIC4
@@ -75,7 +75,7 @@ config.add -b UNBIND_ON_PART 0
  * Key bindings.
  */
 ^bind ^X SWITCH_CHANNELS
-^bind ^[^I parse_command ^window next
+^bind ^[^I PARSE_COMMAND ^window next
 ^bind ^[1 PARSE_COMMAND ^window swap 1
 ^bind ^[2 PARSE_COMMAND ^window swap 2
 ^bind ^[3 PARSE_COMMAND ^window swap 3
@@ -140,7 +140,7 @@ alias swap (winnum, void)
 }
 
 alias wb  (chan default "$C", void) {window bind $chan}
-alias wc  (void)                    {window new_hide}
+alias wc  (void)                    {window new_hide swap last}
 alias wj  (...)                     {window new channel "$*" hide}
 alias wk  (...)                     {window kill}
 alias wl  (...)                     {window last}
