@@ -405,17 +405,17 @@ alias tban (chan default "$C", void)
 	//mode $chan +b
 }
 
-alias tempban (time, what, void)
+alias tempban (time, target, void)
 {
-	if (time && what && ischanop($N $C))
+	if (time && target && ischanop($N $C))
 	{
-		if (onchannel($what $C))
+		if (onchannel($target $C))
 		{
-			//mode $C +b $mask($CONFIG.BANTYPE $userhost($what))
-			timer $time //mode $C -b $mask($CONFIG.BANTYPE $userhost($what))
+			//mode $C +b $mask($CONFIG.BANTYPE $userhost($target))
+			timer $time //mode $C -b $mask($CONFIG.BANTYPE $userhost($target))
 		}{
-			//mode $C +b $what
-			timer $time //mode $C -b $what
+			//mode $C +b $target
+			timer $time //mode $C -b $target
 		}
 	}{
 		xecho -b Usage: /tempban <seconds> <nick|ban>
