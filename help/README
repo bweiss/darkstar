@@ -28,7 +28,7 @@ Topics viewed via /DHELP will appear as:                ds:dset(1)
 
 Examples:
    > /dhelp 1 dset
-   1_Core Help? dset
+   1_core_commands Help? dset
 
 See Also:
    Introduction(7); New_User(7); help(1)

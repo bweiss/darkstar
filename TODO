@@ -1,7 +1,7 @@
 WORKS IN PROGRESS:
 
 * Documentation
-* XDCC module
+* XDCC/fserve module
 * Userlist module
 
 
@@ -25,5 +25,7 @@ OTHER NOTES/IDEAS:
 [17:27] .whitefang[thall@epicsol.org] but if you press it again, it should
          start cycling through
 
+* Honor the DISPLAY variable in format related /ON hooks?
 
-# End of file
+
+End of file.

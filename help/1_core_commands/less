@@ -5,3 +5,7 @@
 Description:
    A basic file pager.
 
+History:
+   This was written by Jeremy Nelson and originated in the less script
+   that is distributed with EPIC.
+

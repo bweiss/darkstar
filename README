@@ -19,14 +19,14 @@ usable and already provide most of the features people are accustomed to.
 The documentation is still a bit scarce, so anyone looking to write their
 own modules, themes, and status bars should contact me for help. Everyone
 else should browse through the help files (located in the help/ directory)
-by typing /DHELP at the EPIC4 input prompt after DarkStar has finished
+by typing /DHELP at the EPIC4 input prompt, after DarkStar has finished
 loading.
 
 
 REQUIREMENTS
 
-The only requirement is EPIC4-1.1.7 or higher. This script pack
-will NOT work correctly with EPIC4-1.0. You have been warned.
+The only requirement is EPIC4-1.1.7 or higher. This script pack will NOT
+work correctly with EPIC4-1.0 or older versions. You have been warned.
 
 
 WHERE TO GET DARKSTAR AND EPIC4
@@ -75,11 +75,11 @@ variables.
                     install somewhere other than the default. It will
                     now use $loadinfo() to determine the home directory.
 
-      DARKSTAR_RC - Location of the rc file. This is loaded every time
+      DARKSTAR_RC - Location of the RC file. This is loaded every time
                     darkstar.irc is loaded, including /RELOADs. This file
                     should be used for EPIC settings instead of ~/.epicrc,
-                    so that it can be used to load darkstar.irc on startup.
-                    (default: ~/.dsrc)
+                    so that ~/.epicrc it can be used to load darkstar.irc
+                    on startup. (default: ~/.dsrc)
 
  DARKSTAR_USERDIR - Location of the "User directory". This just contains
                     directories where you can put your own modules, status
@@ -106,8 +106,8 @@ having a look at sample.dsrc in the main directory.
 
 At this point you can just type "/LOAD /path/to/darkstar.irc" to begin
 using the scripts. The available modules will be displayed and you will
-be prompted about which ones to load. Just pushing enter will load all
-modules on the Auto-Load list (/DSET AUTO_LOAD_MODULES).
+be prompted to choose which ones to load. Just pushing enter will load
+all modules on the default Auto-Load list (/DSET AUTO_LOAD_MODULES).
 
 If you would like to load DarkStar automatically on client startup,
 you can place the following code in ~/.epicrc

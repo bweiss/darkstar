@@ -11,10 +11,10 @@ Q: How can I add a timestamp to output?
 A: There are currently two ways to add a timestamp to output. The easiest,
    which adds a timestamp to every line, is to do the following.
 
-   /set output_rewrite [$Z] $1-
+   /SET OUTPUT_REWRITE [$Z] $1-
 
    If you want to add a timestamp only to specific output, you should
-   add $Z to any /fset variables that you want to be timestamped.
+   add $Z to any /FSET variables that you want to be timestamped.
 
 --
 
@@ -28,16 +28,16 @@ A: This depends heavily on the amount of customization you do. If you have
    If you don't write any of your own scripts for DarkStar then you don't
    need to worry so much. One cool thing is that you don't always need to
    reload everything. If you know that the changes lie only in a specific
-   module, you can reload just that module (/reloadmod). Same thing applies
-   to themes (just set your theme again with /theme) and status bars (/status).
-   The only time you need to reload the entire system (/reload) is when there
+   module, you can reload just that module (/RELOADMOD). Same thing applies
+   to themes (just set your theme again with /THEME) and status bars (/STATUS).
+   The only time you need to reload the entire system (/RELOAD) is when there
    have been changes to the core scripts (darkstar.irc and everything in the
    core directory). When this is the case, the value of DS.CORE_ID
    (darkstar.irc) will be incremented. This number being higher does not
    necessarily mean that a full reload is required in order to make use of
    changes in other things, it just means that something in the core scripts
    has changed. The only way to know for sure is to check the UPDATES file.
-   If you don't want to worry about it at all, just always use /reload and
+   If you don't want to worry about it at all, just always use /RELOAD and
    you'll be fine.
 
 --
@@ -45,16 +45,16 @@ A: This depends heavily on the amount of customization you do. If you have
 Q: The 'darkstar' status bar is displaying letters with accents instead of
    straight lines. How can I fix this?
 
-A: You need a font that displays these upper ASCII characters correctly.
+A: You need a font that displays these upper ASCII characters "correctly".
    Any of the vga fonts should work. I have two of the vga fonts available
-   at http://www.got.net/~brian/fonts/ and you can probably find others
-   with a quick search on google.
+   at http://www.got.net/~brian/fonts/ and http://www.epicsol.org/~brian/.
+   You can probably find others with a quick search on google.
 
    If you're using a font that you know works and you still can't get the
    lines to display correctly, you can try entering the following command
    at the EPIC input prompt.
 
-     /eval xecho -r $chr(27)\(U
+     /EVAL XECHO -r $chr(27)\(U
 
    If this works for you, you can place this command in ~/.epicrc so that
    it executes on startup.
@@ -79,6 +79,11 @@ A: All you need to do in order to create your own theme (from one of the
    as the name of the theme and will be available immediately without any
    kind of reload.
 
+   The /SAVE command provided by the core scripts also writes the current
+   theme and status bar settings under the name "custom". Combined with
+   a little help from the tabkey module this makes it easy to edit/create
+   themes at the EPIC input prompt. (The tabkey module can be used to
+   complete commands, and even variable names and their values.)
 
 
-EOF
+End of file.

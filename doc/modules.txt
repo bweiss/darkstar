@@ -50,30 +50,30 @@ Limitations:
 # of /MODLIST. It must be the first line of the file or it will not work.
 /*
  * sample.dsm - Example module for DarkStar/EPIC4
- *
- * Written by Brian Weiss <brian@epicsol.org>
  * Copyright (c) 2002 Brian Weiss
  * See the 'COPYRIGHT' file for details.
  *
  * Standard header comment, you can put whatever you like here. To make
  * things easy on other module authors, I like to include a line like the
- * one below whenever I have /on hooks. 
+ * one below whenever I have /ON hooks.
  *
- * This script uses serial numbers 0 and 123 for all /on hooks.
+ * This script uses serial numbers 0 and 123 for all /ON hooks.
  */
+
+/****** CLEANUP QUEUE ******/
 
 /*
  * The most important part, the cleanup queue. This removes anything
  * that the module adds that is not automatically removed by the module
- * loader. This means all /on hooks, all arrays, and any alias or assign
+ * loader. This means all /ON hooks and any alias, assign, or array
  * not in a structure named after the module (i.e. Anything not obviously
  * associated with that module). It is also important to note that there
  * is one evaluation being performed on the body of this queue, so there
  * are times you will have to escape certain characters like '$'. An example
- * of this is shown here in the /on public hook. The name of this queue
- * must be in the form of "cleanup.<modulename>" and must match the exact
- * module name (if the module is named "foo2", the cleanup queue must be
- * named "cleanup.foo2"). Also note that all /alias, /assign, and /on
+ * of this is shown here in the public hook. The name of this queue must
+ * be in the form of "cleanup.<modulename>" and must match the exact module
+ * name (if the module is named "foo2", the cleanup queue must be
+ * named "cleanup.foo2"). Also note that all /ALIAS, /ASSIGN, and /ON
  * commands include the silent mode (^) to prevent them from outputting
  * anything when the cleanup queue is executed.
  */
@@ -83,7 +83,13 @@ queue cleanup.sample
 	^on public -'% % \$CONFIG.SAMPLE_TRIGGER *'
 	^on #hook 123 -"CONFIG SAMPLE_WINDOW *"
 	@ delarray(foobar)
+	if (winnum(sample) != -1) {
+		^window sample kill
+	}
 }
+
+
+/****** CONFIG/FORMAT VARIABLES ******/
 
 /*
  * The aliases config.add and format.add (provided by core/config.dsc) add
@@ -106,31 +112,45 @@ config.add -b SAMPLE_WINDOW 1
  * difference is that fparse2 doesn't pass the string through $cparse() for
  * color coding) and are generally used to format the output resulting from
  * certain events. This allows for easy configuration as well as theme
- * support. See the /on public hook for an example. The numeric expandos
- * ($0, $1, $2, etc.) will be expanded to the arguments passed to the
- * fparse functions. Note that the first argument ($0) will be the name of
- * the format variable. See the /on public hook for the call to $fparse()
- * in this example.
+ * support.
+ *
+ * The numeric expandos ($0, $1, $2, etc.) will be expanded to the arguments
+ * passed to the fparse functions. Note that the first argument ($0) will
+ * be the name of the format variable so the useful parameters generally
+ * begin at $1.
+ *
+ * See the public hook for the call to $fparse() in this example.
  */
 format.add BLAH <%G$1%n> $3-
 
+
+/****** INIT ******/
+
 /*
- * Force the loading of saved settings early so we can use them
- * at load time. Example directly below. Also see modules/window.dsm
- * and modules/misc.dsm.
+ * Force the loading of saved settings early so we can use them at
+ * load time. Example directly below. You can also have a look at
+ * modules/window.dsm and modules/misc.dsm to see this in action.
  */
 module.load_saved_settings
 
 /*
  * Create a split window named "sample" at load time. This window
  * can also be created or killed whenever $CONFIG.SAMPLE_WINDOW is
- * changed via /DSET by creating an '/on hook' event that catches
- * config changes. See example below the public hook.
+ * changed via /DSET by creating an /ON hook that catches config
+ * changes. You can find an example of this below the public hook
+ * in this sample module.
+ *
+ * It is also smart to have the cleanup queue kill this window,
+ * if it exists when the module is unloaded. Another example of this
+ * can be found in modules/window.dsm.
  */
 if (CONFIG.SAMPLE_WINDOW)
 {
 	window new name sample hide
 }
+
+
+/****** USER ALIASES ******/
 
 /*
  * There is no way for the module loader to be sure what this alias belongs
@@ -141,6 +161,9 @@ alias foo (void)
 	echo foobar!
 }
 
+
+/****** INTERNAL ALIASES ******/
+
 /*
  * This will automatically be removed by the module loader, as it is
  * in a structure named after the module. It need not be removed in
@@ -148,25 +171,38 @@ alias foo (void)
  */
 alias sample.speak (target defalt "$C", void)
 {
-	if (target)
-	{
+	if (target) {
 		msg $target foobar!
 	}
 }
 
+
+/****** ON HOOKS ******/
+
 /*
- * All /ON hooks must be removed in the cleanup queue.
+ * All /ON hooks must be removed in the cleanup queue or Bad Things (tm)
+ * will most certainly happen.
+ *
+ * Notice that the values of all config and format variables are
+ * stored and accessed in the CONFIG and FORMAT /ASSIGN structures.
  */
 on ^public '% % $CONFIG.SAMPLE_TRIGGER *'
 {
-	if (FORMAT.BLAH)
-	{
+	/*
+	 * It is usually desirable to check for a value in format
+	 * variables before passing them along to $fparse().
+	 */
+	if (FORMAT.BLAH) {
 		echo $fparse(BLAH $*)
 	}
 
-	if (CONFIG.FOO && finditem(foobar $0) == -1)
-	{
-		/* All arrays must also be removed from the cleanup queue. */
+	if (CONFIG.FOO && finditem(foobar $0) == -1) {
+		/*
+		 * As with aliases and assign variables, any arrays not
+		 * obviously associated with this module must be removed
+		 * by the cleanup queue. (e.g. an array named sample.foo
+		 * would be removed automatically by the module loader)
+		 */
 		@ setitem(foobar $numitems(foobar) $0)
 		sample.speak $0
 	}
@@ -180,19 +216,22 @@ on ^public '% % $CONFIG.SAMPLE_TRIGGER *'
  * variable name in order to allow the module to reset it to the previous
  * value. See the hook at the bottom of modules/names.dsm for an example
  * of this.
+ *
+ * These hooks should always have a non-zero serial number since there is
+ * no need to suppress any default output/action. See Serial_Numbers(7) in
+ * the EPIC help files for more information on the use of serial numbers.
  */
 on #-hook 123 "CONFIG SAMPLE_WINDOW *"
 {
-	if (CONFIG.SAMPLE_WINDOW)
-	{
+	if (CONFIG.SAMPLE_WINDOW) {
 		window new name sample last
-	}{
+	} else {
 		window sample kill
 	}
 }
 
 
-
+/* EOF */
 --- END OF FILE: sample.dsm ---
 
 
@@ -205,7 +244,7 @@ have a question about something not covered here, or especially if you have
 a suggestion for how something can be improved. That's all for now,
 happy scripting!
 
- - Brian Weiss <brian at epicsol.org>
+  Brian Weiss <brian at epicsol.org>
 
 
-EOF
+End of file.
