@@ -1,6 +1,12 @@
 Darkstar ChangeLog
 
 
+20020402
+
+ * [tabkey.dsm 0.6.2] Fixed a bug that was causing msg completion to not
+   properly keep track of which server a msg originated from. This was
+   discovered by whitefang.
+
 20020401
 
  * [channel.dsm 0.2.5] Several shortcut aliases were broken. Oops.

@@ -66,7 +66,7 @@ assign DS.INTERNAL_VERSION 20020401
 
 /* This will be incremented every time a change takes place to the core
    scripts (anything that requires /reload to update). */
-assign DS.COMMIT_ID 21
+assign DS.COMMIT_ID 22
 
 
 /*

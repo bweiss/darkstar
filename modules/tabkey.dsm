@@ -1,4 +1,4 @@
-#version 0.6.1
+#version 0.6.2
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key module for Darkstar/EPIC4
@@ -94,25 +94,25 @@ alias tabkey.addrule
 }
 
 /*
- * tabkey.addnick <nick>
+ * tabkey.addnick <nick> <window refnum>
  *
- * Adds <nick> to the msg history. This will keep separate lists for each
- * server you are connected to.
+ * Adds <nick> to the msg history for <window refnum>. This will keep
+ * separate lists for each server you are connected to.
  */
-alias tabkey.addnick (nick, void)
+alias tabkey.addnick (nick, server, void)
 {
-	if (match($nick $TABKEY.NICKS[$winserv()]))
+	if (match($nick $TABKEY.NICKS[$server]))
 	{
-		@ TABKEY.NICKS.$winserv() = remw($nick $TABKEY.NICKS[$winserv()])
+		@ TABKEY.NICKS.$server = remw($nick $TABKEY.NICKS[$server])
 	}
 
-	if (numwords($TABKEY.NICKS[$winserv()]) == CONFIG[TABKEY_NICK_HISTORY])
+	if (numwords($TABKEY.NICKS[$server]) == CONFIG[TABKEY_NICK_HISTORY])
 	{
-		shift TABKEY.NICKS.$winserv()
+		shift TABKEY.NICKS.$server
 	}
 
-	@ push(TABKEY.NICKS[$winserv()] $nick)
-	@ TABKEY.INDEX.$winserv() = [-1]
+	@ push(TABKEY.NICKS[$server] $nick)
+	@ TABKEY.INDEX.$server = [-1]
 }
 
 alias tabkey.display_rules (void)
@@ -443,7 +443,7 @@ for hook in (msg send_msg)
 { 
 	on #^$hook 420 "*"
 	{
-		tabkey.addnick $0
+		tabkey.addnick $0 $servernum()
 	}
 }
 
@@ -451,13 +451,13 @@ for hook in (dcc_chat send_dcc_chat)
 {
 	on #^$hook 420 "*"
 	{
-		tabkey.addnick =$0
+		tabkey.addnick =$0 $servernum()
 	}
 }
 
 on #^dcc_connect 420 "% CHAT *"
 {
-	tabkey.addnick =$0
+	tabkey.addnick =$0 $servernum()
 }
 
 

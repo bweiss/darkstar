@@ -8,11 +8,7 @@
  */
 
 
-alias listmods modlist
 alias loadedmods loadedmodules
-alias modules modlist
-
-
 alias loadedmodules (void)
 {
 	echo  #   Module               Version      Size (bytes)
@@ -57,6 +53,8 @@ alias loadmod (modules)
 	}
 }
 
+alias listmods modlist
+alias modules modlist
 alias modlist (void)
 {
 	loader.build_modlist
@@ -120,8 +118,10 @@ alias unloadmod (modules)
 
 
 /*
- * Stores available modules in two arrays, one for module names (modules) and
- * one for module filenames (module_files).
+ * Stores available modules in two arrays, one for module names (modules)
+ * and one for module filenames (module_files). Now also reads a version
+ * tag from the first line of the module and stores it in the module_version
+ * array.
  */
 alias loader.build_modlist (void)
 {

@@ -23,8 +23,7 @@ alias dinfo (void)
 
 	/* Display information about the client. */
 	xecho -b ircII $J \($V\) [$info(i)] "$info(r)"
-	xecho -b PID: $pid(), PPID: $ppid()
-	xecho -b Uptime: $tdiff(${time() - F})
+	xecho -b Uptime: $tdiff2(${time() - F}) - PID: $pid(), PPID: $ppid()
 	xecho -b $info(c)
 	xecho -b Compile-time options: $info(o)
 	echo $G $divider
