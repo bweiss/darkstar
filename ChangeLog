@@ -1,6 +1,12 @@
 Darkstar ChangeLog
 
 
+2/17/02
+
+ * [tabkey.dsm] Rewrite. It should now be possible to add completion procedures
+   that the completion rules will automatically be able to use. See the
+   comments throughout the code for details.
+
 2/9/02
 
  * Forgot to close a comment in loader.dsc above loader.dependency. Oops.

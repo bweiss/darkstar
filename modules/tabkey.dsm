@@ -1,4 +1,4 @@
-#version 0.2.2
+#version 0.3
 /*     _             _        _
  *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
  * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
@@ -7,7 +7,7 @@
  * TABKEY.DSM - Tab key module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/22/02 (bmw)
+ * Last modified: 2/17/02 (bmw)
  *
  * This script uses serial number 420 for all /on hooks.
  */
@@ -37,8 +37,6 @@ bind ^I parse_command tabkey.process_tabkey
 
 alias cleartab (void)
 {
-	xecho -s -b Clearing tabkey history...
-
 	for var in ($aliasctl(assign match TABKEY.NICKS.))
 	{
 		^assign -$var
@@ -48,18 +46,17 @@ alias cleartab (void)
 	{
 		^assign -$var
 	}
+
+	xecho -b Tabkey history cleared
 }
 
 
 /*
- * tabkey.addrule <pattern> <routine> [word list]
+ * tabkey.addrule <pattern> <procedure> [word list]
  *
  * Adds a new completion rule. Both <pattern> and [word list] MUST be double
- * quoted or things will break.
- *
- * Routines that take word lists:         channel, nick
- * Routines that do NOT take word lists:  command, config, file, format,
- *                                        lmods, mods, msg
+ * quoted or things will break. The <procedure> argument should be the member
+ * name of an existing tabkey procedure (tabkey.proc.<procedure>).
  *
  * Example: tabkey.addrule "/foo *" channel "$mychannels()"
  */
@@ -67,10 +64,10 @@ alias tabkey.addrule
 {
 	@ :pattern = word(0 $*)
 	^local pattern \"$pattern\"
-	@ :routine = word(1 $*)
+	@ :proc = word(1 $*)
 	@ :list = word(2 $*)
 
-	if (!pattern || !routine)
+	if (!pattern || !proc)
 	{
 		xecho -b Error: tabkey.addrule: Not enough arguments
 		return
@@ -86,22 +83,12 @@ alias tabkey.addrule
 		return
 	}
 
-	if (match($routine channel nick))
-	{
-		if (!list)
-		{
-			xecho -b Error: tabkey.addrule: Routine [$routine] requires a word list
-			return
-		}
-		@ setitem(tabkey_rules $numitems(tabkey_rules) $pattern)
-		@ setitem(tabkey_rinfo $numitems(tabkey_rinfo) $routine $list)
-	} \
-	elsif (match($routine command config file format lmods mods msg))
+	if (aliasctl(alias match tabkey.proc.$proc))
 	{
 		@ setitem(tabkey_rules $numitems(tabkey_rules) $pattern)
-		@ setitem(tabkey_rinfo $numitems(tabkey_rinfo) $routine)
+		@ setitem(tabkey_rinfo $numitems(tabkey_rinfo) $proc${list ? [ $list] : []})
 	}{
-		xecho -b Error: tabkey.addrule: Invalid completion routine [$routine]
+		xecho -b Error: tabkey.addrule: Invalid completion procedure [$proc]
 	}
 }
 
@@ -123,8 +110,53 @@ alias tabkey.addnick (nick, void)
 
 	@ push(TABKEY.NICKS[$winserv()] $nick)
 	@ TABKEY.INDEX.$winserv() = [-1]
+}
 
-	return
+/*
+ * Generic completion procedure. This can be used by the other procedures that
+ * will be called by tabkey.process_tabkey or as an example for writing your
+ * own. If you would like the completed word to be suffixed with something
+ * other than a space, you can change the value of TABKEY.SUFFIX in your
+ * procedure.
+ */
+alias tabkey.complete (word, list)
+{
+	if (!word || !list)
+	{
+		return
+	}
+
+	if (word == [*])
+	{
+		@ :matches = list
+	}{
+		@ :matches = pattern($word% $list)
+	}
+
+	if (#matches == 1)
+	{
+		^assign -TABKEY.SHOWMATCHES
+		parsekey delete_to_previous_space
+		xtype -l $matches$TABKEY.SUFFIX
+	}\
+	else if (#matches > 1)
+	{
+		beep
+		@ TABKEY.SHOWMATCHES++
+		parsekey delete_to_previous_space
+		xtype -l $prefix($matches)
+
+		if (TABKEY[SHOWMATCHES] > 1)
+		{
+			xecho -b Matches:
+			for tmp in ($matches)
+			{
+				echo $tmp
+			}
+		}
+	}{
+		^assign -TABKEY.SHOWMATCHES
+	}
 }
 
 alias tabkey.display_rules (void)
@@ -140,164 +172,122 @@ alias tabkey.display_rules (void)
 	}
 }
 
+/*
+ * This is called whenever the user actually pushes the Tab key.
+ */
 alias tabkey.process_tabkey (void)
 {
 	@ :item = rmatchitem(tabkey_rules "$L")
 
 	if (item > -1)
 	{
-		@ :tmp = getitem(tabkey_rinfo $item)
-		@ :routine = word(0 $tmp)
-		eval ^local list $restw(1 $tmp)
-
-		switch ($tolower($routine))
-		{
-			(channel) { @ tabkey.channel_routine($list) }
-			(command) { parsekey command_completion }
-			(config)  { @ tabkey.set_routine(CONFIG) }
-			(file)    { @ tabkey.file_routine() }
-			(format)  { @ tabkey.set_routine(FORMAT) }
-			(lmods)   { @ tabkey.module_routine(loaded_modules) }
-			(mods)    { @ tabkey.module_routine(modules) }
-			(msg)     { @ tabkey.msg_routine() }
-			(nick)    { @ tabkey.nick_routine($list) }
-			(*) {
-				xecho -b Invalid completion routine specified [$routine] \(item: $item\)
-			}
-		}
+		@ :rinfo = getitem(tabkey_rinfo $item)
+		@ :proc = word(0 $rinfo)
+		eval ^local list $restw(1 $rinfo)
+		@ TABKEY.SUFFIX = [ ]
+		tabkey.proc.$proc $list
 	}
 }
-	
 
+	
 /*
- * COMPLETION ROUTINES
- * These do all the dirty work. Currently there is a lot of duplicate code
- * so this could probably use some optimization.
+ * COMPLETION PROCEDURES
+ * These will be called by tabkey.process_tabkey when a matching completion
+ * rule is found. Where possible, they should use tabkey.complete to do
+ * most of the work.
  */
 
-alias tabkey.channel_routine (list)
+alias tabkey.proc.channel (list)
 {
 	@ :lastc = mid(${strlen($L) - 1} 1 $L)
-	
 	if (lastc == [ ])
 	{
-		if (#list == 1)
-		{
-			@ :space = [ ]
-			parsekey delete_to_previous_space
-			xtype -l $list$space
-		}
+		tabkey.complete * $list
 	}{
 		@ :lastw = word(${#L - 1} $L)
-		@ lastw = sar(g/\\/\\\\\/$lastw)
-		@ :findchan = pattern($lastw% $list)
-		
-		if (match($lastw $findchan))
-		{
-			xecho -b Matches:
-			echo $findchan
-		}
-		
-		if (#findchan == 1)
-		{
-			@ :space = [ ]
-			parsekey delete_to_previous_space
-			xtype -l $findchan$space
-		} \
-		elsif (#findchan > 1)
-		{
-			parsekey delete_to_previous_space
-			xtype -l $prefix($findchan)
-			
-			@ :lastw = word(${#L - 1} $L)
-			if (!match($lastw $findchan))
-			{
-				xecho -b Matches:
-				echo $findchan
-			}
-		}
+		@ :lastw = sar(g/\\/\\\\\/$lastw)
+		tabkey.complete $lastw $list
 	}
-	
-	return
 }
 
-alias tabkey.file_routine (void)
+alias tabkey.proc.command (void)
+{
+	parsekey command_completion
+}
+
+alias tabkey.proc.file (void)
 {
 	@ :lastc = mid(${strlen($L) - 1} 1 $L)
-
 	unless (lastc == [ ])
 	{
 		@ :lastw = twiddle($word(${#L - 1} $L))
-		@ :findfile = pattern($lastw% $glob($lastw*))
+		@ :matches = pattern($lastw% $glob($lastw*))
 		
-		if (#findfile == 1)
+		if (#matches == 1)
 		{
-			@ :lastc = mid(${strlen($findfile) - 1} 1 $findfile)
+			^assign -TABKEY.SHOWMATCHES
+			@ :lastc = mid(${strlen($matches) - 1} 1 $matches)
 			parsekey delete_to_previous_space
-			xtype -l $findfile${lastc == [/] ? [] : [ ]}
-		} \
-		elsif (#findfile > 1)
+			xtype -l $matches${lastc == [/] ? [] : [ ]}
+		}\
+		else if (#matches > 1)
 		{
+			beep
+			@ TABKEY.SHOWMATCHES++
 			parsekey delete_to_previous_space
-			xtype -l $prefix($findfile)
+			xtype -l $prefix($matches)
 
-			xecho -b Matches:
-			for file in ($findfile)
-			{
-				echo $file
-			}
-		}
-	}
-	
-	return
-}
-
-alias tabkey.module_routine (array, void)
-{
-	@ :lastc = mid(${strlen($L) - 1} 1 $L)
-	
-	unless (lastc == [ ])
-	{
-		^local modules
-		
-		for cnt from 1 to $numitems($array)
-		{
-			@ :itm = cnt - 1
-			@ push(modules $getitem($array $itm))
-		}
-		
-		@ :lastw = word(${#L - 1} $L)
-		@ :findmod = pattern($lastw% $modules)
-
-		if (match($word(1 $L) $findmod))
-		{
-			xecho -b Matches:
-			echo $findmod
-		}
-		
-		if (#findmod == 1)
-		{
-			@ :space = [ ]
-			parsekey delete_to_previous_space
-			xtype -l $findmod$space
-		} \
-		elsif (#findmod > 1)
-		{
-			parsekey delete_to_previous_space
-			xtype -l $prefix($findmod)
-
-			if (!match($word(1 $L) $findmod))
+			if (TABKEY[SHOWMATCHES] > 1)
 			{
 				xecho -b Matches:
-				echo $findmod
+				for file in ($matches)
+				{
+					echo $file
+				}
 			}
+		}{
+			^assign -TABKEY.SHOWMATCHES
 		}
 	}
-
-	return
 }
 
-alias tabkey.msg_routine (void)
+alias tabkey.proc.lmods (void)
+{
+	^local modules
+	for cnt from 0 to ${numitems(loaded_modules) - 1}
+	{
+		@ push(modules $getitem(loaded_modules $cnt))
+	}
+
+	@ :lastc = mid(${strlen($L) - 1} 1 $L)
+	if (lastc == [ ])
+	{
+		tabkey.complete * $modules
+	}{
+		@ :lastw = word(${#L - 1} $L)
+		tabkey.complete $lastw $modules
+	}
+}
+
+alias tabkey.proc.mods (void)
+{
+	^local modules
+	for cnt from 0 to ${numitems(modules) - 1}
+	{
+		@ push(modules $getitem(modules $cnt))
+	}
+
+	@ :lastc = mid(${strlen($L) - 1} 1 $L)
+	if (lastc == [ ])
+	{
+		tabkey.complete * $modules
+	}{
+		@ :lastw = word(${#L - 1} $L)
+		tabkey.complete $lastw $modules
+	}
+}
+
+alias tabkey.proc.msg (void)
 {
 	@ :nicks = TABKEY.NICKS[$winserv()]
 	@ :index = TABKEY.INDEX[$winserv()]
@@ -320,68 +310,40 @@ alias tabkey.msg_routine (void)
 	}{
 		@ TABKEY.INDEX.$winserv() = [-1]
 	}
-
-	return
 }
 
-alias tabkey.nick_routine (list)
+alias tabkey.proc.nick (list)
 {
 	@ :lastc = mid(${strlen($L) - 1} 1 $L)
-	
 	if (lastc == [ ])
 	{
-		if (#list == 1)
-		{
-			@ :space = [ ]
-			parsekey delete_to_previous_space
-			xtype -l $list$space
-		}
+		tabkey.complete * $list
 	}{
 		@ :lastw = word(${#L - 1} $L)
-		@ lastw = sar(g/\\/\\\\\/$lastw)
-		@ :findnick = pattern($lastw% $list)
-
-		if (match($word(1 $L) $findnick))
+		@ :lastw = sar(g/\\/\\\\\/$lastw)
+		if (#L < 2)
 		{
-			xecho -b Matches:
-			echo $findnick
+			@ TABKEY.SUFFIX = CONFIG[TABKEY_NICKCOMP_SUFFIX] ## [ ]
 		}
-		
-		if (#findnick == 1)
-		{
-			if (#L == 1)
-			{
-				@ :space = CONFIG[TABKEY_NICKCOMP_SUFFIX] ## [ ]
-			}{
-				@ :space = [ ]
-			}
-			parsekey delete_to_previous_space
-			xtype -l $findnick$space
-		} \
-		elsif (#findnick > 1)
-		{
-			parsekey delete_to_previous_space
-			xtype -l $prefix($findnick)
-
-			if (!match($word(1 $L) $findnick))
-			{
-				xecho -b Matches:
-				echo $findnick
-			}
-		}
+		tabkey.complete $lastw $list
 	}
-
-	return
 }
 
-alias tabkey.set_routine (type, void)
+alias tabkey.proc.config (void)
+{
+	tabkey.set_routine config
+}
+
+alias tabkey.proc.format (void)
+{
+	tabkey.set_proc format
+}
+
+alias tabkey.set_proc (type, void)
 {
 	@ :lastc = mid(${strlen($L) - 1} 1 $L)
-
 	unless (lastc == [ ])
 	{
-		^local newvars
-
 		if (left(1 $word(1 $L)) == [-])
 		{
 			@ :rmflag = 1
@@ -390,34 +352,27 @@ alias tabkey.set_routine (type, void)
 			@ :word1 = word(1 $L)
 		}
 		
-		@ :cur_value = aliasctl(assign get $type\.$word1)
-		@ :findvar = aliasctl(assign match $type\.$word1)
-		
-		for var in ($findvar)
+		@ :matches = aliasctl(assign match $type\.$word1)
+		^local new_matches
+		for var in ($matches)
 		{
-			@ push(newvars $after(1 . $var))
+			@ push(new_matches $after(1 . $var))
 		}
 		
-		if (cur_value)
+		if (#new_matches == 1)
 		{
-			xecho -b Matches:
-			echo $newvars
-		}
-		
-		if (#newvars == 1)
-		{
-			@ :space = [ ]
+			^assign -TABKEY.SHOWMATCHES
 			parsekey delete_to_previous_space
-			xtype -l ${rmflag ? [-] : []}$newvars$space
-		} \
-		elsif (#newvars > 1)
+			xtype -l ${rmflag ? [-] : []}$new_matches${[ ]}
+		}\
+		else if (#new_matches > 1)
 		{
+			beep
+			@ TABKEY.SHOWMATCHES++
 			parsekey delete_to_previous_space
 			xtype -l ${rmflag ? [-] : []}$prefix($newvars)
 
-			@ :cur_value = aliasctl(assign get $type\.$word(1 $L))
-
-			if (!cur_value)
+			if (TABKEY[SHOWMATCHES] > 1)
 			{
 				xecho -b Matches:
 				for var in ($newvars)
@@ -425,22 +380,21 @@ alias tabkey.set_routine (type, void)
 					echo $var
 				}
 			}
+		}{
+			^assign -TABKEY.SHOWMATCHES
 		}
 	}
-	
-	return
 }
 
 
 /*
- * Passes the nicks of people you are chatting with through $tabkey.addnick()
- * to put them into the msg_routine history.
+ * Add the nicks of people you are chatting with to the msg history.
  */
 for hook in (msg send_msg)
 { 
 	on #^$hook 420 "*"
 	{
-		@ tabkey.addnick($0)
+		@ tabkey.addnick $0
 	}
 }
 
@@ -448,13 +402,13 @@ for hook in (dcc_chat send_dcc_chat)
 {
 	on #^$hook 420 "*"
 	{
-		@ tabkey.addnick(=$0)
+		@ tabkey.addnick =$0
 	}
 }
 
 on #^dcc_connect 420 "% CHAT *"
 {
-	@ tabkey.addnick(=$0)
+	@ tabkey.addnick =$0
 }
 
 
