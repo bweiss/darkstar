@@ -39,6 +39,8 @@ AFTER 0.3 RELEASE:
     615 fudd : is using modes +ix +
     616 fudd : real hostname nuthouse.org 216.254.103.18
 
+  * Add support for a random kick msg file like what BX has.
+
 
 OTHER NOTES/IDEAS:
 

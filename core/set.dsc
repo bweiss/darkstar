@@ -26,16 +26,13 @@ alias format.add (...) {addformat $*};
 #
 # Data about each variable will be stored in several assign structures.
 #
-#  <type>.<var>            = value for <var> (may be empty)
-#  <type2>.<var>           = name of parent module
-#  _MODULE.<module>.<type> = list of <type> vars belonging to <module>
+# <type>.<var>            = value for <var> (may be empty)
+# <struct>.<var>          = <parentmod> <boolean>
+# _MODULE.<module>.<type> = list of <type> vars belonging to <module>
 #
 # <module> is the name of the calling module or "core" if there isn't one
 # <type> can be either "CONFIG" or "FORMAT"
-# <type2> can be either "_DSET" or "_FSET"
-#
-# A list of config variables that are boolean will also be stored in the
-# _boolcfgvars array.
+# <struct> can be either "_DSET" or "_FSET"
 #
 alias _addsetvar (type, ...)
 {
@@ -65,7 +62,7 @@ alias _addsetvar (type, ...)
 	{
 		^local variable $1;
 		^local value $2-;
-		@ setitem(_boolcfgvars $numitems(_boolcfgvars) $variable);
+		^local bool 1;
 	}{
 		^local variable $0;
 		^local value $1-;
@@ -76,7 +73,7 @@ alias _addsetvar (type, ...)
 		echo Error: _addsetvar: Duplicate $tolower($type) variable: $variable \(module: $mod\);
 	}{
 		@ push(_MODULE.$mod\.$type $variable);
-		^assign $struct\.$variable $mod;
+		^assign $struct\.$variable $mod $bool;
 		^assign $type\.$variable $value;
 	};
 };
@@ -105,9 +102,10 @@ alias _set (type, variable, value)
 		};
 		if (FORMAT.SET_FOOTER) {xecho -s $fparse(SET_FOOTER $#getdsets())};
 	}{
-		^local var $strip(- $variable);
-		^local bingo ${aliasctl(assign get $struct\.$var) ? 1 : 0};
-		^local matches $aliasctl(assign match $struct\.$var);
+		@ :var     = strip(- $variable);
+		@ :bingo   = aliasctl(assign get $struct\.$var) ? 1 : 0;
+		@ :bool    = word(1 $aliasctl(assign get $struct\.$var));
+		@ :matches = aliasctl(assign match $struct\.$var);
 
 		if (#matches > 1 && !bingo)
 		{
@@ -120,16 +118,16 @@ alias _set (type, variable, value)
 		}
 		else if (bingo || #matches == 1)
 		{
-			^local var $after(1 . $word(0 $matches));
-			^local realvar $type\.$var;
-			^local old_value $aliasctl(assign get $realvar);
+			@ :var     = after(1 . $word(0 $matches));
+			@ :realvar = [$type\.$var];
+			@ :oldval  = aliasctl(assign get $realvar);
 
 			if (variable =~ [-%])
 			{
 				^assign -$realvar;
 				xecho -s $fparse(SET_CHANGE $toupper($var) <EMPTY>);
 				# Hook the changes so modules can act on it.
-				hook $type $var $old_value;
+				hook $type $var $oldval;
 			}
 			else if (value == [])
 			{
@@ -139,7 +137,7 @@ alias _set (type, variable, value)
 			}
 			else
 			{
-				if (type == [CONFIG] && finditem(_boolcfgvars $var) > -1)
+				if (bool)
 				{
 					switch ($toupper($value))
 					{
@@ -155,7 +153,7 @@ alias _set (type, variable, value)
 					^assign $realvar $value;
 					xecho -s $fparse(SET_CHANGE $toupper($var) $value);
 				};
-				hook $type $var $old_value;
+				hook $type $var $oldval;
 			};
 		}{
 			xecho -b -s No matches for \"$toupper($var)\" found;
@@ -171,14 +169,22 @@ alias _set (type, variable, value)
 alias _setcat (realvar, void)
 {
 	@ :var = after(1 . $realvar);
+
+	switch ($realvar)
+	{
+		(CONFIG.*) {^local struct _DSET}
+		(FORMAT.*) {^local struct _FSET}
+	};
+
 	if ($realvar == [])
 	{
 		if (FORMAT.SET_NOVALUE) {
 			xecho -s $fparse(SET_NOVALUE $toupper($var));
 		};
 	}{
-		if (FORMAT.SET) {
-			if (before(. $realvar) == [CONFIG] && finditem(_boolcfgvars $var) > -1) {
+		if (FORMAT.SET)
+		{
+			if (word(1 $aliasctl(assign get $struct\.$var))) {
 				xecho -s $fparse(SET $toupper($var) $toupper($bool2word($($realvar))));
 			} else {
 				xecho -s $fparse(SET $toupper($var) $($realvar));

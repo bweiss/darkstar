@@ -8,7 +8,7 @@
 #  DarkStar - A modular script pack for the EPIC4 IRC client.
 #  Copyright (c) 2002, 2003 Brian Weiss <brian@epicsol.org>
 #
-#  Designed for use with EPIC4-1.2.6 and up.
+#  Designed for use with EPIC4-2.0 and up.
 #  See the 'README' file for general information.
 #  See the 'COPYRIGHT' file for licensing information.
 #
@@ -19,12 +19,12 @@ if (word(2 $loadinfo()) != [pf])
 	return;
 };
 
-if (!epic() || V < 20031216)
+if (!epic() || V < 20040219)
 {
 	echo;
 	echo WARNING!;
 	echo;
-	echo This script pack is for use with EPIC4, version 1.2.6 and up.;
+	echo This script pack is for use with EPIC4, version 2.0 and up.;
 	echo Your client, $J, does not meet this requirement.;
 	echo Continue at your own risk.;
 	echo;
@@ -76,7 +76,7 @@ for array in ($getarrays()) {
 # This will be incremented every time a change takes place in
 # the core scripts (this file and any *.dsc files in $DS.HOME/core/).
 #
-@ DS.CORE_ID = 120;
+@ DS.CORE_ID = 121;
 
 xecho -b -c Loading DarkStar $DS.VERSION;
 
