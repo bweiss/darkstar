@@ -148,7 +148,7 @@ alias save.save_formats (modules)
 	}
 
 	/* Write the master theme file. */
-	^local save_file $save_dir/custom.dst
+	^local save_file $save_dir/main.dst
 	@ unlink($save_file)
 	@ :fd = open($save_file W)
 
