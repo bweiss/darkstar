@@ -18,9 +18,7 @@ alias sbar status
 alias statbar status
 alias status (args)
 {
-	/*
-	 * Check for quiet option.
-	 */
+	/* Check for quiet option */
 	if (left(1 $word(0 $args)) == [-]) {
 		@:sbar = word(1 $args)
 		if (word(0 $args) == [-q]) {
@@ -85,22 +83,19 @@ alias status.buildlist (void)
 }
 
 /*
- * Everything involved with actually changing the status. Returns 0 on success
- * and > 0 on failure.
+ * Everything involved with actually changing the status.
+ * Returns 0 on success and > 0 on failure.
  */
 alias status.change (sbar, void)
 {
 	@:file = getitem(status_files $finditem(status $sbar))
 	if (fexist($file) == 1)
 	{
-		/*
-		 * Load the status file.
-		 */
 		load $file
 
 		/*
 		 * Turn on/off the double status bar according to
-		 * $STATUS.DOUBLE. Any windows in the single_status
+		 * STATUS.DOUBLE. Any windows in the single_status
 		 * array are exempt from being double.
 		 */
 		for refnum in ($winrefs()) {
@@ -128,7 +123,7 @@ alias status.display (void)
 	for cnt from 0 to ${numitems(status) - 1} {
 		@:name = getitem(status $cnt)
 		@:num = cnt + 1
-		echo  $[3]num $name
+		echo $[3]num $name
 	}
 }
 

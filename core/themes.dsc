@@ -71,18 +71,18 @@ alias themes.buildlist (void)
 }
 
 /*
- * Attempts to change the current theme. Returns 0 if successful or > 0 if not.
+ * Attempts to change the current theme.
+ * Returns 0 if successful or > 0 if not.
  */
 alias themes.change (theme, void)
 {
 	if (!theme) {
-		/* Not enough arguments. */
+		/* Not enough arguments */
 		return 1
 	}
 
 	@:t_item = finditem(themes $theme)
-	if (t_item > -1)
-	{
+	if (t_item > -1) {
 		@:dir = getitem(theme_dirs $t_item)
 		@:master_file = dir ## [/main.dst]
 		if (fexist($master_file) == 1) {
@@ -99,11 +99,11 @@ alias themes.change (theme, void)
 			return 0
 		}
 
-		/* Master theme file not found. */
+		/* Master theme file not found */
 		return 3
 	}
 
-	/* Theme not found. */
+	/* Theme not found */
 	return 2
 }
 
@@ -113,7 +113,7 @@ alias themes.display (void)
 	xecho -b Available themes:
 	for cnt from 0 to ${numitems(themes) - 1} {
 		@:num = cnt + 1
-		echo  $[3]num $getitem(themes $cnt)
+		echo $[3]num $getitem(themes $cnt)
 	}
 }
 
@@ -121,12 +121,12 @@ alias themes.display (void)
 /****** ON HOOKS ******/
 
 /*
- * Change themes on /DSET THEME.
+ * Change themes on /DSET THEME
  */
 on #-hook 1 "CONFIG THEME *"
 {
 	if (DS[THEME] != [$2]) {
-		/* If our theme change fails, set THEME back to previous value. */
+		/* If our theme change fails, set THEME back to previous value */
 		if (themes.change($CONFIG.THEME)) {
 			xecho -b Invalid theme.
 			xecho -b Value of THEME set back to $2
@@ -138,7 +138,6 @@ on #-hook 1 "CONFIG THEME *"
 
 /****** STARTUP ******/
 
-/* Set our current theme. */
 eval theme $CONFIG.THEME
 
 

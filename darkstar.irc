@@ -61,13 +61,13 @@ for array in ($getarrays()) {
  * Important global variables
  */
 @ DS.VERSION = [0.2.8]
-@ DS.INTERNAL_VERSION = [20020923]
+@ DS.INTERNAL_VERSION = [20020925]
 
 /*
  * This will be incremented every time a change takes place in
  * the core scripts (this file and any .dsc files in core/).
  */
-@ DS.CORE_ID = 70
+@ DS.CORE_ID = 71
 
 
 eval xecho -b Loading DarkStar $DS.VERSION
@@ -182,7 +182,7 @@ eval load $DS.HOME/core/help.dsc
 eval load $DS.HOME/core/save.dsc
 eval load $DS.HOME/core/status.dsc
 
-/* Default settings for the core scripts. */
+/* Default settings for the core scripts */
 config.add -b AUTO_LOAD_DEPENDENCIES 1
 config.add    AUTO_LOAD_MODULES away channel dcc keepnick misc names nickcomp relay tabkey window
 config.add -b AUTO_LOAD_PROMPT 1
