@@ -1,4 +1,4 @@
-#version 0.2.5
+#version 0.3
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for Darkstar/EPIC4
@@ -36,6 +36,7 @@ config.add -b AUTO_RESPONSE_BEEP 0
 config.add    AUTO_RESPONSE_STR
 config.add    BANTYPE 3
 config.add    DEFAULT_KICK_REASON No soup for you!
+config.add    MAX_MODES 4
 config.add -b SHOW_OPVOICE_IN_PUBLICS 0
 
 format.add ACTION_CHANNEL * $1 $3-
@@ -123,16 +124,7 @@ alias ban (targets)
 		}
 	}
 
-	fe ($bans) b1 b2 b3
-	{
-		^local mode +
-		for ban in ($b1 $b2 $b3)
-		{
-			if (ban) @ mode = mode ## [b]
-		}
-
-		//mode $C $mode $b1 $b2 $b3
-	}
+	massmode $C + b $bans
 }
 
 alias bk bankick
@@ -329,9 +321,21 @@ alias massmode (chan, action, mode, ...)
 		return
 	}
 
-	fe ($*) a1 a2 a3 a4
+	^local tmp
+	for cnt from 1 to $CONFIG.MAX_MODES
 	{
-		//mode $chan $action $repeat(4 $mode) $a1 $a2 $a3 $a4
+		push tmp mode.$cnt
+	}
+
+	fe ($*) $tmp
+	{
+		^local nicks
+		for (@ :cnt = 1, mode[$cnt], @ :cnt++)
+		{
+			eval push nicks \$mode[$cnt]
+		}
+
+		//mode $chan $action $repeat($#nicks $mode) $nicks
 	}
 }
 
@@ -438,15 +442,21 @@ alias tban (chan default "$C", void)
 			}
 		}
 
-		fe ($bans) b1 b2 b3 b4
+		^local tmp
+		for cnt from 1 to $CONFIG.MAX_MODES
 		{
-			^local mode -
-			for ban in ($b1 $b2 $b3 $b4)
+			push tmp mode.$cnt
+		}
+
+		fe ($bans) $tmp
+		{
+			^local masks
+			for (@ :cnt = 1, mode[$cnt], @ :cnt++)
 			{
-				if (ban) @ mode = mode ## [b]
+				eval push masks \$mode[$cnt]
 			}
 
-			//mode $chan $mode $b1 $b2 $b3 $b4
+			//mode $chan -$repeat($#masks b) $masks
 		}
 
 		^on #^367 424 -"% $chan *"
@@ -478,14 +488,11 @@ alias unban (bans)
 {
 	if (!bans)
 	{
-		xecho -b Usage: /unban <ban1> [ban2] [ban3] ...
+		xecho -b Usage: /unban <ban> ...
 		return
 	}
 
-	fe ($bans) b1 b2 b3 b4
-	{
-		//mode $C -bbbb $ban
-	}
+	massmode $C - b $bans
 }
 
 alias unkey (void)

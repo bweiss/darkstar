@@ -13,6 +13,9 @@ Author: Brian Weiss <brian@epicsol.org>
    BANTYPE                      - Integer argument for mask(6). This is used
                                   by the ban related aliases.
    DEFAULT_KICK_REASON          - Default kick reason for various aliases.
+   MAX_MODES                    - Number of modes to send to the server
+                                  at once. This should be set as high as
+                                  your server allows.
    SHOW_OPVOICE_IN_PUBLICS      - Boolean. Display @/+ (op/voice) in publics.
 
 Format Variables:
@@ -34,8 +37,8 @@ Author: Brian Weiss <brian@epicsol.org>
      - Set mode +b for <nick|mask> on current channel. If the nick of a
        person on the current channel is specified, a hostmask will be created
        via $mask() according to the value of $CONFIG.BANTYPE. If multiple
-       arguments are specified, the bans will be sent 3 at a time. Eventually
-       this will be configurable. Most other ban related aliases use this.
+       bans are specified, they will be sent to the server $CONFIG.MAX_MODES
+       at a time.
 
    bankick <nick> [reason ...]
      - Sets mode +b for <nick> followed immediately by a kick, both on the
@@ -92,7 +95,7 @@ Author: Brian Weiss <brian@epicsol.org>
        will ask before doing anything.
 
    massmode <channel> <+|-> <mode> <mode parameters>
-     - Sets an unlimited number of modes 4 at a time.
+     - Sets an unlimited number of modes, $CONFIG.MAX_MODES at a time.
 
    mdeop [channel]
      - Set -o for everyone on [channel] or the current channel if not given.
@@ -132,8 +135,7 @@ Author: Brian Weiss <brian@epicsol.org>
      - Sets a temporary ban on <nick|mask> that lasts for <seconds>.
 
    unban <mask> ...
-     - Removes an unlimited amount of bans, 4 at a time. Requires an exact
-       hostmask.
+     - Removes an unlimited number of bans from the current channel.
 
    unkey
      - Removes key from current channel, if any.

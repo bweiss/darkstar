@@ -6,6 +6,11 @@ Darkstar ChangeLog
 
 20020403
 
+ * [channel.dsm 0.3] New config variable: MAX_MODES. This is used by
+   all commands that set multiple modes to determine how many modes to
+   send at a time to the server. The defualt value is 4. You will want
+   to adjust this to the highest setting that your server allows.
+
  * The DARKSTAR_USER environment variable has been renamed to DARKSTAR_USERDIR
 
 20020402
