@@ -1,4 +1,4 @@
-# version:0.2 loader:pf
+# version:0.2.1 loader:pf
 # $Id$
 #
 # formats.dsm - Standard formatting hooks and variables for DarkStar/EPIC4
@@ -585,7 +585,7 @@ on ^public "*"
 				beep;
 				^stack pop set BEEP;
 			};
-			if (CONFIG.AUTO_RESPONSE_NOTIFY && winchan($1) != winnum()) {
+			if (CONFIG.AUTO_RESPONSE_NOTIFY && winvisible($winchan($1)) < 1) {
 				xecho -b -c Auto-response triggered in window #$winchan($1) by $0 \($1\);
 			};
 		};
@@ -623,7 +623,7 @@ on ^public_other "*"
 				beep;
 				^stack pop set BEEP;
 			};
-			if (CONFIG.AUTO_RESPONSE_NOTIFY && winchan($1) != winnum()) {
+			if (CONFIG.AUTO_RESPONSE_NOTIFY && winvisible($winchan($1)) < 1) {
 				xecho -b -c Auto-response triggered in window #$winchan($1) by $0 \($1\);
 			};
 		};

@@ -37,3 +37,5 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Make $getdsets()/$getfsets() support multiple patterns like $getsets().
 * Make $loadedmods() and $mods() take pattern arguments like $getsets().
 * Add a $ts() function and 2 new config vars: TIMESTAMP and TIMESTAMP_FORMAT.
+* Fix auto-response-notify behavior with wserv windows. A notification will
+  only be displayed for windows that are NOT visible.
