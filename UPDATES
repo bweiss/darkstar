@@ -1,3 +1,10 @@
+*** News 2003/09/05 -- channel.dsm 0.7 - /[SET]OLDTOPIC renamed/improved
+	The /OLDTOPIC and /SETOLDTOPIC aliases have been renamed to
+	/SETTOPIC and /TOPICS. The channel module now keeps track of
+	an arbitrary number of topics for each channel. The number of
+	topics to be kept is determined by the REMEMBER_TOPICS config
+	variable. See ds:channel(3) for details.
+
 *** News 2003/09/05 -- New core command/function: /TLD, $tld()
 	A /TLD alias has been added to take advantage of the new TLD
 	structure. It works just like $country() in BitchX. See ds:tld(1)

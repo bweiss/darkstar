@@ -1,17 +1,17 @@
-#version 0.6.5
+#version 0.7
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
- * Copyright (c) 2002 Brian Weiss (except where noted)
+ * Copyright (c) 2002, 2003 Brian Weiss (except where noted)
  * See the 'COPYRIGHT' file for more information.
  *
- * This script uses serial numbers 0 and 424 for /on hooks.
+ * This script uses serial numbers 0 and 424 for /ON hooks.
  */
 
 /****** CLEANUP QUEUE ******/
 
 queue cleanup.channel {
-	for alias in (alldeop alldop allop ban bankick banlist bans bk cmode cycle deop dop devoice dvoice etopic i invite j join k kb key kick kickban l leave lk massmode mdeop mdop mdevoice mdvoice mme mop msay mvoice oldtopic op part partall setoldtopic t tban tempban tt ttopic unban unkey untopic voice wall wall2) {
+	for alias in (alldeop alldop allop ban bankick banlist bans bk cmode cycle deop dop devoice dvoice et etopic i invite j join k kb key kick kickban l leave lk massmode mdeop mdop mdevoice mdvoice mme mop msay mvoice op part partall settopic t tban tempban topics tt ttopic unban unkey untopic voice wall wall2) {
 		^alias -$alias
 	}
 	for hook in (332 333 367 368 369 action channel_nick channel_signoff channel_sync invite join kick leave mode public public_other send_public topic) {
@@ -20,6 +20,7 @@ queue cleanup.channel {
 	^on public -'% % *\\\\\[\$CONFIG.AUTO_RESPONSE_STR\\\\\]*'
 	^on public_other -'% % *\\\\\[\$CONFIG.AUTO_RESPONSE_STR\\\\\]*'
 	^on send_action -'\\\\\[#* &* +*\\\\\] *'
+	^on #hook 428 -"CONFIG REMEMBER_TOPICS *"
 }
 
 
@@ -32,6 +33,7 @@ config.add    AUTO_RESPONSE_STR
 config.add    BANTYPE 3
 config.add    DEFAULT_KICK_REASON No soup for you!
 config.add    MAX_MODES 4
+config.add    REMEMBER_TOPICS 5
 
 format.add ACTION_CHANNEL * $1 $3-
 format.add ACTION_CHANNEL_OTHER * $1/$2 $3-
@@ -161,14 +163,21 @@ alias devoice (nicks) {
 	massmode $C - v $nicks
 }
 
-alias tt etopic
-alias ttopic etopic
+/*
+ * Edit the current topic. This places "/topic <current topic>" on the
+ * input line so that you can edit it and re-set it.
+ */
+alias et etopic
 alias etopic (void) {
 	if (C) {
-		@ :cur_topic = restw(1 $gettmatch(channel.topics $C*))
-		if (cur_topic) {
+		/* Attempt to get the current topic from cache but
+		 * if that fails query the server. */
+		@ :serv = winserv()
+		@ :array = [channel.topics.$serv\.$C]
+		@ :topic = getitem($array ${numitems($array) - 1})
+		if (topic) {
 			parsekey erase_line
-			xtype -l /topic $cur_topic
+			xtype -l $K\topic $topic
 		} else {
 			/* No topic set */
 			^on -331 "% $C *" {
@@ -179,7 +188,7 @@ alias etopic (void) {
 			/* The actual topic */
 			^on ^332 "% $C *" {
 				parsekey erase_line
-				xtype -l /topic $2-
+				xtype -l $K\topic $2-
 				defer ^on 332 -"% $1 *"
 			}
 			/* Topic set by */
@@ -390,15 +399,6 @@ alias mvoice (chan default "$C", void) {
 	massmode $chan + v $remw($servernick() $onchannel($chan))
 }
 
-alias oldtopic (chan default "$C", void) {
-	@ :oldtopic = restw(1 $gettmatch(channel.oldtopics $chan*))
-	if (oldtopic) {
-		xecho -b Last topic for $chan: $oldtopic
-	} else {
-		xecho -b There is no old topic for $chan
-	}
-}
-			
 alias op (nicks) {
 	if (!nicks) {
 		xecho -b Usage: /OP <nick> ...
@@ -417,12 +417,27 @@ alias partall (void) {
 	}
 }
 
-alias setoldtopic (chan default "$C", void) {
-	@ :oldtopic = restw(1 $gettmatch(channel.oldtopics $chan*))
-	if (oldtopic) {
-		//topic $oldtopic
+alias settopic (chan default "$C", void) {
+	@ :serv = winserv($winchan($chan))
+	if (serv == -1) {
+		xecho -b Not connected to a server
+		return
+	}
+	@ :array = [channel.topics.$serv\.$chan]
+	topics $chan
+	^local prompt $"Change topic on $chan? (Enter a # or 'n' for new): "
+	if (prompt == [n]) {
+		^local newtopic $"Enter new topic: "
+		//topic $chan $newtopic
+	} else if (!isnumber($prompt b10)) {
+		xecho -b You must enter an integer or 'n' to set a new topic
+	} else if (prompt > 0 && prompt <= numitems($array)) {
+		@ :itm = word(${prompt-1} $jot(${numitems($array)-1} 0))
+		//topic $chan $getitem($array $itm)
+	} else if (!numitems($array)) {
+		xecho -b No topics stored for $chan
 	} else {
-		xecho -b There is no old topic for $chan
+		xecho -b Number out of range
 	}
 }
 
@@ -478,6 +493,29 @@ alias tempban (time, target, void) {
 		timer $time //mode $C -b $target
 	}
 }
+
+alias topics (chan default "$C", void) {
+	@ :serv = winserv($winchan($chan))
+	if (serv == -1) {
+		xecho -b Not connected to a server
+		return
+	}
+	@ :array = [channel.topics.$serv\.$chan]
+	if (numitems($array)) {
+		xecho -b Stored topics for $chan (most recent first):
+		@ :num = 1
+		for ii in ($jot(${numitems($array)-1} 0)) {
+			@ :topic = getitem($array $ii)
+			echo $[3]num $topic
+			@ :num++
+		}
+	} else {
+		xecho -b No topics stored for $chan
+	}
+}
+
+alias tt etopic
+alias ttopic etopic
 
 alias unban (bans) {
 	if (!bans) {
@@ -540,6 +578,28 @@ alias wall2 (text) {
 }
 
 
+/****** INTERNAL ALIASES ******/
+
+/*
+ * Maintains the arrays containing channel topics. This is called by
+ * the 332 and TOPIC hooks.
+ *
+ * The arrays will be named channel.topics.<server>.<channel> and
+ * only as many topics as the value of REMEMBER_TOPICS will be kept.
+ */
+alias channel.topic (serv, chan, topic) {
+	@ :array = [channel.topics.$serv\.$chan]
+	@ :head = numitems($array) - 1
+	if ((:foo = matchitem($array $topic)) > -1) {
+		@ delitem($array $foo)
+	}
+	while (numitems($array) >= CONFIG.REMEMBER_TOPICS) {
+		@ delitem($array 0)
+	}
+	@ setitem($array $numitems($array) $topic)
+}
+
+
 /****** ON HOOKS ******/
 
 on ^329 "*" {
@@ -549,11 +609,9 @@ on ^329 "*" {
 }
 
 on ^332 "*" {
+	channel.topic $servernum($0) $1-
 	if (FORMAT.TOPIC) {
 		echo $fparse(TOPIC $*)
-	}
-	if (!getmatches(channel.topics $1*)) {
-		@ setitem(channel.topics $numitems(channel.topics) $1-)
 	}
 }
 
@@ -564,7 +622,7 @@ on ^333 "*" {
 }
 
 /*
- * Ban list stuff (367 368 369)
+ * Ban list stuff: 367, 368, 369
  */
 on ^367 "*" {
 	@ setitem(channel.banlist.$1 $numitems(channel.banlist.$1) $*)
@@ -760,6 +818,7 @@ on ^send_public "*" {
 }
 
 on ^topic "*" {
+	channel.topic $servernum() $1-
 	if (![$2]) {
 		if (FORMAT.TOPIC_UNSET) {
 			echo $fparse(TOPIC_UNSET $*)
@@ -769,16 +828,27 @@ on ^topic "*" {
 			echo $fparse(TOPIC_CHANGE $*)
 		}
 	}
-	@ :topic_itm = matchitem(channel.topics $1*)
-	if (topic_itm > -1) {
-		@ :oldtopic_itm = matchitem(channel.oldtopics $1*)
-		if (oldtopic_itm > -1) {
-			@ delitem(channel.oldtopics $oldtopic_itm)
+}
+
+/*
+ * Restrict the value of the REMEMBER_TOPICS config variable to an integer
+ * that is greater than or equal to zero.
+ */
+on #-hook 428 "CONFIG REMEMBER_TOPICS *" {
+	if (!isnumber($CONFIG.REMEMBER_TOPICS b10) || CONFIG.REMEMBER_TOPICS < 0) {
+		xecho -b Value must be an integer greater than or equal to zero
+		if (CONFIG.REMEMBER_TOPICS == []) {
+			^assign CONFIG.REMEMBER_TOPICS 0
+		} else {
+			^assign CONFIG.REMEMBER_TOPICS $2
 		}
-		@ setitem(channel.oldtopics $numitems(channel.oldtopics) $getitem(channel.topics $topic_itm))
-		@ delitem(channel.topics $topic_itm)
+		xecho -b Value of REMEMBER_TOPICS set to $CONFIG.REMEMBER_TOPICS
 	}
-	@ setitem(channel.topics $numitems(channel.topics) $1-)
+	for array in ($getarrays(channel.topics.*)) {
+		while (numitems($array) > CONFIG.REMEMBER_TOPICS) {
+			@ delitem($array 0)
+		}
+	}
 }
 
 

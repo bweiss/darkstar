@@ -20,6 +20,9 @@ Author: Brian Weiss <brian@epicsol.org>
    MAX_MODES                    - Number of modes to send to the server
                                   at once. This should be set as high as
                                   your server allows.
+   REMEMBER_TOPICS              - Max number of topics to store for each
+                                  channel you are in. This is used by
+                                  /SETTOPIC and /TOPICS.
 
 Format Variables:
    ACTION_CHANNEL               - Actions sent to the current channel.
@@ -96,7 +99,7 @@ Author: Brian Weiss <brian@epicsol.org>
    etopic
      - Allows you to edit the current topic by placing it on the input
        line preceded by "/topic".
-       * Aliases: tt ttopic
+       * Aliases: et tt ttopic
 
    invite <nick> [channel]
      - Invites <nick> to [channel]. If no channel given, assumes current.
@@ -154,18 +157,17 @@ Author: Brian Weiss <brian@epicsol.org>
    mvoice [channel]
      - Sets +v for everyone on [channel] or the current channel.
 
-   oldtopic [channel]
-     - Displays the last topic for [channel] or the current channel.
-
    op <nick> ...
      - Sets +o on the current channel for all nicks specified.
 
    partall
      - Parts all your channels. This command will ask before doing anything.
 
-   setoldtopic [channel]
-     - Changes the current topic in [channel], or the current channel, to
-       the previous topic.
+   settopic [channel]
+     - Displays the list of stored topics for [channel] and prompts the
+       user to either choose one or enter new text to be set to the
+       channel's new topic. If the channel argument is omitted then
+       the current channel is used.
 
    t [topic]
      - Alias to /topic
@@ -176,6 +178,10 @@ Author: Brian Weiss <brian@epicsol.org>
 
    tempban <seconds> <nick|mask>
      - Sets a temporary ban on <nick|mask> that lasts for <seconds>.
+
+   topics [channel] [server refnum]
+     - Displays a list of stored topics for [channel]. If any arguments are
+       omitted then values from the current window will be used.
 
    unban <mask> ...
      - Removes an unlimited number of bans from the current channel.
