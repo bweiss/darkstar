@@ -1,6 +1,14 @@
 DarkStar ChangeLog
 
 
+2002/05/18
+
+ * Some changes to the appearance of the module lists in order to
+   improve readability.
+
+ * Extra information will now be displayed for new users whenever
+   darkstar.irc has to create the user directory.
+
 2002/05/17
 
  * Added a relay module, finally. This should make several people
