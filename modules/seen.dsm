@@ -1,0 +1,200 @@
+#version 0.2
+/*
+ * seen.dsm - Seen module for DarkStar/EPIC4
+ * Copyright (c) 2003 Brian Weiss (except where noted)
+ * See the 'COPYRIGHT' file for more information.
+ *
+ * This script uses serial number 460 for all /ON hooks.
+ *
+ * The public queue system in this script is based on several aliases
+ * written by CrazyEddy and distributed with the EPIC4 source code in
+ * the commandqueues script.
+ */
+
+/****** CLEANUP QUEUE ******/
+
+queue cleanup.seen {
+	^alias -seen
+	for hook in (join leave mode public public_other send_public topic) {
+		^on #$hook 460 -"*"
+	}
+	^on #timer 460 -"??:?0"
+	^on #public 460 -'% % \$CONFIG.SEEN_PUBLIC_TRIGGER *'
+	^on #public_other 460 -'% % \$CONFIG.SEEN_PUBLIC_TRIGGER *'
+	seen.writedb
+}
+
+
+/****** CONFIG/FORMAT VARIABLES ******/
+
+config.add -b   SEEN_ALLOW_PUBLIC_CMDS 0
+config.add      SEEN_PUBLIC_TRIGGER !seen
+
+
+/****** USER ALIASES ******/
+
+alias seen (...) {
+	if (![$0]) {
+		xecho -b Usage: /SEEN [-p] <nick> [<channel>]
+		return
+	}
+	@ :serv = winserv()
+	if (match($0 -p -pub -public)) {
+		seen.do_public $serv $1 ${[$2] ? [$2] : C}
+	} else {
+		@ :nick = [$0]
+		@ :chan = [$1] ? [$1] : C
+		if ((:item = matchitem(seen.db.$serv $nick $chan *)) > -1) {
+			@ :tmp = getitem(seen.db.$serv $item)
+			@ :time = word(2 $tmp)
+			@ :diff = time() - time
+			@ :type = word(3 $tmp)
+			@ :extra = restw(4 $getitem(seen.db.$serv $item))
+			echo $G $nick was last seen in $chan on $strftime($time %a %b %d %T %Z %Y) \($tdiff2($diff)\ ago)
+			echo $G Action: $stripcrap(ALL $fparse($type $nick $chan $extra))
+		}
+	}
+}
+
+
+/****** INTERNAL ALIASES ******/
+
+/*
+ * Based on CrazyEddy's /1CMD alias (part of the commandqueues script
+ * distributed with the EPIC4 source code).
+ *
+ * This limits each user to one public request every 8 seconds.
+ */
+alias seen.pubcmd (serv, nick, chan, seen_nick, void) {
+	if (!seen_nick) {
+		echo Error: seen.pubcmd: Not enough arguments
+		return
+	}
+	if (CONFIG.SEEN_ALLOW_PUBLIC_CMDS) {
+		@ :e_nick = encode($nick)
+		if (time() - SEEN[PUBCMD][$serv][$e_nick] >= 8) {
+			@ SEEN[PUBCMD][$serv][$e_nick] = time()
+			seen.pubqueue $serv $seen_nick $chan
+		}
+		if (time() != SEEN[PUBCMD][$serv]) {
+			@ SEEN[PUBCMD][$serv] = time()
+			foreach SEEN[PUBCMD][$serv] tmp {
+				if (SEEN[PUBCMD][$serv][$tmp] < time()) {
+					@ SEEN[PUBCMD][$serv][$tmp] = []
+				}
+			}
+		}
+	}
+}
+
+/*
+ * Based on CrazyEddy's /QCMD alias (also part of the commandqueues script).
+ */
+alias seen.pubqueue (serv, args) {
+	if (args) {
+		@ push(SEEN.PUBQUEUE.$serv \"$msar(gr/\\/\\\\/\"/\\\"/args)\")
+		^timer -ref SEEN.PUBQUEUE.$serv 2 seen.pubqueue $serv
+	} else {
+		@ :tmp = shift(SEEN[PUBQUEUE][$serv])
+		@ msar(gr/\\\\/\\/\\\"/\"/tmp)
+		@ :nick = word(0 $tmp)
+		@ :chan = word(1 $tmp)
+		if ((:item = matchitem(seen.db.$serv $nick $chan *)) > -1) {
+			@ :tmp = getitem(seen.db.$serv $item)
+			@ :time = word(2 $tmp)
+			@ :diff = time() - time
+			@ :type = word(3 $tmp)
+			@ :extra = restw(4 $tmp)
+			defer msg $chan $nick was last seen in $chan on $strftime($time %a %b %d %T %Z %Y) \($tdiff2($diff)\ ago)
+			defer msg $chan Action: $stripcrap(ALL $fparse($type $nick $chan $extra))
+		}
+	}
+}
+
+alias seen.readdb (void) {
+	if (fexist($DS.USER_DIR/seen) != -1) {
+		for fname in ($glob($DS.USER_DIR/seen\/*)) {
+			@ :serv = servernum($after(-1 / $fname))
+			@ :fd = open($fname R)
+			if (fd != -1) {
+				while (!eof($fd)) {
+					@ :tmp = read($fd)
+					@ :nick = word(0 $tmp)
+					@ :chan = word(1 $tmp)
+					@ :ts = word(2 $tmp)
+					@ :type = word(3 $tmp)
+					@ :extra = restw(4 $tmp)
+					if ((:item = matchitem(seen.db.$serv $nick $chan *)) > -1) {
+						@ setitem(seen.db.$serv $item $nick $chan $ts $type $extra)
+					} else {
+						@ setitem(seen.db.$serv $numitems(seen.db.$serv) $nick $chan $ts $type $extra)
+					}
+				}
+			}
+		}
+	}
+}
+
+alias seen.updatedb (serv, nick, chan, type, ...) {
+	if (![$*]) {
+		echo Error: seen.updatedb: Not enough arguments
+		return
+	}
+	if ((:item = matchitem(seen.db.$serv $nick $chan *)) > -1) {
+		@ setitem(seen.db.$serv $item $nick $chan $time() $type $*)
+	} else {
+		@ setitem(seen.db.$serv $numitems(seen.db.$serv) $nick $chan $time() $type $*) 
+	}
+}
+
+alias seen.writedb (void) {
+	if (fexist($DS.USER_DIR/seen) == -1) {
+		if (mkdir($DS.USER_DIR/seen)) {
+			echo Error: seen.writedb: Unable to create directory: $DS.USER_DIR/seen
+			return
+		}
+	}
+	for array in ($getarrays(seen.db.*)) {
+		@ :serv = after(-1 . $array)
+		@ unlink($DS.USER_DIR/seen/$servername($serv))
+		@ :fd = open($DS.USER_DIR/seen/$servername($serv) W)
+		if (fd != -1) {
+			for cnt from 0 to ${numitems($array) - 1} {
+				@ write($fd $getitem($array $cnt))
+			}
+			@ close($fd)
+		} else {
+			echo Error: seen.writedb: Unable to write file: $DS.USER_DIR/seen/$servername($serv)
+		}
+	}
+}
+
+
+/****** ON HOOKS ******/
+
+on #-join 460 "*"         {seen.updatedb $servernum() $0 $1 JOIN $2-}
+on #-leave 460 "*"        {seen.updatedb $servernum() $0 $1 LEAVE $2-}
+on #-mode 460 "*"         {seen.updatedb $servernum() $0 $1 MODE $2-}
+on #-public 460 "*"       {seen.updatedb $servernum() $0 $1 PUBLIC $2-}
+on #-public_other 460 "*" {seen.updatedb $servernum() $0 $1 PUBLIC $2-}
+on #-send_public 460 "*"  {seen.updatedb $servernum() $servernick() $0 PUBLIC $1-}
+on #-topic 460 "*"        {seen.updatedb $servernum() $0 $1 TOPIC $2-}
+
+on #-timer 460 "??:?0"    {seen.writedb}
+
+on #-public 460 '% % $CONFIG.SEEN_PUBLIC_TRIGGER *' {
+	seen.pubcmd $servernum() $0 $1 $3
+	seen.updatedb $servernum() $0 $1 PUBLIC $2-
+}
+on #-public_other 460 '% % $CONFIG.SEEN_PUBLIC_TRIGGER *' {
+	seen.pubcmd $servernum() $0 $1 $3
+	seen.updatedb $servernum() $0 $1 PUBLIC $2-
+}
+
+
+/****** STARTUP ******/
+
+seen.readdb
+
+
+/* EOF */
