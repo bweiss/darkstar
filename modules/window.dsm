@@ -201,7 +201,7 @@ alias window.msgwin.create (serv, void)
 
 		if (winnum(msgs/serv:$serv) == -1)
 		{
-			^window new name msgs/serv:$serv server $serv level msgs;
+			^window new name msgs/serv:$serv server $serv level msgs scrolladj off;
 			if (:num = CONFIG.MSG_WINDOW_NUMBER) {
 				while (winnum($num) > -1) {
 					@ :num++;
