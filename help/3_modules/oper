@@ -2,11 +2,17 @@ Module: oper
 Author: Brian Weiss <brian@epicsol.org>
 
 Description:
-   Operator stuff. Doesn't do much at the moment, but still has dreams of
-   greatness.
+   Operator stuff. Doesn't do much at the moment but still has dreams
+   of greatness.
 
 Config Variables:
    OPER_UMODES           - User modes to set when you become an operator.
+   OPERVIEW              - Boolean. Creates a new window called "operview"
+                           that will display operator related messages
+                           such as wallops and server notices.
+   OPERVIEW_HIDDEN       - Boolean. Determines whether the operview window
+                           will be split or hidden.
+   OPERVIEW_SIZE         - Size of the operview window when it is not hidden.
 
 Commands:
    operwall <text>

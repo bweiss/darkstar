@@ -1,11 +1,11 @@
-#version 0.7.2
+#version 0.7.3
 /* $Id$ */
 /*
  * window.dsm - Window module for DarkStar/EPIC4
  * Copyright (c) 2002 Brian Weiss
  * See the 'COPYRIGHT' file for more information.
  *
- * This script uses serial number 426 for all /on hooks.
+ * This script uses serial number 426 for all /ON hooks.
  */
 
 /****** CLEANUP QUEUE ******/
@@ -52,7 +52,7 @@ config.add -b AUTO_QUERY_UPDATE 1
 config.add -b BIND_ON_JOIN 0
 config.add -b MSG_WINDOW 0
 config.add -b MSG_WINDOW_HIDDEN 0
-config.add    MSG_WINDOW_LEVEL MSGS,OPNOTES,WALLOPS
+config.add    MSG_WINDOW_LEVEL MSGS
 config.add    MSG_WINDOW_SIZE 5
 config.add -b UNBIND_ON_PART 0
 

@@ -1,34 +1,49 @@
-#version 0.1.2
+#version 0.2
 /* $Id$ */
 /*
  * oper.dsm - IRC Operator module for DarkStar/EPIC4
  * Copyright (c) 2002 Brian Weiss
  * See the 'COPYRIGHT' file for more information.
  *
- * This script uses serial number 427 for all /on hooks.
+ * This script uses serial numbers 0 and 427 for all /ON hooks.
  */
 
 /****** CLEANUP QUEUE ******/
 
-queue cleanup.oper
-{
+queue cleanup.oper {
 	^alias -operwall
 	^on #381 427 -"*"
+	^on #hook 427 -"CONFIG OPERVIEW *"
+	^on #hook 427 -"CONFIG OPERVIEW_HIDDEN *"
+	^on #hook 427 -"CONFIG OPERVIEW_SIZE *"
 	^on wallop -"*"
+	^on #window_kill 427 -"operview"
+	oper.operview.destroy
 }
 
 
 /****** CONFIG/FORMAT VARIABLES ******/
 
-config.add OPER_UMODES wzsky
+config.add    OPER_UMODES wzsky
+config.add -b OPERVIEW 0
+config.add -b OPERVIEW_HIDDEN 0
+config.add    OPERVIEW_SIZE 5
 
 format.add WALLOP !$1$2! $3-
 
 
+/****** INIT ******/
+
+/*
+ * Force the loading of saved settings early so that
+ * the /IF commands in the STARTUP section can use them.
+ */
+module.load_saved_settings
+
+
 /****** USER ALIASES ******/
 
-alias operwall (text)
-{
+alias operwall (text) {
 	if (text) {
 		//quote operwall :$text
 	} else {
@@ -37,18 +52,90 @@ alias operwall (text)
 }
 
 
+/****** INTERNAL ALIASES ******/
+
+alias oper.operview.create (void) {
+	if (winnum(operview) == -1) {
+		window new name operview level opnotes,snotes,wallops
+		if (CONFIG.OPERVIEW_HIDDEN) {
+			if ((:item = matchitem(single_status operview)) > -1) {
+				@ delitem(single_status $item)
+			}
+			if (STATUS.DOUBLE) {
+				window double on
+			}
+			window hide
+		} else {
+			if (matchitem(single_status operview) < 0) {
+				@ setitem(single_status $numitems(single_status) operview)
+			}
+			window double off fixed on size $CONFIG.OPERVIEW_SIZE
+			window last
+		}
+	}
+}
+
+alias oper.operview.destroy (void) {
+	if (winnum(operview) != -1) {
+		window operview kill
+	}
+	if ((:item = matchitem(single_status operview)) > -1) {
+		@ delitem(single_status $item)
+	}
+}
+
+
 /****** ON HOOKS ******/
 
-on #^381 427 "*"
-{
+on #^381 427 "*" {
 	//mode $servernick() $CONFIG.OPER_UMODES
 }
 
-on ^wallop "*"
-{
+on #-hook 427 "CONFIG OPERVIEW *" {
+	if (CONFIG.OPERVIEW) {
+		oper.operview.create
+	} else {
+		oper.operview.destroy
+	}
+}
+
+on #-hook 427 "CONFIG OPERVIEW_HIDDEN *" {
+	if ([$2] != CONFIG.OPERVIEW_HIDDEN) {
+		oper.operview.destroy
+		oper.operview.create
+	}
+}
+
+on #-hook 427 "CONFIG OPERVIEW_SIZE *" {
+	@ :size = CONFIG.OPERVIEW_SIZE
+	@ :max_size = word(1 $geom()) - 4
+	if (!isnumber($size b10) || size < 1 || size > max_size) {
+		xecho -b Value must be an integer greater than 0 and no larger than $max_size
+		^assign CONFIG.OPERVIEW_SIZE $2
+		xecho -b Value of OPERVIEW_SIZE set to $CONFIG.OPERVIEW_SIZE
+	}
+	if (CONFIG.OPERVIEW && !CONFIG.OPERVIEW_HIDDEN) {
+		window operview size $CONFIG.OPERVIEW_SIZE
+	}
+}
+
+on ^wallop "*" {
 	if (FORMAT.WALLOP) {
 		echo $fparse(WALLOP $*)
 	}
+}
+
+on #-window_kill 427 "operview" {
+    if (CONFIG.OPERVIEW) {
+        dset OPERVIEW OFF
+    }
+}
+
+
+/****** STARTUP ******/
+
+if (CONFIG.OPERVIEW) {
+	oper.operview.create
 }
 
 

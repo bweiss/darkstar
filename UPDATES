@@ -1,12 +1,23 @@
+*** News 2003/03/05 -- oper.dsm 0.2 - operview window
+	The oper module now includes an operview window similar to the
+	msg window contained in the window module. This means we have
+	three new config variables: OPERVIEW, OPERVIEW_HIDDEN, and
+	OPERVIEW_SIZE.
+
+	As a result, the default value for the MSG_WINDOW_LEVEL config
+	variable has been changed from "msgs,opnotes,wallops" to "msgs".
+	Anyone who uses both operview and the msg window will probably
+	want to make this change in their saved settings as well.
+
 *** News 2003/02/18 -- tabkey.dsm 0.3.4 - Improved filename handling
 	I have merged CrazyEddy's recent changes to tabkey.ce that provide
-	improved handling of "evil" filenames. Unfortunately this
-	requires EPIC4-1.1.10 commit_id 464 to work correctly. This means
-	that those of you still using an older client will not be able
-	to do filename completion with this module. If you do not wish
-	to upgrade your client but can't live without filename completion,
-	you can copy tabkey.dsm 0.3.3 from the 0.2.9 release to your
-	"user directory" and it will override the one in $DS.HOME.
+	improved handling of "evil" filenames. Unfortunately this requires
+	EPIC4-1.1.10 with a commit_id of 464 or higher to work properly.
+	This means that those of you still using an older client will not
+	be able to do filename completion with this module. If you do not
+	wish to upgrade your client but can't live without filename
+	completion, you can copy tabkey.dsm 0.3.3 from the 0.2.9 release
+	to your "user directory" and it will override the one in $DS.HOME.
 
 
 DarkStar 0.2.9 (20030212)
