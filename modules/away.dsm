@@ -1,4 +1,4 @@
-#version 1.5
+#version 1.5.1
 /* $Id$ */
 /*
  * away.dsm - Away module for DarkStar/EPIC4
@@ -91,12 +91,16 @@ on #-306 421 "*" {
 		if (CONFIG.PUBLIC_AWAY_CHANNELS) {
 			for chan in ($CONFIG.PUBLIC_AWAY_CHANNELS) {
 				if (match($chan $mychannels($server))) {
-					xeval -s $server describe \$chan is away: \$serverctl(GET $server AWAY) [Log/\${CONFIG.AWAY_LOG ? [ON] : [OFF]}]
+					xeval -s $server {
+						describe $chan is away: $serverctl(GET $server AWAY) [Log/${CONFIG.AWAY_LOG ? [ON] : [OFF]}]
+					}
 				}
 			}
 		} else {
 			for chan in ($mychannels($server)) {
-				xeval -s $server describe \$chan is away: \$serverctl(GET $server AWAY) [Log/\${CONFIG.AWAY_LOG ? [ON] : [OFF]}]
+				xeval -s $server {
+					describe $chan is away: $serverctl(GET $server AWAY) [Log/${CONFIG.AWAY_LOG ? [ON] : [OFF]}]
+				}
 			}
 		}
 	}
@@ -113,12 +117,16 @@ on #-305 421 "*" {
 		if (CONFIG.PUBLIC_AWAY_CHANNELS) {
 			for chan in ($CONFIG.PUBLIC_AWAY_CHANNELS) {
 				if (match($chan $mychannels($server))) {
-					xeval -s $server describe \$chan is back [Gone \$tdiff($away_time)]
+					xeval -s $server {
+						describe $chan is back [Gone $tdiff($away_time)]
+					}
 				}
 			}
 		} else {
 			for chan in ($mychannels($server)) {
-				xeval -s $server describe \$chan is back [Gone \$tdiff($away_time)]
+				xeval -s $server {
+					describe $chan is back [Gone $tdiff($away_time)]
+				}
 			}
 		}
 	}
@@ -150,11 +158,13 @@ on #-hook 421 "CONFIG AWAY_LOG_LEVEL *" {
  * Update TS for last input and check for auto-unset-away.
  */
 on #-input 421 "*" {
-	@ AWAY.LAST_INPUT = time()	
+	@ AWAY.LAST_INPUT = time()
 	if (CONFIG.AUTO_UNSET_AWAY) {
 		for server in ($serverrefs()) {
 			if (isaway($server)) {
-				xeval -s $server //away
+				xeval -s $server {
+					//away
+				}
 			}
 		}
 	}
@@ -168,7 +178,9 @@ on #-msg 421 "*" {
 	if (isaway($server)) {
 		if (CONFIG.SEND_AWAY_NOTICE && finditem(away.sent_notice.$server $0) < 0) {
 			@ setitem(away.sent_notice.$server $numitems(away.sent_notice.$server) $0)
-			xeval -s $server notice \$0 I am currently away \($serverctl(GET $server AWAY)\) [Gone since: \$strftime($AWAY.TIME[$server] %c)] [Log/\${CONFIG.AWAY_LOG ? [ON] : [OFF]}]
+			xeval -s $server {
+				notice $0 I am currently away \($serverctl(GET $server AWAY)\) [Gone since: $strftime($AWAY.TIME[$server] %c)] [Log/${CONFIG.AWAY_LOG ? [ON] : [OFF]}]
+			}
 		}
 		if (CONFIG.AWAY_LOG && match(MSGS $CONFIG.AWAY_LOG_LEVEL)) {
 			if ((:fd = open($CONFIG.AWAY_LOGFILE W)) > -1) {
@@ -215,7 +227,9 @@ on #-timer 421 "*" {
 		if (diff >= AWAY.LAST_INPUT) {
 			for server in ($serverrefs()) {
 				if (!isaway($server)) {
-					xeval -s $server //away Auto-away after \$minutes minute\${minutes > 1 ? [s] : []}
+					xeval -s $server {
+						//away Auto-away \$ after $minutes minute${minutes > 1 ? [s] : []}
+					}
 				}
 			}
 		}

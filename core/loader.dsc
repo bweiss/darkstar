@@ -1,7 +1,7 @@
 /* $Id$ */
 /*
  * loader.dsc - DarkStar module loader
- * Copyright (c) 2002 Brian Weiss
+ * Copyright (c) 2002, 2003 Brian Weiss
  * See the 'COPYRIGHT' file for more information.
  */
 
@@ -287,7 +287,7 @@ alias loader.unload_module (module, void) {
 		queue -do cleanup.$module
 		purge $module
 		purgealias $module
-		for array in ($pattern($module\.* $getarrays())) {
+		for array in ($getarrays($module\.*)) {
 			@ delarray($array)
 		}
 		for var in ($DSET.MODULES[$module]) {

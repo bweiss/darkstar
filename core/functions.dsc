@@ -1,7 +1,7 @@
 /* $Id$ */
 /*
  * functions.dsc - Miscellaneous functions
- * Copyright (c) 2002 Brian Weiss (except where noted)
+ * Copyright (c) 2002, 2003 Brian Weiss (except where noted)
  * See the 'COPYRIGHT' file for more information.
  */
 
@@ -161,14 +161,14 @@ alias pipe {
  * Returns the refnums of all established server connections.
  */
 alias serverrefs (void) {
-	^local ret
-	for winref in ($winrefs()) {
-		^local sref $winserv($winref)
-		if (!match($sref $retval)) {
-			push ret $sref
+	^local refnums
+	for w_ref in ($winrefs()) {
+		@ :s_ref = winserv($winref)
+		if (!match($s_ref $refnums)) {
+			push refnums $s_ref
 		}
 	}
-	return $ret
+	@ function_return = refnums
 }
 
 alias tld {

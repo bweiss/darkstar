@@ -1,4 +1,4 @@
-#version 0.8
+#version 0.8.1
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
@@ -379,7 +379,7 @@ alias mdevoice (chan default "$C", void) {
 }
 
 alias mme {
-	if (pattern($0* -all)) {
+	if (match($0 -a -all)) {
 		@ :all_servers = 1
 		@ :text = [$1-]
 	} else {
@@ -392,7 +392,7 @@ alias mme {
 	if (all_servers) {
 		for sref in ($serverrefs()) {
 			for chan in ($mychannels($sref)) {
-				xeval -s $sref describe \$chan \$text
+				xeval -s $sref {describe $chan $text}
 			}
 		}
 	} else {
@@ -411,7 +411,7 @@ alias mop (chan default "$C", void) {
 }
 
 alias msay {
-	if (pattern($0* -all)) {
+	if (match($0 -a -all)) {
 		@ :all_servers = 1
 		@ :text = [$1-]
 	} else {
@@ -424,7 +424,7 @@ alias msay {
 	if (all_servers) {
 		for sref in ($serverrefs()) {
 			for chan in ($mychannels($sref)) {
-				xeval -s $sref msg \$chan \$text
+				xeval -s $sref {msg $chan $text}
 			}
 		}
 	} else {
