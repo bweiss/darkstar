@@ -406,7 +406,7 @@ on ^msg "*"
 				@ setitem(misc.userhosts $numitems(misc.userhosts) $0 $uhost)
 				@ setitem(misc.userhosts_ts $numitems(misc.userhosts_ts) $time())
 			} else {
-				@:uhost = [*@*]
+				@:uhost = [*]
 			}
 			echo $fparse(MSG $0 $uhost $1-)
 		} else {
@@ -431,7 +431,7 @@ on ^notice "*"
 				@ setitem(misc.userhosts $numitems(misc.userhosts) $0 $uhost)
 				@ setitem(misc.userhosts_ts $numitems(misc.userhosts_ts) $time())
 			} else {
-				@:uhost = [*@*]
+				@:uhost = [*]
 			}
 			echo $fparse(NOTICE $0 $uhost $1-)
 		} else {
