@@ -94,7 +94,7 @@ alias tabkey.addrule
  */
 alias tabkey.addnick (nick, server, void)
 {
-	if (!nick || !server)
+	if (!nick || server == [])
 	{
 		xecho -b Error: tabkey.addnick: Not enough arguments
 		return
