@@ -1,0 +1,28 @@
+# title: blue (or i'm not creative enough to think of a proper name.)
+#
+# stshatter @ EFnet
+
+set -input_prompt
+set status_does_expandos on
+
+set status_away [1;30m[[1;37ma[0m[44mway[1;30m]
+set status_channel [1;37m%C[0m[44m
+set status_chanop [1;30m@[0m[44m
+set status_clock [1;30m[[1;37mt[0m[44mime[36m: [1;37m%T[1;30m]
+set status_format [44m [1;30m[[1;37m%R[1;30m] %@%*[0m[44m%Y %N %# %C %+ %> %A %T [1;30m[[1;37mu[0m[44mp[36m:[1;37m $tdiff(${time() - F})[1;30m][0m
+set status_format1 [44m [1;30m[[1;37m%R[1;30m] %@%*[0m[44m%Y %N %# %C %+ %> %A %T [1;30m[[1;37mu[0m[44mp[36m:[1;37m $tdiff(${time() - F})[1;30m][0m
+set status_format2 [44m [1;30m%M %F %> [1;30m[%{2}S[1;30m][0m
+set status_mail [1;30m[[1;37mm[0m[44mail[36m: [1;37m%M[1;30m]
+set status_mode [1;30m[[1;37m+%+[1;30m][0m[44m
+set status_notify [1;30m[[1;37ma[0m[44mct[36m: [1;37m%F[1;30m][0m[44m
+set status_oper [1;30m*[0m[44m
+set status_server [1;37ms[0m[44merver[36m: 57%S[0m[44m
+set status_umode [1;30m[[1;37m+%#[1;30m][0m[44m
+
+for refnum in ($winrefs())
+{
+	unless (winnam($refnum) == [msgs])
+	{
+		^window $refnum double on
+	}
+}
