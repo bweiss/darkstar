@@ -1,4 +1,4 @@
-#version 0.2.2
+#version 0.2.3
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -280,8 +280,10 @@ alias tabkey.cmd.mode {
 alias tabkey.cmd.m tabkey.cmd.msg
 alias tabkey.cmd.msg {
 	bless
-	if (curword == 1) {
+	if (curword == 1 && left(1 $word) != [=]) {
 		@ :ret = tabkey.method.nickchan($*)
+	} else if (curword == 1) {
+		@ :ret = TABKEY.MSGHIST[$winserv()]
 	} else {
 		@ :cmd = word(0 $L)
 		if (!cmd) {
@@ -424,15 +426,12 @@ alias.foo tabkey.method.filei {
 alias -alias.foo
 
 alias tabkey.method.mask {
-	bless
-	if (word) {
-		@ :uhost = userhost($word)
-		if (uhost == [<UNKNOWN>@<UNKNOWN>]) {
-			@ :uhost = uh($word)
-		}
-		unless (uhost == [<UNKNOWN>@<UNKNOWN>]) {
-			@ :ret = word ## [!] ## uhost
-		}
+	@ :uhost = userhost($0)
+	if (uhost == [<UNKNOWN>@<UNKNOWN>]) {
+		@ :uhost = uh($0)
+	}
+	unless (uhost == [<UNKNOWN>@<UNKNOWN>]) {
+		@ :ret = mask(3 $uhost)
 	}
 	return $ret
 }
