@@ -1,4 +1,4 @@
-#version 1.3.3
+#version 1.4
 /* $Id$ */
 /*
  * away.dsm - Away module for DarkStar/EPIC4
@@ -27,15 +27,15 @@ queue cleanup.away {
 
 /****** CONFIG/FORMAT VARIABLES ******/
 
-config.add -b AUTO_AWAY 1
-config.add    AUTO_AWAY_TIME 1200
-config.add -b AUTO_UNSET_AWAY 0
-config.add -b AWAY_LOG 1
-config.add    AWAY_LOGFILE ~/.darkstar/away.log
-config.add    AWAY_LOG_LEVEL MSGS NOTICES
-config.add -b PUBLIC_AWAY 0
-config.add    PUBLIC_AWAY_CHANNELS
-config.add -b SEND_AWAY_NOTICE 1
+config.add -b   AUTO_AWAY 1
+config.add      AUTO_AWAY_TIME 1200
+config.add -b   AUTO_UNSET_AWAY 0
+config.add -b   AWAY_LOG 1
+eval config.add AWAY_LOGFILE $DS.USER_DIR/away.log
+config.add      AWAY_LOG_LEVEL MSGS NOTICES
+config.add -b   PUBLIC_AWAY 0
+config.add      PUBLIC_AWAY_CHANNELS
+config.add -b   SEND_AWAY_NOTICE 1
 
 
 /****** INIT ******/
@@ -163,27 +163,32 @@ on #-msg 421 "*" {
 			@ setitem(away.sent_away_notice $numitems(away.sent_away_notice) $0)
 			notice $0 I am currently away \($A\) [Gone since: $strftime($AWAY.TIME %c)] [Log/${CONFIG.AWAY_LOG ? [ON] : [OFF]}]
 		}
-		if (match(MSGS $CONFIG.AWAY_LOG_LEVEL)) {
-			away.log MSG $userhost() $* 
+		if (CONFIG.AWAY_LOG && match(MSGS $CONFIG.AWAY_LOG_LEVEL)) {
+			if ((:fd = open($CONFIG.AWAY_LOGFILE W)) > -1) {
+				@ write($fd [$strftime(%x %X)] MSG <$0!$userhost()> $1-)
+			}
+			@ AWAY.NEWMSGS++
 		}
 	}
 }
 
 on #-notice 421 "*" {
-	if (A && match(NOTICES $CONFIG.AWAY_LOG_LEVEL)) {
-		away.log NOTICE $userhost() $*
+	if (A && CONFIG.AWAY_LOG && match(NOTICES $CONFIG.AWAY_LOG_LEVEL)) {
+		if ((:fd = open($CONFIG.AWAY_LOGFILE W)) > -1) {
+			@ write($fd [$strftime(%x %X)] NOTICE <$0!$userhost()> $1-)
+		}
+		@ AWAY.NEWMSGS++
 	}
 }
 
-on #-public 421 '% % *$servernick()*' {
-	if (A && match(PUBLICS $CONFIG.AWAY_LOG_LEVEL)) {
-		away.log PUBLIC $userhost() $*
-	}
-}
-
-on #-public_other 421 '% % *$servernick()*' {
-	if (A && match(PUBLICS $CONFIG.AWAY_LOG_LEVEL)) {
-		away.log PUBLIC $userhost() $*
+for hook in (public public_other) {
+	^on #-$hook 421 '% % *\$servernick()*' {
+		if (A && CONFIG.AWAY_LOG && match(PUBLICS $CONFIG.AWAY_LOG_LEVEL)) {
+			if ((:fd = open($CONFIG.AWAY_LOGFILE W)) > -1) {
+				@ write($fd [$strftime(%x %X)] PUBLIC $1 <$0!$userhost()> $2-)
+			}
+			@ AWAY.NEWMSGS++
+		}
 	}
 }
 
@@ -197,37 +202,6 @@ on #-timer 421 "*" {
 		@ :minutes = CONFIG.AUTO_AWAY_TIME / 60
 		if (diff >= AWAY.LAST_INPUT) {
 			//away -a Auto-away after $minutes minute${minutes > 1 ? [s] : []}
-		}
-	}
-}
-
-
-/****** INTERNAL ALIASES ******/
-
-/*
- * This handles the actual writing of messages to your logfile.
- */
-alias away.log (type, userhost, nick, ...) {
-	if (type == [PUBLIC]) {
-		@ :channel = [$0]
-		@ :msg = [$1-]
-	} else {
-		@ :msg = [$*]
-	}
-	if (!type || !userhost || !nick || !msg) {
-		echo Error: away.log: Not enough arguments
-		return
-	}
-	if (CONFIG.AWAY_LOG) {
-		@ :fd = open($CONFIG.AWAY_LOGFILE W)
-		if (fd != -1) {
-			if (type == [PUBLIC]) {
-				@ write($fd [$strftime(%x %X)] $type <$nick!$userhost/$channel> $msg)
-			} else {
-				@ write($fd [$strftime(%x %X)] $type [$nick!$userhost] $msg)
-			}
-			@ close($fd)
-			@ AWAY.NEWMSGS++
 		}
 	}
 }
