@@ -1,4 +1,4 @@
-#version 1.1
+#version 1.1.1
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
@@ -179,7 +179,7 @@ alias ban (targets)
 		if (uhost && uhost != [<UNKNOWN>@<UNKNOWN>]) {
 			push bans $mask($CONFIG.BANTYPE $uhost)
 		} else {
-			push bans $target!*@*
+			push bans $target
 		}
 	}
 
@@ -680,7 +680,7 @@ alias tempban (time, target, void)
 	if (uhost && uhost != [<UNKNOWN>@<UNKNOWN>]) {
 		@ :banmask = mask($CONFIG.BANTYPE $uhost)
 	} else {
-		@ :banmask = [$target!*@*]
+		@ :banmask = target
 	}
 
 	//mode $C +b $banmask
