@@ -474,7 +474,10 @@ on #-window_command 426 "*"
 	};
 
 	# Kill any unneeded msg windows on /WINDOW NOSERV.
-	1cmd 5 window.msgwin.purge;
+	1cmd 1 window.msgwin.purge;
+
+	# Make sure the proper msg window is showing.
+	1cmd 1 window.msgwin.show;
 };
 
 
