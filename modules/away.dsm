@@ -36,7 +36,7 @@ config.add    AUTO_AWAY_TIME 1200
 config.add -b AUTO_UNSET_AWAY 0
 config.add -b AWAY_LOG 1
 config.add    AWAY_LOGFILE ~/.darkstar/away.log
-config.add    AWAY_LOG_LEVEL MSGS NOTICES PUBLICS
+config.add    AWAY_LOG_LEVEL MSGS NOTICES
 config.add -b PUBLIC_AWAY 0
 config.add    PUBLIC_AWAY_CHANNELS
 config.add -b SEND_AWAY_NOTICE 1
