@@ -62,7 +62,7 @@ for array in ($getarrays()) {
  * This will be incremented every time a change takes place in
  * the core scripts (this file and any *.dsc files in $DS.HOME/core/).
  */
-@ DS.CORE_ID = 93
+@ DS.CORE_ID = 94
 
 eval xecho -b Loading DarkStar $DS.VERSION
 
@@ -132,7 +132,19 @@ set HIGH_BIT_ESCAPE 0
 xdebug +NEW_MATH
 
 /*
- * Load all of the core scripts
+ * Bind PgUp/PgDn to scroll the current window. This is needed for the
+ * module list that is going to be displayed by loader.dsc.
+ */
+bind ^[[5~ scroll_backward
+bind ^[[6~ scroll_forward
+
+/*
+ * I think just about everybody wants this one...
+ */
+bind ^X switch_channels
+
+/*
+ * Load the core scripts
  */
 for fname in (globals.dsc functions.dsc commands.dsc help.dsc save.dsc config.dsc) {
 	^load $DS.HOME/core/$fname

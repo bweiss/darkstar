@@ -1,4 +1,4 @@
-#version 0.8
+#version 0.9
 /* $Id$ */
 /*
  * window.dsm - Window module for DarkStar/EPIC4
@@ -30,19 +30,15 @@ queue cleanup.window
 	^on #window_kill 426 -"*"
 	^on #window_kill 426 -"msgs"
 
+	^bind ^R nothing
+	^bind ^W next_window
 	for char in ($jot(0 9)) {
-		^bind ^[$char NOTHING
+		^bind ^[$char nothing
 	}
-	for keyb in (^[^I ^[[1~ ^[[2~ ^[[3~ ^[[4~ ^[[5~ ^[[6~) {
-		^bind $keyb NOTHING
+	for keyb in (^[^I ^[^[[5~ ^[^[[6~) {
+		^bind $keyb nothing
 	}
-	^bind ^R NOTHING
-	^bind ^W NEXT_WINDOW
-	^bind ^X SELF_INSERT
-	^bind -symbolic key_f11 NOTHING
-	^bind -symbolic key_f12 NOTHING
-	^bind ^[[7~ NOTHING
-	^bind ^[[8~ NOTHING
+	^bind -symbolic key_f12 nothing
 
 	window.msgwin.destroy
 }
@@ -70,30 +66,27 @@ config.add -b UNBIND_ON_PART 0
 /*
  * Key bindings.
  */
-^bind ^R NEXT_WINDOW
-^bind ^W DELETE_PREVIOUS_WORD
-^bind ^X SWITCH_CHANNELS
-^bind ^[^I PARSE_COMMAND ^window next
-^bind ^[1 PARSE_COMMAND ^window swap 1
-^bind ^[2 PARSE_COMMAND ^window swap 2
-^bind ^[3 PARSE_COMMAND ^window swap 3
-^bind ^[4 PARSE_COMMAND ^window swap 4
-^bind ^[5 PARSE_COMMAND ^window swap 5
-^bind ^[6 PARSE_COMMAND ^window swap 6
-^bind ^[7 PARSE_COMMAND ^window swap 7
-^bind ^[8 PARSE_COMMAND ^window swap 8
-^bind ^[9 PARSE_COMMAND ^window swap 9
-^bind ^[0 PARSE_COMMAND ^window swap 10
-^bind ^[[1~ SCROLL_START
-^bind ^[[2~ PARSE_COMMAND window.msgwin.up
-^bind ^[[3~ PARSE_COMMAND window.msgwin.down
-^bind ^[[4~ SCROLL_END
-^bind ^[[5~ SCROLL_BACKWARD
-^bind ^[[6~ SCROLL_FORWARD
-^bind -symbolic key_f11 TOGGLE_INSERT_MODE
-^bind -symbolic key_f12 PARSE_COMMAND if (winnum(msgs) != -1) {window msgs clear}
-^bind ^[[7~ SCROLL_START
-^bind ^[[8~ SCROLL_END
+
+^bind ^R next_window
+^bind ^W delete_previous_word
+
+^bind ^[^I parse_command ^window next
+^bind ^[1 parse_command ^window swap 1
+^bind ^[2 parse_command ^window swap 2
+^bind ^[3 parse_command ^window swap 3
+^bind ^[4 parse_command ^window swap 4
+^bind ^[5 parse_command ^window swap 5
+^bind ^[6 parse_command ^window swap 6
+^bind ^[7 parse_command ^window swap 7
+^bind ^[8 parse_command ^window swap 8
+^bind ^[9 parse_command ^window swap 9
+^bind ^[0 parse_command ^window swap 10
+
+/* Esc + PgUp/PgDn */
+^bind ^[^[[5~ parse_command window.last.scroll backward
+^bind ^[^[[6~ parse_command window.last.scroll forward
+
+^bind -symbolic key_f12 parse_command window.last.clear
 
 /*
  * Force the loading of saved settings early so that
@@ -123,18 +116,35 @@ alias swap (winnum, void)
 	}
 }
 
-alias wb  (chan default "$C", void) {window bind $chan}
-alias wc  (void)                    {window new_hide swap last}
-alias wj  (...)                     {window new_hide swap last channel "$*"}
-alias wk  (...)                     {window kill}
-alias wl  (...)                     {window last}
-alias wn  (...)                     {window next}
-alias wp  (...)                     {window previous}
-alias wq  (...)                     {window new_hide swap last query $nick}
-alias wub (...)                     {window unbind}
+alias wb  (chan default "$C", void)  { window bind $chan; }
+alias wc  (void)                     { window new_hide swap last; }
+alias wj  (...)                      { window new_hide swap last channel "$*"; }
+alias wk  (...)                      { window kill; }
+alias wl  (...)                      { window last; }
+alias wn  (...)                      { window next; }
+alias wp  (...)                      { window previous; }
+alias wq  (...)                      { window new_hide swap last query $nick; }
+alias wub (...)                      { window unbind; }
 
 
 /****** INTERNAL ALIASES ******/
+
+alias window.last.clear (void)
+{
+	window last
+	window clear
+	window last
+}
+
+alias window.last.scroll (direction, void)
+{
+	if (!direction) {
+		return
+	}
+	window last
+	parsekey scroll_$direction
+	window last
+}
 
 alias window.msgwin.create (void)
 {
@@ -142,65 +152,6 @@ alias window.msgwin.create (void)
 	{
 		window new name msgs
 		window.msgwin.fix
-	}
-}
-
-alias window.msgwin.fix (void)
-{
-	if (winnum(msgs) != -1)
-	{
-		window msgs level $CONFIG.MSG_WINDOW_LEVEL
-		if (CONFIG.MSG_WINDOW_HIDDEN)
-		{
-			window msgs hide
-			if (STATUS.DOUBLE) {
-				window msgs double on
-			}
-			if ((:item = matchitem(single_status msgs)) > -1) {
-				@ delitem(single_status $item)
-			}
-		}{
-			/*
-			 * Make sure that the msg window is visible but
-			 * never becomes the active window.
-			 */
-			if (!winvisible(msgs)) {
-				window show msgs
-			}
-
-			if (winnam() == [msgs])
-			{
-				^local visible
-				for wref in ($winrefs())
-				{
-					if (winvisible($wref)) {
-						push visible $wref
-					}
-				}
-
-				if (#visible == 1)
-				{
-					window previous
-					window show msgs
-					window last
-				}{
-					for wref in ($visible)
-					{
-						if (!match($winnam($wref) msgs operview))
-						{
-							window refnum $wref
-							break
-						}
-					}
-				}
-			}
-
-			window msgs double off fixed on skip on size $CONFIG.MSG_WINDOW_SIZE
-
-			if (finditem(single_status msgs) < 0) {
-				@ setitem(single_status $numitems(single_status) msgs)
-			}
-		}
 	}
 }
 
@@ -214,20 +165,64 @@ alias window.msgwin.destroy (void)
 	}
 }
 
-alias window.msgwin.up (void)
+alias window.msgwin.fix (void)
 {
-	@ :win = winnum()
-	^window ref msgs
-	parsekey SCROLL_BACKWARD
-	^window ref $win
-}
+	if (winnum(msgs) == -1) {
+		return
+	}
 
-alias window.msgwin.down (void)
-{
-	@ :win = winnum()
-	^window ref msgs
-	parsekey SCROLL_FORWARD
-	^window ref $win
+	window msgs level $CONFIG.MSG_WINDOW_LEVEL
+
+	if (CONFIG.MSG_WINDOW_HIDDEN)
+	{
+		window msgs hide
+		if (STATUS.DOUBLE) {
+			window msgs double on
+		}
+		if ((:item = matchitem(single_status msgs)) > -1) {
+			@ delitem(single_status $item)
+		}
+	}{
+		/*
+		 * Make sure that the msg window is visible but inactive.
+		 */
+		if (!winvisible(msgs)) {
+			window show msgs
+		}
+
+		if (winnam() == [msgs])
+		{
+			^local visible
+			for wref in ($winrefs())
+			{
+				if (winvisible($wref)) {
+					push visible $wref
+				}
+			}
+
+			if (#visible == 1)
+			{
+				window previous
+				window show msgs
+				window last
+			}{
+				for wref in ($visible)
+				{
+					if (!match($winnam($wref) msgs operview))
+					{
+						window refnum $wref
+						break
+					}
+				}
+			}
+		}
+
+		window msgs double off fixed on skip on size $CONFIG.MSG_WINDOW_SIZE
+
+		if (finditem(single_status msgs) < 0) {
+			@ setitem(single_status $numitems(single_status) msgs)
+		}
+	}
 }
 
 
@@ -387,6 +382,11 @@ on #-window_kill 426 "msgs"
 
 if (CONFIG.AUTO_CREATE_WINDOWS)
 {
+	/* Try to play nice with the operview window. */
+	if (isloaded(oper) && CONFIG.OPERVIEW) {
+		oper.operview.destroy
+	}
+
 	for cnt from 1 to $CONFIG.AUTO_CREATE_WINDOWS
 	{
 		@ :chan = word($cnt $CONFIG.AUTO_BIND_CHANNELS)
@@ -397,6 +397,10 @@ if (CONFIG.AUTO_CREATE_WINDOWS)
 			window bind $chan
 		}
 		window hide
+	}
+
+	if (isloaded(oper) && CONFIG.OPERVIEW) {
+		oper.operview.create
 	}
 }
 

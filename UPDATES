@@ -2,6 +2,19 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://darkstar.epicsol.org/UPDATES
 
 
+*** News 2003/11/07 -- window.dsm 0.9 - Changed key bindings
+	Several changes mostly related to key bindings, including:
+	 * The Insert and Delete keys are now left alone to EPIC's defaults.
+	 * Esc + PgUp/PgDn will now scroll the "last" window (according to
+	   /WINDOW LAST). Most of the time this should be the last active
+	   split window.
+	 * The binding for the F12 key has also been changed so that it
+	   clears the "last" window instead of just the msg window.
+	 * Some hopefully unnecessary key bindings were removed so please
+	   let me know if anything breaks.
+	 * The AUTO_CREATE_WINDOWS feature should now play nicely with the
+	   operview window provided by the oper module.
+
 *** News 2003/11/06 -- channel.dsm 1.1 - New temp. ban aliases: /TEMP[BK|KB]
 	There are two new temporary ban aliases: /TEMPBK and /TEMPKB. These
 	are just like the /BK and /KB aliases except that the bans are

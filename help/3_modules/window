@@ -2,7 +2,7 @@ Module: window
 Author: Brian Weiss <brian@epicsol.org>
 
 Description:
-   Provides various commands, keybindings, and other features to assist
+   Provides various commands, key bindings, and other features to assist
    in window management.
 
 Config Variables:
@@ -38,6 +38,15 @@ Author: Brian Weiss <brian@epicsol.org>
                                 cause its window to be killed.
    UNBIND_ON_PART             - Boolean. Automatically unbind channels
                                 after you part them.
+
+Key Bindings:
+   ^R       (Ctrl+R)           next_window
+   ^W       (Ctrl+W)           delete_previous_word
+   ^[^I     (Esc+Tab)          parse_command window next
+   ^[<0-9>  (Esc+<0-9>)        parse_command window swap <num> (0 is win #10)
+   ^[^[[5~  (Esc+PgUp)         parse_command window.last.scroll backward
+   ^[^[[6~  (Esc+PgDn)         parse_command window.last.scroll forward
+   key_f12  (F12)              parse_command window.last.clear
 
 Commands:
    swap [window name or refnum]

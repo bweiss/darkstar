@@ -87,6 +87,11 @@ AFTER 0.3 RELEASE:
 
   * Write a userlist module.
 
+  * Write a winmgr module to provide a "managed window" system. In other
+    words, a way for users to create and control windows with fixed attributes
+    (e.g. msg window/operview). This is perhaps something that belongs in EPIC
+    itself but, since it isn't, I will go ahead and write my own for now.
+
 
 OTHER NOTES/IDEAS:
 

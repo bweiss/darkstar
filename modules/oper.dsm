@@ -1,4 +1,4 @@
-#version 0.4
+#version 0.4.1
 /* $Id$ */
 /*
  * oper.dsm - IRC Operator module for DarkStar/EPIC4
@@ -253,66 +253,6 @@ alias oper.operview.create (void)
 	}
 }
 
-alias oper.operview.fix (void)
-{
-	if (winnum(operview) != -1)
-	{
-		window operview level $CONFIG.OPERVIEW_LEVEL
-		if (CONFIG.OPERVIEW_HIDDEN)
-		{
-			window operview hide
-
-			if (STATUS.DOUBLE) {
-				window operview double on
-			}
-			if ((:item = matchitem(single_status operview)) > -1) {
-				@ delitem(single_status $item)
-			}
-		}{
-			/*
-			 * Make sure that the operview window is visible but
-			 * never becomes the active window.
-			 */
-			if (!winvisible(operview)) {
-				window show operview
-			}
-
-			if (winnam() == [operview])
-			{
-				^local visible
-				for wref in ($winrefs())
-				{
-					if (winvisible($wref)) {
-						push visible $wref
-					}
-				}
-
-				if (#visible == 1)
-				{
-					window previous
-					window show operview
-					window last
-				}{
-					for wref in ($visible)
-					{
-						if (!match($winnam($wref) operview msgs))
-						{
-							window refnum $wref
-							break
-						}
-					}
-				}
-			}
-
-			window operview double off fixed on size $CONFIG.OPERVIEW_SIZE
-
-			if (finditem(single_status operview) < 0) {
-				@ setitem(single_status $numitems(single_status) operview)
-			}
-		}
-	}
-}
-
 alias oper.operview.destroy (void)
 {
 	if (winnum(operview) != -1) {
@@ -320,6 +260,67 @@ alias oper.operview.destroy (void)
 	}
 	if ((:item = matchitem(single_status operview)) > -1) {
 		@ delitem(single_status $item)
+	}
+}
+
+alias oper.operview.fix (void)
+{
+	if (winnum(operview) == -1) {
+		return
+	}
+
+	window operview level $CONFIG.OPERVIEW_LEVEL
+
+	if (CONFIG.OPERVIEW_HIDDEN)
+	{
+		window operview hide
+		if (STATUS.DOUBLE) {
+			window operview double on
+		}
+		if ((:item = matchitem(single_status operview)) > -1) {
+			@ delitem(single_status $item)
+		}
+	}{
+		/*
+		 * Make sure that the operview window is visible but
+		 * never becomes the active window.
+		 */
+		if (!winvisible(operview)) {
+			window show operview
+		}
+
+		if (winnam() == [operview])
+		{
+			^local visible
+			for wref in ($winrefs())
+			{
+				if (winvisible($wref)) {
+					push visible $wref
+				}
+			}
+
+			if (#visible == 1)
+			{
+				window previous
+				window show operview
+				window last
+			}{
+				for wref in ($visible)
+				{
+					if (!match($winnam($wref) operview msgs))
+					{
+						window refnum $wref
+						break
+					}
+				}
+			}
+		}
+
+		window operview double off fixed on size $CONFIG.OPERVIEW_SIZE
+
+		if (finditem(single_status operview) < 0) {
+			@ setitem(single_status $numitems(single_status) operview)
+		}
 	}
 }
 
