@@ -7,7 +7,7 @@
  * NAMES.DSM - Module to display who's on a channel for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/20/02 (bmw)
+ * Last modified: 2/11/02 (bmw)
  *
  * This script uses serial numbers 0 and 428 for /on hooks.
  */
@@ -71,23 +71,23 @@ alias names.showusers (chan default "$C", mode default "*", void)
 {
 	if (match($chan $mychannels()))
 	{
-		^local desc,users
+		^local users
 
 		switch ($tolower($mode))
 		{
 			(n)
 			{
-				^assign desc normal users
+				^local desc normal users
 				@ users = nochops($chan)
 			}
 			(o)
 			{
-				^assign desc channel operators
+				^local desc channel operators
 				@ users = chops($chan)
 			}
 			(v)
 			{
-				^assign desc voiced users
+				^local desc voiced users
 				for nick in ($channel($chan))
 				{
 					if (mid(1 1 $nick) == [+])
@@ -96,7 +96,7 @@ alias names.showusers (chan default "$C", mode default "*", void)
 					}
 				}
 			}
-			(*) {@ users = onchannel($chan)}
+			(*) {@ :users = onchannel($chan)}
 		}
 
 		if (#users < 1)
