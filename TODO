@@ -6,32 +6,6 @@
 * Flood protection module
 * Auto-join
 * XDCC module
-* /cycle changes:
-	<RoboHak> fudd: you could register a channel to be rejoined
-		  and //part, then in the on leave check if it needs
-		  to be rejoined
-	<hop> fudd: the thing is that a "current channel" is created when a
-	      "waiting channel" is JOINed
-	<hop> fudd: a "waiting channel" is created when you /window channel
-	      (ie, /join)
-	<hop> thus, the fundamental problem occurs when you /quote join a
-	      channel and when the JOIN comes back you are in a window that
-	      has no channel
-	<hop> epic puts it there
-	<hop> but it isnt made current ecuase that window isn;t waiting for
-	      it to be made current
-	<hop> ponder this for a minute
-	<hop> you're ni a window with two channels
-	<hop> and you do thje /quote part and /quote join
-	<hop> the "other" channel is the current channel when that PART comes
-	      back
-	<hop> but the /quote join doesn't change the current channel
-	<hop> so /cycle on a two0-channel window "switches": the current channel
-	<hop> just to warn you about that.
-	<fudd> using an /on leave might solve all this
-	<fudd> like robohak said
-	<RoboHak> well, that would cause a non-current channel that's cycle'd
-		  to become current
 
 * Tabkey completion:
 <wd> i.e. for ctcp you might have 'a.completion.add(ctcp %[,]c,N %'ping,
@@ -40,10 +14,3 @@
       channels and current known nicknames, which can be comma separated
 <wd> er, s/second/first
 <wd> and the second argument based on that list of commands
-
-[11:55] .BlackJac[blackjac@union.cavalry.net] Maybe you can make it work with
-         /relt
-[11:56] .msg[BlackJac] well, that wouldnt be a bad idea either.. but we might
-         want them to be separate features
-[11:56] .msg[BlackJac] it would be nice to be able to re-set old topics
-         without having the relay module loaded

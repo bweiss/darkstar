@@ -9,13 +9,16 @@
 set AUTO_WHOWAS OFF
 set BEEP OFF
 set CLOCK_24HOUR ON
+set LASTLOG 1024
 set LOAD_PATH ~/.epic4:/usr/local/share/epic:.
 set NO_FAIL_DISCONNECT ON
 set SCROLLBACK 1024
 
-/* Change status bar */
-#status epic4
 
+if (winnam() == [ircII])
+{
+	^window ircII name - level none
+}
 
 /* Debugging stuff */
 
@@ -41,11 +44,6 @@ set SCROLLBACK 1024
 #		set DEBUG 7
 #	}
 #}
-
-if (winnam() == [ircII])
-{
-	^window ircII name - level none
-}
 
 
 /* bmw '01 */

@@ -6,7 +6,7 @@
  * THEMES.DSC - Theme support for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/5/01 (bmw)
+ * Last modified: 10/7/01 (bmw)
  */
 
 /*
