@@ -870,7 +870,7 @@ alias wall (text)
  */
 alias channel.topic (serv, chan, topic)
 {
-	if (CONFIG.REMEMBER_TOPICS > 0)
+	if (isnumber(b10 $CONFIG.REMEMBER_TOPICS) && CONFIG.REMEMBER_TOPICS > 0)
 	{
 		@ :array = [channel.topics.$serv\.$chan]
 		@ :head = numitems($array) - 1
