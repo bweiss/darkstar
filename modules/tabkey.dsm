@@ -38,7 +38,7 @@ alias cleartab (void)
 		^assign -$var
 	}
 
-	for var in $(aliasctl(assign match TABKEY.LAST_NICK.))
+	for var in ($aliasctl(assign match TABKEY.LAST_NICK.))
 	{
 		^assign -$var
 	}
