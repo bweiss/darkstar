@@ -802,7 +802,7 @@ Darkstar ChangeLog
  - [tabkey.dsm] Support for /save module completion added.
  - [save.dsc] Now allows you to specify a save directory as well as a list of
    modules. Usage: /save [-d <dir>] [*|module1] [module2] [...]
-   If no modules are specific, settings for all modules, plus the core, are
+   If no modules are specified, settings for all modules, plus the core, are
    saved. [module] can be any currently loaded module or "core" to save the
    core script settings.
 
@@ -889,7 +889,7 @@ Darkstar ChangeLog
  - [functions.dsc] Fixed a bug in $getsamechars() which was causing it to
    return matching characters after failing on previous characters.
  - Help system added! The code for /dhelp is located in core/help.dsc and was
-   provided by WhiteDrgn (thanks!). It uses EPIC's built-in help system so
+   provided by Tyler Hall (thanks!). It uses EPIC's built-in help system so
    not much code had to be added. No actual help files just yet.. but expect
    some in the next release.
  - [save.dsc] Fixed a bug that was causing some module settings not to be
@@ -933,7 +933,7 @@ Darkstar ChangeLog
  - Syntax changes to /deop, /devoice, and /op. When specifying multiple nicks
    white space must now be used to separate the nicks rather than commas.
  - The "Insert" and "Delete" keys now scroll the msg window up/down. Thanks
-   to adm for this. (The F12 key now clears the msg window)
+   to adm for this. The F12 key now clears the msg window.
  - Added /tempban to modules/misc.dsm
  - Shaved about 1600 bytes off core/loader.ds getting rid of some of the
    duplicate code for /loadmod, /unloadmod, and the auto-loader.
