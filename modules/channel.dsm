@@ -1,4 +1,4 @@
-#version 0.2.2
+#version 0.2.3
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for Darkstar/EPIC4
@@ -45,7 +45,7 @@ format.add BANS_FOOTER $G Total bans on $3: $2
 format.add BANS_HEADER #   SetBy         When               Ban
 format.add CHANNEL_SIGNOFF $G SignOff $2: $1 \($3-%n\) [$tolower($Z)]
 format.add CHANNEL_SYNC $G Channel $1 synced in $2 seconds
-format.add CHANNEL_TS $G Channel $2 created $strftime($3 %%a %%b %%T %%Z %%Y) [$3]
+format.add CHANNEL_TS $G Channel $2 created $strftime($3 %%a %%b %%d %%T %%Z %%Y) [$3]
 format.add JOIN $G $1 \($3\) has joined $2 at $Z
 format.add LEAVE $G $1 \($3\) has left $2 at $Z
 format.add MODE $G Mode change \"$3-\" on channel $2 by $1
