@@ -245,6 +245,7 @@ alias loader.unload_module (module, void)
 		/* Get rid of any global aliases/variables obviously
 		   related to this module. */
 		purge $module
+		purgealias $module
 
 		/* Remove all config and format variables. */
 		for var in ($DSET.MODULES[$module])

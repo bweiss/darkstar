@@ -7,7 +7,10 @@
  * See the 'COPYRIGHT' file for more information.
  */
 
-
+/*
+ * Displays miscellaneous information about the operating system, client,
+ * and Darkstar (including modules).
+ */
 alias dinfo (void)
 {
 	@ :divider = repeat(${word(0 $geom()) - 8} -)
@@ -110,24 +113,32 @@ alias _less (fd, count, winnum default 0, void)
 }
 
 /*
- * /PURGE
- * Purges alias and assign structures.
+ * Removes assign structures.
  */
 alias purge (arg, void)
 {
-      foreach $arg _purge
+	foreach $arg _purge
 	{
 		purge $arg\[$_purge]
 	}
 	^assign -$arg
+}
 
+/*
+ * Removes alias structures.
+ */
+alias purgealias (arg, void)
+{
 	foreach -$arg _purge
 	{
-		purge $arg\[$_purge]
+		purgealias $arg\[$_purge]
 	}
 	^alias -$arg
 }
 
+/*
+ * Reloads everything including the core scripts.
+ */
 alias reload (void)
 {
 	@ :home = DS.HOME
@@ -140,11 +151,17 @@ alias reload (void)
 	^load $home/darkstar.irc
 }
 
+/*
+ * Show your client version string.
+ */
 alias sv (whom default "$C", void)
 {
 	msg $whom ircII $J $uname() - $CLIENT_INFORMATION
 }
 
+/*
+ * Display client uptime.
+ */
 alias uptime (void)
 {
 	xecho -b ircII $J $uname() - $CLIENT_INFORMATION

@@ -1,6 +1,13 @@
 Darkstar ChangeLog
 
 
+3/8/02
+
+ * /PURGE once again only removes assign structures. As such, I have added
+   a /PURGEALIAS command for removing alias structures. The module loader
+   now takes advantage of both of these aliases which fixes a bug that caused
+   module related structures to not be recursively removed.
+
 3/6/02
 
  * [tabkey.dsm v0.6.1] Added tabkey.rmrule so that other modules can remove
