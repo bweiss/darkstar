@@ -54,7 +54,7 @@ alias themes.buildlist (void) {
 					@ delitem(themes $item)
 					@ delitem(theme_dirs $item)
 				}
-				if (fexist($t_dir/main.dst) == 1) {
+				if (fexist($tdir/main.dst) == 1) {
 					@ setitem(themes $numitems(themes) $name)
 					@ setitem(theme_dirs $numitems(theme_dirs) $tdir)
 				}
@@ -96,6 +96,7 @@ alias themes.change (theme, void) {
 }
 
 alias themes.display (void) {
+	themes.buildlist
 	xecho -b Current theme: $DS.THEME
 	xecho -b Available themes:
 	for cnt from 0 to ${numitems(themes) - 1} {

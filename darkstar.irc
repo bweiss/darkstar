@@ -60,7 +60,7 @@ for array in ($getarrays()) {
  * This will be incremented every time a change takes place in
  * the core scripts (this file and any .dsc files in core/).
  */
-@ DS.CORE_ID = 78
+@ DS.CORE_ID = 79
 
 eval xecho -b Loading DarkStar $DS.VERSION
 
