@@ -1,4 +1,4 @@
-#version 0.7.1
+#version 0.7.2
 /* $Id$ */
 /*
  * window.dsm - Window module for DarkStar/EPIC4
@@ -251,8 +251,8 @@ on #-msg 426 "*" {
 				@ :oldnick = before(-1 ! $getitem(window.queries.$lastserver() $item))
 				if ((:win = querywin($oldnick $lastserver())) > -1) {
 					window $win query $0
+					xecho -b -w $win Query window for $oldnick changed to $0
 				}
-				xecho -b -w $win Query window for $oldnick changed to $0
 			}
 			@ setitem(window.queries.$lastserver() $item $0!$userhost())
 		}
