@@ -1,4 +1,4 @@
-#version 0.4
+#version 0.4.1
 /* $Id$ */
 /*
  * relay.dsm - Relay module for DarkStar/EPIC4
@@ -169,8 +169,8 @@ on #-ctcp 451 "*"               {relay.additem ctcp $*}
 on #-ctcp_reply 451 "*"         {relay.additem ctcp_reply $*}
 on #-msg 451 "*"                {relay.additem msg $0 $userhost() $1-}
 on #-notice 451 "*"             {relay.additem notice $0 $userhost() $1-}
-on #-public 451 "*"             {relay.additem public $channel.show_ov($0 $1) $1-}
-on #-public_other 451 "*"       {relay.additem public_other $channel.show_ov($0 $1) $1-}
+on #-public 451 "*"             {relay.additem public $*}
+on #-public_other 451 "*"       {relay.additem public_other $*}
 on #-send_ctcp 451 "PRIVMSG *"
 {
 	unless ([$2] != [ACTION]) {
@@ -182,9 +182,9 @@ on #-send_notice 451 "*"        {relay.additem send_notice $*}
 on #-send_public 451 "*"
 {
 	if ([$0] == C) {
-		relay.additem send_public $0 $channel.show_ov($servernick() $0) $1-
+		relay.additem send_public $0 $servernick() $1-
 	} else {
-		relay.additem send_public_other $channel.show_ov($servernick() $0) $*
+		relay.additem send_public_other $0 $servernick() $1-
 	}
 }
 

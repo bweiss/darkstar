@@ -3,6 +3,10 @@ DarkStar ChangeLog
 
 2002/06/04
 
+ * [relay.dsm 0.4.1] The public, public_other, and send_public hooks were
+   still calling $channel.show_ov(), and so were not passing the correct
+   arguments required for these types to look the way they should.
+
  * Minor fix in the echoes status bar. The server was not always being
    displayed properly. Reported by keerf.
 
