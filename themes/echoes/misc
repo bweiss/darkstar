@@ -34,6 +34,7 @@ assign FORMAT.WHOIS_IDLE %K³ [     %Wi%ndle%K] ³%n $tdiff($3)
 assign FORMAT.WHOIS_NAME ³Ú%K[  %Wi%nrcname%K]%nÄÙ $6-
 assign FORMAT.WHOIS_NICK %W³ %K[%W$[-9]2%K] ³ [%n$3%c@%n$4%K]%n
 assign FORMAT.WHOIS_OPER %K³ [ %Wo%nperator%K] ³%n $2 is being syn flooded (irc operator)
+assign FORMAT.WHOIS_REALHOST ³ %K[ %Wr%nealhost%K]%n ³ $3
 assign FORMAT.WHOIS_SERVER ³À%K[   %Ws%nerver%K]%nÄ¿ $3 %K[%n$4-%K]%n
 assign FORMAT.WHOIS_SIGNON ³ %K[   %Ws%nignon%K]%n ³ $strftime($4 %%a %%b %%d %%T %%Y)
 assign FORMAT.WHOWAS_NAME ³%KÚ[  %Wi%nrcname%K]%nÄÙ $6-

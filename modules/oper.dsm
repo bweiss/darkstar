@@ -1,4 +1,4 @@
-#version 0.3
+#version 0.3.1
 /* $Id$ */
 /*
  * oper.dsm - IRC Operator module for DarkStar/EPIC4
@@ -17,6 +17,7 @@ queue cleanup.oper
 	^on #381 427 -"*"
 	^on #hook 427 -"CONFIG OPERVIEW *"
 	^on #hook 427 -"CONFIG OPERVIEW_HIDDEN *"
+	^on #hook 427 -"CONFIG OPERVIEW_LEVEL *"
 	^on #hook 427 -"CONFIG OPERVIEW_SIZE *"
 	^on wallop -"*"
 	^on #window_create 427 -"*"
@@ -31,6 +32,7 @@ queue cleanup.oper
 config.add    OPER_UMODES wzsky
 config.add -b OPERVIEW 0
 config.add -b OPERVIEW_HIDDEN 0
+config.add    OPERVIEW_LEVEL opnotes,snotes,wallops
 config.add    OPERVIEW_SIZE 5
 
 format.add WALLOP !$1$2! $3-
@@ -167,6 +169,41 @@ on #-hook 427 "CONFIG OPERVIEW *"
 on #-hook 427 "CONFIG OPERVIEW_HIDDEN *"
 {
 	oper.operview.fix
+}
+
+on #-hook 427 "CONFIG OPERVIEW_LEVEL *"
+{
+	@ :bad = :good = []
+	@ :levels = [ACTIONS CRAP CTCP DCC MSGS NOTES NOTICES OPNOTES PUBLIC SNOTES USERLOG1 USERLOG2 USERLOG3 USERLOG4 WALLOPS WALLS]
+	for lvl in ($split(, $CONFIG.OPERVIEW_LEVEL))
+	{
+		if (findw($lvl $levels) > -1) {
+			push good $lvl
+		} else {
+			push bad $lvl
+		}
+	}
+
+	if (bad)
+	{
+		for lvl in ($bad) {
+			xecho -b Unknown level: $toupper($lvl)
+		}
+		xecho -b Valid levels: $levels
+		if (good) {
+			@ :newlevels = unsplit(, $good)
+		} else {
+			@ :newlevels = [$2-]
+		}
+		^assign CONFIG.OPERVIEW_LEVEL $toupper($newlevels)
+		xecho -b Value of OPERVIEW_LEVEL set to $CONFIG.OPERVIEW_LEVEL
+	}{
+		^assign CONFIG.OPERVIEW_LEVEL $toupper($CONFIG.OPERVIEW_LEVEL)
+	}
+
+	if (CONFIG.OPERVIEW) {
+		window operview level $CONFIG.OPERVIEW_LEVEL
+	}
 }
 
 on #-hook 427 "CONFIG OPERVIEW_SIZE *"

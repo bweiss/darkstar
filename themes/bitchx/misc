@@ -34,6 +34,7 @@ assign FORMAT.WHOIS_IDLE %K: %Wi%ndle       : $tdiff($3) \(signon: $strftime($4 
 assign FORMAT.WHOIS_NAME %G³ %Wi%nrcname    : $6-
 assign FORMAT.WHOIS_NICK %G| %W$2 %K\(%n$3@$4%K\)%n %K\(%W$tld($after(-1 . $4))%K\)%n
 assign FORMAT.WHOIS_OPER %K| %Wo%nperator   : $2  \(is %WNOT%n an IRC warrior\)
+assign FORMAT.WHOIS_REALHOST %K| %Wr%nealhost   : $3
 assign FORMAT.WHOIS_SERVER %K³ %Ws%nerver     : $3 \($4-\)
 assign -FORMAT.WHOIS_SIGNON
 assign FORMAT.WHOWAS_NAME %G³ %Wi%nrcname    : $6-

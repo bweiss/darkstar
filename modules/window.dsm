@@ -18,7 +18,9 @@ queue cleanup.window
 	for wref in ($winrefs()) {
 		^alias -$wref
 	}
+
 	^on #hook 426 -"CONFIG MSG_WINDOW *"
+	^on #hook 426 -"CONFIG MSG_WINDOW_HIDDEN *"
 	^on #hook 426 -"CONFIG MSG_WINDOW_LEVEL *"
 	^on #hook 426 -"CONFIG MSG_WINDOW_SIZE *"
 	^on #join 426 -'\$servernick() *'
@@ -27,6 +29,7 @@ queue cleanup.window
 	^on #window_create 426 -"*"
 	^on #window_kill 426 -"*"
 	^on #window_kill 426 -"msgs"
+
 	for char in ($jot(0 9)) {
 		^bind ^[$char NOTHING
 	}
@@ -40,6 +43,7 @@ queue cleanup.window
 	^bind -symbolic key_f12 NOTHING
 	^bind ^[[7~ NOTHING
 	^bind ^[[8~ NOTHING
+
 	window.msgwin.destroy
 }
 
@@ -247,7 +251,7 @@ on #-hook 426 "CONFIG MSG_WINDOW_LEVEL *"
 {
 	@ :bad = :good = []
 	@ :levels = [ACTIONS CRAP CTCP DCC MSGS NOTES NOTICES OPNOTES PUBLIC SNOTES USERLOG1 USERLOG2 USERLOG3 USERLOG4 WALLOPS WALLS]
-	for lvl in ($sar(ig/,/ /$CONFIG.MSG_WINDOW_LEVEL))
+	for lvl in ($split(, $CONFIG.MSG_WINDOW_LEVEL))
 	{
 		if (findw($lvl $levels) > -1) {
 			push good $lvl
@@ -255,22 +259,24 @@ on #-hook 426 "CONFIG MSG_WINDOW_LEVEL *"
 			push bad $lvl
 		}
 	}
+
 	if (bad)
 	{
 		for lvl in ($bad) {
-			xecho -b Unknown level: $lvl
+			xecho -b Unknown level: $toupper($lvl)
 		}
 		xecho -b Valid levels: $levels
 		if (good) {
-			@ :newlevels = sar(ig/ /,/$good)
+			@ :newlevels = unsplit(, $good)
 		} else {
-			@ :newlevels = *2-
+			@ :newlevels = [$2-]
 		}
 		^assign CONFIG.MSG_WINDOW_LEVEL $toupper($newlevels)
 		xecho -b Value of MSG_WINDOW_LEVEL set to $CONFIG.MSG_WINDOW_LEVEL
 	}{
 		^assign CONFIG.MSG_WINDOW_LEVEL $toupper($CONFIG.MSG_WINDOW_LEVEL)
 	}
+
 	if (CONFIG.MSG_WINDOW) {
 		window msgs level $CONFIG.MSG_WINDOW_LEVEL
 	}

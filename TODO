@@ -1,9 +1,3 @@
-FOR 0.2.11 RELEASE:
-
-  * [misc.dsm] Add support for the 338 numeric (WHOIS) on ratbox servers.
-    "338 fudd 216.254.103.18 : actually using host"
-
-
 FOR 0.3 RELEASE:
 
  Core Scripts:
@@ -70,6 +64,10 @@ FOR 0.3 RELEASE:
 AFTER 0.3 RELEASE:
 
   * If possible, make all scripts safe for multi-server use.
+
+  * [channel.dsm] Rewrite /WALL so that type 3 attempts to use the 005
+    handler's value for MAXTARGETS or fallback to 4, instead of 7, if that
+    fails.
 
 
 OTHER NOTES/IDEAS:

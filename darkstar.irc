@@ -55,14 +55,14 @@ for array in ($getarrays()) {
 /*
  * Important global variables
  */
-@ DS.VERSION = [0.2.10]
-@ DS.INTERNAL_VERSION = [20030915]
+@ DS.VERSION = [0.2.11]
+@ DS.INTERNAL_VERSION = [20031101]
 
 /*
  * This will be incremented every time a change takes place in
  * the core scripts (this file and any *.dsc files in $DS.HOME/core/).
  */
-@ DS.CORE_ID = 91
+@ DS.CORE_ID = 92
 
 eval xecho -b Loading DarkStar $DS.VERSION
 
@@ -96,7 +96,7 @@ if (fexist($DS.USER_DIR) == -1)
 	 */
 	echo
 	echo Welcome to the DarkStar/EPIC4 script pack!
-	echo Copyright (c) 2002 Brian Weiss <brian@epicsol.org>
+	echo Copyright (c) 2002, 2003 Brian Weiss <brian@epicsol.org>
 	echo See the 'COPYRIGHT' file for details.
 	echo Official Website: http://darkstar.epicsol.org/
 	echo

@@ -2,7 +2,27 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://darkstar.epicsol.org/UPDATES
 
 
-*** News 2003/10/23 -- nickmgr 0.1 and keepnick no mo'
+DarkStar 0.2.11 (20031031)
+
+
+*** News 2003/10/31 -- misc.dsm 1.1 - ratbox ircd whois_actually support
+	There is a new format variable for ratbox ircd's whois_actually
+	feature (AKA realhost). The variable is called WHOIS_REALHOST.
+	Theme authors will want to update their themes so that it does
+	not mess up their whois output.
+
+*** News 2003/10/31 -- oper.dsm - New config variable: OPERVIEW_LEVEL
+	There is a new config variable to control the level of the
+	operview window: OPERVIEW_LEVEL. This works just like the equivalent
+	for the msg window in window.dsm.
+
+*** News 2003/10/30 -- window.dsm 0.8 - Automatically create/destroy windows
+	Support for automatically creating or destroying windows on
+	join/part has been added. There are 3 new config variables used
+	to control this feature: JOIN_NEW_WINDOW, JOIN_NEW_WINDOW_ARGS,
+	and PART_KILL_WINDOW. See ds:window(3) for details.
+
+*** News 2003/10/23 -- nickmgr.dsm 0.1 and keepnick no mo'
 	Ahhh... At last we are rid of the cursed keepnick module.
 	To replace it I have written a nick management module that
 	should be a vast improvement. See ds:nickmgr(3) for details.

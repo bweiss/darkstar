@@ -34,6 +34,7 @@ assign -FORMAT.WHOIS_IDLE
 assign -FORMAT.WHOIS_NAME 
 assign FORMAT.WHOIS_NICK $G %c$[9]2%n  : %p$3%n%W@%n%p$4%K%n \($6-\)
 assign FORMAT.WHOIS_OPER $G %BIrcOp%n      : $2 is being SYN flooded \(IRC Operator\)
+assign FORMAT.WHOIS_REALHOST $G %BRealHost%n   : $3
 assign FORMAT.WHOIS_SERVER $G %BServer%n     : %C$3%n \($4-\)
 assign FORMAT.WHOIS_SIGNON $G %BSignOn%n     : $strftime($4 %%a %%b %%d %%T %%Y)    %BIdle%n : $tdiff2($3)
 assign -FORMAT.WHOWAS_NAME
