@@ -3,6 +3,8 @@ Darkstar ChangeLog
 
 12/23/01
 
+ * Forgot to escape some ()'s in the darkstar status.
+
  * [names.dsm] Aliased /names to /scan to prevent people from accidentally
    executing the internal /names with no arguments.
 
