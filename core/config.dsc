@@ -6,7 +6,7 @@
  * CONFIG.DSC - Configuration manager for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 2/17/02 (bmw)
+ * Last modified: 2/18/02 (bmw)
  */
 
 alias conf dset
@@ -194,7 +194,7 @@ alias config.add
 
 	if (DSET[CONFIG][$variable])
 	{
-		xecho -b loader.addconfig: Duplicate config variable: $variable \(Module: $module\)
+		xecho -b config.add: Duplicate config variable: $variable \(Module: $module\)
 	}{
 		@ push(DSET.MODULES.$module $variable)
 		^assign DSET.CONFIG.$variable 1
@@ -212,7 +212,7 @@ alias format.add (variable, value)
 
 	if (!variable)
 	{
-		xecho -b loader.addformat: Not enough arguments \(Module: $module\)
+		xecho -b format.add: Not enough arguments \(Module: $module\)
 		return
 	}
 
