@@ -175,11 +175,11 @@ on ^311 "*"
 	}
 	if (FORMAT[WHOIS_NICK])
 	{
-		echo $fparse(WHOIS_NICK $1 $2 $3)
+		echo $fparse(WHOIS_NICK $*)
 	}
 	if (FORMAT[WHOIS_NAME])
 	{
-		echo $fparse(WHOIS_NAME $5-)
+		echo $fparse(WHOIS_NAME $*)
 	}
 }
 
@@ -187,7 +187,7 @@ on ^312 "*"
 {
 	if (FORMAT[WHOIS_SERVER])
 	{
-		echo $fparse(WHOIS_SERVER $2-)
+		echo $fparse(WHOIS_SERVER $*)
 	}
 }
 
@@ -195,7 +195,7 @@ on ^313 "*"
 {
 	if (FORMAT[WHOIS_OPER])
 	{
-		echo $fparse(WHOIS_OPER $1)
+		echo $fparse(WHOIS_OPER $*)
 	}
 }
 
@@ -203,11 +203,11 @@ on ^314 "*"
 {
 	if (FORMAT[WHOWAS_NICK])
 	{
-		echo $fparse(WHOWAS_NICK $1 $2 $3)
+		echo $fparse(WHOWAS_NICK $*)
 	}
 	if (FORMAT[WHOWAS_NAME])
 	{
-		echo $fparse(WHOWAS_NAME $5-)
+		echo $fparse(WHOWAS_NAME $*)
 	}
 }
 
@@ -215,11 +215,11 @@ on ^317 "*"
 {
 	if (FORMAT[WHOIS_IDLE])
 	{
-		echo $fparse(WHOIS_IDLE $2)
+		echo $fparse(WHOIS_IDLE $*)
 	}
 	if (FORMAT[WHOIS_SIGNON])
 	{
-		echo $fparse(WHOIS_SIGNON $strftime($3 %c))
+		echo $fparse(WHOIS_SIGNON $*)
 	}
 }
 
@@ -227,7 +227,7 @@ on ^318 "*"
 {
 	if (FORMAT[WHOIS_FOOTER])
 	{
-		echo $fparse(WHOIS_FOOTER $1-)
+		echo $fparse(WHOIS_FOOTER $*)
 	}
 }
 
@@ -235,7 +235,7 @@ on ^319 "*"
 {
 	if (FORMAT[WHOIS_CHANNELS])
 	{
-		echo $fparse(WHOIS_CHANNELS $2-)
+		echo $fparse(WHOIS_CHANNELS $*)
 	}
 }
 

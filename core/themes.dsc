@@ -6,7 +6,7 @@
  * THEMES.DSC - Theme support for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/14/01 (bmw)
+ * Last modified: 10/15/01 (bmw)
  */
 
 /*
@@ -35,11 +35,10 @@ alias theme (theme, void)
 
 	if (theme)
 	{
-		if (theme.change($theme))
+		switch ($theme.change($theme))
 		{
-			xecho -b Now using theme: $DS.THEME
-		}{
-			xecho -b Error loading theme.
+			(0) {xecho -b Error: Theme not found.}
+			(1) {xecho -b Now using theme: $DS.THEME}
 		}
 	}{
 		if (DS.THEME) xecho -b Current theme: $DS.THEME
@@ -55,20 +54,18 @@ alias theme (theme, void)
 		{
 			if (isnumber($0) && [$0] > 0 && [$0] <= numitems(themes))
 			{
-				if (theme.change($getitem(themes ${[$0] - 1})))
+				switch ($theme.change($getitem(themes ${[$0] - 1})))
 				{
-					xecho -b Now using theme: $DS.THEME
-				}{
-					xecho -b Error loading theme.
+					(0) {xecho -b Error: Theme not found.}
+					(1) {xecho -b Now using theme: $DS.THEME}
 				}
 			} \
 			elsif (matchitem(themes $0*) > -1)
 			{
-				if (theme.change($0))
+				switch ($theme.change($0))
 				{
-					xecho -b Now using theme: $DS.THEME
-				}{
-					xecho -b Error loading theme.
+					(0) {xecho -b Error: Theme not found.}
+					(1) {xecho -b Now using theme: $DS.THEME}
 				}
 			}{
 				xecho -b Error: Invalid theme.
@@ -81,7 +78,7 @@ alias theme.change (theme, void)
 {
 	@ :item = matchitem(themes $theme*)
 
-	if (item > -1 && theme != DS.THEME)
+	if (item > -1)
 	{
 		@ :theme_file = word(1 $getitem(themes $item))
 

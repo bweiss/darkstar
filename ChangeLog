@@ -1,7 +1,18 @@
 Darkstar ChangeLog
 
 
+!! RELEASE: 0.0.11 (10/15/01) !!
+
+
 [10/15/01]
+
+ * I am now passing more arguments to the various WHOIS_* format sets
+   in misc.dsm. This allows for more customization of whois output via /fset.
+   This will affect all themes that use these format sets.
+
+ * Improved error checking in the theme loader. You should get a bit more
+   information as to why loading a theme failed. I will also be adding this
+   to the module loader at some point.
 
  * Removed the "blue" status bar. This, and others, will be distributed
    separately from now on.
