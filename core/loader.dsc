@@ -11,8 +11,14 @@
 
 
 alias listmods modlist
+alias loadedmods loadedmodules
 alias modules modlist
 
+
+alias loadedmodules (void)
+{
+	@ loader.display_loaded()
+}
 
 alias loadmod (modules)
 {

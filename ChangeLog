@@ -1,7 +1,12 @@
 Darkstar ChangeLog
 
 
+!! RELEASE: 0.1.2 (12/25/01) !!
+
+
 12/25/01
+
+ * New core command: /loadedmodules
 
  * HEADS UP: Changes to the theme system. Each theme will now need to have
    its own directory (within one of the theme directories) containing
