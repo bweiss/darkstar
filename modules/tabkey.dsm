@@ -1,4 +1,4 @@
-# version:0.5.3 loader:pf
+# version:0.5.4 loader:pf
 # $Id$
 #
 # tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -634,7 +634,9 @@ alias tabkey.method.commands (...)
 
 alias tabkey.method.chan (...)
 {
-	@ function_return = pattern("$sar(g/\\/\\\\/$*)*" $mychannels());
+	@ function_return = (:foo = pattern("$sar(g/\\/\\\\/$*)*" $mychannels())) ? foo :
+						(:foo = pattern("#$sar(g/\\/\\\\/$*)*" $mychannels())) ? foo :
+						pattern("&$sar(g/\\/\\\\/$*)*" $mychannels());
 };
 
 stack push alias alias.foo;

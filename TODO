@@ -46,6 +46,15 @@ TODO:
 
   * Incorporate howl's new /HELP script to prepare for the migration to EPIC5.
 
+  * Display a diff of the old and new topic whenever someone changes it.
+    <_-^^-_> it would be nice if, when someone changes  thetopic, it showed
+             a diff between the old one and new one
+
+  * Add event handlers to format the channel knocking stuff.
+    *** #darkstar/epic cl!clogic@marooned.us : has asked for an invite.
+    -:- #darkstar/epic  Channel is open.
+    -:- #darkstar/epic  Your KNOCK has been delivered.
+
 
 OTHER NOTES/IDEAS:
 

@@ -13,3 +13,5 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Add support for highlighting in actions, public and private.
 * Add relay module to the default auto-load list.
 * Fix bug in /LESS (rb pwnt).
+* Make $tabkey.method.chan() attempt completion with #/& prefix if first
+  attempt fails.
