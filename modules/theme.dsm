@@ -132,7 +132,7 @@ alias theme.save (name, void)
 				{
 					@ write($fd dset DOUBLE_STATUS ${CONFIG.DOUBLE_STATUS ? [ON] : [OFF]});
 					@ write($fd );
-					for setvar in (BANNER INPUT_PROMPT $getsets(STATUS_*))
+					for setvar in (BANNER INPUT_PROMPT REVERSE_STATUS_LINE $getsets(STATUS_*))
 					{
 						eval ^local value \$$setvar;
 						@ write($fd set $setvar $value);

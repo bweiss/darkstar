@@ -14,6 +14,8 @@ FOR 0.3 RELEASE:
     no half-ops, no voice) in a specified channel. This is needed because
     $nochops() returns voiced users along with the normal ones.
 
+  * Add support for half-ops? (I really hate this)
+
 
 AFTER 0.3 RELEASE:
 
