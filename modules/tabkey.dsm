@@ -1,4 +1,4 @@
-#version 0.2.9
+#version 0.3
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -118,8 +118,9 @@ alias tabkey.main {
 		@ TABKEY.LASTMATCHES = matches
 		@ TABKEY.LASTWORD = word
 	} elsif (#matches && strlen($word) <= strlen($prefix)) {
-		repeat ${curpos()-wordind} parsekey backspace
-		xtype -l $prefix${1 < #matches ? [] : [ ]}
+		@ :line = mid(0 $wordind $L) ## [$prefix${1 < #matches ? [] : [ ]}]
+		parsekey erase_line
+		xtype -l $line
 	}
 }
 
