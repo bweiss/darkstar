@@ -101,9 +101,11 @@ alias _set (type, variable, value)
 
 	if (!variable)
 	{
+		if (FORMAT.SET_HEADER) {xecho -s $fparse(SET_HEADER $#getdsets())}
 		for realvar in ($aliasctl(assign match $struct\.)) {
 			_setcat $type\.$after(1 . $realvar)
 		}
+		if (FORMAT.SET_FOOTER) {xecho -s $fparse(SET_FOOTER $#getdsets())}
 	}{
 		^local var $strip(- $variable)
 		^local bingo ${aliasctl(assign get $struct\.$var) ? 1 : 0}
@@ -111,10 +113,12 @@ alias _set (type, variable, value)
 
 		if (#matches > 1 && !bingo)
 		{
+			if (FORMAT.SET_HEADER) {xecho -s $fparse(SET_HEADER $#getdsets($var*) $var)}
 			xecho -s $fparse(SET_AMBIGUOUS $toupper($var))
 			for tmp in ($matches) {
 				_setcat $type\.$after(1 . $tmp)
 			}
+			if (FORMAT.SET_HEADER) {xecho -s $fparse(SET_HEADER $#getdsets($var*) $var)}
 		}\
 		else if (bingo || #matches == 1)
 		{
@@ -131,7 +135,9 @@ alias _set (type, variable, value)
 			}\
 			else if (value == [])
 			{
+				if (FORMAT.SET_HEADER) {xecho -s $fparse(SET_HEADER 1 $var)}
 				_setcat $realvar
+				if (FORMAT.SET_HEADER) {xecho -s $fparse(SET_HEADER 1 $var)}
 			}\
 			else
 			{
