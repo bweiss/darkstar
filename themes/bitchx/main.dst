@@ -11,6 +11,13 @@ status -q bitchx
 
 set BANNER 7ù16í7ù-1
 
+assign FORMAT.MODLIST_FOOTER -------------------------------------------------------
+assign FORMAT.MODLIST_FOOTER1 $G Available modules: $numitems(modules), Loaded modules: $numitems(loaded_modules)
+assign -FORMAT.MODLIST_FOOTER2
+assign FORMAT.MODLIST_HEADER  #   Module           Version    Size  Loaded Auto-Load
+assign FORMAT.MODLIST_HEADER1 -------------------------------------------------------
+assign -FORMAT.MODLIST_HEADER2
+assign FORMAT.MODLIST_MODULE  $[3]1 $[16]2 $[7]3 $[-7]4    ${[$5] ? [\[*\]] : [\[\ \]]}     ${[$6] ? [\[*\]] : [\[ \]]}
 assign FORMAT.SET %g$padleft(30 . $1)%n $2-
 assign FORMAT.SET_NOVALUE %g$padleft(30 . $1) has no value
 

@@ -7,24 +7,7 @@
  * See the 'COPYRIGHT' file for more information.
  */
 
-
-alias loadedmods loadedmodules
-alias loadedmodules (void)
-{
-	echo  #   Module           Version     Size(bytes)
-	echo ----------------------------------------------
-	for cnt from 0 to ${numitems(loaded_modules) - 1}
-	{
-		@ :num = cnt + 1
-		@ :modname = getitem(loaded_modules $cnt)
-		@ :item = finditem(modules $modname)
-		@ :modver = getitem(module_versions $item)
-		@ :modsize = fsize($getitem(module_files $item))
-		echo  $[3]num $[16]modname [ $[7]modver ] [ $[-7]modsize ]
-	}
-	echo ----------------------------------------------
-	xecho -b Loaded modules: $numitems(loaded_modules)
-}
+/****** USER ALIASES ******/
 
 alias loadmod (modules)
 {
@@ -58,20 +41,31 @@ alias modules modlist
 alias modlist (void)
 {
 	loader.build_modlist
-	echo  #   Module           Version     Size(bytes) Loaded Auto-Load
-	echo ---------------------------------------------------------------
+
+	for var in (MODLIST_HEADER MODLIST_HEADER1 MODLIST_HEADER2) {
+		if (FORMAT[$var]) {
+			echo $fparse($var)
+		}
+	}
+
 	for cnt from 0 to ${numitems(modules) - 1}
 	{
 		@ :num = cnt + 1
 		@ :file = getitem(module_files $cnt)
 		@ :module = getitem(modules $cnt)
 		@ :version = getitem(module_versions $cnt)
-		@ :auto_load = common($module / $CONFIG.AUTO_LOAD_MODULES) ? [\(*\)] : [\( \)]
-		@ :loaded = finditem(loaded_modules $module) > -1 ? [\(*\)] : [\( \)]
-		echo  $[3]num $[16]module [ $[7]version ] [ $[-7]fsize($file) ]   $loaded     $auto_load
+		@ :auto_load = match($module $CONFIG.AUTO_LOAD_MODULES) ? 1 : 0
+		@ :loaded = finditem(loaded_modules $module) > -1 ? 1 : 0
+		if (FORMAT.MODLIST_MODULE) {
+			echo $fparse(MODLIST_MODULE $num $module $version $fsize($file) $loaded $auto_load)
+		}
 	}
-	echo ---------------------------------------------------------------
-	xecho -b Available modules: $numitems(modules), Loaded modules: $numitems(loaded_modules)
+
+	for var in (MODLIST_FOOTER MODLIST_FOOTER1 MODLIST_FOOTER2) {
+		if (FORMAT[$var]) {
+			echo $fparse($var)
+		}
+	}
 }
 
 alias reloadmod (modules)
@@ -112,6 +106,8 @@ alias unloadmod (modules)
 	}
 }
 
+
+/****** INTERNAL ALIASES ******/
 
 /*
  * Stores available modules in two arrays, one for module names (modules)

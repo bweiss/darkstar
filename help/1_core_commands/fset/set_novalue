@@ -5,6 +5,9 @@
    Controls the appearance of /DSET and /FSET output when the variable in
    question has no value.
 
+Parameters:
+   $1    Variable
+
 See Also:
-   ds:fset(1) set_novalue
+   ds:dset(1); ds:fset(1); ds:fset(1) set
 
