@@ -13,6 +13,7 @@ assign FORMAT.CHANNEL_SIGNOFF $G Signoff: %c$2%n \($3-\)
 assign FORMAT.CHANNEL_SYNC $G Join to %C$1%n is now synched \($2 seconds\)
 assign FORMAT.CHANNEL_TS $G Channel %C$2%n created on $strftime($3 %%a %%b %%d %%T %%Y)
 assign FORMAT.JOIN $G %c$1%n %W\(%p$before(@ $3)%W\@%p$after(@ $3)%W\)%n has joined channel %C$2%n
+assign FORMAT.KICK $G ${[$1] == servernick() ? [%cYou%n have] : [%c$1%n has]} been %Wkicked%n from channel %C$3%n by %c$2%n \($4-\)
 assign FORMAT.LEAVE $G %c$1%n has left channel %C$2%n
 assign FORMAT.MODE $G %WMode change%n \"$3-\" on channel %C$2%n by %c$1%n
 assign FORMAT.PUBLIC %c<%n$1%c>%n $3-

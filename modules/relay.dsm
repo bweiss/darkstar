@@ -1,4 +1,4 @@
-#version 0.3
+#version 0.4
 /* $Id$ */
 /*
  * relay.dsm -  Relay module for DarkStar/EPIC4
@@ -32,7 +32,8 @@ queue cleanup.relay
 
 /****** CONFIG/FORMAT VARIABLES ******/
 
-config.add RELAY_BUFFER_SIZE 10
+config.add    RELAY_BUFFER_SIZE 10
+config.add -b RELAY_STRIP_CRAP 1
 
 
 /****** USER ALIASES ******/
@@ -97,6 +98,11 @@ alias relay.main (type, ...)
 		return
 	}
 
+	if (!FORMAT[$type]) {
+		xecho -b Error: relay.main: Format variable $toupper($type) has no value
+		return
+	}
+
 	@ :array = [relay.] ## tolower($type)
 
 	if (!numitems($array)) {
@@ -132,7 +138,11 @@ alias relay.main (type, ...)
 		@ :target = [$1]
 	}
 
-	msg $target $fparse($type $getitem($array $inum))
+	if (CONFIG.RELAY_STRIP_CRAP) {
+		msg $target $stripcrap(ALL $fparse($type $getitem($array $inum)))
+	} else {
+		msg $target $fparse($type $getitem($array $inum))
+	}
 }
 
 /*

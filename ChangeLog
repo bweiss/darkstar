@@ -1,6 +1,22 @@
 DarkStar ChangeLog
 
 
+2002/05/24
+
+ * [channel.dsm 0.5] Removed the SHOW_OPVOICE_IN_PUBLICS config variable
+   because it is possible to provide that functionality in the PUBLIC*
+   format variables. Also added a KICK format variable.
+
+ * [misc.dsm 0.7] Added a new format variable called WHOIS_CHANNELS_WRAP
+   that, if present, will be used instead of WHOIS_CHANNELS. The user's
+   channels will be broken into multiple lines before being displayed in
+   order to prevent linewrap.
+
+ * [relay.dsm 0.4] Added a boolean config variable called RELAY_STRIP_CRAP.
+   If true, all escape sequences will be stripped from the $fparse()
+   output before being sent to the target.
+
+
 !! RELEASE: 0.2.5 (2002/05/22) !!
 
 

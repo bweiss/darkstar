@@ -1,4 +1,4 @@
-#version 0.6.2
+#version 0.7
 /* $Id$ */
 /*
  * misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC4
@@ -60,6 +60,7 @@ format.add WHO_HEADER1
 format.add WHO_HEADER2
 format.add WHOIS_AWAY $G AWAY       %c:%n $1 - $2-
 format.add WHOIS_CHANNELS $G CHANNELS   %c:%n $3-
+format.add WHOIS_CHANNELS_WRAP
 format.add WHOIS_FOOTER $G $2 : End of /WHOIS list.
 format.add WHOIS_FOOTER1
 format.add WHOIS_FOOTER2
@@ -307,7 +308,27 @@ on ^318 "*"
 
 on ^319 "*"
 {
-	if (FORMAT.WHOIS_CHANNELS) {
+	if (FORMAT.WHOIS_CHANNELS_WRAP) {
+		^local channels
+		for chan in ($2-) {
+			if (!channels) {
+				push channels $chan
+			} else if (no_fit && strlen($fparse(WHOIS_CHANNELS_WRAP $0 $1 $channels)) >= word(0 $geom())) {
+				echo $fparse(WHOIS_CHANNELS_WRAP $0 $1 $channels)
+				@:channels = chan
+				@:no_fit = []
+			} else if (strlen($fparse(WHOIS_CHANNELS_WRAP $0 $1 $channels $chan)) >= word(0 $geom())) {
+				echo $fparse(WHOIS_CHANNELS_WRAP $0 $1 $channels)
+				@:channels = chan
+				@:no_fit = 1
+			} else {
+				push channels $chan
+			}
+		}
+		if (channels) {
+			echo $fparse(WHOIS_CHANNELS_WRAP $0 $1 $channels)
+		}
+	} else if (FORMAT.WHOIS_CHANNELS) {
 		echo $fparse(WHOIS_CHANNELS $*)
 	}
 }

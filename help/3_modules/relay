@@ -7,6 +7,9 @@ Author: Brian Weiss <brian@epicsol.org>
 Config Variables:
    RELAY_BUFFER_SIZE       - This determines the number of items that
                              will be stored for each type.
+   RELAY_STRIP_CRAP        - Boolean. If true, all escape sequences will
+                             be stripped from output before being sent
+                             to the target.
 
 Commands:
    relay <type> [-clear|-list|<item#> [<target>]]
