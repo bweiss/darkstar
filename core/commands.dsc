@@ -6,7 +6,7 @@
  * COMMANDS.DSC - Some useful commands for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/17/01 (bmw)
+ * Last modified: 12/22/01 (bmw)
  *
  * If you have any aliases you feel are useful enough to be in this file,
  * feel free to email me.
@@ -82,6 +82,32 @@ alias purge
             purge $0.$_purge
       }
       ^assign -$0
+}
+
+alias reload (void)
+{
+	@ :home = DS.HOME
+	
+	timer -del all
+
+	for cnt from 1 to $numitems(loaded_modules)
+	{
+		@ :itm = cnt - 1
+		queue -flush cleanup.$getitem(loaded_modules $itm)
+	}
+	
+	^load $home/darkstar.irc
+}
+
+alias sv (whom default "$C", void)
+{
+	msg $whom ircII $J $uname() - $CLIENT_INFORMATION
+}
+
+alias uptime (void)
+{
+	xecho -b ircII $J $uname() - $CLIENT_INFORMATION
+	xecho -b Client Uptime: $tdiff(${time() - F})
 }
 
 
