@@ -236,7 +236,7 @@ alias away.process_incoming (type, nick, msg)
 		@ AWAY.NEWMSGS++
 	}
 
-	if (CONFIG[SEND_AWAY_NOTICE] && finditem(sent_away $nick) < 0)
+	if (CONFIG[SEND_AWAY_NOTICE] && type == [MSG] && finditem(sent_away $nick) < 0)
 	{
 		@ setitem(sent_away $numitems(sent_away) $nick)
 		notice $nick I am currently away. \($A\) [Gone since: $strftime($AWAY.TIME %c)] [Log/${CONFIG[AWAY_LOG] ? [ON] : [OFF]}]

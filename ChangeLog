@@ -3,6 +3,7 @@ Darkstar ChangeLog
 
 [0.0.9]
 
+ - [away.dsm] Only replies to messages now if SEND_AWAY_NOTICE is true.
  - [oper.dsm] Added /operwall.
  - [away.dsm] Now uses the internal variable $A to determine if away or not.
    This fixes a bug that caused the script to think we're not away when the
