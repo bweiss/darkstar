@@ -6,7 +6,7 @@
  * AUTOCYCLE.DSM - Auto-Cycle module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 8/27/01 (bmw)
+ * Last modified: 12/2/01 (bmw)
  *
  * This script uses serial number 425 for all ON hooks.
  *
@@ -22,7 +22,7 @@ queue cleanup.autocycle
 	^on #channel_signoff 425 -"*"
 	^on #channel_sync 425 -"*"
 	^on #leave 425 -"*"
-	^on #leave 425 -'\\\$servernick() *'
+	^on #leave 425 -'\$servernick() *'
 	@ delarray(synced_channels)
 }
 

@@ -71,6 +71,10 @@ alias _less (fd, count, winnum default 0, void)
 	}
 }
 
+/*
+ * /PURGE
+ * Requested by whitefang.
+ */
 alias purge
 {
       foreach $0 _purge

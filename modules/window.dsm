@@ -6,7 +6,7 @@
  * WINDOW.DSM - Window module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 8/27/01 (bmw)
+ * Last modified: 12/2/01 (bmw)
  *
  * This script uses serial number 426 for all ON hooks.
  */
@@ -18,7 +18,7 @@ queue cleanup.window
 		^alias -$alias
 	}
 
-	^on #leave 426 '\\\$servernick() *'
+	^on #leave 426 -'\$servernick() *'
 }
 
 if (CONFIG[AUTO_CREATE_WINDOWS])

@@ -6,7 +6,7 @@
  * LOADER.DSC - Module loader for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/15/01 (bmw)
+ * Last modified: 12/2/01 (bmw)
  */
 
 alias listmods modlist
@@ -429,7 +429,10 @@ if (CONFIG[AUTO_LOAD_MODULES])
 					theme $CONFIG.DEFAULT_THEME
 				}
 
-				(N) { /* Do nothing */ }
+				(N)
+				{
+					theme $CONFIG.DEFAULT_THEME
+				}
 
 				(*)
 				{ 

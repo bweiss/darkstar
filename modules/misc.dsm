@@ -6,7 +6,7 @@
  * MISC.DSM - The 'miscellaneous stuff' module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/15/01 (bmw)
+ * Last modified: 12/2/01 (bmw)
  *
  * This script uses serial number 424 for all ON hooks.
  */
@@ -24,7 +24,7 @@ queue cleanup.misc
 	}
 
 	^on #connect 424 -"*"
-	^on mode -'\$servernick\(\) \$servernick\(\) *' 
+	^on mode -'\$servernick() \$servernick() *' 
 	^on send_ctcp -"PRIVMSG *"
 	^on #timer 424 -"*"
 	^on who -"* % % % % *"

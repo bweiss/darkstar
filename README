@@ -1,13 +1,13 @@
 README file for Darkstar/EPIC4
 Author: Brian Weiss <brian@epicsol.org>
 
-Last modification: 10/15/01
+Last modification: 12/2/01
 
 
 ABOUT
 
 Darkstar is a modular script written for use with EPIC4, specifically,
-version 1.0. It is intended mostly for advanced users that wish to
+version 1.1 and up. It is intended mostly for advanced users that wish to
 take the time to customize their client. The core script itself is quite
 small and provides everything necessary to load/unload modules, configure
 settings, save settings, change statbars, and browse the help files. All

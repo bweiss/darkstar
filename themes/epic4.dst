@@ -33,7 +33,7 @@ fset STRFTIME %c
 
 /* Module: misc */
 fset CTCP $G CTCP $3 from $1: $4-
-fset CTCP_REPLY $G CTCP $2 reply from $1: $3-
+fset CTCP_REPLY $G CTCP $3 reply from $1: $4-
 fset DCC_CHAT =$1= $2-
 fset MSG *$1* $3-
 fset NOTICE -$1\- $3-

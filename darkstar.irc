@@ -7,27 +7,65 @@
  *
  *  Darkstar/EPIC4 by Brian Weiss <brian@epicsol.org>
  *
- *  For use with EPIC4-1.0 and higher.
+ *  For use with EPIC4-1.1 and higher.
  *  See the 'README' file for general information.
  *  See the 'COPYRIGHT' file for licensing information.
  */
+
+/*
+ * Warn user if client doesn't meet specifications
+ */
+if (!epic() || V < 20011112)
+{
+	xecho -b
+	xecho -b WARNING!
+	xecho -b
+	xecho -b This script was intended for use with EPIC4-1.0 or higher.
+	xecho -b Your client, $J, does not meet this requirement.
+	xecho -b Continue to use this script at your own risk.
+	xecho -b
+	xecho -b If you would like to obtain EPIC4, you can visit one of the
+	xecho -b following sites.
+	xecho -b
+	xecho -b Official EPIC Homepage:     http://www.epicsol.org/
+	xecho -b Official EPIC FTP site:     ftp://ftp.epicsol.org/
+	xecho -b
+	xecho -b Current versions of both Darkstar and EPIC4 can also be found
+	xecho -b at the following URL.
+	xecho -b
+	xecho -b http://www.got.net/~brian/epic4/
+	xecho -b
+
+	^local pause $"Press any key to continue, or 'q' to quit. "
+
+	if (pause == [q])
+	{
+		xecho -b Bye!
+		xecho -b
+		//quit
+	}
+}
+
 
 /*
  * Make sure we're clean
  */
 dump all
 
-eval for array in \($getarrays()\)
+do
 {
-	@ delarray($array)
+	for array in ($getarrays())
+	{
+		@ delarray($array)
+	}
 }
 
 
 /*
  * Important global variables
  */
-assign DS.VERSION 0.0.12
-assign DS.INTERNAL_VERSION 20011018
+assign DS.VERSION 0.0.13
+assign DS.INTERNAL_VERSION 20011202
 
 
 /*
@@ -176,7 +214,6 @@ alias reload (void)
 {
 	@ :home = DS.HOME
 	
-	dump all
 	timer -del all
 
 	for cnt from 1 to $numitems(loaded_modules)
@@ -185,11 +222,6 @@ alias reload (void)
 		queue -flush cleanup.$getitem(loaded_modules $itm)
 	}
 	
-	for array in ($getarrays())
-	{
-		@ delarray($array)
-	}
-
 	^load $home/darkstar.irc
 }
 
@@ -202,22 +234,6 @@ alias uptime (void)
 {
 	xecho -b ircII $J $uname() - $CLIENT_INFORMATION
 	xecho -b Uptime: $tdiff(${time() - F})
-}
-
-
-/*
- * Warn user if client doesn't meet specifications
- */
-if (!epic() || V < 20010401)
-{
-	xecho -b  
-	xecho -b WARNING! This script was intended for use with EPIC4-1.0 or higher.
-	xecho -b Your client $J does not meet this requirement.
-	xecho -b Continue to use this script at your own risk.
-	xecho -b  
-	xecho -b If you would like to obtain EPIC4, you can visit the following URLs
-	xecho -b ftp://ftp.epicsol.org/pub/epic/ or http://www.got.net/~brian/epic4/
-	xecho -b  
 }
 
 
