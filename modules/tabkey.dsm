@@ -64,6 +64,7 @@ alias tabkey.process_tabkey (void)
 					@ tabkey.module_routine(modules)
 				}
 				(reloadmod %)
+				(save *)
 				(unloadmod %)
 				{
 					@ tabkey.module_routine(loaded_modules)

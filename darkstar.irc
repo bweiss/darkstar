@@ -44,13 +44,6 @@ if (getenv(DARKSTAR_RC))
 	^assign DS.RCFILE $DS.HOME/sample.dsrc
 }
 
-if (getenv(DARKSTAR_SAVE_DIR))
-{
-	@ DS.SAVE_DIR = getenv(DARKSTAR_SAVE_DIR)
-}{
-	^assign DS.SAVE_DIR ~/.epic4/.ds_save
-}
-
 eval assign DS.DEFAULTS_DIR $DS.HOME/defaults
 eval assign DS.HELP_DIR $DS.HOME/help
 eval assign DS.MODULE_DIR $DS.HOME/modules
@@ -105,9 +98,9 @@ alias get_core_settings (void)
 @ get_core_settings()
 alias -get_core_settings
 
-if (fexist($DS.SAVE_DIR/core.sav) == 1)
+if (fexist($CONFIG.SAVE_DIRECTORY/core.sav) == 1)
 {
-	load $DS.SAVE_DIR/core.sav
+	load $CONFIG.SAVE_DIRECTORY/core.sav
 }
 
 

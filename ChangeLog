@@ -1,5 +1,14 @@
 Darkstar ChangeLog
 
+[current]
+
+ - [tabkey.dsm] Support for /save module completion added.
+ - [save.dsc] Now allows you to specify a save directory as well as a list of
+   modules. Usage: /save [-d <dir>] [*|module1] [module2] [...]
+   If no modules are specific, settings for all modules, plus the core, are
+   saved. [module] can be any currently loaded module or "core" to save the
+   core script settings.
+
 
 [0.0.9]
 
