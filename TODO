@@ -1,23 +1,26 @@
-* DOCUMENTATION
+WORKS IN PROGRESS:
+
+* Documentation
+* XDCC module
+* Userlist module
+
+
+PLANNED FOR FUTURE:
+
+* misc.dsm: Fix /wall and hopefully get rid of /wall2
+* Relay module (/relm, /reln, etc)
+* Advanced logging module
+* Channel protection module
+* Auto-join
+* URL grab module
+
+
+OTHER NOTES/IDEAS:
 
 * Improved dependency support. We should keep track of what depends on what
   and take the proper actions on load/unload.
-	- or -
+     - or -
   Remove dependency support altogether. Is it needed or is it just bloat?
-
-* misc.dsm: Fix /wall
-
-* Relay module (/relm, /reln, etc)
-
-* Advanced logging module
-
-* Userlist module
-
-* Channel protection module
-
-* Auto-join
-
-* XDCC module (fserve would be better)
 
 * tabkey.dsm:
 [17:26] .whitefang[thall@epicsol.org] a<tab>
@@ -25,4 +28,6 @@
 [17:27] .whitefang[thall@epicsol.org] but if you press it again, it should
          start cycling through
 
-* URL grabber module
+
+
+EOF
