@@ -7,3 +7,4 @@ KNOWN ERRATA (eg, bugs, or unresolved requests):
 THE CHANGELOG SINCE THE LAST RELEASE:
 -------------------------------------
 * Remove takbkey.cmd.mhelp; /MHELP was removed in a previous commit.
+* Fix /MASSMODE

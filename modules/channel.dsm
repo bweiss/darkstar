@@ -463,6 +463,7 @@ alias massmode (chan, action, mode, args)
 	};
 	fe ($args) $tmp
 	{
+		@ :nicks = [];
 		for (@:cnt = 1, mode[$cnt], @:cnt++) {
 			eval push :nicks \$mode[$cnt];
 		};
