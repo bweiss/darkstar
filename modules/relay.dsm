@@ -1,22 +1,17 @@
-#version 0.4.1
+#version 0.5
 /* $Id$ */
 /*
- * relay.dsm - Relay module for DarkStar/EPIC4
- * Copyright (c) 2002 Brian Weiss
+ * relay.dsm - Channel relay module for DarkStar/EPIC4
+ * Copyright (c) 2002, 2003 Brian Weiss
  * See the 'COPYRIGHT' file for more information.
  *
- * This script uses serial number 451 for all /on hooks.
+ * This script uses serial number 451 for all /ON hooks.
  */
-
-/*
- * This module depends on the channel and misc modules.
- */
-module.dep channel misc
-
 
 /****** CLEANUP QUEUE ******/
 
-queue cleanup.relay {
+queue cleanup.relay
+{
 	for alias in (relay relc relm reln relp relpo relsc relsm relsn relsp relspo) {
 		^alias -$alias
 	}
@@ -24,24 +19,40 @@ queue cleanup.relay {
 		^on #$hook 451 -"*"
 	}
 	^on #send_ctcp 451 -"PRIVMSG *"
+	^on #hook 451 -"UNLOADMOD formats"
+}
+
+
+/****** INIT ******/
+
+if (!isloaded(formats))
+{
+	^local ask $'The relay module depends on the formats module - Load it now? '
+	if (ask == [y]) {
+		loadmod formats
+	}
 }
 
 
 /****** CONFIG/FORMAT VARIABLES ******/
 
-config.add    RELAY_BUFFER_SIZE 10
-config.add -b RELAY_STRIP_CRAP 1
+addconfig    RELAY_BUFFER_SIZE 10
+addconfig -b RELAY_STRIP_CRAP 1
 
 
 /****** USER ALIASES ******/
 
-alias relay (type, ...) {
-	if (!type) {
+alias relay (type, ...)
+{
+	if (!type)
+	{
 		xecho -b Usage: /RELAY <type> [-clear|-list|<item#> [<target>]]
 		xecho -b Available types: ctcp ctcp_reply msg notice public public_other send_ctcp send_msg send_notice send_public send_public_other
 		return
 	}
-	switch ($tolower($type)) {
+
+	switch ($tolower($type))
+	{
 		(c)   (ctcp)              {relay.main CTCP $*}
 		(cr)  (ctcp_reply)        {relay.main CTCP_REPLY $*}
 		(m)   (msg)               {relay.main MSG $*}
@@ -71,32 +82,44 @@ alias relspo {relay spo $*}
 
 /****** INTERNAL ALIASES ******/
 
-alias relay.additem (type, text) {
-	if (!type || !text) {
+alias relay.additem (type, text)
+{
+	if (!type || !text)
+	{
 		echo Error: relay.additem: Not enough arguments
 		return
 	}
+
 	if (numitems(relay.$type) >= CONFIG.RELAY_BUFFER_SIZE) {
 		@ delitem(relay.$type 0)
 	}
 	@ setitem(relay.$type $numitems(relay.$type) $text)
 }
 
-alias relay.main (type, ...) {
-	if (!type) {
+alias relay.main (type, ...)
+{
+	if (!type)
+	{
 		echo Error: relay.main: Not enough arguments
 		return
 	}
-	if (!FORMAT[$type]) {
+
+	if (!FORMAT[$type])
+	{
 		echo Error: relay.main: Format variable $toupper($type) has no value
 		return
 	}
+
 	@ :array = [relay.] ## tolower($type)
-	if (!numitems($array)) {
+
+	if (!numitems($array))
+	{
 		echo Error: relay.main: No items found for this type
 		return
 	}
-	switch ($tolower($0)) {
+
+	switch ($tolower($0))
+	{
 		(-c%) {
 			@ delarray($array)
 			return
@@ -116,11 +139,13 @@ alias relay.main (type, ...) {
 			}
 		}
 	}
+
 	if (![$1]) {
 		@ :target = T
 	} else {
 		@ :target = [$1]
 	}
+
 	if (CONFIG.RELAY_STRIP_CRAP) {
 		msg $target $stripcrap(ALL $fparse($type $getitem($array $inum)))
 	} else {
@@ -132,11 +157,14 @@ alias relay.main (type, ...) {
  * Displays the contents of <array> after being passed
  * through $fparse(<format> ...)
  */
-alias relay.showitems (array, format, void) {
-	if (!array || !format) {
+alias relay.showitems (array, format, void)
+{
+	if (!array || !format)
+	{
 		echo Error: relay.showitems: Not enough arguments
 		return
 	}
+
 	echo Item# Value
 	for cnt from 0 to ${numitems($array) - 1} {
 		echo  $[4]cnt $fparse($format $getitem($array $cnt))
@@ -152,19 +180,29 @@ on #-msg 451 "*"                {relay.additem msg $0 $userhost() $1-}
 on #-notice 451 "*"             {relay.additem notice $0 $userhost() $1-}
 on #-public 451 "*"             {relay.additem public $*}
 on #-public_other 451 "*"       {relay.additem public_other $*}
-on #-send_ctcp 451 "PRIVMSG *" {
+
+on #-send_ctcp 451 "PRIVMSG *"
+{
 	unless ([$2] != [ACTION]) {
 		relay.additem send_ctcp $*
 	}
 }
+
 on #-send_msg 451 "*"           {relay.additem send_msg $*}
 on #-send_notice 451 "*"        {relay.additem send_notice $*}
-on #-send_public 451 "*" {
+
+on #-send_public 451 "*"
+{
 	if ([$0] == C) {
 		relay.additem send_public $0 $servernick() $1-
 	} else {
 		relay.additem send_public_other $0 $servernick() $1-
 	}
+}
+
+on #-hook 451 "UNLOADMOD formats"
+{
+	xecho -b WARNING: The relay module depends on the formats module - Unloading it may prevent relay from functioning properly
 }
 
 

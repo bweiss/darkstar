@@ -1,4 +1,4 @@
-#version 0.2
+#version 0.3
 /* $Id$ */
 /*
  * memo.dsm - Note taking module for DarkStar/EPIC4
@@ -8,23 +8,29 @@
 
 /****** CLEANUP QUEUE ******/
 
-queue cleanup.memo {
+queue cleanup.memo
+{
 	^alias -memo
 }
 
 
 /****** CONFIG/FORMAT VARIABLES ******/
 
-config.add MEMO_FILE memos.txt
+addconfig MEMO_FILE memos.txt
 
 
 /****** USER ALIASES ******/
 
-alias memo {
+alias memo
+{
 	@ :mfile = [$DS.USER_DIR/$CONFIG.MEMO_FILE]
-	switch ($0) {
-		() (-L) (-LIST) {
-			switch ($memo.list($mfile)) {
+
+	switch ($0)
+	{
+		() (-L) (-LIST)
+		{
+			switch ($memo.list($mfile))
+			{
 				(0) () {#}
 				(1) { echo Error: memo.list: Not enough arguments; }
 				(2) { xecho -b No memos found in $mfile; }
@@ -32,16 +38,21 @@ alias memo {
 				(*) { echo Error: memo.list: Unknown; }
 			}
 		}
-		(-D) (-DEL) (-DELETE) {
-			if ([$1] == [ALL]) {
+
+		(-D) (-DEL) (-DELETE)
+		{
+			if ([$1] == [ALL])
+			{
 				^local askdel $'Delete all memos? (y/N) '
-				if (askdel == [y]) {
+				if (askdel == [y])
+				{
 					@ delarray(memo.memos)
 					@ unlink($file)
 					xecho -b All memos erased
 				}
-			} else {
-				switch ($memo.delete($mfile $1-)) {
+			}{
+				switch ($memo.delete($mfile $1-))
+				{
 					(0) () {#}
 					(1) { echo Error: memo.delete: Not enough arguments; }
 					(2) { xecho -b No memos found in $mfile; }
@@ -51,6 +62,7 @@ alias memo {
 				}
 			}
 		}
+
 		(*) {
 			switch ($memo.add($mfile $*)) {
 				(0) () {#}
@@ -65,10 +77,12 @@ alias memo {
 
 /****** INTERNAL ALIASES ******/
 
-alias memo.add (file, text) {
+alias memo.add (file, text)
+{
 	if (!file || !text) {
 		return 1
 	}
+
 	@ memo.read($file)
 	@ setitem(memo.memos $numitems(memo.memos) $text)
 	if (!memo.write($file)) {
@@ -79,15 +93,21 @@ alias memo.add (file, text) {
 	}
 }
 
-alias memo.delete (file, memos) {
+alias memo.delete (file, memos)
+{
 	if (!memos) {
 		return 1
 	}
-	for memo in ($revw($numsort($memos))) {
-		if (isnumber(b10 $memo)) {
+
+	for memo in ($revw($numsort($memos)))
+	{
+		if (isnumber(b10 $memo))
+		{
 			@ :item = memo - 1
-			if (!memo.read($file)) {
-				if (item > -1 && item < numitems(memo.memos)) {
+			if (!memo.read($file))
+			{
+				if (item > -1 && item < numitems(memo.memos))
+				{
 					@ delitem(memo.memos $item)
 					if (!memo.write($file)) {
 						xecho -b Memo #${item + 1} deleted successfully
@@ -95,11 +115,11 @@ alias memo.delete (file, memos) {
 						/* Unable to write memo file */
 						return 3
 					}
-				} else {
+				}{
 					/* Memo does not exist */
 					return 2
 				}
-			} else {
+			}{
 				/* Unable to read memo file */
 				return 1
 			}
@@ -108,19 +128,25 @@ alias memo.delete (file, memos) {
 	return 0
 }
 
-alias memo.list (file, void) {
+alias memo.list (file, void)
+{
 	if (!file) {
 		return 1
 	}
+
 	if (fexist($file) == -1) {
 		return 2
 	}
-	if (!memo.read($file)) {
+
+	if (!memo.read($file))
+	{
 		xecho -b Memos:
 		@ :cnt = 0
-		while (cnt < numitems(memo.memos)) {
+		while (cnt < numitems(memo.memos))
+		{
 			@ :line = 0
-			while (line++ < winsize()) {
+			while (line++ < winsize())
+			{
 				@ :num = cnt + 1 ## [.]
 				echo $[3]num $getitem(memo.memos $cnt)
 				@ cnt++
@@ -133,38 +159,49 @@ alias memo.list (file, void) {
 				return 0
 			}
 		}
-	} else {
+	}{
 		/* Unable to read memo file */
 		return 3
 	}
 }
 
-alias memo.read (file, void) {
+alias memo.read (file, void)
+{
 	if (!file) {
 		return 1
 	}
+
 	if (fexist($file) == -1) {
 		return 2
 	}
-	if ((:fd = open($file R)) == -1) {
+
+	@ :fd = open($file R)
+	if (fd == -1) {
 		return 3
 	}
+
 	@ delarray(memo.memos)
-	while (!eof($fd)) {
+
+	while (!eof($fd))
+	{
 		@ :line = read($fd)
 		if (line != [] && !eof($fd)) {
 			@ setitem(memo.memos $numitems(memo.memos) $line)
 		}
 	}
+
 	@ close($fd)
 	return 0
 }
 
-alias memo.write (file, void) {
+alias memo.write (file, void)
+{
 	if (!file) {
 		return 1
 	}
-	if (numitems(memo.memos)) {
+
+	if (numitems(memo.memos))
+	{
 		@ unlink($file)
 		if ((:fd = open($file W)) == -1) {
 			return 2
@@ -173,7 +210,7 @@ alias memo.write (file, void) {
 			@ write($fd $getitem(memo.memos $cnt))
 		}
 		@ close($fd)
-	} else {
+	}{
 		@ unlink($file)
 	}
 }

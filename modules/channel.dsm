@@ -1,11 +1,11 @@
-#version 1.1.3
+#version 1.2
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
  * Copyright (c) 2002, 2003 Brian Weiss (except where noted)
  * See the 'COPYRIGHT' file for more information.
  *
- * This script uses serial numbers 0 and 424 for /ON hooks.
+ * This script uses serial number 423 for /ON hooks.
  */
 
 /****** CLEANUP QUEUE ******/
@@ -16,60 +16,60 @@ queue cleanup.channel
 		^alias -$alias
 	}
 
-	for hook in (332 333 367 368 369 action channel_nick channel_signoff channel_sync invite join kick leave mode public public_other send_public topic) {
-		^on $hook -"*"
-	}
-
-	^on send_action -'\\\\\[#* &* +*\\\\\] *'
-	^on #hook 428 -"CONFIG CHANNEL_WALL_TYPE *"
-	^on #hook 428 -"CONFIG REMEMBER_TOPICS *"
+	^on #332 423 -"*"
+	^on #topic 423 -"*"
+	^on #hook 423 -"CONFIG CHANNEL_WALL_TYPE *"
+	^on #hook 423 -"CONFIG REMEMBER_TOPICS *"
 }
 
 
 /****** CONFIG/FORMAT VARIABLES ******/
 
-config.add    ADDTOPIC_DELIMETER ||
-config.add -b AUTO_RESPONSE 0
-config.add -b AUTO_RESPONSE_BEEP 0
-config.add -b AUTO_RESPONSE_NOTIFY 0
-config.add    AUTO_RESPONSE_STR
-config.add    BANTYPE 3
-config.add    CHANNEL_WALL_TYPE 1
-config.add    DEFAULT_KICK_REASON No soup for you!
-config.add    MAX_MODES 4
-config.add    REMEMBER_TOPICS 5
+addconfig ADDTOPIC_DELIMETER ||
+addconfig BANTYPE 3
+addconfig CHANNEL_WALL_TYPE 1
+addconfig DEFAULT_KICK_REASON No soup for you!
+addconfig REMEMBER_TOPICS 5
 
-format.add ACTION_CHANNEL * $1 $3-
-format.add ACTION_CHANNEL_OTHER * $1/$2 $3-
-format.add BANS $G $1-
-format.add BANS_FOOTER $G Total number of bans on $3 - $2
-format.add BANS_FOOTER1
-format.add BANS_FOOTER2
-format.add BANS_HEADER
-format.add BANS_HEADER1
-format.add BANS_HEADER2
-format.add CHANNEL_NICK $G $2 is now known as $3
-format.add CHANNEL_SIGNOFF $G SignOff $2: \($3-%n\)
-format.add CHANNEL_SYNC $G Channel $1 synced in $2 seconds
-format.add CHANNEL_TS $G Channel $2 was created at $strftime($3 %%a %%b %%d %%T %%Z %%Y)
-format.add INVITE $G $1 \($3\) invites you to channel $2
-format.add JOIN $G $1 \($3\) has joined $2
-format.add KICK $G ${[$1] == servernick() ? [You have] : [$1 has]} been kicked off channel $3 by $2 \($4-\)
-format.add LEAVE $G $1 \($3\) has left $2
-format.add MODE $G Mode change \"$3-\" on channel $2 by $1
-format.add PUBLIC <$1> $3-
-format.add PUBLIC_AR <$1> $3-
-format.add PUBLIC_OTHER <$1:$2> $3-
-format.add PUBLIC_OTHER_AR <$1:$2> $3-
-format.add SEND_ACTION_CHANNEL * $1 $3-
-format.add SEND_ACTION_CHANNEL_OTHER * -> $2: $1 $3-
-format.add SEND_PUBLIC > $3-
-format.add SEND_PUBLIC_OTHER $2> $3-
-format.add SEND_WALL -@$1-> $2-
-format.add TOPIC $G Topic for $2: $3-
-format.add TOPIC_CHANGE $G $1 has changed the topic on channel $2 to $3-
-format.add TOPIC_SETBY $G The topic was set by $3 $4 sec ago
-format.add TOPIC_UNSET $G $1 has changed the topic on channel $2 to
+
+/****** HELP ALIASES ******/
+
+alias channel._help (void)
+{
+	echo channel.dsm $modinfo(channel v)
+	echo Copyright (c) 2002, 2003 Brian Weiss
+	echo Provides a bunch of channel related aliases and enhancements.
+}
+
+alias channel._help.config (void)
+{
+	echo Config variables \($(K)DSET\):
+	echo
+	echo Name: ADDTOPIC_DELIMETER |
+	echo Value: string
+	echo This is the string that will separate the old topic from the new topic set by /ADDTOPIC.
+	echo
+	echo Name: BANTYPE
+	echo Value: integer representing a $mask() type
+	echo This controls how the various ban aliases generate a hostmask. See mask(6) in the EPIC help files for details.
+	echo
+	echo Name: CHANNEL_WALL_TYPE
+	echo Value: 1, 2, or 3
+	echo Controls the method used for sending channel wallops.
+    echo  1 - Send a single NOTICE to @<channel>
+	echo  2 - Send separate NOTICEs to all +o users according to MAXTARGETS (005)
+	echo  3 - Send separate NOTICEs to all +o users one at a time
+	echo Type 3 should only be used when the first two methods fail to work.
+	echo
+	echo Name: DEFAULT_KICK_REASON
+	echo Value: string
+	echo Used as the reason for a kick whenever the user does not specify one.
+	echo
+	echo Name: REMEMBER_TOPICS
+	echo Value: integer
+	echo Number of topics to remember for each channel. If the value is 0, no topics will be stored.
+	echo
+}
 
 
 /****** USER ALIASES ******/
@@ -171,7 +171,6 @@ alias ban (targets)
 		return
 	}
 
-	^local bans
 	for target in ($targets)
 	{
 		switch ($pass(!@. $target))
@@ -186,20 +185,20 @@ alias ban (targets)
 				@ :uhost = userhost($target) == [<UNKNOWN>@<UNKNOWN>] ? uh($target) : userhost($target)
 				/* Check again in case $uh() failed too. */
 				if (uhost && uhost != [<UNKNOWN>@<UNKNOWN>]) {
-					push bans $mask($CONFIG.BANTYPE $uhost)
+					@ push(:bans $mask($CONFIG.BANTYPE $uhost))
 				} else {
-					push bans $target
+					@ push(:bans $target)
 				}
 			}
 
 			(.) {
 				/* Target is a hostname or IP, pass it through $mask() only. */
-				push bans $mask($CONFIG.BANTYPE $target)
+				@ push(:bans $mask($CONFIG.BANTYPE $target))
 			}
 
 			(*) {
 				/* Target is already a hostmask, just pass it on through. */
-				push bans $target
+				@ push(:bans $target)
 			}
 		}
 	}
@@ -471,15 +470,15 @@ alias massmode (chan, action, mode, args)
 		return
 	}
 
-	^local tmp
-	for cnt from 1 to $CONFIG.MAX_MODES {
-		push tmp mode.$cnt
+	@ :maxmodes = serverctl(GET $servernum() 005 MODES)
+	@ :maxmodes = maxmodes ? maxmodes : 4
+	for cnt from 1 to $maxmodes {
+		@ push(:tmp mode.$cnt)
 	}
 	fe ($args) $tmp
 	{
-		^local nicks
 		for (@:cnt = 1, mode[$cnt], @:cnt++) {
-			eval push nicks \$mode[$cnt]
+			eval push :nicks \$mode[$cnt]
 		}
 		//mode $chan $action$repeat($#nicks $mode) $nicks
 	}
@@ -658,35 +657,34 @@ alias tban (chan default "$C", void)
 
 	^on #^368 424 "% % $chan"
 	{
-		^local bans
 		^local chan $2
-		^local tmp $"Which ban(s) to remove? (1, 2-5, ...) "
+		^local ask $"Which ban(s) to remove? (1, 2-5, ...) "
 
-		for bannum in ($tmp)
+		for bannum in ($ask)
 		{
 			@ :start = before(- $bannum)
  			@ :end = after(- $bannum)
 			if (start < end && start < numitems(channel.tban) && end <= numitems(channel.tban))
 			{
 				for cnt from $start to $end {
-					push bans $word(2 $getitem(channel.tban ${cnt - 1}))
+					@ push(:bans $word(2 $getitem(channel.tban ${cnt - 1})))
 				}
 			}\
 			else if (bannum <= numitems(channel.tban))
 			{
-				push bans $word(2 $getitem(channel.tban ${bannum - 1}))
+				@ push(:bans $word(2 $getitem(channel.tban ${bannum - 1})))
 			}
 		}
 
-		@ :tmp = []
-		for cnt from 1 to $CONFIG.MAX_MODES {
-			push tmp mode.$cnt
+		@ :maxmodes = serverctl(GET $servernum() 005 MODES)
+		@ :maxmodes = maxmodes ? maxmodes : 4
+		for ii from 1 to $maxmodes {
+			@ push(:tmp mode.$ii)
 		}
 		fe ($bans) $tmp
 		{
-			^local masks
 			for (@:cnt = 1, mode[$cnt], @:cnt++) {
-				eval push masks \$mode[$cnt]
+				eval push :masks \$mode[$cnt]
 			}
 			//mode $chan -$repeat($#masks b) $masks
 		}
@@ -810,8 +808,8 @@ alias voice (nicks)
  * The possible types are:
  *
  *  1 - Send a single NOTICE to @<channel>
- *  2 - Send NOTICEs to all +o users, seven at a time
- *  3 - Send NOTICEs to all +o users, one at a time (USE WITH CARE)
+ *  2 - Send NOTICEs to all +o users according to MAXTARGETS (005)
+ *  3 - Send NOTICEs to all +o users one at a time
  */
 alias wall (text)
 {
@@ -825,29 +823,34 @@ alias wall (text)
 
 	switch ($CONFIG.CHANNEL_WALL_TYPE)
 	{
-		(1)
-		{
+		(1) {
 			notice @$chan [wall/$chan] $text
 		}
 
-		(2)
-		{
-			fe ($filter($servernick() $chops())) o1 o2 o3 o4 o5 o6 o7 {
-				notice $o1,$o2,$o3,$o4,$o5,$o6,$o7 [wall/$chan] $text
+		(2) {
+		    @ :maxtargets = serverctl(GET $servernum() 005 MAXTARGETS)
+		    @ :maxtargets = maxtargets ? maxtargets : 4
+			for ii from 1 to $maxtargets {
+				@ push(:tmp t.$ii)
+			}
+			fe ($filter($servernick() $chops())) $tmp {
+				@ :targets = []
+				for (@ :ii = 1, t[$ii], @ :ii++) {
+					@ push(:targets $t[$ii])
+				}
+				notice $unsplit(, $targets) [wall/$chan] $text
 			}
 		}
 
-		(3)
-		{
+		(3) {
 			/* This is evil and should never be used on large channels. */
 			for nick in ($filter($servernick() $chops())) {
 				notice $nick [wall/$chan] $text
 			}
 		}
 
-		(*)
-		{
-			xecho -b /WALL: Error sending message: Invalid CHANNEL_WALL_TYPE
+		(*) {
+			xecho -b WALL: Error sending message: Invalid CHANNEL_WALL_TYPE
 			return
 		}
 	}
@@ -881,278 +884,21 @@ alias channel.topic (serv, chan, topic)
 
 /****** ON HOOKS ******/
 
-on ^329 "*"
-{
-	if (FORMAT.CHANNEL_TS) {
-		echo $fparse(CHANNEL_TS $*)
-	}
-}
-
-on ^332 "*"
+on #-332 423 "*"
 {
 	channel.topic $servernum($0) $1-
-	if (FORMAT.TOPIC) {
-		echo $fparse(TOPIC $*)
-	}
 }
 
-on ^333 "*"
-{
-	if (FORMAT.TOPIC_SETBY) {
-		echo $fparse(TOPIC_SETBY $*)
-	}
-}
-
-/*
- * Ban list stuff: 367, 368, 369
- */
-on ^367 "*"
-{
-	@ setitem(channel.banlist.$1 $numitems(channel.banlist.$1) $*)
-}
-
-on ^368 "*"
-{
-	for var in (BANS_HEADER BANS_HEADER1 BANS_HEADER2)
-	{
-		if (FORMAT[$var]) {
-			echo $fparse($var $*)
-		}
-	}
-
-	if ([$1] > 0)
-	{
-		if (FORMAT.BANS)
-		{
-			@ :endcnt = numitems(channel.banlist.$2) - 1
-			for cnt from 0 to $endcnt {
-				echo $fparse(BANS ${cnt + 1} $getitem(channel.banlist.$2 $cnt))
-			}
-		}
-		@ delarray(channel.banlist.$2)
-	}
-
-	for var in (BANS_FOOTER BANS_FOOTER1 BANS_FOOTER2)
-	{
-		if (FORMAT[$var]) {
-			echo $fparse($var $*)
-		}
-	}
-}
-
-on ^369 "*" #
-
-on ^action "*"
-{
-	if (iscurchan($1))
-	{
-		if (FORMAT.ACTION_CHANNEL) {
-			echo $fparse(ACTION_CHANNEL $*)
-		}
-	}{
-		if (FORMAT.ACTION_CHANNEL_OTHER) {
-			echo $fparse(ACTION_CHANNEL_OTHER $*)
-		}
-	}
-}
-
-on ?channel_nick "*"
-{
-	if (FORMAT.CHANNEL_NICK)
-	{
-		echo $fparse(CHANNEL_NICK $*)
-		return 1
-	}{
-		/* Allow client to hook the NICKNAME event. */
-		return 0
-	}
-}
-
-on ?channel_signoff "*"
-{
-	if (FORMAT.CHANNEL_SIGNOFF)
-	{
-		echo $fparse(CHANNEL_SIGNOFF $*)
-		return 1
-	}{
-		/* Allow client to hook the SIGNOFF event. */
-		return 0
-	}
-}
-
-on ^channel_sync "*"
-{
-	if (FORMAT.CHANNEL_SYNC) {
-		echo $fparse(CHANNEL_SYNC $*)
-	}
-}
-
-on ^invite "*"
-{
-	if (FORMAT.INVITE) {
-		echo $fparse(INVITE $*)
-	}
-}
-
-on ^join "*"
-{
-	if (FORMAT.JOIN) {
-		echo $fparse(JOIN $*)
-	}
-}
-
-on ^kick "*"
-{
-	if (FORMAT.KICK) {
-		echo $fparse(KICK $*)
-	}
-}
-
-on ^leave "*"
-{
-	if (FORMAT.LEAVE) {
-		echo $fparse(LEAVE $*)
-	}
-}
-
-on ^mode "*"
-{
-	if (FORMAT.MODE) {
-		echo $fparse(MODE $*)
-	}
-}
-
-on ^public "*"
-{
-	if (CONFIG.AUTO_RESPONSE)
-	{
-		if (match(*$servernick()* $2-))
-		{
-			@ :autoresp = 1
-		}{
-			for word in ($CONFIG.AUTO_RESPONSE_STR)
-			{
-				if (match(*$word* $2-))
-				{
-					@ :autoresp = 1
-					break
-				}
-			}
-		}
-
-		if (autoresp)
-		{
-			if (FORMAT.PUBLIC_AR) {
-				echo $fparse(PUBLIC_AR $*)
-			}
-			if (CONFIG.AUTO_RESPONSE_BEEP)
-			{
-				^stack push set BEEP
-				^set BEEP ON
-				beep
-				^stack pop set BEEP
-			}
-			if (CONFIG.AUTO_RESPONSE_NOTIFY && winchan($1) != winnum()) {
-				xecho -b -c Auto-response triggered in window #$winchan($1) by $0 \($1\)
-			}
-		}
-	}
-
-	if (FORMAT.PUBLIC && !autoresp) {
-		echo $fparse(PUBLIC $*)
-	}
-}
-
-on ^public_other "*"
-{
-	if (CONFIG.AUTO_RESPONSE)
-	{
-		if (match(*$servernick()* $2-))
-		{
-			@ :autoresp = 1
-		}{
-			for word in ($CONFIG.AUTO_RESPONSE_STR)
-			{
-				if (match(*$word* $2-))
-				{
-					@ :autoresp = 1
-					break
-				}
-			}
-		}
-
-		if (autoresp)
-		{
-			if (FORMAT.PUBLIC_OTHER_AR) {
-				echo $fparse(PUBLIC_OTHER_AR $*)
-			}
-			if (CONFIG.AUTO_RESPONSE_BEEP)
-			{
-				^stack push set BEEP
-				^set BEEP ON
-				beep
-				^stack pop set BEEP
-			}
-			if (CONFIG.AUTO_RESPONSE_NOTIFY && winchan($1) != winnum()) {
-				xecho -b -c Auto-response triggered in window #$winchan($1) by $0 \($1\)
-			}
-		}
-	}
-
-	if (FORMAT.PUBLIC_OTHER && !autoresp) {
-		echo $fparse(PUBLIC_OTHER $*)
-	}
-}
-
-on ^send_action '\\[#% &% +% !%\\] *'
-{
-	if (iscurchan($0))
-	{
-		if (FORMAT.SEND_ACTION_CHANNEL) {
-			echo $fparse(SEND_ACTION_CHANNEL $servernick() $*)
-		}
-	}{
-		if (FORMAT.SEND_ACTION_CHANNEL_OTHER) {
-			echo $fparse(SEND_ACTION_CHANNEL_OTHER $servernick() $*)
-		}
-	}
-}
-
-on ^send_public "*"
-{
-	if (iscurchan($0))
-	{
-		if (FORMAT.SEND_PUBLIC) {
-			echo $fparse(SEND_PUBLIC $0 $servernick() $1-)
-		}
-	}{
-		if (FORMAT.SEND_PUBLIC_OTHER) {
-			echo $fparse(SEND_PUBLIC_OTHER $servernick() $*)
-		}
-	}
-}
-
-on ^topic "*"
+on #-topic 423 "*"
 {
 	channel.topic $servernum() $1-
-
-	if (![$2])
-	{
-		if (FORMAT.TOPIC_UNSET) {
-			echo $fparse(TOPIC_UNSET $*)
-		}
-	}{
-		if (FORMAT.TOPIC_CHANGE) {
-			echo $fparse(TOPIC_CHANGE $*)
-		}
-	}
 }
 
 /*
  * Restrict the value of the CHANNEL_WALL_TYPE config variable.
  * Allowed values: 1, 2, 3
  */
-on #-hook 428 "CONFIG CHANNEL_WALL_TYPE *"
+on #-hook 423 "CONFIG CHANNEL_WALL_TYPE *"
 {
 	if (!match($CONFIG.CHANNEL_WALL_TYPE 1 2 3))
 	{
@@ -1166,7 +912,7 @@ on #-hook 428 "CONFIG CHANNEL_WALL_TYPE *"
  * Restrict the value of the REMEMBER_TOPICS config variable to an integer
  * that is greater than or equal to zero.
  */
-on #-hook 428 "CONFIG REMEMBER_TOPICS *"
+on #-hook 423 "CONFIG REMEMBER_TOPICS *"
 {
 	if (!isnumber($CONFIG.REMEMBER_TOPICS b10) || CONFIG.REMEMBER_TOPICS < 0)
 	{

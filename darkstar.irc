@@ -55,28 +55,53 @@ for array in ($getarrays()) {
 /*
  * Important global variables
  */
-@ DS.VERSION = [0.2.12]
-@ DS.INTERNAL_VERSION = [20031116]
+@ DS.VERSION = [0.3pre1]
+@ DS.INTERNAL_VERSION = [20031130]
 
 /*
  * This will be incremented every time a change takes place in
  * the core scripts (this file and any *.dsc files in $DS.HOME/core/).
  */
-@ DS.CORE_ID = 95
+@ DS.CORE_ID = 96
 
 eval xecho -b Loading DarkStar $DS.VERSION
 
 /*
  * Find out where everything is and store it in the DS structure.
  */
-@ DS.HOME       = getenv(DARKSTAR_HOME) ? getenv(DARKSTAR_HOME) : before(-1 / $word(1 $loadinfo()))
-@ DS.USER_DIR   = getenv(DARKSTAR_USERDIR) ? getenv(DARKSTAR_USERDIR) : [~/.darkstar]
-@ DS.RC         = getenv(DARKSTAR_RC) ? getenv(DARKSTAR_RC) : [~/.dsrc]
-@ DS.HELP_DIR   = [$DS.HOME/help]
-@ DS.MODULE_DIR = [$DS.HOME/modules $DS.USER_DIR/modules]
-@ DS.STATUS_DIR = [$DS.HOME/status $DS.USER_DIR/status]
-@ DS.THEME_DIR  = [$DS.HOME/themes $DS.USER_DIR/themes]
-@ DS.SAVE_DIR   = [$DS.USER_DIR/save]
+@ DS.HOME        = getenv(DARKSTAR_HOME) ? getenv(DARKSTAR_HOME) : before(-1 / $word(1 $loadinfo()))
+@ DS.USER_DIR    = getenv(DARKSTAR_USERDIR) ? getenv(DARKSTAR_USERDIR) : [~/.darkstar]
+@ DS.RC          = getenv(DARKSTAR_RC) ? getenv(DARKSTAR_RC) : [~/.dsrc]
+@ DS.HELP_DIR    = [$DS.HOME/help]
+@ DS.SAVE_DIR    = [$DS.USER_DIR/save]
+@ DS.MODULE_DIRS = [$DS.HOME/modules $DS.USER_DIR/modules]
+
+/*
+ * Some important /SETs
+ * If you want to change these it should be done via the RC file.
+ */
+eval set CLIENT_INFORMATION DarkStar $DS.VERSION
+set CONTROL_C_COLOR ON
+set DISPLAY_PC_CHARACTERS 4
+set FLOATING_POINT_MATH ON 
+set HIGH_BIT_ESCAPE 0
+
+/*
+ * Bind PgUp/PgDn to scroll the current window. This is needed for the
+ * module list that is going to be displayed by loader.dsc.
+ */
+bind ^[[5~ scroll_backward
+bind ^[[6~ scroll_forward 
+
+/*
+ * I think just about everybody wants this one...
+ */
+bind ^X switch_channels
+
+/*
+ * Enable the new math parser.
+ */
+xdebug +NEW_MATH
 
 /*
  * Check for a "user directory" and create it if necessary.
@@ -85,10 +110,6 @@ if (fexist($DS.USER_DIR) == -1)
 {
 	xecho -b Creating user directory: $DS.USER_DIR
 	@ mkdir($DS.USER_DIR)
-	@ mkdir($DS.USER_DIR/modules)
-	@ mkdir($DS.USER_DIR/status)
-	@ mkdir($DS.USER_DIR/themes)
-	@ mkdir($DS.USER_DIR/save)
 
 	/*
 	 * This could be a first time user, so we'll display
@@ -96,77 +117,49 @@ if (fexist($DS.USER_DIR) == -1)
 	 */
 	echo
 	echo Welcome to the DarkStar/EPIC4 script pack!
+	echo
 	echo Copyright (c) 2002, 2003 Brian Weiss <brian@epicsol.org>
 	echo See the 'COPYRIGHT' file for details.
 	echo Official Website: http://darkstar.epicsol.org/
 	echo
 	echo If you have not looked at the README yet, you should do so now.
-	echo
-	echo You are about to be presented with a list of modules and asked to
-	echo choose which of them you would like to have loaded. Just pressing
-	echo enter will load all the modules on the default auto-load list.
-	echo
-	echo After the modules have loaded, it is probably a good idea to have
-	echo a look around in the help browser (/DHELP).
+	echo It is also a good idea to have a look through the various help files
+	echo after everything has finished loading. To browse the help for the
+	echo DarkStar core scripts, type /DHELP. To browse the help for a specific
+	echo module, use /MHELP.
 	echo
 	echo That's it! I hope you enjoy these scripts, a lot of effort has
-	echo gone into them. Please feel free to contact me if you have any
-	echo questions or comments. This message will not be displayed again.
+	echo gone into them, and please feel free to contact me if you have any
+	echo questions or comments.
+	echo
+	echo This message will not be displayed again.
 	echo
 	^local pause $'Press any key to continue.'
 }
 
-/* 
- * Some important /SETs
- * If you want to change these, it should be done via .dsrc
- */
-eval set CLIENT_INFORMATION DarkStar $DS.VERSION
-set CONTROL_C_COLOR ON
-set DISPLAY_PC_CHARACTERS 4
-set FLOATING_POINT_MATH ON
-set HIGH_BIT_ESCAPE 0
+if (fexist($DS.SAVE_DIR) == -1) {
+	@ mkdir($DS.SAVE_DIR)
+}
 
-/*
- * Enable the new math parser.
- */
-xdebug +NEW_MATH
-
-/*
- * Bind PgUp/PgDn to scroll the current window. This is needed for the
- * module list that is going to be displayed by loader.dsc.
- */
-bind ^[[5~ scroll_backward
-bind ^[[6~ scroll_forward
-
-/*
- * I think just about everybody wants this one...
- */
-bind ^X switch_channels
-
-/*
- * Load the core scripts
- */
-for fname in (globals.dsc functions.dsc commands.dsc help.dsc save.dsc config.dsc) {
-	^load $DS.HOME/core/$fname
+if (fexist($DS.USER_DIR/modules) == -1) {
+	@ mkdir($DS.USER_DIR/modules)
 }
 
 /*
- * The rest of the core scripts reference config and format variables
- * at load time, so we need to load the user's saved settings first.
+ * Load the core scripts. The 'core' save file is now loaded by a call to
+ * module.load_saved_settings in modules.dsc.
  */
-if (fexist($DS.SAVE_DIR/core.sav) != -1) {
-	^load $DS.SAVE_DIR/core.sav
+for file in (commands.dsc functions.dsc globals.dsc help.dsc save.dsc set.dsc modules.dsc) {
+	load $DS.HOME/core/$file
 }
 
-for fname in (status.dsc themes.dsc loader.dsc) {
-	^load $DS.HOME/core/$fname
+if (fexist($DS.RC) == 1) {
+	load $DS.RC
 }
 
-if (fexist($DS.RC) != -1) {
-	^load $DS.RC
-}
-
-/* One final sanity check. This should never happen. */
+/*
+ * One final sanity check. This should never happen.
+ */
 if (fexist($DS.HOME/darkstar.irc) == -1)
 {
 	echo WARNING! We were unable to detect our location.

@@ -1,7 +1,0 @@
-/* $Id$ */
-
-assign FORMAT.DCC_CHAT =$1= $2-
-assign FORMAT.SEND_DCC_CHAT => =$1= $2-
-
-
-/* EOF */

@@ -1,7 +1,0 @@
-/* $Id$ */
-
-assign FORMAT.DCC_CHAT %W=%R$1%W=%n $2-
-assign FORMAT.SEND_DCC_CHAT %R[%W=%r$1%W=%R]%n $2-
-
-
-/* EOF */

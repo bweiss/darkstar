@@ -1,195 +1,143 @@
 /* $Id$ */
 /*
- * save.dsc - Save config and format settings
- * Copyright (c) 2002 Brian Weiss
+ * save.dsc - Save DarkStar settings
+ * Copyright (c) 2003 Brian Weiss
  * See the 'COPYRIGHT' file for more information.
  */
 
-/****** USER ALIASES ******/
-
 /*
- * /SAVE [-d <directory>] [*|modules]
+ * /SAVE [-d <directory>] [-c|-f] [*|modules]
+ *
  * Saves all settings for specified module(s) to either $DS.SAVE_DIR or a
  * directory specified with the -d option. If no modules are specified,
  * "*" (ALL) is assumed and the settings for every currently loaded module
- * will be saved. If "core" is given as a module name, the settings for the
- * core scripts will be saved.
+ * will be saved. If either the -c or -f options are specified only
+ * config or format settings will be saved.
+ *
+ * Note: "core" is a valid module name, representing anything added by
+ * the core scripts.
  */
-alias save (args) {
-	^local modules,save_dir
-	switch ($word(0 $args)) {
-		(-d) {
-			^local save_dir $twiddle($word(1 $args))
-			^local args $restw(2 $args)
-		}
-		(*) {
-			^local save_dir $twiddle($DS.SAVE_DIR)
+alias save (args)
+{
+	^local modules
+	^local option,optopt,optarg
+	^local savedir $twiddle($DS.USER_DIR/save)
+
+	while (option = getopt(optopt optarg "cd:f" $args))
+	{
+		switch ($option)
+		{
+			(c) { @ :write_cfg_only = 1; @ :write_fmt_only = 0; }
+			(d) { @ :savedir = twiddle($optarg); }
+			(f) { @ :write_fmt_only = 1; @ :write_cfg_only = 0; }
+			(!) { xecho -b -s SAVE: Invalid option "$optopt"; }
+			(-) { xecho -b -s SAVE: Missing argument for option "$optopt"; }
 		}
 	}
-	if (!args || word(0 $args) == [*]) {
-		/* Save everything! */
-		push modules core
-		for cnt from 0 to ${numitems(loaded_modules) - 1} {
-			push modules $getitem(loaded_modules $cnt)
+	@ :args = optarg ? optarg : [*]
+
+	if (word(0 $args) == [*])
+	{
+		@ :modules = [core]
+		for ii from 0 to ${numitems(_loaded_modules) - 1} {
+			@ push(modules $getitem(_loaded_modules $ii))
 		}
-	} else {
-		/* Save only what's specified by user */
-		for module in ($args) {
-			if (finditem(loaded_modules $module) > -1 || ascii($module) == ascii(core)) {
-				push modules $module
+	}{
+		while (:mod = shift(args))
+		{
+			if (mod == [core] || finditem(_loaded_modules $mod) > -1) {
+				@ push(modules $mod)
 			} else {
-				echo Error: Unknown module: $module
+				xecho -b -s SAVE: Module $mod is not loaded
 			}
 		}
-	}	
-	if (fexist($save_dir) == -1) {
-		xecho -b No save directory found. Creating $save_dir
-		if (mkdir($save_dir) > 0) {
-			echo Error: Unable to create directory $save_dir
-			echo Aborting save...
-			return
+	}
+
+	xecho -b -s Saving ${write_cfg_only ? [config ] : write_fmt_only ? [format ] : []}settings to $savedir: $modules
+
+	for mod in ($modules)
+	{
+		@ :savefile = savedir ## [/] ## mod
+		if (fexist($savefile) == 1) {
+			@ unlink($savefile)
+		}
+
+		if ((:fd = open($savefile W)) == -1)
+		{
+			xecho -b -s SAVE: Unable to write $savefile
+			continue
+		}{
+			_save.write_header $fd $mod
+
+			if (write_cfg_only) {
+				_save.write_config_vars $fd $mod
+			} else if (write_fmt_only) {
+				_save.write_format_vars $fd $mod
+			} else {
+				_save.write_config_vars $fd $mod
+				_save.write_format_vars $fd $mod
+			}
+
+			/* Allow modules to create their own save aliases */
+			if (aliasctl(alias exists $mod\._save)) {
+				$mod\._save $fd
+			}
+
+			@ close($fd)
 		}
 	}
-	xecho -s -b Saving settings to $save_dir
-	/* Save config settings (/DSET) */
-	for module in ($modules) {
-		switch ($save.write_config($save_dir $module)) {
-			(0) { if (CONFIG.SAVE_VERBOSE) { xecho -s -b Settings for [$module] saved to $save_dir/$module\.sav; }}
-			(1) { echo Error: save.write_config\(\): Not enough arguments \(Module: $module\); }
-			(2) { echo Error: save.write_config\(\): Unable to open save file for writing \(Module: $module\); }
-			(*) { echo Error: save.write_config\(\): Unknown \(Module: $module\); }
-		}
-	}
-	/* Save format settings (/FSET) */
-	switch ($save.write_formats($modules)) {
-		(0) { if (CONFIG.SAVE_VERBOSE) { xecho -s -b Format settings saved to $DS.USER_DIR/themes/custom/; }}
-		(1) { echo Error: save.write_formats\(\): Not enough arguments; }
-		(2) { echo Error: save.write_formats\(\): Unable to open master theme file for writing; }
-		(3) { echo Error: save.write_formats\(\): Unable to open one or more module theme files for writing; }
-		(*) { echo Error: save.write_formats\(\): Unknown error; }
-	}
-	/* Save the current status bar settings */
-	switch ($save.write_status()) {
-		(0) { if (CONFIG.SAVE_VERBOSE) { xecho -s -b Status settings saved to $DS.USER_DIR/status/custom; }}
-		(1) { echo Error: save.write_status\(\): Unable to open custom status file for writing; }
-		(*) { echo Error: save.write_status\(\): Unknown error; }
-	}
+
+	xecho -b -s Save complete [$strftime(%a %b %d %T %Z %Y)]
 }
 
 
-/****** INTERNAL ALIASES ******/
+alias _save.write_header (fd, mod, void)
+{
+	if (!mod) {
+		return
+	}
 
-/*
- * Writes config settings to specified directory.
- * Returns 0 on success and > 0 on failure.
- */
-alias save.write_config (save_dir, module, void) {
-	if (!save_dir || !module) {
-		return 1
+	@ write($fd # Generated by DarkStar $DS.VERSION \($DS.INTERNAL_VERSION\) [$DS.CORE_ID])
+	@ write($fd # Date: $strftime(%a %b %d %T %Z %Y))
+	@ write($fd # Module: $mod)
+	@ write($fd # Version: $modinfo($mod v))
+	@ write($fd )
+}
+
+alias _save.write_config_vars (fd, mod, void)
+{
+	if (!mod) {
+		return
 	}
-	^local save_file $save_dir/$module\.sav
-	@ unlink($save_file)
-	if ((:fd = open($save_file W)) == -1) {
-		return 2
-	}
-	@ write($fd # Generated by DarkStar $DS.VERSION \($DS.INTERNAL_VERSION\): $strftime(%a %b %d %T %Z %Y))			
-	@ write($fd)
-	for var in ($aliasctl(assign get DSET.MODULES.$module)) {
-		if ((:value = aliasctl(assign get CONFIG.$var)) != []) {
+
+	for var in ($aliasctl(assign get _MODULE.$mod\.CONFIG))
+	{
+		@ :value = aliasctl(assign get CONFIG.$var)
+		if (value != []) {
 			@ write($fd assign CONFIG.$var $value)
 		} else {
 			@ write($fd assign -CONFIG.$var)
 		}
 	}
-	@ close($fd)
-	return 0
+	@ write($fd )
 }
 
-/*
- * Writes format settings to the "custom" theme in the user directory.
- * Returns 0 on success and > 0 on failure.
- */
-alias save.write_formats (modules) {
-	if (!modules) {
-		return 1
+alias _save.write_format_vars (fd, mod, void)
+{
+	if (!mod) {
+		return
 	}
-	^local save_dir $DS.USER_DIR/themes/custom
-	if (fexist($save_dir) == -1) {
-		@ mkdir($save_dir)
-	}
-	/* Write the master theme file, main.dst */
-	^local save_file $save_dir\/main.dst
-	@ unlink($save_file)
-	if ((:fd = open($save_file W)) == -1) {
-		return 2
-	}
-	@ write($fd # Generated by DarkStar $DS.VERSION \($DS.INTERNAL_VERSION\): $strftime(%a %b %d %T %Z %Y))
-	@ write($fd)
-	@ write($fd status -q $DS.SBAR)
-	@ write($fd)
-	@ write($fd set BANNER $BANNER)
-	@ write($fd)
-	if (:core_vars = aliasctl(assign get FSET.MODULES.CORE)) {
-		for var in ($core_vars) {
-			if ((:value = aliasctl(assign get FORMAT.$var)) != []) {
-				@ write($fd assign FORMAT.$var $value)
-			} else {
-				@ write($fd assign -FORMAT.$var)
-			}
-		}
-	}
-	@ close($fd)
-	/* Write the theme files for each specified module */
-	for module in ($sar(i/core//$modules)) {
-		if (:variables = aliasctl(assign get FSET.MODULES.$module)) {
-			^local save_file $save_dir/$module
-			@ unlink($save_file)
-			if ((:fd = open($save_file W)) == -1) {
-				return 3
-			}
-			@ write($fd # Module: $module)
-			@ write($fd)
-			for var in ($variables) {
-				if ((:value = aliasctl(assign get FORMAT.$var)) != []) {
-					@ write($fd assign FORMAT.$var $value)
-				} else {
-					@ write($fd assign -FORMAT.$var)
-				}
-			}
-			@ close($fd)
-		}
-	}
-	return 0
-}
 
-/*
- * Write the values of /SET STATUS* to $DS.USER_DIR/status/custom
- * Returns 0 on success and > 0 on failure.
- */
-alias save.write_status (void) {
-	^local fname $DS.USER_DIR/status/custom
-	@ unlink($fname)
-	if ((:fd = open($fname W)) == -1) {
-		return 1
-	}
-	@ write($fd # Generated by DarkStar $DS.VERSION \($DS.INTERNAL_VERSION\): $strftime(%a %b %d %T %Z %Y))
-	@ write($fd)
-	if (STATUS.DOUBLE) {
-		@ write($fd assign STATUS.DOUBLE 1)
-	} else {
-		@ write($fd assign -STATUS.DOUBLE)
-	}
-	@ write($fd)
-	^local setvars = INPUT_PROMPT REVERSE_STATUS_LINE $getsets(STATUS*)
-	for var in ($setvars) {
-		if ($var) {
-			@ write($fd set $var $($var))
+	for var in ($aliasctl(assign get _MODULE.$mod\.FORMAT))
+	{
+		@ :value = aliasctl(assign get FORMAT.$var)
+		if (value != []) {
+			@ write($fd assign FORMAT.$var $value)
 		} else {
-			@ write($fd set -$var)
+			@ write($fd assign -FORMAT.$var)
 		}
 	}
-	@ close($fd)
-	return 0
+	@ write($fd )
 }
 
 

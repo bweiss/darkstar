@@ -1,0 +1,102 @@
+/* $Id$ */
+/*
+ * Clone of the LiCe theme named "echoes" for DarkStar/EPIC4
+ * Author: Brian Weiss <brian@epicsol.org>
+ * Module: formats
+ *
+ * This mimics the echoes theme for LiCe. I wrote this as a personal
+ * favor for keerf in an attempt to get him to use DarkStar ;-).
+ */
+
+assign CONFIG.NAMES_COL 6
+assign CONFIG.NAMES_SORT_BY_MODE 0
+
+assign FORMAT.ACTION_CHANNEL %K>%n $1 $3-
+assign FORMAT.ACTION_CHANNEL_OTHER %K>%n $2%K/%n$1 $3-
+assign FORMAT.ACTION_USER %K>%n $2%K/%c$1 %W$3-%n
+assign FORMAT.BANS $[2]1 $strftime($6 %%B%%d %%T) $4 \($5\)
+assign -FORMAT.BANS_FOOTER
+assign -FORMAT.BANS_FOOTER1
+assign -FORMAT.BANS_FOOTER2
+assign FORMAT.BANS_HEADER $G ---------- Channel $3 Banlist ----------
+assign -FORMAT.BANS_HEADER1
+assign -FORMAT.BANS_HEADER2
+assign FORMAT.CHANNEL_NICK $G nick%K/%W$1%c: %W$2%n is now known as %W$3%n
+assign FORMAT.CHANNEL_SIGNOFF $G quit%K/%W$1%c: %W$2%K[%n$3-%K]%n
+assign -FORMAT.CHANNEL_SYNC
+assign FORMAT.CHANNEL_TS $G Channel $2 created at $strftime($3 %%a %%b %%d %%T %%Y)
+assign FORMAT.CTCP $G ctcp%K/%W$tolower($3)%c: %K[%W$4-%K]%n to %W$2%n from %W$1%K[%n$before(1 @ $userhost($1))%c@%n$after(1 @ $userhost($1))%K]%n
+assign FORMAT.CTCP_REPLY $G ctcp%K/%W$tolower($3)%c:%n reply from %W$1%K[%n$4-%K]%n
+assign FORMAT.DCC_CHAT $G chat%K/%W$1%c:%n $2- %K[%W$Z%K]%n
+assign FORMAT.INVITE $G invite%K/%W$1%c:%n $2-
+assign FORMAT.JOIN $G join%K/%W$2%c: %W$1%K[%n$before(1 @ $3)%c@%n$after(1 @ $3)%K]%n
+assign FORMAT.KICK $G kick%K/%W$3%c: %W$2%n kicked %W$1%K[%n$4-%K]%n
+assign FORMAT.LEAVE $G part%K/%W$2%c: %W$1%K[%n$before(1 @ $3)%c@%n$after(1 @ $3)%K]%n
+assign FORMAT.MODE $G mode%K/%W$2%c: %W$1%K[%n$3-%K]%n
+assign FORMAT.MSG %K\(%W$1%K[%n$before(1 @ $2)%c@%n$after(1 @ $2)%K]\)%n $3-
+assign FORMAT.NAMES_FOOTER %WÀ%nÄ%KÄ%n> +o%K[%W$#chops($1)%K]%n -o%K[%W$#nochops($1)%K]%n total%K[%W$#onchannel($1)%K]%n
+assign -FORMAT.NAMES_FOOTER1
+assign -FORMAT.NAMES_FOOTER2
+assign FORMAT.NAMES_HEADER %WÚ%nÄ%KÄ%nÄÄ%WÄÄ%nÄÄ%KÄ[%nusers%K/%W$left(18 $1)%K]%nÄ%WÄÄ%nÄ%KÄ%nÄÄ%WÄ%n- %KÄ%n-%KÄ Ä%n-%WÄ%nÄ -%KÄ-%nÄÄ%W-Ä%nÄ- %W- %n-  %K-    %n-
+assign -FORMAT.NAMES_HEADER1
+assign -FORMAT.NAMES_HEADER2
+assign FORMAT.NAMES_LEFT %W³%n
+assign -FORMAT.NAMES_MID
+assign FORMAT.NAMES_NONOP $chr(32)$[9]1
+assign FORMAT.NAMES_OP %W@%n$[9]1
+assign -FORMAT.NAMES_RIGHT
+assign FORMAT.NAMES_VOICE %W+%n$[9]1
+assign FORMAT.NICKNAME $G $1 is now known as $2
+assign FORMAT.NOTICE %K-%W$1%K[%n$before(1 @ $2)%c@%n$after(1 @ $2)%K]%n $3-
+assign FORMAT.PUBLIC %K<%n$1%K>%n $3-
+assign FORMAT.PUBLIC_AR %K<%C$1%K>%n $3-
+assign FORMAT.PUBLIC_OTHER %K<%n$1%K/%n$2%K>%n $3-
+assign FORMAT.PUBLIC_OTHER_AR %K<%C$1%K/%n$2%K>%n $3-
+assign FORMAT.SEND_ACTION_CHANNEL %K-> %W$1%n $3-
+assign FORMAT.SEND_ACTION_CHANNEL_OTHER %K-> %W$2%K/%W$1%n $3-
+assign FORMAT.SEND_ACTION_USER %K-> %W$2%K/%c$1%n $3-
+assign -FORMAT.SEND_CTCP
+assign FORMAT.SEND_DCC_CHAT %K->%n chat%K[%W$1%K]%c:%n $2-
+assign FORMAT.SEND_MSG %K->%n msg%K[%W$1%K]%c:%n $2-
+assign FORMAT.SEND_NOTICE %K->%n not%K[%W$1%K]%c:%n $2-
+assign FORMAT.SEND_PUBLIC %K<%W$2%K>%n $3-
+assign FORMAT.SEND_PUBLIC_OTHER %K<%W$1%K/%W$2%K>%n $3-
+assign FORMAT.SEND_WALL %K-> %nwall%K[%W$1%K]%c:%n $2-
+assign FORMAT.TOPIC $G topic%K/%W$2%c:%n $3-
+assign FORMAT.TOPIC_CHANGE $G topic%K/%W$2%c: %W$1%K[%n$3-%K]%n
+assign FORMAT.TOPIC_SETBY $G topic%K/%W$3%c:%n created %K[%W$tolower($strftime($4 %%a %%b %%d %%T %%Y))%K]%n
+assign FORMAT.TOPIC_UNSET $G topic%K/%W$2%c:%n unset %K[%n$1%K]%n
+assign FORMAT.UMODE $G mode%K/%W$2%c: %W$servername()%K[%n$3-%K]%n
+assign FORMAT.WALLOP %K!%n$1%K:%n$2%K!%n $3-
+assign FORMAT.WHO $[9]1 $[9]2 $[3]3 $4@$5 \($8-\)
+assign FORMAT.WHO_FOOTER $G $1-
+assign -FORMAT.WHO_FOOTER1
+assign -FORMAT.WHO_FOOTER2
+assign -FORMAT.WHO_HEADER
+assign -FORMAT.WHO_HEADER1
+assign -FORMAT.WHO_HEADER2
+assign FORMAT.WHOIS_ADMIN %K³ [    %Wa%ndmin%K] ³%n $2-
+assign FORMAT.WHOIS_AWAY %K³ [     %Wa%nway%K] ³%n $2-
+assign FORMAT.WHOIS_BOT ³ %K[      %Wb%not%K] ³%n $2-
+assign FORMAT.WHOIS_CHANNELS %K³%n³%K[ %Wc%nhannels%K]%n   $3-
+assign FORMAT.WHOIS_CHANNELS_WRAP %K³%n³%K[         ]%n   $3-
+assign FORMAT.WHOIS_FOOTER %WÀÄ-%nÄ -%KÄ Ä%n-Ä- %WÄ- Ä%n-ÄÄ%K- Ä%n-Ä%W-%n-%K>%n
+assign -FORMAT.WHOIS_FOOTER1
+assign -FORMAT.WHOIS_FOOTER2
+assign FORMAT.WHOIS_HEADER %WÚÄ%nÄÄ%KÄ-%nÄ- %WÄ-%nÄÄ%KÄÄ%nÄÄ-Ä%WÄ- Ä %n-Ä %KÄ %nÄ- %WÄÄÄ%nÄ-%KÄ - %nÄÄ%W-Ä%n- %W-  - %nÄ %WÄ%n
+assign -FORMAT.WHOIS_HEADER1
+assign -FORMAT.WHOIS_HEADER2
+assign FORMAT.WHOIS_HOST ³%K³[     %Wh%nost%K]%n   $after(1 @ $6)
+assign FORMAT.WHOIS_IDENTIFIED %K³ [    %Wi%ndent%K] ³%n $2-
+assign FORMAT.WHOIS_IDLE %K³ [     %Wi%ndle%K] ³%n $tdiff($3)
+assign FORMAT.WHOIS_NAME ³Ú%K[  %Wi%nrcname%K]%nÄÙ $6-
+assign FORMAT.WHOIS_NICK %W³ %K[%W$[-9]2%K] ³ [%n$3%c@%n$4%K]%n
+assign FORMAT.WHOIS_OPER %K³ [ %Wo%nperator%K] ³%n $2 is being syn flooded (irc operator)
+assign FORMAT.WHOIS_REALHOST ³ %K[ %Wr%nealhost%K]%n ³ $3
+assign FORMAT.WHOIS_SERVER ³À%K[   %Ws%nerver%K]%nÄ¿ $3 %K[%n$4-%K]%n
+assign FORMAT.WHOIS_SIGNON ³ %K[   %Ws%nignon%K]%n ³ $strftime($4 %%a %%b %%d %%T %%Y)
+assign FORMAT.WHOWAS_NAME ³%KÚ[  %Wi%nrcname%K]%nÄÙ $6-
+assign FORMAT.WHOWAS_NICK %W³ %K[%W$[-9]2%K] ³ [%n$3%c@%n$4%K]%n
+
+
+/* EOF */

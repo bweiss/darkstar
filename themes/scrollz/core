@@ -1,0 +1,57 @@
+/* $Id$ */
+/*
+ * ScrollZ theme for DarkStar/EPIC4
+ * Authors: Joshua Hamor <silicon@ircpimps.fuckedyourmom.com>
+ *          Brian Weiss <brian@epicsol.org>
+ * Module: core
+ *
+ * This attempts to mimic ScrollZ where possible. It's not perfect
+ * but it comes pretty close.
+ */
+
+dset DOUBLE_STATUS ON
+
+set BANNER [S+Z]
+set -INPUT_PROMPT
+set REVERSE_STATUS_LINE OFF
+set STATUS_AWAY  37\(52zZzZ ${AWAY[NEWMSGS] ? AWAY.NEWMSGS : [0]}37\)
+set STATUS_CHANNEL  on 53$left(24 $C)37
+set STATUS_CHANOP 55@37
+set STATUS_CLOCK 37[time 56%T37]
+set -STATUS_CPU_SAVER
+set STATUS_DOES_EXPANDOS ON
+set STATUS_FORMAT ,4437[52%R37] %*%@%=56%N%#%C%+%A%Q%H%O%F
+set STATUS_FORMAT1 ,4437[52%R37] %*%@%=56%N%#%C%+%A%Q%H%O%F %>%X
+set STATUS_FORMAT2 ,44%U%M%B %>%T
+set STATUS_HOLD  57[..more..]37
+set STATUS_HOLD_LINES  37\(52%B37\)
+set -STATUS_INSERT
+set STATUS_MAIL  37[m 36%M37]
+set STATUS_MODE  37[36+%+37]
+set STATUS_NICKNAME $N
+set STATUS_NOTIFY   53,41[a:%F]37,44
+set STATUS_NO_REPEAT ON
+set STATUS_OPER 52*37
+set STATUS_OVERWRITE  37\(52ow37\)
+set STATUS_QUERY  37[51Q37/51%Q37]
+set -STATUS_SCROLLBACK
+set -STATUS_SERVER
+set STATUS_TRUNCATE_RHS ON
+set STATUS_UMODE  37\(51+%#37\)
+set STATUS_USER [up 36$tdiff2(${time() - F})37]
+set STATUS_USER1 [lj 53$left(16 $:)37]
+set STATUS_VOICE 52+37
+set STATUS_WINDOW ^^^^^
+
+assign FORMAT.MODLIST_FOOTER -------------------------------------------------------
+assign FORMAT.MODLIST_FOOTER1 $G Available modules: $numitems(_modules), Loaded modules: $numitems(_loaded_modules)
+assign -FORMAT.MODLIST_FOOTER2
+assign FORMAT.MODLIST_HEADER #   Module           Version    Size  Loaded Auto-Load
+assign FORMAT.MODLIST_HEADER1 -------------------------------------------------------
+assign -FORMAT.MODLIST_HEADER2
+assign FORMAT.MODLIST_MODULE  $[3]1 $[16]2 $[7]3 $[-7]4    ${[$5] ? [\[*\]] : [\[\ \]]}     ${[$6] ? [\[*\]] : [\[ \]]}
+assign FORMAT.SET $G Current value of $1 is $2-
+assign FORMAT.SET_NOVALUE $G No value for $1 has been set
+
+
+/* EOF */

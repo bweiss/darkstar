@@ -1,4 +1,4 @@
-#version 0.1.4
+#version 0.2
 /* $Id$ */
 /*
  * nickmgr.dsm - Nick management module for DarkStar/EPIC4
@@ -13,9 +13,10 @@
 queue cleanup.nickmgr
 {
 	^alias -nick
+	^alias -nickmgr
 	^alias -nickscan
 
-	^on #hook 422 -"CONFIG NICK_MANAGER_SCAN_INTERVAL *"
+	^on #hook 422 -"CONFIG NICKMGR_SCAN_INTERVAL *"
 	^on #join 422 -"*"
 	^on #raw_irc 422 -"% NICK *"
 	^on #raw_irc 422 -"% QUIT *"
@@ -27,44 +28,66 @@ queue cleanup.nickmgr
 
 /****** CONFIG/FORMAT VARIABLES ******/
 
-config.add -b NICK_MANAGER 0
-config.add -b NICK_MANAGER_AUTO_ADD_NICKS 1
-config.add -b NICK_MANAGER_IGNORE_NETSPLITS 0
-config.add    NICK_MANAGER_IGNORE_TIMEOUT 900
-config.add    NICK_MANAGER_NICKLIST
-config.add    NICK_MANAGER_SCAN_INTERVAL 60
-config.add    NICK_MANAGER_SCAN_TIMEOUT 900
-
-
-/****** INIT ******/
-
-if (isloaded(keepnick))
-{
-	xecho -b Warning! The nickmgr and keepnick modules should not be used at the same time.
-	^assign ask $'Would you like to unload the keepnick module now? '
-	if (ask == [y]) {
-		unloadmod keepnick
-	}
-	^assign -ask
-}
-
-/*
- * Force the loading of saved settings early so that we can
- * reference $CONFIG.NICK_MANAGER_SCAN_INTERVAL in the STARTUP section.
- */
-module.load_saved_settings
+addconfig -b NICKMGR 0
+addconfig -b NICKMGR_AUTO_ADD_NICKS 1
+addconfig -b NICKMGR_IGNORE_NETSPLITS 0
+addconfig    NICKMGR_IGNORE_TIMEOUT 900
+addconfig    NICKMGR_NICKLIST
+addconfig    NICKMGR_SCAN_INTERVAL 60
+addconfig    NICKMGR_SCAN_TIMEOUT 900
 
 
 /****** USER ALIASES ******/
 
 alias nick (...)
 {
-	if (CONFIG.NICK_MANAGER) {
-		if (CONFIG.NICK_MANAGER_AUTO_ADD_NICKS && findw($0 $CONFIG.NICK_MANAGER_NICKLIST) == -1) {
-			push CONFIG.NICK_MANAGER_NICKLIST $0
+	if (CONFIG.NICKMGR) {
+		if (CONFIG.NICKMGR_AUTO_ADD_NICKS && findw($0 $CONFIG.NICKMGR_NICKLIST) == -1) {
+			push CONFIG.NICKMGR_NICKLIST $0
 		}
 	}
 	//nick $*
+}
+
+/*
+ * nickmgr [[-a|-d] <nick> ...] ...
+ *
+ * Adds or removes nicks from NICKMGR_NICKLIST. The -a and -d options specify
+ * which action to perform (add/delete). If neither option is provided then
+ * -a will be assumed.
+ */
+alias nickmgr (args)
+{
+	^local action add
+	^local nicklist $CONFIG.NICKMGR_NICKLIST
+
+	if (!args) {
+		dset NICKMGR_NICKLIST
+		return
+	}
+
+	while (:arg = shift(args))
+	{
+		switch ($arg)
+		{
+			(-a) { @ action = [add]; }
+			(-d) { @ action = [delete]; }
+
+			(*) {
+				if (action == [add]) {
+					@ push(nicklist $arg)
+				} else if (action == [delete]) {
+					@ nicklist = remw($arg $nicklist)
+				}
+			}
+		}
+	}
+
+	if (nicklist != CONFIG.NICKMGR_NICKLIST) {
+		dset NICKMGR_NICKLIST $nicklist
+	} else {
+		dset NICKMGR_NICKLIST
+	}
 }
 
 alias nickscan (void) { nickmgr.scan; }
@@ -80,7 +103,7 @@ alias nickmgr.clean_ignore_list (void)
 		{
 			@ :ts = word(1 $getitem($array $item))
 			@ :diff = time() - ts
-			if (diff > CONFIG.NICK_MANAGER_IGNORE_TIMEOUT) {
+			if (diff > CONFIG.NICKMGR_IGNORE_TIMEOUT) {
 				@ delitem($array $item)
 			}
 		}
@@ -128,8 +151,9 @@ alias nickmgr.ignore (nick, serv default "$servernum()", void)
  */
 alias nickmgr.is_on (nick, serv default "$servernum()", void)
 {
-	xeval -s $serv -- ^local tmp \$is_on($nick)
-	@ function_return = tmp
+	xeval -s $serv {
+		@ function_return = is_on($nick)
+	}
 }
 
 alias nickmgr.nickchange (nick, serv default "$servernum()", void)
@@ -142,19 +166,19 @@ alias nickmgr.nickchange (nick, serv default "$servernum()", void)
 }
 
 /*
- * This will check each nick in $CONFIG.NICK_MANAGER_NICKLIST, for each
- * server connection, until it either finds one available or until it gets
- * to the end of the list or to a nick less desirable than the current nick.
+ * This will check each nick in $CONFIG.NICKMGR_NICKLIST, for each server
+ * connection, until it either 1) finds one available, 2) reaches the end
+ * of the list, or 3) reaches a nick less desirable than our current nick.
  *
- * In an attempt to ensure that servers don't get flooded with ISON requests,
+ * In an attempt to ensure that servers don't get flooded with ISON requests
  * due to lag, a global variable in the NICKMGR.SCAN structure will be
  * created containing a timestamp of when the scan began. While this variable
  * exists no scans will be allowed to take place for that server.
  */
 alias nickmgr.scan (void)
 {
-	@ :nlist = CONFIG.NICK_MANAGER_NICKLIST
-	if (!CONFIG.NICK_MANAGER || !nlist) {
+	@ :nlist = CONFIG.NICKMGR_NICKLIST
+	if (!CONFIG.NICKMGR || !nlist) {
 		return
 	}
 
@@ -191,7 +215,7 @@ alias nickmgr.scan (void)
 
 /*
  * Returns the specified nick if it is more desirable than our current
- * nick according to the value of $CONFIG.NICK_MANAGER_NICKLIST.
+ * nick according to the value of $CONFIG.NICKMGR_NICKLIST.
  */
 alias nickmgr.wantnick (nick, serv default "$servernum()", void)
 {
@@ -199,7 +223,7 @@ alias nickmgr.wantnick (nick, serv default "$servernum()", void)
 		return
 	}
 
-	@ :list = CONFIG.NICK_MANAGER_NICKLIST
+	@ :list = CONFIG.NICKMGR_NICKLIST
 	@ :index = findw($nick $list)
 	@ :c_index = findw($servernick($serv) $list)
 	if (index > -1)
@@ -215,18 +239,18 @@ alias nickmgr.wantnick (nick, serv default "$servernum()", void)
 
 /****** ON HOOKS ******/
 
-on #-hook 422 "CONFIG NICK_MANAGER_SCAN_INTERVAL *"
+on #-hook 422 "CONFIG NICKMGR_SCAN_INTERVAL *"
 {
-	if (!isnumber($CONFIG.NICK_MANAGER_SCAN_INTERVAL b10) || CONFIG.NICK_MANAGER_SCAN_INTERVAL < 10)
+	if (!isnumber($CONFIG.NICKMGR_SCAN_INTERVAL b10) || CONFIG.NICKMGR_SCAN_INTERVAL < 5)
 	{
-		xecho -b Value must be an integer greater than or equal to 10
-		^assign CONFIG.NICK_MANAGER_SCAN_INTERVAL ${[$2] ? [$2] : 60}
-		xecho -b Value of NICK_MANAGER_SCAN_INTERVAL set to $CONFIG.NICK_MANAGER_SCAN_INTERVAL
+		xecho -b Value must be an integer greater than or equal to 5
+		^assign CONFIG.NICKMGR_SCAN_INTERVAL ${[$2] ? [$2] : 60}
+		xecho -b Value of NICKMGR_SCAN_INTERVAL set to $CONFIG.NICKMGR_SCAN_INTERVAL
 	}
 
 	/* Restart the scan timer. */
 	@ timerctl(DELETE nickmgr)
-	timer -ref nickmgr -rep -1 $CONFIG.NICK_MANAGER_SCAN_INTERVAL nickmgr.scan
+	timer -ref nickmgr -rep -1 $CONFIG.NICKMGR_SCAN_INTERVAL nickmgr.scan
 }
 
 /*
@@ -250,7 +274,7 @@ on #-raw_irc 422 "% QUIT *"
 {
 	@ :nick = before(1 ! $0)
 	@ :reason = after(1 : $2-)
-	if (CONFIG.NICK_MANAGER_IGNORE_NETSPLITS && match("%.%.% %.%.%" "$reason"))
+	if (CONFIG.NICKMGR_IGNORE_NETSPLITS && match("%.%.% %.%.%" "$reason"))
 	{
 		nickmgr.clean_ignore_list
 		nickmgr.ignore $nick
@@ -262,14 +286,14 @@ on #-raw_irc 422 "% QUIT *"
 on #-timer 422 "*"
 {
 	if (!timerctl(REFNUM nickmgr)) {
-		timer -ref nickmgr -rep -1 $CONFIG.NICK_MANAGER_SCAN_INTERVAL nickmgr.scan
+		timer -ref nickmgr -rep -1 $CONFIG.NICKMGR_SCAN_INTERVAL nickmgr.scan
 	}
 
 	foreach NICKMGR.SCAN serv
 	{
 		@ :ts = NICKMGR.SCAN[$serv]
 		@ :diff = time() - ts
-		if (diff > CONFIG.NICK_MANAGER_SCAN_TIMEOUT) {
+		if (diff > CONFIG.NICKMGR_SCAN_TIMEOUT) {
 			^assign -NICKMGR.SCAN.$serv
 		}
 	}
@@ -278,17 +302,10 @@ on #-timer 422 "*"
 
 /****** STARTUP ******/
 
-/*
- * Run nickmgr.scan once at startup if NICK_MANAGER_SCAN_INTERVAL is
- * greater than or equal to 60. There is still a 10 second delay because
- * we want to make sure that the module loader is finished loading all of
- * its modules, as it can interfere with $is_on().
- */
-if (CONFIG.NICK_MANAGER_SCAN_INTERVAL >= 60) {
-	timer 10 nickmgr.scan
-}
+module.load_saved_settings
 
-eval timer -ref nickmgr -rep -1 $CONFIG.NICK_MANAGER_SCAN_INTERVAL nickmgr.scan
+defer nickmgr.scan
+eval timer -ref nickmgr -rep -1 $CONFIG.NICKMGR_SCAN_INTERVAL nickmgr.scan
 
 
 /* EOF */

@@ -1,4 +1,4 @@
-#version 0.9
+#version 0.10
 /* $Id$ */
 /*
  * window.dsm - Window module for DarkStar/EPIC4
@@ -6,6 +6,7 @@
  * See the 'COPYRIGHT' file for more information.
  *
  * This script uses serial number 426 for all /ON hooks.
+ * The msg window attempts to use a refnum of 426.
  */
 
 /****** CLEANUP QUEUE ******/
@@ -46,19 +47,19 @@ queue cleanup.window
 
 /****** CONFIG/FORMAT VARIABLES ******/
 
-config.add    AUTO_BIND_CHANNELS
-config.add    AUTO_CREATE_WINDOWS 2
-config.add -b AUTO_QUERY 0
-config.add -b AUTO_QUERY_UPDATE 1
-config.add -b BIND_ON_JOIN 0
-config.add -b JOIN_NEW_WINDOW 0
-config.add    JOIN_NEW_WINDOW_ARGS hide_others
-config.add -b MSG_WINDOW 0
-config.add -b MSG_WINDOW_HIDDEN 0
-config.add    MSG_WINDOW_LEVEL MSGS
-config.add    MSG_WINDOW_SIZE 5
-config.add -b PART_KILL_WINDOW 0
-config.add -b UNBIND_ON_PART 0
+addconfig    AUTO_BIND_CHANNELS
+addconfig    AUTO_CREATE_WINDOWS 2
+addconfig -b AUTO_QUERY 0
+addconfig -b AUTO_QUERY_UPDATE 1
+addconfig -b BIND_ON_JOIN 0
+addconfig -b JOIN_NEW_WINDOW 0
+addconfig    JOIN_NEW_WINDOW_ARGS hide_others
+addconfig -b MSG_WINDOW 0
+addconfig -b MSG_WINDOW_HIDDEN 0
+addconfig    MSG_WINDOW_LEVEL MSGS
+addconfig    MSG_WINDOW_SIZE 5
+addconfig -b PART_KILL_WINDOW 0
+addconfig -b UNBIND_ON_PART 0
 
 
 /****** INIT ******/
@@ -93,12 +94,6 @@ config.add -b UNBIND_ON_PART 0
 ^bind -symbolic key_f12 parse_command window.last.clear
 
 /*
- * Force the loading of saved settings early so that
- * the /IF commands in the STARTUP section can use them.
- */
-module.load_saved_settings
-
-/*
  * Add shortcut aliases for all existing windows.
  */
 for wref in ($winrefs()) {
@@ -125,7 +120,9 @@ alias wc  (void)                     { window new_hide swap last; }
 alias wj  (...)                      { window new_hide swap last channel "$*"; }
 alias wk  (...)                      { window kill; }
 alias wl  (...)                      { window last; }
+/* Perhaps this should create a new window, instead of doing /window next? */
 alias wn  (...)                      { window next; }
+alias wns (...)                      { window new_hide swap last server $*; }
 alias wp  (...)                      { window previous; }
 alias wq  (...)                      { window new_hide swap last query $nick; }
 alias wub (...)                      { window unbind; }
@@ -154,7 +151,7 @@ alias window.msgwin.create (void)
 {
 	if (winnum(msgs) == -1)
 	{
-		window new name msgs
+		window new name msgs number 426
 		window.msgwin.fix
 	}
 }
@@ -163,9 +160,6 @@ alias window.msgwin.destroy (void)
 {
 	if (winnum(msgs) != -1) {
 		window msgs kill
-	}
-	if ((:item = matchitem(single_status msgs)) > -1) {
-		@ delitem(single_status $item)
 	}
 }
 
@@ -180,12 +174,6 @@ alias window.msgwin.fix (void)
 	if (CONFIG.MSG_WINDOW_HIDDEN)
 	{
 		window msgs hide
-		if (STATUS.DOUBLE) {
-			window msgs double on
-		}
-		if ((:item = matchitem(single_status msgs)) > -1) {
-			@ delitem(single_status $item)
-		}
 	}{
 		/*
 		 * Make sure that the msg window is visible but inactive.
@@ -222,10 +210,6 @@ alias window.msgwin.fix (void)
 		}
 
 		window msgs double off fixed on skip on size $CONFIG.MSG_WINDOW_SIZE
-
-		if (finditem(single_status msgs) < 0) {
-			@ setitem(single_status $numitems(single_status) msgs)
-		}
 	}
 }
 
@@ -351,27 +335,14 @@ on #-msg 426 "*"
 
 on #-window_create 426 "*"
 {
-	/* Add shortcut alias for this window */
 	^alias $0 window swap $0
-
-	/* Automatically double the statbar if theme calls for it. */
-	if (STATUS.DOUBLE) {
-		^window $0 double on
-	}
-
-	/* Fix the msgwin in case the new window messed with it. */
 	window.msgwin.fix
 }
 
 on #-window_kill 426 "*"
 {
-	/* Remove this window's shortcut alias */
 	^alias -$0
-
-	/* Ensure that the msg window doesn't become hidden or the wrong size. */
-	if (CONFIG.MSG_WINDOW && !CONFIG.MSG_WINDOW_HIDDEN) {
-		window.msgwin.fix
-	}
+	window.msgwin.fix
 }
 
 on #-window_kill 426 "msgs"
@@ -384,27 +355,20 @@ on #-window_kill 426 "msgs"
 
 /****** STARTUP ******/
 
+module.load_saved_settings
+
 if (CONFIG.AUTO_CREATE_WINDOWS)
 {
-	/* Try to play nice with the operview window. */
-	if (isloaded(oper) && CONFIG.OPERVIEW) {
-		oper.operview.destroy
-	}
-
-	for cnt from 1 to $CONFIG.AUTO_CREATE_WINDOWS
+	for ii from 1 to $CONFIG.AUTO_CREATE_WINDOWS
 	{
-		@ :chan = word($cnt $CONFIG.AUTO_BIND_CHANNELS)
-		if (winnum($cnt) == -1) {
+		@ :chan = word($ii $CONFIG.AUTO_BIND_CHANNELS)
+		if (winnum($ii) == -1) {
 			window new
+			if (chan) {
+				window bind $chan
+			}
+			window hide
 		}
-		if (chan) {
-			window bind $chan
-		}
-		window hide
-	}
-
-	if (isloaded(oper) && CONFIG.OPERVIEW) {
-		oper.operview.create
 	}
 }
 

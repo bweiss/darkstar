@@ -45,7 +45,17 @@ alias ansicparse (...)
  * Convert between 1/0 and ON/OFF.
  * These are mostly used by /DSET.
  */
-alias bool_to_onoff (arg, void)
+alias bool2num (arg, void)
+{
+	switch ($toupper($arg))
+	{
+		(OFF) {return 0}
+		(ON)  {return 1}
+		(*)   {return $arg}
+	}
+}
+
+alias bool2word (arg, void)      
 {
 	switch ($arg)
 	{
@@ -55,14 +65,15 @@ alias bool_to_onoff (arg, void)
 	}
 }
 
-alias bool_to_num (arg, void)
+/*
+ * This was donated by Ben Winslow.
+ */
+alias chanvoice (chan default "$C", void)
 {
-	switch ($toupper($arg))
-	{
-		(OFF) {return 0}
-		(ON)  {return 1}
-		(*)   {return $arg}
+	for nick in ($pattern(?+* $channel($chan))) {
+		@ push(:voice $rest(2 $nick))
 	}
+	@ function_return = voice
 }
 
 alias country tld
@@ -93,9 +104,53 @@ alias fmtfsize (bytes, void)
 	^stack pop set FLOATING_POINT_MATH
 }
 
+/*
+ * Retrieves the values of a list of item numbers and/or ranges of numbers
+ * (e.g. "3-7") from an array. The value of the offset argument will be added
+ * to each item number before its value is retrieved. This allows the real
+ * item numbers to be mapped to any range of numbers. All non-numeric words
+ * in the item list will also be returned.
+ */
+alias getitems (array, offset, list)
+{
+	if (!getarrays($array) || !isnumber(b10 $offset) || !list) {
+		return
+	}
+
+	for word in ($list)
+	{
+		if (isnumber(b10 $word))
+		{
+			@ :word += offset
+			@ push(:retval $getitem($array $word))
+		}\
+		else if (match(%-% $word) && isnumber(b10 $strip(- $word)))
+		{
+			for num in ($jot($split(- $word))) {
+				@ :num += offset
+				@ push(:retval $getitem($array $num))
+			}
+		}{
+			@ push(:retval $word)
+		}
+	}
+
+	@ function_return = retval
+}
+
+alias getdsets (patt default "*")
+{
+	@ function_return = pattern("$patt" $sar(g/_DSET.//$aliasctl(assign match _DSET.)))
+}
+
+alias getfsets (patt default "*")
+{
+	@ function_return = pattern("$patt" $sar(g/_DSET.//$aliasctl(assign match _FSET.)))
+}
+
 alias isloaded (module, void)
 {
-	@ function_return = finditem(loaded_modules $module) > -1 ? 1 : 0
+	@ function_return = finditem(_loaded_modules $module) > -1 ? 1 : 0
 }
 	
 /*
@@ -128,23 +183,22 @@ alias is_on (nick, void)
  */
 alias modinfo (module, flag)
 {
-	if ((:item = finditem(modules $module)) > -1)
+	if ((:item = finditem(_modules $module)) > -1)
 	{
 		switch ($tolower($flag))
 		{
-			(a) ()
-			{
-				^local foo $getitem(module_files $item)
-				push foo $getitem(module_versions $item)
-				@ function_return = foo
+			(a) () {
+				@ :retval = _MODULE.$module
+				@ push(:retval $_MODULE[$module][VERSION])
 			}
 			(f) {
-				@ function_return = getitem(module_files $item)
+				@ :retval = _MODULE[$module]
 			}
 			(v) {
-				@ function_return = getitem(module_versions $item)
+				@ :retval = _MODULE[$module][VERSION]
 			}
 		}
+		@ function_return = retval
 	}
 }
 
@@ -152,8 +206,7 @@ alias modinfo (module, flag)
  * The original version of this function was taken from EPIC4-1.1.3 and
  * was written by Jeremy Nelson. It has been modified to use $rand() to
  * generate a unique process name, rather than a global variable that
- * is incremented every time the function is called. The original comment
- * follows. -Brian
+ * is incremented every time the function is called. -bmw
  */
 /*
  * Ok.  Here's the plan.
@@ -181,15 +234,10 @@ alias pipe
  */
 alias serverrefs (void)
 {
-	^local refnums
-	for wref in ($winrefs())
-	{
-		@ :sref = winserv($wref)
-		if (!match($sref $refnums)) {
-			push refnums $sref
-		}
+	for wref in ($winrefs()) {
+		@ push(:refnums $winserv($wref))
 	}
-	@ function_return = refnums
+	@ function_return = uniq($refnums)
 }
 
 alias tld
@@ -227,18 +275,28 @@ alias uh
 	return $blahblah
 }
 
+alias visiblewins (void)
+{
+	for wref in ($winrefs()) {
+		if (winvisible($wref) > 0) {
+			@ push(:ret $wref)
+		}
+	}
+	@ function_return = revw($ret)
+}
+
 /*
- * Returns the names of all channels belonging a specific window.
+ * Returns the names of all channels belonging to a specific window.
  * If no window is specified the current window is used.
  */
 alias winchannels (win default "$winnum()", void)
 {
-	^local channels
-	for chan in ($mychannels($winserv($win)))
-	{
-		@ :wref = winchan($chan)
-		if (wref == win) {
-			push channels $chan
+	@ :serv = winserv($win)
+	for chan in ($mychannels($serv)) {
+		xeval -s $serv {
+			if (winchan($chan) == win) {
+				@ push(:channels $chan)
+			}
 		}
 	}
 	@ function_return = channels

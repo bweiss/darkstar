@@ -1,6 +1,0 @@
-/* $Id$ */
-
-assign FORMAT.WALLOP %K!%n$1%K:%n$2%K!%n $3-
-
-
-/* EOF */

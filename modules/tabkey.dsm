@@ -1,4 +1,4 @@
-#version 0.4.4
+#version 0.5
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -88,9 +88,9 @@ queue cleanup.tabkey
 
 /****** CONFIG/FORMAT VARIABLES ******/
 
-config.add -b TABKEY_CYCLE_MATCHES 1
-config.add    TABKEY_MAX_MSG_HISTORY 6
-config.add    TABKEY_NICKCOMP_SUFFIX ,
+addconfig -b TABKEY_CYCLE_MATCHES 1
+addconfig    TABKEY_MAX_MSG_HISTORY 6
+addconfig    TABKEY_NICKCOMP_SUFFIX ,
 
 
 /****** INIT ******/
@@ -106,8 +106,8 @@ alias tabkey.main (void)
 	xdebug extractw
 	@ :curpos = curpos()
 	/*
-	 * EPIC4 versions before commit_id 610 require an extra space in the
-	 * call to $indextoword() in order for this to work properly. -bmw
+	 * EPIC4 commit_id 610 fixed a bug in the word parser so we no longer
+	 * need an extra space in the call to $indextoword(). -bmw
 	 */
 	if (info(i) >= 610) {
 		@ :curword = indextoword($curpos $L)
@@ -121,12 +121,15 @@ alias tabkey.main (void)
 		@ wordind = curpos
 	}
 	@ :word = mid($wordind ${curpos-wordind} $L)
+
 	/*
 	 * Attempt to cycle through the list of matches if the tabkey is
 	 * pressed a second time with no change. -bmw
 	 */
-	if (CONFIG.TABKEY_CYCLE_MATCHES && TABKEY.LASTMATCHES != [] && word == TABKEY.LASTWORD) {
-		if (word != [] || (word == [] && L == TABKEY.LASTLINE)) {
+	if (CONFIG.TABKEY_CYCLE_MATCHES && TABKEY.LASTMATCHES != [] && word == TABKEY.LASTWORD)
+	{
+		if (word != [] || (word == [] && L == TABKEY.LASTLINE))
+		{
 			if (TABKEY.INDEX == numwords($TABKEY.LASTMATCHES)) {
 				@ TABKEY.INDEX = 0
 			}
@@ -139,36 +142,52 @@ alias tabkey.main (void)
 			return
 		}
 	}
+
 	if (word =~ ["*"]) {
 		@ :word = shift(word)
 	} elsif (word =~ ["*]) {
 		@ :word #= ["]
 		@ :word = shift(word)
 	}
+
 	if (!index($cmdchars $L)) {
 		wait for @ :matches = tabkey.cmd($word)
 	} else {
 		wait for @ :matches = tabkey.default($word)
 	}
 	@ :prefix = prefix($matches)
+
 	/*
-	 * EPIC versions before commit_id 613 did not consider a single space
-	 * by itself to be a word, so we need to check for it specifically. -bmw
+	 * EPIC4 versions after commit_id 613 consider a single space by itself
+	 * to be a word, so we'll need to check for it to ensure this works
+	 * correctly. -bmw
 	 */
-	if (#matches && matches != [ ]) {
-		if (word == prefix) {
+	if (#matches == 1 && matches != [ ])
+	{
+		@ :prefix = 0 > index("$chr($jot(32 1))" $prefix) ? prefix : ["$prefix"]
+		@ :line = mid(0 $wordind $L)
+		parsekey erase_to_beg_of_line
+		xtype -l $line$prefix${[ ]}
+	}\
+	else if (#matches > 1)
+	{
+		if (word == prefix)
+		{
 			echo Completions for \"$word\": $matches
 			@ TABKEY.INDEX = 0
 			@ TABKEY.LASTLINE = L
 			@ TABKEY.LASTMATCHES = matches
 			@ TABKEY.LASTWORD = word
-		} elsif (strlen($word) <= strlen($prefix)) {
+		}\
+		else if (strlen($word) <= strlen($prefix))
+		{
 			@ :prefix = 0 > index("$chr($jot(32 1))" $prefix) ? prefix : ["$prefix"]
 			@ :line = mid(0 $wordind $L)
 			parsekey erase_to_beg_of_line
-			xtype -l $line$prefix${1 < #matches ? [] : [ ]}
+			xtype -l $line$prefix
 		}
 	}
+
 	xdebug $oxd
 }
 
@@ -184,19 +203,23 @@ alias tabkey.cmd (...)
 	/* 
 	 * Make absolutely sure we remove $CMDCHARS from the beginning of the
 	 * the string. This is needed whenever $CMDCHARS contains one of the
-	 * characters supplied to $pass(). -bmw
+	 * characters in the call to $pass(). -bmw
 	 */
-	if (mid(0 $strlen($CMDCHARS) $args) == CMDCHARS) {
+	if (left($strlen($CMDCHARS) $args) == CMDCHARS) {
 		@ :args = rest($strlen($CMDCHARS) $args)
 	}
 	@ :args = unsplit(. $args)
 	@ :args = pass(._$pass $args)
-	if (!curword) {
+
+	if (!curword)
+	{
 		@ :ret = tabkey.method.commands($args)
 		repeat $#ret {push ret $K$shift(ret)}
 		return $ret
 	}
-	while (args) {
+
+	while (args)
+	{
 		@ :matches = aliasctl(alias pmatch tabkey.cmd.$args*)
 		@ :matches = prefix($matches)
 		if (curword == count(. $args)) {
@@ -287,6 +310,11 @@ alias tabkey.cmd.alias (...)
 alias tabkey.cmd.assign (...)
 {
 	@ function_return = tabkey.nofallback($tabkey.method.variable(assign))
+}
+
+alias tabkey.cmd.autoload (...)
+{
+	@ function_return = tabkey.nofallback($tabkey.method.array(_modules $*))
 }
 
 alias tabkey.cmd.channel (...)
@@ -413,7 +441,23 @@ alias tabkey.cmd.load (...)
 
 alias tabkey.cmd.loadmod (...)
 {
-	@ function_return = tabkey.nofallback($tabkey.method.array(modules $*))
+	@ function_return = tabkey.nofallback($tabkey.method.array(_modules $*))
+}
+
+alias tabkey.cmd.mhelp (...)
+{
+	bless
+	if (curword == 1)
+	{
+		@ function_return = tabkey.nofallback($tabkey.method.array(_modules $*))
+	}\
+	else if (curword == 2)
+	{
+		foreach -$word(1 $L)._help topic {
+			@ push(:topics $tolower($topic))
+		}
+		@ function_return = tabkey.nofallback($topics)
+	}
 }
 
 alias tabkey.cmd.mode (...)
@@ -431,9 +475,10 @@ alias tabkey.cmd.m tabkey.cmd.msg
 alias tabkey.cmd.msg (...)
 {
 	bless
-	if (curword == 1) {
+	if (curword == 1)
+	{
 		@ :retval = pattern("$word*" $sort($uniq($TABKEY.MSGHIST[$winserv()] $tabkey.method.nickchan($*))))
-	} else {
+	}{
 		@ :cmd = word(0 $L)
 		if (!cmd) {
 			@ :cmd = [$K\MSG]
@@ -441,18 +486,20 @@ alias tabkey.cmd.msg (...)
 		@ :nicks = TABKEY.MSGHIST[$winserv()]
 		@ :index = TABKEY.MSGHIST_INDEX[$winserv()]
 		@ :trailing = restw(2 $L)
-		if (nicks) {
-			if (index > 0) {
+		if (nicks)
+		{
+			if (index > 0)
+			{
 				@ :nick = word(${index - 1} $nicks)
 				@ TABKEY.MSGHIST_INDEX.$winserv() = index - 1
-			} else {
+			}{
 				@ :nick = word(${numwords($nicks) - 1} $nicks)
 				@ TABKEY.MSGHIST_INDEX.$winserv() = numwords($nicks) - 1
 			}
 			parsekey erase_line
 			xtype -l $cmd $nick $trailing
 			@ :retval = [ ]
-		} else {
+		}{
 			@ TABKEY.MSGHIST_INDEX.$winserv() = -1
 		}
 	}
@@ -479,7 +526,7 @@ alias tabkey.cmd.query (...)
 
 alias tabkey.cmd.reloadmod (...)
 {
-	@ function_return = tabkey.nofallback($tabkey.method.array(loaded_modules $*))
+	@ function_return = tabkey.nofallback($tabkey.method.array(_loaded_modules $*))
 }
 
 alias tabkey.cmd.repeat (void)
@@ -489,7 +536,7 @@ alias tabkey.cmd.repeat (void)
 
 alias tabkey.cmd.save (...)
 {
-	@ function_return = tabkey.nofallback($tabkey.method.array(loaded_modules $*))
+	@ function_return = tabkey.nofallback($pattern("$**" core) $tabkey.method.array(_loaded_modules $*))
 }
 
 alias tabkey.cmd.set (...)
@@ -502,19 +549,9 @@ alias tabkey.cmd.shift (...)
 	@ function_return = tabkey.nofallback($tabkey.method.variable(assign))
 }
 
-alias tabkey.cmd.status (...)
-{
-	@ function_return = tabkey.nofallback($tabkey.method.array(status $*))
-}
-
-alias tabkey.cmd.theme (...)
-{
-	@ function_return = tabkey.nofallback($tabkey.method.array(themes $*))
-}
-
 alias tabkey.cmd.unloadmod (...)
 {
-	@ function_return = tabkey.nofallback($tabkey.method.array(loaded_modules $*))
+	@ function_return = tabkey.nofallback($tabkey.method.array(_loaded_modules $*))
 }
 
 alias tabkey.cmd.unshift (...)
@@ -531,7 +568,9 @@ alias tabkey.cmd.window (...)
 	} else {
 		@ :cmd = word(${curword - 1} $L)
 	}
-	switch ($toupper($cmd)) {
+
+	switch ($cmd)
+	{
 		(ADD) (QUERY) (REMOVE) (SEARCH_BACK) (SEARCH_FORWARD) {
 			@ :list = tabkey.method.nickchan($*)
 		}
@@ -544,7 +583,8 @@ alias tabkey.cmd.window (...)
 		(ECHO) (GOTO) (GROW) (HOLD_INTERVAL) (LASTLOG) (MOVE) (NAME) (NUMBER) (PROMPT) (REFNUM) (REFNUM_OR_SWAP) (SCROLLBACK) (SERVER) (SHRINK) (SIZE) (STATUS_%) (SWAP) {
 			@ :nocomp = 1
 		}
-		(LASTLOG_LEVEL) (LEVEL) (NOTIFY_LEVEL) {
+		(LASTLOG_LEVEL) (LEVEL) (NOTIFY_LEVEL)
+		{
 			if (match(%,% $word)) {
 				@ :word_a = before(-1 , $word)
 				@ :word_b = after(-1 , $word)
@@ -558,20 +598,27 @@ alias tabkey.cmd.window (...)
 			@ :list = windowcmds
 		}
 	}
-	if (word_a) {
+
+	if (word_a)
+	{
 		@ :matches = pattern("$word_b*" $list)
-		if (#matches == 1) {
+		if (#matches == 1)
+		{
 			parsekey delete_to_previous_space
 			xtype -l $word_a\,$matches${[ ]}
-		} else if (#matches > 1) {
+		}\
+		else if (#matches > 1)
+		{
 			parsekey delete_to_previous_space
 			xtype -l $word_a\,$prefix($matches)
 			echo Completions for \"$word_b\": $matches
 		}
 		@ :retval = [ ]
-	} else if (nocomp) {
+	}\
+	else if (nocomp)
+	{
 		@ :retval = [ ]
-	} else {
+	}{
 		@ :retval = pattern("$word*" $list)
 	}
 	@ function_return = tabkey.nofallback($retval)
@@ -580,19 +627,13 @@ alias tabkey.cmd.window (...)
 
 # Methods.
 
-alias tabkey.method.array (array, ...)
+alias tabkey.method.array (array, args)
 {
-	bless
-	^local list
 	for ii from 0 to ${numitems($array) - 1} {
-		push list $getitem($array $ii)
+		@ push(:list $getitem($array $ii))
 	}
 	@ :list = sort($uniq($list))
-	if ([$0] == []) {
-		@ function_return = list
-	} else {
-		@ function_return = pattern("$0*" $list)
-	}
+	@ function_return = args ? pattern("$args*" $list) : list
 }
 
 alias tabkey.method.commands (...)
@@ -665,43 +706,46 @@ alias tabkey.method.variable (type, void)
 	if (!type) {
 		return
 	}
-	@ :type = toupper($type)
-	if (curword == 1) {
-		if (left(1 $word) == [-]) {
+
+	if (curword == 1)
+	{
+		if (left(1 $word) == [-])
+		{
 			@ :rm = 1
 			@ :word2 = rest(1 $word)
-		} else {
+		}{
 			@ :word2 = word
 		}
-		switch ($type) {
+
+		switch ($type)
+		{
 			(ALIAS) (ASSIGN) {
 				@ :matches = aliasctl($type match $word2)
 			}
-			(CONFIG) (FORMAT) {
-				if (type == [CONFIG]) {
-					@ :struct = [DSET]
-				} else {
-					@ :struct = [FSET]
+			(CONFIG) (FORMAT) (SET)
+			{
+				switch ($type)
+				{
+					(CONFIG) {@ :func = [getdsets($word2*)]}
+					(FORMAT) {@ :func = [getfsets($word2*)]}
+					(SET)    {@ :func = [getsets($word2*)]}
 				}
-				^local matches
-				for var in ($aliasctl(assign match $struct\.$type\.$word2)) {
-					push matches $after(-1 . $var)
-				}
-			}
-			(SET) {
-				@ :matches = getsets($word2%)
+				@ :matches = *func
 			}
 		}
-		^local retval
-		if (rm) {
+		if (rm)
+		{
 			for ii in ($matches) {
-				push retval -$ii
+				@ push(:retval -$ii)
 			}
-		} else {
+		}{
 			@ :retval = matches
 		}
-	} else if (curword == 2 && word == [] && (left(1 $word(${curword - 1} $L)) != [-])) {
-		switch ($type) {
+	}\
+	else if (curword == 2 && word == [] && (left(1 $word(${curword - 1} $L)) != [-]))
+	{
+		switch ($type)
+		{
 			(CONFIG) (FORMAT) {
 				eval xtype -l \$$type\.$word(${curword - 1} $L)
 			}
@@ -710,6 +754,7 @@ alias tabkey.method.variable (type, void)
 			}
 		}
 	}
+
 	@ function_return = retval
 }
 

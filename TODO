@@ -1,51 +1,5 @@
 FOR 0.3 RELEASE:
 
-  * Move all aliases and assigns in the core scripts to the DS or CORE
-    /ASSIGN structures, or a structure prepended with '_', and make sure
-    that the module loader does not allow any modules to use names that may
-    interfere with the core scripts. This includes the words: ds, core,
-    config, format, module, and anything beginning with '_'. Module names
-    should also be restricted to only those characters allowed in EPIC
-    variable names.
-
-  * Move all the standard formats (whois, joins/parts, msgs, notices, etc.)
-    out of their current modules and into a new module named formats.dsm.
-    This includes all of names.dsm and large portions of misc.dsm and
-    channel.dsm.
-
-  * Merge all the statbar stuff into the theme system and move the entire
-    theme system out of the core and into a module named themes.dsm.
-
-  * Allow modules to specify a minimum core ID in their headers. This would
-    allow modules that are not compatible with the current version of the
-    core scripts to be rejected or simply left out of the available modules
-    list. There should probably be a /DSET that allows these to be ignored.
-
-  * Improve dependency support for modules. If a module that another module
-    depends on is unloaded we should warn the user and maybe not even allow
-    it to be unloaded. At least not without the user's explicit consent.
-    Perhaps there should be some kind of "force" flag for /UNLOADMOD.
-
-    Should a module's dependencies be specified in the header, like the
-    module version, or should it be left to the existing method (module.dep)?
-    We're already going through the trouble of reading the first line of
-    each module when building the mod list, so this wouldn't be much extra
-    work.
-
-  * Add the option to have the module loader automatically purge non-existent
-    modules from the auto-load list. This could take the form of either a
-    /DSET option or the user could just be prompted every time.
-
-  * Add 005 handler.
-
-  * I have discovered a way to address several windowing issues including
-    $STATUS.DOUBLE/single_status, conflicts between the msg win and operview,
-    auto-join, auto-bind, and the automatic creation of windows. Basically,
-    I want to write an all-purpose window manager that will allow you to
-    not only setup windows with fixed attributes but also be able to save
-    and restore them. The oper and window modules would then use this system
-    to setup the operview and msg windows instead handling it all themselves.
-
   * Write a $numlines() function that will return the number of lines
     that a given string will occupy after final display. This must take
     into account the effects of /SET [CONTINUED_LINE|INDENT].
@@ -57,31 +11,25 @@ FOR 0.3 RELEASE:
     config variable, a format variable of the same name, and a $ts() function
     for use in themes.
 
-  * Rename the bool_to_* functions. $booltoword() and $booltonum()?
+  * Add BOX_{HEADER|FOOTER|LEFT|RIGHT} formats to the core. If defined, these
+    will be used for drawing borders around things like whois replies and
+    names output instead of the normal feature-specific format vars.
 
-  * Change most of the error messages in the core (especially the module
-    loader) so that they are less alarming. Messages like "Error: Module
-    is already loaded (<modname>)" should become something more like
-    "*** Module <modname> is already loaded".
+  * Write a new_users help page for /DHELP
 
-  * Add some global variables to the core that the module loader will set
-    to the name of the module currently being (un)loaded.
+  * Add support for "paste mode" either as a module or as part of the core.
 
-  * Consider adding some method for modules to add small help strings for
-    their aliases. Perhaps a special member for each module's assign structure
-    like "<modname>.HELP.<command>[.<linenum>]". The <linenum> member would
-    allow for multiple lines of text. Ideally, modules would have a completely
-    separate help system, freeing /DHELP to be used exclusively for the core.
-    The main benefit of this is that help for modules would be included in
-    the module itself allowing all modules to have help pages instead of just
-    those that are packaged with the core.
+  * Fix auto-query.
+
+  * Add support for a topic bar.
+
+  * Implement /THEME -save
+
+  * Add an option to /DSET and /FSET to allow them to operate only on a
+    specific module.
 
 
 AFTER 0.3 RELEASE:
-
-  * [channel.dsm] Rewrite /WALL so that type 3 attempts to use the 005
-    handler's value for MAXTARGETS or fallback to 4, instead of 7, if that
-    fails.
 
   * Write a log management module. It should provide basic log management,   
     such as setting up automatic logging for various things (channels, nicks,
@@ -101,6 +49,13 @@ AFTER 0.3 RELEASE:
 
   * Write a userlist module.
 
+  * Use the new dcc_activity hook to write a %D workalike with a configurable
+    delay so that it can be used over slower net connections.
+
+  * Add formats for UltimateIRCd's 615 and 616 numerics (WHOIS)
+    615 fudd : is using modes +ix +
+    616 fudd : real hostname nuthouse.org 216.254.103.18
+
 
 OTHER NOTES/IDEAS:
 
@@ -110,6 +65,10 @@ OTHER NOTES/IDEAS:
   from within /ON hooks.
 
 * Add a DarkStar echo prefix? e.g. "*** DarkStar: Loaded module: foo 1.0"
+
+* Would some kind of generic caching system be useful? Features like
+  REMEMBER_TOPICS could use it instead of each having to handle caching
+  things themselves.
 
 
 End of file.

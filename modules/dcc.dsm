@@ -14,18 +14,13 @@ queue cleanup.dcc
 {
 	^alias -chat
 	^alias -dcc
-	^on dcc_chat -"*"
-	^on send_dcc_chat -"*"
 	^on #dcc_request 450 -"% SEND *"
 }
 
 
 /****** CONFIG/FORMAT VARIABLES ******/
 
-config.add -b DCC_AUTOGET 0
-
-format.add DCC_CHAT =$1= $2-
-format.add SEND_DCC_CHAT => =$1= $2-
+addconfig -b DCC_AUTOGET 0
 
 
 /****** USER ALIASES ******/
@@ -66,20 +61,6 @@ on #-dcc_request 450 "% SEND *"
 	{
 		xecho -b DCC AutoGet: Accepting SEND of $2 from $0
 		dcc get $0 $2
-	}
-}
-
-on ^dcc_chat "*"
-{
-	if (FORMAT.DCC_CHAT) {
-		echo $fparse(DCC_CHAT $*)
-	}
-}
-
-on ^send_dcc_chat "*"
-{
-	if (FORMAT.SEND_DCC_CHAT) {
-		echo $fparse(SEND_DCC_CHAT $*)
 	}
 }
 

@@ -6,6 +6,20 @@ updated as questions come up. Eventually, I will write a better, more
 organized version. For now, this will have to do.
 
 
+Q: Why does everything go to the first window instead of the current window?
+
+A: By default, EPIC4 sets the first window's level to ALL causing everything
+   that doesn't specifically belong to another window to be sent there.
+
+   What you want to do is set the first window's level to NONE from one
+   of the RC files, preferrably ~/.epicrc. Try adding the following line.
+
+   window 1 level none
+
+   There is an example of this in the sample.epicrc file.
+
+--
+
 Q: How can I make DarkStar load the modules I want on startup without
    asking me first?
 

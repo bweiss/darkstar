@@ -1,4 +1,4 @@
-#version 1.5.2
+#version 1.6
 /* $Id$ */
 /*
  * away.dsm - Away module for DarkStar/EPIC4
@@ -10,7 +10,8 @@
 
 /****** CLEANUP QUEUE ******/
 
-queue cleanup.away {
+queue cleanup.away
+{
 	^alias -readlog
 	^alias -remlog
 	^on #305 421 -"*"
@@ -27,15 +28,15 @@ queue cleanup.away {
 
 /****** CONFIG/FORMAT VARIABLES ******/
 
-config.add -b   AUTO_AWAY 1
-config.add      AUTO_AWAY_TIME 1200
-config.add -b   AUTO_UNSET_AWAY 0
-config.add -b   AWAY_LOG 1
-eval config.add AWAY_LOGFILE $DS.USER_DIR/away.log
-config.add      AWAY_LOG_LEVEL MSGS NOTICES
-config.add -b   PUBLIC_AWAY 0
-config.add      PUBLIC_AWAY_CHANNELS
-config.add -b   SEND_AWAY_NOTICE 1
+addconfig -b   AUTO_AWAY 1
+addconfig      AUTO_AWAY_TIME 1200
+addconfig -b   AUTO_UNSET_AWAY 0
+addconfig -b   AWAY_LOG 1
+eval addconfig AWAY_LOGFILE $DS.USER_DIR/away.log
+addconfig      AWAY_LOG_LEVEL MSGS NOTICES
+addconfig -b   PUBLIC_AWAY 0
+addconfig      PUBLIC_AWAY_CHANNELS
+addconfig -b   SEND_AWAY_NOTICE 1
 
 
 /****** INIT ******/
@@ -49,16 +50,84 @@ config.add -b   SEND_AWAY_NOTICE 1
  * If we're already away when the module is loaded, create a timestamp.
  * This won't be accurate, of course, but it's better than nothing.
  */
-for server in ($serverrefs()) {
+for server in ($serverrefs())
+{
 	if (isaway($server)) {
 		@ AWAY.TIME.$server = time()
 	}
 }
 
 
+/****** HELP ALIASES ******/
+
+alias away._help (void)
+{
+	echo away.dsm $modinfo(away v)
+	echo Copyright (c) 2002, 2003 Brian Weiss
+	echo Your basic away system with logging, auto-away, and optional away notifications.
+}
+
+alias away._help.config (void)
+{
+	echo Config variables \($(K)DSET\):
+	echo
+	echo Name: AUTO_AWAY
+	echo Value: boolean
+	echo If true, automatically set away if there has been no input for longer than the value of AUTO_AWAY_TIME.
+	echo
+	echo Name: AUTO_AWAY_TIME
+	echo Value: time in seconds
+	echo The amount of time you can be idle before being automatically set away.
+	echo
+	echo Name: AUTO_UNSET_AWAY
+	echo Value: boolean
+	echo If true, automatically unset away on input from the user.
+	echo
+	echo Name: AWAY_LOG
+	echo Value: boolean
+	echo If true, messages will be logged according to the value of AWAY_LOG_LEVEL.
+	echo
+	echo Name: AWAY_LOGFILE
+	echo Value: filename
+	echo The filename to use as your log file.
+	echo
+	echo Name: AWAY_LOG_LEVEL
+	echo Value: msgs,notices,publics
+	echo Determines what should be logged while you are away.
+	echo
+	echo Name: PUBLIC_AWAY
+	echo Value: boolean
+	echo If true, an ACTION will be sent to your channels notifying them that you have set or unset away.
+	echo
+	echo Name: PUBLIC_AWAY_CHANNELS
+	echo Value: white-space separated list of channels
+	echo If defined, only these channels will be notified when you set/unset away.
+	echo
+	echo Name: SEND_AWAY_NOTICE
+	echo Value: boolean
+	echo If true, people who send you private messages while you are away will be sent a notice telling them that you are currently away.
+	echo
+}
+
+alias away._help.readlog (void)
+{
+	echo Usage: $(K)READLOG [<filename>]
+	echo Dumps the contents of the current log file, or <filename>, to the active window.
+	echo See Also: config remlog
+}
+
+alias away._help.remlog (void)
+{
+	echo Usage: $(K)REMLOG [<filename>]
+	echo Deletes the current log file or <filename>.
+	echo See Also: config readlog
+}
+
+
 /****** USER ALIASES ******/
 
-alias readlog (file default "$CONFIG.AWAY_LOGFILE", void) {
+alias readlog (file default "$CONFIG.AWAY_LOGFILE", void)
+{
 	@ AWAY.NEWMSGS = []
 	if (fexist($file) == 1) {
 		less $file
@@ -67,7 +136,8 @@ alias readlog (file default "$CONFIG.AWAY_LOGFILE", void) {
 	}
 }
 
-alias remlog (file default "$CONFIG.AWAY_LOGFILE", void) {
+alias remlog (file default "$CONFIG.AWAY_LOGFILE", void)
+{
 	@ AWAY.NEWMSGS = []
 	if (fexist($file)) {
 		@ unlink($file)
@@ -83,21 +153,28 @@ alias remlog (file default "$CONFIG.AWAY_LOGFILE", void) {
 /*
  * You have set yourself away.
  */
-on #-306 421 "*" {
+on #-306 421 "*"
+{
 	@ :server = servernum($0)
 	@ AWAY.TIME.$server = time()
 	@ delarray(away.sent_notice.$server)
-	if (CONFIG.PUBLIC_AWAY) {
-		if (CONFIG.PUBLIC_AWAY_CHANNELS) {
-			for chan in ($CONFIG.PUBLIC_AWAY_CHANNELS) {
-				if (match($chan $mychannels($server))) {
+
+	if (CONFIG.PUBLIC_AWAY)
+	{
+		if (CONFIG.PUBLIC_AWAY_CHANNELS)
+		{
+			for chan in ($CONFIG.PUBLIC_AWAY_CHANNELS)
+			{
+				if (match($chan $mychannels($server)))
+				{
 					xeval -s $server {
 						describe $chan is away: $serverctl(GET $server AWAY) [Log/${CONFIG.AWAY_LOG ? [ON] : [OFF]}]
 					}
 				}
 			}
-		} else {
-			for chan in ($mychannels($server)) {
+		}{
+			for chan in ($mychannels($server))
+			{
 				xeval -s $server {
 					describe $chan is away: $serverctl(GET $server AWAY) [Log/${CONFIG.AWAY_LOG ? [ON] : [OFF]}]
 				}
@@ -109,27 +186,35 @@ on #-306 421 "*" {
 /*
  * You have unset away.
  */
-on #-305 421 "*" {
+on #-305 421 "*"
+{
 	@ :server = servernum($0)
 	@ delarray(away.sent_notice.$server)
-	if (CONFIG.PUBLIC_AWAY && AWAY.TIME[$server]) {
+
+	if (CONFIG.PUBLIC_AWAY && AWAY.TIME[$server])
+	{
 		@ :away_time = time() - AWAY.TIME.$server
-		if (CONFIG.PUBLIC_AWAY_CHANNELS) {
-			for chan in ($CONFIG.PUBLIC_AWAY_CHANNELS) {
-				if (match($chan $mychannels($server))) {
+		if (CONFIG.PUBLIC_AWAY_CHANNELS)
+		{
+			for chan in ($CONFIG.PUBLIC_AWAY_CHANNELS)
+			{
+				if (match($chan $mychannels($server)))
+				{
 					xeval -s $server {
 						describe $chan is back [Gone $tdiff($away_time)]
 					}
 				}
 			}
-		} else {
-			for chan in ($mychannels($server)) {
+		}{
+			for chan in ($mychannels($server))
+			{
 				xeval -s $server {
 					describe $chan is back [Gone $tdiff($away_time)]
 				}
 			}
 		}
 	}
+
 	if (AWAY.NEWMSGS) {
 		xecho -b You have $AWAY.NEWMSGS new message${AWAY.NEWMSGS > 1 ? [s] : []}.
 	}
@@ -138,17 +223,23 @@ on #-305 421 "*" {
 /*
  * Restrict the value of the AWAY_LOG_LEVEL config variable.
  */
-on #-hook 421 "CONFIG AWAY_LOG_LEVEL *" {
+on #-hook 421 "CONFIG AWAY_LOG_LEVEL *"
+{
 	@ CONFIG.AWAY_LOG_LEVEL = toupper($CONFIG.AWAY_LOG_LEVEL)
 	@ :levels = CONFIG.AWAY_LOG_LEVEL
-	for lvl in ($levels) {
-		if (!match($lvl MSGS NOTICES PUBLICS)) {
+
+	for lvl in ($levels)
+	{
+		if (!match($lvl MSGS NOTICES PUBLICS))
+		{
 			xecho -b Unknown level: $lvl
 			xecho -b Valid levels: MSGS NOTICES PUBLICS
 			@ :levels = remw($lvl $levels)
 		}
 	}
-	if (levels != CONFIG.AWAY_LOG_LEVEL) {
+
+	if (levels != CONFIG.AWAY_LOG_LEVEL)
+	{
 		@ CONFIG.AWAY_LOG_LEVEL = levels ? levels : [$2-]
 		xecho -b Value of AWAY_LOG_LEVEL set to $CONFIG.AWAY_LOG_LEVEL
 	}
@@ -157,11 +248,15 @@ on #-hook 421 "CONFIG AWAY_LOG_LEVEL *" {
 /*
  * Update TS for last input and check for auto-unset-away.
  */
-on #-input 421 "*" {
+on #-input 421 "*"
+{
 	@ AWAY.LAST_INPUT = time()
-	if (CONFIG.AUTO_UNSET_AWAY) {
-		for server in ($serverrefs()) {
-			if (isaway($server)) {
+	if (CONFIG.AUTO_UNSET_AWAY)
+	{
+		for server in ($serverrefs())
+		{
+			if (isaway($server))
+			{
 				xeval -s $server {
 					//away
 				}
@@ -173,17 +268,22 @@ on #-input 421 "*" {
 /*
  * Process incoming msgs, notices, and publics appropriately.
  */
-on #-msg 421 "*" {
+on #-msg 421 "*"
+{
 	@ :server = servernum()
-	if (isaway($server)) {
-		if (CONFIG.SEND_AWAY_NOTICE && finditem(away.sent_notice.$server $0) < 0) {
+	if (isaway($server))
+	{
+		if (CONFIG.SEND_AWAY_NOTICE && finditem(away.sent_notice.$server $0) < 0)
+		{
 			@ setitem(away.sent_notice.$server $numitems(away.sent_notice.$server) $0)
 			xeval -s $server {
 				notice $0 I am currently away \($serverctl(GET $server AWAY)\) [Gone since: $strftime($AWAY.TIME[$server] %c)] [Log/${CONFIG.AWAY_LOG ? [ON] : [OFF]}]
 			}
 		}
-		if (CONFIG.AWAY_LOG && match(MSGS $CONFIG.AWAY_LOG_LEVEL)) {
-			if ((:fd = open($CONFIG.AWAY_LOGFILE W)) > -1) {
+		if (CONFIG.AWAY_LOG && match(MSGS $CONFIG.AWAY_LOG_LEVEL))
+		{
+			if ((:fd = open($CONFIG.AWAY_LOGFILE W)) > -1)
+			{
 				@ write($fd [$strftime(%x %X)] MSG <$0!$userhost()> $1-)
 				@ close($fd)
 			}
@@ -192,10 +292,13 @@ on #-msg 421 "*" {
 	}
 }
 
-on #-notice 421 "*" {
+on #-notice 421 "*"
+{
 	@ :server = servernum()
-	if (isaway($server) && CONFIG.AWAY_LOG && match(NOTICES $CONFIG.AWAY_LOG_LEVEL)) {
-		if ((:fd = open($CONFIG.AWAY_LOGFILE W)) > -1) {
+	if (isaway($server) && CONFIG.AWAY_LOG && match(NOTICES $CONFIG.AWAY_LOG_LEVEL))
+	{
+		if ((:fd = open($CONFIG.AWAY_LOGFILE W)) > -1)
+		{
 			@ write($fd [$strftime(%x %X)] NOTICE <$0!$userhost()> $1-)
 			@ close($fd)
 		}
@@ -203,11 +306,15 @@ on #-notice 421 "*" {
 	}
 }
 
-for hook in (public public_other) {
-	^on #-$hook 421 '% % *\$servernick()*' {
+for hook in (public public_other)
+{
+	^on #-$hook 421 '% % *\$servernick()*'
+	{
 		@ :server = servernum()
-		if (isaway($server) && CONFIG.AWAY_LOG && match(PUBLICS $CONFIG.AWAY_LOG_LEVEL)) {
-			if ((:fd = open($CONFIG.AWAY_LOGFILE W)) > -1) {
+		if (isaway($server) && CONFIG.AWAY_LOG && match(PUBLICS $CONFIG.AWAY_LOG_LEVEL))
+		{
+			if ((:fd = open($CONFIG.AWAY_LOGFILE W)) > -1)
+			{
 				@ write($fd [$strftime(%x %X)] PUBLIC $1 <$0!$userhost()> $2-)
 				@ close($fd)
 			}
@@ -220,13 +327,18 @@ for hook in (public public_other) {
  * Set ourselves away if auto-away is enabled and we
  * have been idle longer than $CONFIG.AUTO_AWAY_TIME.
  */
-on #-timer 421 "*" {
-	if (CONFIG.AUTO_AWAY && CONFIG.AUTO_AWAY_TIME > 0) {
+on #-timer 421 "*"
+{
+	if (CONFIG.AUTO_AWAY && CONFIG.AUTO_AWAY_TIME > 0)
+	{
 		@ :diff = time() - CONFIG.AUTO_AWAY_TIME
 		@ :minutes = CONFIG.AUTO_AWAY_TIME / 60
-		if (diff >= AWAY.LAST_INPUT) {
-			for server in ($serverrefs()) {
-				if (!isaway($server)) {
+		if (diff >= AWAY.LAST_INPUT)
+		{
+			for server in ($serverrefs())
+			{
+				if (!isaway($server))
+				{
 					xeval -s $server {
 						//away Auto-away after $minutes minute${minutes > 1 ? [s] : []}
 					}

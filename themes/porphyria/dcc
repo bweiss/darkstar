@@ -1,2 +1,0 @@
-assign FORMAT.DCC_CHAT %K[%n$Z%K]%n %K[%n$1%K\(%ndcc%K\)]%n $2-
-assign FORMAT.SEND_DCC_CHAT %K[%n$Z%K]%n %K[%ndcc%K\(%n$1%K\)]%n $2-

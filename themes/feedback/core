@@ -1,0 +1,56 @@
+/* $Id$ */
+/*
+ * Feedback theme for DarkStar/EPIC4
+ * Author: Brian Weiss <brian@epicsol.org> - 2001
+ * Module: core
+ *
+ * This is a cross between the astral and epic4 themes. It is intended to
+ * be just like astral but without the colors or upper ASCII characters.
+ */
+
+dset DOUBLE_STATUS ON
+
+set BANNER ***
+set INPUT_PROMPT > 
+set REVERSE_STATUS_LINE ON
+set STATUS_AWAY  [A${AWAY[NEWMSGS] ? [: $AWAY.NEWMSGS] : []}]
+set STATUS_CHANNEL  $left(24 $C)
+set STATUS_CHANOP @
+set STATUS_CLOCK  %T
+set STATUS_CPU_SAVER  \(%L\)
+set STATUS_DOES_EXPANDOS ON
+#set STATUS_FORMAT [%W%R%W] %Q 
+set STATUS_FORMAT [$Z] [%R] %*%=%@%N%#%C%+%H%B%I%O%Q%F%L %> %A
+set STATUS_FORMAT1 [$Z] [%R] %*%=%@%N%#%C%+%H%B%I%O%Q%F%L %> %A
+set STATUS_FORMAT2 %U%{2}S %>%M [%V]
+set STATUS_HOLD  Held:
+set STATUS_HOLD_LINES %B
+set -STATUS_INSERT
+set STATUS_MAIL  \(Mail: %M\)
+set STATUS_MODE \(+%+\)
+set STATUS_NICKNAME $N
+set STATUS_NOTIFY  \(W: %F\)
+set STATUS_NO_REPEAT OFF
+set STATUS_OPER *
+set STATUS_OVERWRITE  \(OT\)
+set STATUS_QUERY  \(Query: $Q\)
+set STATUS_SCROLLBACK  \(Scroll\)
+set STATUS_SERVER [$left(24 $servername($winserv()))]
+set STATUS_TRUNCATE_RHS ON
+set STATUS_UMODE \(+%#\)
+set STATUS_USER ${numonchannel() ? [[t/$numonchannel() o/$#chops() n/$#nochops()]  ] : []}
+set STATUS_VOICE +
+set STATUS_WINDOW -
+
+assign FORMAT.MODLIST_FOOTER -------------------------------------------------------
+assign FORMAT.MODLIST_FOOTER1 $G Available modules: $numitems(_modules), Loaded modules: $numitems(_loaded_modules)
+assign -FORMAT.MODLIST_FOOTER2
+assign FORMAT.MODLIST_HEADER #   Module           Version    Size  Loaded Auto-Load
+assign FORMAT.MODLIST_HEADER1 -------------------------------------------------------
+assign -FORMAT.MODLIST_HEADER2
+assign FORMAT.MODLIST_MODULE  $[3]1 $[16]2 $[7]3 $[-7]4    ${[$5] ? [\[*\]] : [\[\ \]]}     ${[$6] ? [\[*\]] : [\[ \]]}
+assign FORMAT.SET $G Current value of $1 is $2-
+assign FORMAT.SET_NOVALUE $G No value for $1 has been set
+
+
+/* EOF */

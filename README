@@ -122,23 +122,21 @@ feel free to send me any feedback you might have.
 
 FILES
 
-  COPYRIGHT           - The license file.
-  README              - You're reading it. :-)
-  TODO	              - To-do list.
+  COPYRIGHT           - The license file
+  README              - You're reading it :-)
+  TODO	              - To-do list
   UPDATES             - Contains information about important changes.
   darkstar.irc        - The startup script. This is the file that you
                         /LOAD to begin using DarkStar.
-  sample.dsrc         - Sample .dsrc file.
-  core/*.dsc          - Scripts that make up the core of DarkStar.
-                        These are all required.
-  doc/*               - Any documentation that is not browsed via /DINFO.
-  help/*              - The basic documentation for /DINFO.
-  modules/*.dsm       - The modules that provide most of the features.
+  sample.dsrc         - Sample DarkStar RC file (~/.dsrc)
+  sample.epicrc       - Sample EPIC RC file (~/.epicrc)
+  core/*.dsc          - The scripts that make up the DarkStar core.
+  doc/*               - Any documentation that is not browsed via /DHELP
+  help/*              - Help files for the core scripts (/DHELP)
+  modules/*.dsm       - The modules that provide most of the features
                       - All of these are completely optional and are
                         independent of each other.
-  status/*            - Statbar files.
-  themes/*            - Theme files. These change cosmetic aspects of
-                        the scripts.
+  themes/*            - Theme files for use with the themes module.
 
 
 I would like to thank the following people for contributing

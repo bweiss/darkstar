@@ -1,12 +1,12 @@
-#version 1.0.3
+#version 1.1
 /* $Id$ */
 /*
  * nickcomp.dsm - Nick completion module for DarkStar/EPIC4
  *
  * Written by shade <shade@chemlab.org>
- * Modified and maintained for DarkStar by Brian Weiss <brian@epicsol.org>
+ * Modified for DarkStar and maintained by Brian Weiss <brian@epicsol.org>
  *
- * This script uses serial number 0 for all /on hooks.
+ * This script uses serial number 0 for all /ON hooks.
  *
  * Most of this was taken from the nick completion module that shade
  * wrote for my BitchX/EPIC4 script called playdough and has been placed
@@ -23,11 +23,11 @@ queue cleanup.nickcomp
 
 /****** CONFIG/FORMAT VARIABLES ******/
 
-config.add -b NICK_COMPLETION 1
-config.add    NICK_COMPLETION_CHAR :
-config.add    NICK_COMPLETION_THRESHOLD 2
+addconfig -b NICK_COMPLETION 1
+addconfig    NICK_COMPLETION_CHAR :
+addconfig    NICK_COMPLETION_THRESHOLD 2
 
-format.add NICK_COMPLETION $1: $2-
+addformat NICK_COMPLETION $1: $2-
 
 
 /****** INTERNAL ALIASES ******/

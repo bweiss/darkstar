@@ -1,0 +1,718 @@
+#version 0.1
+/* $Id$ */
+/*
+ * formats.dsm - Standard formatting hooks and variables for DarkStar/EPIC4
+ * Copyright (c) 2002, 2003 Brian Weiss (except where noted)
+ * See the 'COPYRIGHT' file for more information.
+ *
+ * This script uses serial numbers 0 and 425 for /ON hooks.
+ */
+
+/****** CLEANUP QUEUE ******/
+
+queue cleanup.formats
+{
+	for alias in (names sc scan scann scano scanv) {
+		^alias -$alias
+	}
+	for hook in (301 307 308 $jot(310 315) $jot(317 320) 332 333 335 338 353 366 367 368 369 378 action channel_nick channel_signoff channel_sync ctcp ctcp_reply dcc_chat invite join kick leave mode msg nickname notice public public_other send_action send_dcc_chat send_msg send_notice send_public signoff topic wallop) {
+		^on $hook -"*"
+	}
+	^on action -'% \$servernick() *'
+	^on mode -'\$servernick() \$servernick() *'
+	^on send_action -'\\\\\[#* &* +*\\\\\] *'
+	^on send_ctcp -"PRIVMSG *"
+	^on who -"* % % % % *"
+	^on #hook 425 -"CONFIG NAMES_COL *"
+}
+
+
+/****** CONFIG/FORMAT VARIABLES ******/
+
+addconfig -b AUTO_RESPONSE 0
+addconfig -b AUTO_RESPONSE_BEEP 0
+addconfig -b AUTO_RESPONSE_NOTIFY 0
+addconfig    AUTO_RESPONSE_STR
+addconfig    NAMES_COL
+addconfig -b NAMES_SORT_BY_MODE 0
+addconfig -b SHOW_AWAY_ONCE 1
+addconfig    SHOW_AWAY_ONCE_TIMEOUT 900
+addconfig -b SHOW_HOST_ONCE 1
+addconfig    SHOW_HOST_ONCE_TIMEOUT 1800
+
+addformat ACTION_CHANNEL * $1 $3-
+addformat ACTION_CHANNEL_OTHER * $1/$2 $3-
+addformat ACTION_USER *> $1 $3-
+addformat BANS $G $1-
+addformat BANS_FOOTER $G Total number of bans on $3 - $2
+addformat BANS_FOOTER1
+addformat BANS_FOOTER2
+addformat BANS_HEADER
+addformat BANS_HEADER1
+addformat BANS_HEADER2
+addformat CHANNEL_NICK $G $2 is now known as $3
+addformat CHANNEL_SIGNOFF $G SignOff $2: \($3-%n\)
+addformat CHANNEL_SYNC $G Channel $1 synced in $2 seconds
+addformat CHANNEL_TS $G Channel $2 was created at $strftime($3 %%a %%b %%d %%T %%Z %%Y)
+addformat CTCP $G CTCP $3 from $1: $4-
+addformat CTCP_REPLY $G CTCP $3 reply from $1: $4-
+addformat DCC_CHAT =$1= $2-
+addformat INVITE $G $1 \($3\) invites you to channel $2
+addformat JOIN $G $1 \($3\) has joined $2
+addformat KICK $G ${[$1] == servernick() ? [You have] : [$1 has]} been kicked off channel $3 by $2 \($4-\)
+addformat LEAVE $G $1 \($3\) has left $2
+addformat MODE $G Mode change \"$3-\" on channel $2 by $1
+addformat MSG *$1* $3-
+addformat NAMES_FOOTER
+addformat NAMES_FOOTER1
+addformat NAMES_FOOTER2
+addformat NAMES_HEADER
+addformat NAMES_HEADER1
+addformat NAMES_HEADER2
+addformat NAMES_LEFT $G Users on $1:
+addformat NAMES_MID
+addformat NAMES_NONOP $1
+addformat NAMES_OP @$1
+addformat NAMES_RIGHT
+addformat NAMES_VOICE +$1
+addformat NICKNAME $G $1 is now known as $2
+addformat NOTICE -$1\- $3-
+addformat PUBLIC <$1> $3-
+addformat PUBLIC_AR <$1> $3-
+addformat PUBLIC_OTHER <$1:$2> $3-
+addformat PUBLIC_OTHER_AR <$1:$2> $3-
+addformat SEND_ACTION_CHANNEL * $1 $3-
+addformat SEND_ACTION_CHANNEL_OTHER * -> $2: $1 $3-
+addformat SEND_ACTION_USER * -> $2: $1 $3-
+addformat SEND_CTCP
+addformat SEND_DCC_CHAT => =$1= $2-
+addformat SEND_MSG *$1*> $2-
+addformat SEND_NOTICE
+addformat SEND_PUBLIC > $3-
+addformat SEND_PUBLIC_OTHER $2> $3-
+addformat SEND_WALL -@$1-> $2-
+addformat SIGNOFF $G SignOff $1: \($2-%n\)
+addformat TOPIC $G Topic for $2: $3-
+addformat TOPIC_CHANGE $G $1 has changed the topic on channel $2 to $3-
+addformat TOPIC_SETBY $G The topic was set by $3 $4 sec ago
+addformat TOPIC_UNSET $G $1 has changed the topic on channel $2 to
+addformat UMODE $G Mode change \"$3-\" for user $2 by $1
+addformat WALLOP !$1$2! $3-
+addformat WHO $[15]1 $[9]2 $[3]3 $4@$5 \($7-\)
+addformat WHO_FOOTER $G $1-
+addformat WHO_FOOTER1
+addformat WHO_FOOTER2
+addformat WHO_HEADER
+addformat WHO_HEADER1
+addformat WHO_HEADER2
+addformat WHOIS_ADMIN $G $2 : $3-\(from $1\)
+addformat WHOIS_AWAY $G $1 is away: $2-
+addformat WHOIS_BOT $G $2 : $3-
+addformat WHOIS_CHANNELS $G on channels: $3-
+addformat WHOIS_CHANNELS_WRAP
+addformat WHOIS_FOOTER $G $2 : End of /WHOIS list.
+addformat WHOIS_FOOTER1
+addformat WHOIS_FOOTER2
+addformat WHOIS_HEADER
+addformat WHOIS_HEADER1
+addformat WHOIS_HEADER2
+addformat WHOIS_HOST $G $2 : $3-
+addformat WHOIS_IDENTIFIED $G $2 : $3-
+addformat WHOIS_IDLE $G $2 has been idle $tdiff($3), signed on at $strftime($4 %%a %%b %%T %%Z %%Y)
+addformat WHOIS_NAME
+addformat WHOIS_NICK $G $2 is $3@$4 \($6-\)
+addformat WHOIS_OPER $G $2 is being SYN flooded \(IRC Operator\)
+addformat WHOIS_REALHOST $G $2 $3 : $4-
+addformat WHOIS_SERVER $G on irc via server $1 \($4-\)
+addformat WHOIS_SIGNON
+addformat WHOWAS_NAME
+addformat WHOWAS_NICK $G $2 was $3@$4 \($6-\)
+
+
+/****** USER ALIASES ******/
+
+alias names scan
+alias sc scan
+alias scan  (chan default "$C", void) {formats.names.main $chan}
+alias scann (chan default "$C", void) {formats.names.main $chan n}
+alias scano (chan default "$C", void) {formats.names.main $chan o}
+alias scanv (chan default "$C", void) {formats.names.main $chan v}
+
+
+/****** INTERNAL ALIASES ******/
+
+alias formats.echo (variables, ...)
+{
+	for var in ($split(, $variables))
+	{
+		if (FORMAT[$var]) {
+			echo $fparse($var $*)
+		}
+	}
+}
+
+alias formats.names.main (chan default "$C", type default "*", void)
+{
+	if (!onchannel($chan)) {
+		xecho -b No users found on $chan
+		return
+	}
+
+	switch ($type)
+	{
+		(n) {
+			for patt in (.\?* ..*) {
+				@ push(:users $pattern($patt $channel$chan)))
+			}
+		}
+		(o)   { @ :users = pattern(@* $channel($chan)); }
+		(v)   { @ :users = pattern(?+* $channel($chan)); }
+		(\\*)
+		{
+			if (CONFIG.NAMES_SORT_BY_MODE)
+			{
+				for nn in ($channel($chan))
+				{
+					if (nn =~ [@*]) {
+						@ push(:ops $nn)
+					} else if (nn =~ [?+*]) {
+						@ push(:voiced $nn)
+					} else {
+						@ push(:normal $nn)
+					}
+				}
+				@ :users = ops
+				if (voiced) { @ push(:users $voiced); }
+				if (normal) { @ push(:users $normal); }
+			}{
+				@ :users = channel($chan)
+			}
+		}
+
+		(*) {
+			echo Error: formats.names.main: Unknown type: $type
+			return
+		}
+	}
+
+	if (!users) {
+		xecho -b No ${type == [n] ? [normal] : [+$type]} users found on $chan
+		return
+	}
+
+	formats.echo NAMES_HEADER,NAMES_HEADER1,NAMES_HEADER2 $chan
+
+	if (CONFIG.NAMES_COL)
+	{
+		/*
+		 * Create a temporary variable to store the names of the
+		 * variables we'll be using in the /FE below. This allows us
+		 * to resize the number of columns in the output according to
+		 * the NAMES_COL config variable.
+		 */
+		for cnt from 1 to $CONFIG.NAMES_COL {
+			@ push(:columns col.$cnt)
+		}
+
+		/*
+		 * Break the list of users into multiple lines. This gets
+		 * a little tricky because we want certain things evaluated
+		 * before others.
+		 */
+		fe ($users) $columns
+		{
+			@ :line = []
+
+			if (FORMAT.NAMES_LEFT) {
+				@ push(:line \$fparse\(NAMES_LEFT $chan\))
+			}
+
+			for (@ :cnt = 1, cnt <= numwords($columns), @ cnt++)
+			{
+				/*
+				 * The call to $formats.names.parse() doesn't actually
+				 * happen until the last line of the /FE block.
+				 */
+				eval push :line \\\$formats.names.parse\(\$col[$cnt]\)
+
+				if (FORMAT.NAMES_MID) {
+					if (cnt < #columns) {
+						@ push(:line \$FORMAT.NAMES_MID)
+					}
+				}
+			}
+
+			if (FORMAT.NAMES_RIGHT) {
+				@ push(:line \$fparse\(NAMES_RIGHT $chan\))
+			}
+
+			eval xecho -- $line
+		}
+	}{
+		/*
+		 * No column output. Just put everything on a single line and
+		 * let the client deal with it.
+		 */
+		if (FORMAT.NAMES_LEFT) {
+			@ push(:line $fparse(NAMES_LEFT $chan))
+		}
+		for nick in ($users) {
+			@ push(:line $formats.names.parse($nick))
+		}
+		if (FORMAT.NAMES_RIGHT) {
+			@ push(:line $fparse(NAMES_RIGHT $chan))
+		}
+		xecho -- $line
+	}
+
+	formats.echo NAMES_FOOTER,NAMES_FOOTER1,NAMES_FOOTER2 $chan
+}
+
+alias formats.names.parse (...)
+{
+	if ([$0] =~ [@*]) {
+		@ function_return = fparse(NAMES_OP $rest(2 $0))
+	} else if ([$0] =~ [?+*]) {
+		@ function_return = fparse(NAMES_VOICE $rest(2 $0))
+	} else {
+		@ function_return = fparse(NAMES_NONOP $rest(2 $0))
+	}
+}
+
+
+/****** ON HOOKS ******/
+
+on ^301 "*"
+{
+	if (CONFIG.SHOW_AWAY_ONCE)
+	{
+		/* Clean out FORMATS.WHOIS_AWAY structure */
+		foreach FORMATS.WHOIS_AWAY member
+		{
+			@ :diff = time() - FORMATS[WHOIS_AWAY][$member]
+			if (diff > CONFIG.SHOW_AWAY_ONCE_TIMEOUT) {
+				^assign -FORMATS.WHOIS_AWAY.$member
+			}
+		}
+
+		if (!FORMATS[WHOIS_AWAY][$encode($0)])
+		{
+			formats.echo WHOIS_AWAY $*
+			^assign FORMATS.WHOIS_AWAY.$encode($0) $time()
+		}
+	}{
+		formats.echo WHOIS_AWAY $*
+	}
+}
+
+/*
+ * For DALnet and servers running UnrealIRCd.
+ * Shows you that the user has identified with services.
+ */
+on ^307 "*" { formats.echo WHOIS_IDENTIFIED $*; }
+
+on ^308 "*" { formats.echo WHOIS_ADMIN $*; }
+on ^310 "*" #
+on ^311 "*" { formats.echo WHOIS_HEADER,WHOIS_HEADER1,WHOIS_HEADER2,WHOIS_NICK,WHOIS_NAME $*; }
+on ^312 "*" { formats.echo WHOIS_SERVER $*; }
+on ^313 "*" { formats.echo WHOIS_OPER $*; }
+on ^314 "*" { formats.echo WHOIS_HEADER,WHOIS_HEADER1,WHOIS_HEADER2,WHOWAS_NICK,WHOWAS_NAME $*; }
+
+on ^315 "*"
+{
+	formats.echo WHO_FOOTER,WHO_FOOTER1,WHO_FOOTER2 $*
+	^assign -FORMATS.WHO_HEADER_DONE
+}
+
+on ^317 "*" { formats.echo WHOIS_IDLE,WHOIS_SIGNON $*; }
+on ^318 "*" { formats.echo WHOIS_FOOTER,WHOIS_FOOTER1,WHOIS_FOOTER2 $*; }
+
+/*
+ * Okay, here is my second attempt (inspired by BlackJac) at line
+ * wrapping the list of channels returned for a WHOIS request.
+ * It is considerably faster than the old code.
+ *
+ * As before, it will fit as many channels per line as possible,
+ * _after_ being passed through $fparse(). If a single channel is
+ * larger than what can be displayed on one line, we give up and
+ * let EPIC handle it.
+ *
+ * NOTE: The WHOIS_CHANNELS variable will still be used for
+ * the first line, and the WHOIS_CHANNELS_WRAP variable will
+ * be used to format all following lines.
+ */
+on ^319 "*"
+{
+	if (FORMAT.WHOIS_CHANNELS_WRAP)
+	{
+		@ :channels = [$2-]
+		@ :fmt_var = [WHOIS_CHANNELS]
+		@ :line = []
+		@ :width = word(0 $geom())
+		while (channels)
+		{
+			@ :tmp = stripcrap(ALL $fparse($fmt_var $0 $1 $channels))
+			if (strlen($tmp) >= width)
+			{
+				@ :tmp = before(-1 " " $mid(0 $width $tmp))
+				@ :tmp = restw($numwords($stripcrap(ALL $fparse($fmt_var $0 $1))) $tmp)
+				@ :tmp = leftw($numwords($tmp) $channels)
+				/*
+				 * XXX - Add clear-color and highlight-off tags to the end of
+				 * each channel name to prevent color codes from extending to
+				 * the next channel.
+				 */
+				@ :chans = []
+				for chan in ($tmp) {
+					push chans $chan-1
+				}
+				@ :line = fparse($fmt_var $0 $1 $chans)
+				@ :channels = rest(${strlen($tmp) + 2} $channels)
+				@ :fmt_var = [WHOIS_CHANNELS_WRAP]
+			}{
+				@ :line = fparse($fmt_var $0 $1 $channels)
+				@ :channels = []
+			}
+			echo $line
+		}
+	}{
+		/*
+		 * Don't do anything special with the list of channels,
+		 * just output everything on a single line.
+		 */
+		formats.echo WHOIS_CHANNELS $*
+	}
+}
+
+/*
+ * OPN
+ */
+on ^320 "*" { formats.echo WHOIS_IDENTIFIED $*; }
+
+on ^329 "*" { formats.echo CHANNEL_TS $*; }
+on ^332 "*" { formats.echo TOPIC $*; }
+on ^333 "*" { formats.echo TOPIC_SETBY $*; }
+
+/*
+ * UnrealIRCd's WHOISBOT numeric
+ */
+on ^335 "*" { formats.echo WHOIS_BOT $*; }
+
+/*
+ * ratbox ircd's whois_actually feature, AKA realhost.
+ */
+on ^338 "*" { formats.echo WHOIS_REALHOST $*; }
+
+/*
+ * NAMES stuff
+ */
+on ^353 "*" { ^assign FORMATS.NAMES.CHAN $2; }
+
+on ^366 "*"
+{
+	if (SHOW_CHANNEL_NAMES == [ON]) {
+		formats.names.main $FORMATS.NAMES.CHAN
+	}
+	^assign -FORMATS.NAMES.CHAN
+}
+
+
+/*
+ * Ban list stuff: 367, 368, 369
+ */
+on ^367 "*"
+{
+	@ setitem(formats.banlist.$1 $numitems(formats.banlist.$1) $*)
+}
+
+on ^368 "*"
+{
+	formats.echo BANS_HEADER,BANS_HEADER1,BANS_HEADER2 $*
+	if ([$1] > 0)
+	{
+		if (FORMAT.BANS)
+		{
+			for cnt from 0 to ${numitems(formats.banlist.$2) - 1} {
+				echo $fparse(BANS ${cnt + 1} $getitem(formats.banlist.$2 $cnt))
+			}
+		}
+		@ delarray(formats.banlist.$2)
+	}
+	formats.echo BANS_FOOTER,BANS_FOOTER1,BANS_FOOTER2 $*
+}
+
+on ^369 "*" { formats.echo WHOIS_FOOTER,WHOIS_FOOTER1,WHOIS_FOOTER2 $*; }
+
+/*
+ * UnrealIRCd's WHOISHOST
+ */
+on ^378 "*" { formats.echo WHOIS_HOST $*; }
+
+on ^action "*"
+{
+	if (iscurchan($1)) {
+		formats.echo ACTION_CHANNEL $*
+	} else {
+		formats.echo ACTION_CHANNEL_OTHER $*
+	}
+}
+
+on ^action '% $servernick() *' { formats.echo ACTION_USER $*; }
+
+on ^ctcp       "*" { formats.echo CTCP $*; }
+on ^ctcp_reply "*" { formats.echo CTCP_REPLY $*; }
+
+on ?channel_nick "*"
+{
+	if (FORMAT.CHANNEL_NICK)
+	{
+		formats.echo CHANNEL_NICK $*
+		return 1
+	}{
+		/* Allow client to hook the NICKNAME event. */
+		return 0
+	}
+}
+
+on ?channel_signoff "*"
+{
+	if (FORMAT.CHANNEL_SIGNOFF)
+	{
+		formats.echo CHANNEL_SIGNOFF $*
+		return 1
+	}{
+		/* Allow client to hook the SIGNOFF event. */
+		return 0
+	}
+}
+
+on ^channel_sync "*"  { formats.echo CHANNEL_SYNC $*; }
+on ^dcc_chat     "*"  { formats.echo DCC_CHAT $*; }
+on ^invite       "*"  { formats.echo INVITE $*; }
+on ^join         "*"  { formats.echo JOIN $*; }
+on ^kick         "*"  { formats.echo KICK $*; }
+on ^leave        "*"  { formats.echo LEAVE $*; }
+on ^mode         "*"  { formats.echo MODE $*; }
+
+on ^mode '$servernick() $servernick() *' { formats.echo UMODE $*; }
+
+on ^msg "*"
+{
+	if (CONFIG.SHOW_HOST_ONCE)
+	{
+		/* Clean out FORMATS.USERHOSTS structure */
+		foreach FORMATS.USERHOSTS member
+		{
+			@ :diff = time() - FORMATS[USERHOSTS][$member]
+			if (diff > CONFIG.SHOW_HOST_ONCE_TIMEOUT) {
+				^assign -FORMATS.USERHOSTS.$member
+			}
+		}
+
+		if (FORMATS[USERHOSTS][$encode($userhost())])
+		{
+			formats.echo MSG $0 * $1-
+		}{
+			formats.echo MSG $0 $userhost() $1-
+			^assign FORMATS.USERHOSTS.$encode($userhost()) $time()
+		}
+	}{
+		formats.echo MSG $0 $userhost() $1-
+	}
+}
+
+/*
+ * This event does not get hooked if the CHANNEL_NICK format
+ * variable has a value.
+ */
+on ^nickname "*" { formats.echo NICKNAME $*; }
+
+on ^notice "*"
+{
+	if (CONFIG.SHOW_HOST_ONCE)
+	{
+		/* Clean out FORMATS.USERHOSTS structure */
+		foreach FORMATS.USERHOSTS member
+		{
+			@ :diff = time() - FORMATS[USERHOSTS][$member]
+			if (diff > CONFIG.SHOW_HOST_ONCE_TIMEOUT) {
+				^assign -FORMATS.USERHOSTS.$member
+			}
+		}
+
+		if (FORMATS[USERHOSTS][$encode($userhost())])
+		{
+			formats.echo NOTICE $0 * $1-
+		}{
+			formats.echo NOTICE $0 $userhost() $1-
+			^assign FORMATS.USERHOSTS.$encode($userhost()) $time()
+		}
+	}{
+		formats.echo NOTICE $0 $userhost() $1-
+	}
+}
+		
+on ^public "*"
+{
+	if (CONFIG.AUTO_RESPONSE)
+	{
+		if (match(*$servernick()* $2-))
+		{
+			@ :autoresp = 1
+		}{
+			for word in ($CONFIG.AUTO_RESPONSE_STR)
+			{
+				if (match(*$word* $2-))
+				{
+					@ :autoresp = 1
+					break
+				}
+			}
+		}
+
+		if (autoresp)
+		{
+			formats.echo PUBLIC_AR $*
+			if (CONFIG.AUTO_RESPONSE_BEEP)
+			{
+				^stack push set BEEP
+				^set BEEP ON
+				beep
+				^stack pop set BEEP
+			}
+			if (CONFIG.AUTO_RESPONSE_NOTIFY && winchan($1) != winnum()) {
+				xecho -b -c Auto-response triggered in window #$winchan($1) by $0 \($1\)
+			}
+		}
+	}
+
+	if (!autoresp) {
+		formats.echo PUBLIC $*
+	}
+}
+
+on ^public_other "*"
+{
+	if (CONFIG.AUTO_RESPONSE)
+	{
+		if (match(*$servernick()* $2-))
+		{
+			@ :autoresp = 1
+		}{
+			for word in ($CONFIG.AUTO_RESPONSE_STR)
+			{
+				if (match(*$word* $2-))
+				{
+					@ :autoresp = 1
+					break
+				}
+			}
+		}
+
+		if (autoresp)
+		{
+			formats.echo PUBLIC_OTHER_AR $*
+			if (CONFIG.AUTO_RESPONSE_BEEP)
+			{
+				^stack push set BEEP
+				^set BEEP ON
+				beep
+				^stack pop set BEEP
+			}
+			if (CONFIG.AUTO_RESPONSE_NOTIFY && winchan($1) != winnum()) {
+				xecho -b -c Auto-response triggered in window #$winchan($1) by $0 \($1\)
+			}
+		}
+	}
+
+	if (!autoresp) {
+		formats.echo PUBLIC_OTHER $*
+	}
+}
+
+on ^send_action "*" { formats.echo SEND_ACTION_USER $servernick() $*; }
+
+on ^send_action '\\[#% &% +% !%\\] *'
+{
+	if (iscurchan($0)) {
+		formats.echo SEND_ACTION_CHANNEL $servernick() $*
+	} else {
+		formats.echo SEND_ACTION_CHANNEL_OTHER $servernick() $*
+	}
+}
+
+on ^send_ctcp "PRIVMSG *"
+{
+	if ([$2] != [ACTION]) {
+		formats.echo SEND_CTCP $*
+	}
+}
+
+on ^send_dcc_chat "*" { formats.echo SEND_DCC_CHAT $*; }
+
+on ^send_msg    "*" { formats.echo SEND_MSG $*; }
+on ^send_notice "*" { formats.echo SEND_NOTICE $*; }
+
+/*
+ * This event does not get hooked if the CHANNEL_SIGNOFF format
+ * variable has a value.
+ */
+on ^signoff "*" { formats.echo SIGNOFF $*; }
+
+on ^send_public "*"
+{
+	if (iscurchan($0)) {
+		formats.echo SEND_PUBLIC $0 $servernick() $1-
+	} else {
+		formats.echo SEND_PUBLIC_OTHER $servernick() $*
+	}
+}
+
+on ^topic "*"
+{
+	if (![$2]) {
+		formats.echo TOPIC_UNSET $*
+	} else {
+		formats.echo TOPIC_CHANGE $*
+	}
+}
+
+on ^wallop "*" { formats.echo WALLOP $*; }
+
+on ^who "* % % % % *"
+{
+	if (!FORMATS.WHO_HEADER_DONE)
+	{
+		formats.echo WHO_HEADER,WHO_HEADER1,WHO_HEADER2 $*
+
+		/*
+		 * This prevents the header from being displayed more than once.
+		 * It is removed by the 315 hook (WHO_FOOTER).
+		 */
+		@ FORMATS.WHO_HEADER_DONE = 1
+	}
+
+	formats.echo WHO $*
+}
+
+/*
+ * Restrict the value of the NAMES_COL config variable.
+ */
+on #-hook 425 "CONFIG NAMES_COL *"
+{
+	if (!isnumber($CONFIG.NAMES_COL b10) && CONFIG.NAMES_COL)
+	{
+		xecho -b Value must be an integer
+		if ([$2] != [])
+		{
+			^assign CONFIG.NAMES_COL $2
+			xecho -b Value of NAMES_COL set to $2
+		}{
+			^assign -CONFIG.NAMES_COL
+			xecho -b Value of NAMES_COL set to <EMPTY>
+		}
+	}
+}
+
+
+/* EOF */
