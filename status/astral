@@ -12,7 +12,7 @@ set STATUS_CHANNEL 36-[-1$left(24 $C)${chanmode() != [*] ? [36\(-1+$chanmode
 set STATUS_CHANOP 36@-1
 set STATUS_CLOCK %T
 set STATUS_DOES_EXPANDOS ON
-set STATUS_FORMAT 36[%W36é%W36]ÍÍ[-1%R36]ÍÍ%Q36Í%>Í[%W36é%W36]
+set STATUS_FORMAT 36[%W36ð%W36]ÍÍ[-1%R36]ÍÍ%Q36Í%>Í[%W36ð%W36]
 set STATUS_FORMAT1 36,-1ÖÄ[-1$Z36]Ä[-1%R36]Ä[56%*36%=%@-1%N%#36]-1%C%B36Ä%Q36Ä-1%F36Ä%>%A36Ä·
 set STATUS_FORMAT2 36,-1ÇÄ%U%{2}S36Ä%>%M36Ä[-1%V36]Ä½
 set -STATUS_HOLD

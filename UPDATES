@@ -1,3 +1,10 @@
+*** News 2002/09/06 -- darkstar theme renamed to astral, epic4 new default
+	I have renamed the darkstar theme to astral and the epic4 theme has
+	become the new default. People currently using the darkstar theme
+	will need to change to the new name, of course. I apologize for any
+	inconvenience this causes but I feel this makes more sense and will
+	also make things easier on me in the future.
+
 *** News 2002/09/05 -- misc.dsm 0.7.8 - UnrealIRCd's WHOISBOT now supported
 	Support for UnrealIRCd's WHOISBOT reply (numeric 335) has been added.
 	This includes the addition of a new format variable called WHOIS_BOT,

@@ -1,10 +1,10 @@
 /* $Id$ */
 /*
- * Official theme for DarkStar/EPIC4
- * Author: Brian Weiss <brian@epicsol.org> - 2001
+ * Astral theme for DarkStar/EPIC4
+ * Author: Brian Weiss <brian@epicsol.org> - 2002
  */
 
-status -q darkstar
+status -q astral
 
 set BANNER ***
 

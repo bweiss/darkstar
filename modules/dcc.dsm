@@ -1,4 +1,4 @@
-#version 0.1.1
+#version 0.2
 /* $Id$ */
 /*
  * dcc.dsm - DCC related module for DarkStar/EPIC4
@@ -23,8 +23,8 @@ queue cleanup.dcc
 
 config.add -b DCC_AUTOGET 0
 
-format.add DCC_CHAT [$Z] DCC <$1> $2-
-format.add SEND_DCC_CHAT [$Z] SEND_DCC $1> $2-
+format.add DCC_CHAT =$1= $2-
+format.add SEND_DCC_CHAT => =$1= $2-
 
 
 /****** USER ALIASES ******/

@@ -1,4 +1,4 @@
-#version 0.4
+#version 0.5
 /* $Id$ */
 /*
  * names.dsm - DarkStar/EPIC4 module to display who's on a channel
@@ -23,21 +23,21 @@ queue cleanup.names
 
 /****** CONFIG/FORMAT VARIABLES ******/
 
-config.add    NAMES_COL 6
+config.add    NAMES_COL
 config.add -b NAMES_SORT_BY_MODE 0
 
 format.add NAMES_FOOTER
 format.add NAMES_FOOTER1
 format.add NAMES_FOOTER2
-format.add NAMES_HEADER $G Users on $1: \(total/$2 - ops/$3 normal/$4\)
+format.add NAMES_HEADER
 format.add NAMES_HEADER1
 format.add NAMES_HEADER2
-format.add NAMES_LEFT $G
+format.add NAMES_LEFT $G Users on $1:
 format.add NAMES_MID
-format.add NAMES_NONOP $chr(32)$[9]1
-format.add NAMES_OP %c@%n$[9]1
+format.add NAMES_NONOP $1
+format.add NAMES_OP @$1
 format.add NAMES_RIGHT
-format.add NAMES_VOICE %m+%n$[9]1
+format.add NAMES_VOICE +$1
 
 
 /****** USER ALIASES ******/
@@ -110,7 +110,7 @@ alias names.main (chan default "$C", mode default "*", void)
 	{
 		/*
 		 * Create a temporary variable to store the names of the
-		 * variables we'll be using in the /fe below. This allows us
+		 * variables we'll be using in the /FE below. This allows us
 		 * to resize the number of columns in the output according to
 		 * the NAMES_COL config variable.
 		 */
@@ -136,7 +136,7 @@ alias names.main (chan default "$C", mode default "*", void)
 			{
 				/*
 				 * The call to $names.parse() doesn't actually
-				 * happen until the last line of the /fe block.
+				 * happen until the last line of the /FE code block
 				 */
 				eval push line \\\$names.parse\(\$chan \$nick[$cnt]\)
 

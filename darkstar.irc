@@ -7,7 +7,7 @@
  *
  *  DarkStar/EPIC4 by Brian Weiss <brian@epicsol.org>
  *
- *  For use with EPIC4-1.1.7 and higher.
+ *  For use with EPIC4-1.1.7 and up.
  *  See the 'README' file for general information.
  *  See the 'COPYRIGHT' file for licensing information.
  */
@@ -20,7 +20,7 @@ if (!epic() || V < 20020819)
 	xecho -b
 	xecho -b WARNING!
 	xecho -b
-	xecho -b This script pack is for use with EPIC4, version 1.1.7
+	xecho -b This script pack is for use with EPIC4, version 1.1.7 and up.
 	xecho -b Your client, $J, does not meet this requirement.
 	xecho -b Continue to use this script pack at your own risk.
 	xecho -b
@@ -60,13 +60,13 @@ for array in ($getarrays()) {
  * Important global variables
  */
 @ DS.VERSION = [0.2.7]
-@ DS.INTERNAL_VERSION = [20020828]
+@ DS.INTERNAL_VERSION = [20020906]
 
 /*
  * This will be incremented every time a change takes place in
  * the core scripts (this file and any .dsc files in core/).
  */
-@ DS.CORE_ID = 63
+@ DS.CORE_ID = 64
 
 
 eval xecho -b Loading DarkStar $DS.VERSION
@@ -188,15 +188,15 @@ config.add -b AUTO_LOAD_PROMPT 1
 config.add -b AUTO_SAVE_ON_UNLOAD 0
 config.add -b LOADMODULE_VERBOSE 0
 config.add -b SAVE_VERBOSE 0
-config.add    THEME darkstar
+config.add    THEME epic4
 
-format.add MODLIST_FOOTER %c奫컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴쾰%n
+format.add MODLIST_FOOTER -------------------------------------------------------
 format.add MODLIST_FOOTER1 $G Available modules: $numitems(modules), Loaded modules: $numitems(loaded_modules)
 format.add MODLIST_FOOTER2
-format.add MODLIST_HEADER %n  #   Module           Version    Size Loaded AutoLoad
-format.add MODLIST_HEADER1 %c邇컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴쿄%n
+format.add MODLIST_HEADER #   Module           Version    Size  Loaded Auto-Load
+format.add MODLIST_HEADER1 -------------------------------------------------------
 format.add MODLIST_HEADER2
-format.add MODLIST_MODULE %n  $[3]1 $[16]2 $[7]3 $[-7]4   ${[$5] ? [\[*\]] : [\[\ \]]}     ${[$6] ? [\[*\]] : [\[ \]]}
+format.add MODLIST_MODULE  $[3]1 $[16]2 $[7]3 $[-7]4    ${[$5] ? [\[*\]] : [\[\ \]]}     ${[$6] ? [\[*\]] : [\[ \]]}
 format.add SET $G Current value of $1 is $2-
 format.add SET_NOVALUE $G No value for $1 has been set
 
