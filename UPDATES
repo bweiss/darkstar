@@ -1,3 +1,7 @@
+*** News 2002/09/07 -- /SAVE now writes custom status file
+	The /SAVE alias provided by the core scripts (core/save.dsc) will
+	now write a "custom" status file to your user directory.
+
 *** News 2002/09/07 -- New theme: porphyria
 	Added a new theme called porphyria that is being contributed by
 	Daniel Shatter. It's a simple, single status theme with no high
