@@ -1,3 +1,8 @@
+*** News 2003/09/06 -- channel.dsm 0.8 - New alias: /ADDTOPIC
+	There is a new alias called /ADDTOPIC that allows you to add
+	a string of text to an existing topic separated by the value
+	of the new ADDTOPIC_DELIMETER config variable.
+
 *** News 2003/09/05 -- channel.dsm 0.7 - /[SET]OLDTOPIC renamed/improved
 	The /OLDTOPIC and /SETOLDTOPIC aliases have been renamed to
 	/SETTOPIC and /TOPICS. The channel module now keeps track of

@@ -5,6 +5,8 @@ Author: Brian Weiss <brian@epicsol.org>
    Lots of channel related features and formatting.
 
 Config Variables:
+   ADDTOPIC_DELIMETER           - Used by /ADDTOPIC for a delimeter between
+                                  old and new topics.
    AUTO_RESPONSE                - Boolean. Turns auto-response on/off.
    AUTO_RESPONSE_BEEP           - Boolean. If true, auto-response will beep
                                   when triggered.
@@ -57,6 +59,11 @@ Author: Brian Weiss <brian@epicsol.org>
                                   and when.
 
 Commands:
+   addtopic <text>
+     - Adds <text> to the end of the existing topic in the current channel
+       with the value of $CONFIG.ADDTOPIC_DELIMETER between the old and new
+       topics.
+ 
    alldeop <nick> ...
      - Set mode -o for <nick> on all channels that are common between you.
        * Aliases: alldop
@@ -97,8 +104,9 @@ Author: Brian Weiss <brian@epicsol.org>
        * Aliases: dvoice
 
    etopic
-     - Allows you to edit the current topic by placing it on the input
-       line preceded by "/topic".
+     - Allows you to edit the current topic by placing
+       "/topic <current topic>" on the input line so that it can be
+       modified and re-set.
        * Aliases: et tt ttopic
 
    invite <nick> [channel]

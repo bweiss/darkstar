@@ -1,4 +1,4 @@
-#version 0.7
+#version 0.8
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
@@ -11,7 +11,7 @@
 /****** CLEANUP QUEUE ******/
 
 queue cleanup.channel {
-	for alias in (alldeop alldop allop ban bankick banlist bans bk cmode cycle deop dop devoice dvoice et etopic i invite j join k kb key kick kickban l leave lk massmode mdeop mdop mdevoice mdvoice mme mop msay mvoice op part partall settopic t tban tempban topics tt ttopic unban unkey untopic voice wall wall2) {
+	for alias in (addtopic alldeop alldop allop ban bankick banlist bans bk cmode cycle deop dop devoice dvoice et etopic i invite j join k kb key kick kickban l leave lk massmode mdeop mdop mdevoice mdvoice mme mop msay mvoice op part partall settopic t tban tempban topics tt ttopic unban unkey untopic voice wall wall2) {
 		^alias -$alias
 	}
 	for hook in (332 333 367 368 369 action channel_nick channel_signoff channel_sync invite join kick leave mode public public_other send_public topic) {
@@ -26,6 +26,7 @@ queue cleanup.channel {
 
 /****** CONFIG/FORMAT VARIABLES ******/
 
+config.add    ADDTOPIC_DELIMETER ||
 config.add -b AUTO_RESPONSE 0
 config.add -b AUTO_RESPONSE_BEEP 0
 config.add -b AUTO_RESPONSE_NOTIFY 0
@@ -69,6 +70,44 @@ format.add TOPIC_UNSET $G $1 has changed the topic on channel $2 to
 
 
 /****** USER ALIASES ******/
+
+alias addtopic (newtopic) {
+	if (!newtopic) {
+		xecho -b Usage: /ADDTOPIC <text>
+		return
+	}
+	if (!C) {
+		xecho -b No current channel for this window
+		return
+	}
+	@ :serv = winserv()
+	@ :array = [channel.topics.$serv\.$C]
+	@ :topic = getitem($array ${numitems($array) - 1})
+	if (topic) {
+		//topic $C $topic $CONFIG.ADDTOPIC_DELIMETER $newtopic
+	} else {
+		@ CHANNEL.ADDTOPIC = newtopic
+		/* No topic set */
+		^on -331 "% $C *" {
+			//topic $1 $CHANNEL.ADDTOPIC
+			@ CHANNEL.ADDTOPIC = []
+			defer ^on 331 -"% $1 *"
+			defer ^on 332 -"% $1 *"
+			defer ^on 333 -"% $1 *"
+		}
+		/* The actual topic */
+		^on ^332 "% $C *" {
+			//topic $1 $2- $CONFIG.ADDTOPIC_DELIMETER $CHANNEL.ADDTOPIC
+			@ CHANNEL.ADDTOPIC = []
+			defer ^on 332 -"% $1 *"
+		}
+		/* Topic set by */
+		^on ^333 "% $C *" {
+			defer ^on 333 -"% $1 *"
+		}
+		//topic
+	}
+}
 
 alias alldop alldeop
 alias alldeop (nicks) {
@@ -844,6 +883,8 @@ on #-hook 428 "CONFIG REMEMBER_TOPICS *" {
 		}
 		xecho -b Value of REMEMBER_TOPICS set to $CONFIG.REMEMBER_TOPICS
 	}
+	/* Make sure that the size of all the channel topic arrays is no
+	 * greater than the new value of REMEMBER_TOPICS. */
 	for array in ($getarrays(channel.topics.*)) {
 		while (numitems($array) > CONFIG.REMEMBER_TOPICS) {
 			@ delitem($array 0)
