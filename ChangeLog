@@ -1,6 +1,13 @@
 Darkstar ChangeLog
 
 
+!! RELEASE: 0.2.2 (20020415) !!
+
+
+20020415
+
+ * Fixed a small bug in save.dsc involving a missing "if"
+
 20020410
 
  * [misc.dsm 0.3] New config variable: IGNORE_CTCP_FINGER. If true,

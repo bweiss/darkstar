@@ -9,32 +9,25 @@ See the bottom of this file for a list of contributors.
 
 ABOUT
 
-Darkstar is a modular script pack for EPIC4-1.1.x, aimed at being highly
-extensible and well written. It consists of two main parts.
-
-1. A set of core scripts which provides a module loader, config manager,
-help browser, some generally useful commands and functions, and a way to
-save settings.
-
-2. Various modules that add most of the features everyone is used to,
-including: an away system, advanced tab key completion, improved window
-management, nick completion, and other things to make the client comfortable.
-These modules are completely independent of each other (though dependencies
-are supported) and can be loaded or unloaded at any time. These modules
-are mostly made up of scripts that I was using before this project.
+Darkstar is a modular script pack for EPIC4, specifically versions 1.1
+and up. It is highly extensible and includes theme support, advanced tab
+completion, and a whole bunch of other goodies. The modular design offers
+many benefits (and a few drawbacks) and allows for a very high level of
+customization. These scripts are mostly geared towards advanced users and
+other programmers, though I do try to cater to the needs of everyone.
 
 This project is still under heavy development but should already be quite
-usable for most people. So far only the end-user stuff has been documented
+usable for most people. So far only the end-user stuff has been documented,
 but there are plans for more detailed documentation, explaining how to
 write your own modules, themes, and status bars. Until then, if you're
-interested in contributing (or just adding things for yourself), please
+interested in contributing (or just adding something for yourself), please
 don't hesitate to contact me.
 
 
 REQUIREMENTS
 
-Only EPIC4-1.1.2 or higher. This script pack will NOT work with EPIC4-1.0,
-you have been warned.
+Only EPIC4-1.1.x or higher. This script pack will NOT work with EPIC4-1.0.
+You have been warned.
 
 
 WHERE TO GET DARKSTAR AND EPIC4

@@ -81,7 +81,7 @@ alias save (args)
 	/* Save format settings (/FSET) */
 	switch ($save.save_formats($modules))
 	{
-		(0) {(CONFIG[VERBOSE_SAVE]) {xecho -b Format settings saved to [$DS.USER_DIR/themes/custom/]}}
+		(0) {if (CONFIG[VERBOSE_SAVE]) {xecho -b Format settings saved to [$DS.USER_DIR/themes/custom/]}}
 		(1) {xecho -b Error: Too few arguments passed to save_formats()}
 		(2) {xecho -b Error: Unable to write master theme file}
 		(3) {xecho -b Error: Unable to write one or more module themes}
