@@ -1,6 +1,12 @@
 Darkstar ChangeLog
 
 
+[0.0.9]
+
+ - Some speed improvements and general cleanup. Removed a bunch of $common()'s
+   which are quite expensive. (Thanks to Jeremy Nelson for pointing these out)
+
+
 [0.0.8]
 
  - [config.dsc/functions.dsc] Moved $fparse() and $setcat() from functions.dsc

@@ -6,7 +6,7 @@
  * HELP.DSC - Help system for Darkstar/EPIC4
  * Author: Brian Weiss <brian@got.net> - 2001
  *
- * Special thanks to WhiteDrgn for this code.
+ * This was originally written by whitefang. He deserves all credit.
  */
 
 alias dhelp (...)
@@ -20,13 +20,13 @@ alias dhelp (...)
 		timer 0
 		{
 			^on ^help ^"*"
-			$(K)$(K)help
+			//help
 			^on ^help -"*"
 		}
 	}
 			
-	$(K)$(K)help $*
-	$(K)$(K)help -wait
+	//help $*
+	//help -wait
 		
 	^set HELP_PATH $old_path
 }
