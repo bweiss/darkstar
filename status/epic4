@@ -3,6 +3,8 @@
  * Default status bar for EPIC4
  */
 
+assign -STATUS.DOUBLE
+
 set INPUT_PROMPT > 
 set REVERSE_STATUS_LINE ON
 set STATUS_AWAY  (Away)

@@ -1,6 +1,17 @@
 Darkstar ChangeLog
 
 
+3/13/02
+
+ * New important global variable: STATUS.DOUBLE - This should be made true
+   or false within the status files. It can be used by modules to determine
+   whether or not the current status bar wants to be double. Very helpful for
+   anything that creates new windows.
+
+ * [window.dsm v0.2] Fixed /WJ so that it does not affect the msg window.
+   Also added a hack to /WK to keep it from returning you to a full-screen
+   msg window after the current window is killed.
+
 3/8/02
 
  * /PURGE once again only removes assign structures. As such, I have added
