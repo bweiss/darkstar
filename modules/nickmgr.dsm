@@ -1,8 +1,8 @@
-# version:0.2.1 loader:pf
+# version:0.2.2 loader:pf
 # $Id$
 #
 # nickmgr.dsm - Nick management module for DarkStar/EPIC4
-# Copyright (c) 2003 Brian Weiss
+# Copyright (c) 2003, 2004 Brian Weiss
 # See the 'COPYRIGHT' file for more information.
 #
 # This script uses serial number 422 for all /ON hooks.
@@ -20,6 +20,10 @@ queue cleanup.nickmgr
 	^on #timer 422 -"*";
 
 	@ timerctl(DELETE nickmgr);
+
+	foreach NICKMGR.NICKCHANGE_PENDING xx {
+		^on #-raw_irc 422 -"$servernick($decode($xx))!% NICK *";
+	};
 };
 
 
@@ -30,6 +34,9 @@ addconfig    NICKMGR_IGNORE_TIMEOUT 900;
 addconfig    NICKMGR_NICKLIST;
 addconfig    NICKMGR_SCAN_INTERVAL 60;
 addconfig    NICKMGR_SCAN_TIMEOUT 900;
+
+
+assign NICKMGR.NICKCHANGE_TIMEOUT 60;
 
 
 alias nick (...)
@@ -152,7 +159,19 @@ alias nickmgr.nickchange (nick, serv default "$servernum()", void)
 	if (!nick || serv < 0 || !isconnected($serv) || nick == servernick($serv))
 		return;
 
+	# Make sure we don't send more than one request at a time to a server.
+	if (NICKMGR.NICKCHANGE_PENDING[$encode($serv)])
+		return;
+
 	xecho -b NICKMGR: Changing nick on $servername($serv) to $nick;
+	@ NICKMGR.NICKCHANGE_PENDING.$encode($serv) = [$nick $time()];
+
+	^on #-raw_irc 422 "$servernick($serv)!% NICK *"
+	{
+		@ NICKMGR.NICKCHANGE_PENDING.$encode($servernum()) = [];
+		^on #-raw_irc 422 -"$servernick()!% NICK *";
+	};
+
 	xeval -s $serv {
 		nick $nick;
 	};
@@ -164,7 +183,7 @@ alias nickmgr.nickchange (nick, serv default "$servernum()", void)
 # of the list, or 3) reaches a nick less desirable than our current nick.
 #
 # In an attempt to ensure that servers don't get flooded with ISON requests
-# due to lag, a global variable in the NICKMGR.SCAN structure will be
+# due to lag, a global variable in the NICKMGR.SCAN_PENDING structure will be
 # created containing a timestamp of when the scan began. While this variable
 # exists no scans will be allowed to take place for that server.
 #
@@ -181,9 +200,9 @@ alias nickmgr.scan (void)
 	{
 		if (serv > -1 && isconnected($serv))
 		{
-			if (!NICKMGR.SCAN[$encode(serv)])
+			if (!NICKMGR.SCAN_PENDING[$encode(serv)])
 			{
-				@ NICKMGR.SCAN.$encode($serv) = time();
+				@ NICKMGR.SCAN_PENDING.$encode($serv) = time();
 				for ii from 1 to $numwords($nlist)
 				{
 					@ :nick = word(${ii-1} $nlist);
@@ -200,7 +219,7 @@ alias nickmgr.scan (void)
 						};
 					};
 				};
-				^assign -NICKMGR.SCAN.$encode($serv);
+				^assign -NICKMGR.SCAN_PENDING.$encode($serv);
 			};
 		};
 	};
@@ -228,6 +247,7 @@ alias nickmgr.wantnick (nick, serv default "$servernum()", void)
 		};
 	};
 };
+
 
 on #-hook 422 "CONFIG NICKMGR_IGNORE_TIMEOUT *"
 {
@@ -313,12 +333,24 @@ on #-timer 422 "*"
 	if (!timerctl(REFNUM nickmgr))
 		nickmgr.add_timer;
 
-	foreach NICKMGR.SCAN serv
+	foreach NICKMGR.SCAN_PENDING xx
 	{
-		@ :ts = NICKMGR.SCAN[$encode($serv)];
-		@ :diff = time() - ts;
+		@ :diff = time() - NICKMGR.SCAN_PENDING[$xx];
+
 		if (diff > CONFIG.NICKMGR_SCAN_TIMEOUT) {
-			^assign -NICKMGR.SCAN.$encode($serv);
+			^assign -NICKMGR.SCAN_PENDING.$xx;
+		};
+	};
+
+	foreach NICKMGR.NICKCHANGE_PENDING xx
+	{
+		@ :diff = time() - NICKMGR.NICKCHANGE_PENDING[$xx];
+		@ :serv = decode($xx);
+
+		if (diff > NICKMGR.NICKCHANGE_TIMEOUT)
+		{
+			^on #-raw_irc 422 -"$servernick($serv)!% NICK *";
+			^assign -NICKMGR.NICKCHANGE_PENDING.$xx;
 		};
 	};
 };

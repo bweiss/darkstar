@@ -18,3 +18,7 @@ THE CHANGELOG SINCE THE LAST RELEASE:
   pesky bug that was causing certain settings to not get saved.
 * Change the way msg windows are named from msgs/serv:<#> to msgs/<#>
 * Fix missing semi-colons in /TIG alias.
+* Make sure to $encode() any server refnums that are being used in /ASSIGN
+  variable names.
+* Prevent nickmgr.nickchange from sending more than one request at a time
+  to a server.
