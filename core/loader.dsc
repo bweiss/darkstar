@@ -254,8 +254,12 @@ alias loader.load_module (module, void)
 			load $theme_file
 		}
 
-		/* Add module to loaded_modules array and exit. */
+		/* Add module to loaded_modules array. */
 		@ setitem(loaded_modules $numitems(loaded_modules) $module)
+
+		/* Hook the event so other modules can act on it. */
+		hook LOADMOD $module
+
 		return 0
 	}
 
@@ -317,8 +321,12 @@ alias loader.unload_module (module, void)
 		^assign -DSET.MODULES.$module
 		^assign -FSET.MODULES.$module
 			
-		/* Remove from loaded_modules array and exit. */
+		/* Remove from loaded_modules array. */
 		@ delitem(loaded_modules $item)
+
+		/* Hook event so other modules can act on it. */
+		hook UNLOADMOD $module
+
 		return 0
 	}
 

@@ -3,6 +3,10 @@ Darkstar ChangeLog
 
 2/17/02
 
+ * Loading and unloading modules now triggers a HOOK event so that other
+   modules can act on it. This was added mostly to allow other modules to
+   add completion rules when the tabkey module is loaded.
+
  * [tabkey.dsm] Rewrite. It should now be possible to add completion procedures
    that the completion rules will automatically be able to use. See the
    comments throughout the code for details.

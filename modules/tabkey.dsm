@@ -161,14 +161,14 @@ alias tabkey.complete (word, list)
 
 alias tabkey.display_rules (void)
 {
-	echo #   Pattern                      Routine    Word List
+	echo #   Pattern                    Procedure    Word List
 	for cnt from 0 to ${numitems(tabkey_rules) - 1}
 	{
 		@ :pattern = getitem(tabkey_rules $cnt)
-		@ :routine = word(0 $getitem(tabkey_rinfo $cnt))
+		@ :proc = word(0 $getitem(tabkey_rinfo $cnt))
 		@ :list = restw(1 $getitem(tabkey_rinfo $cnt))
 		@ :num = cnt + 1
-		echo $[3]num $[28]pattern $[10]routine ${list ? list : []}
+		echo $[3]num $[26]pattern $[12]proc ${list ? list : []}
 	}
 }
 
