@@ -1,4 +1,4 @@
-#version 0.6.8
+#version 0.6.9
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key module for DarkStar/EPIC4
@@ -217,15 +217,24 @@ alias tabkey.array_proc (array, void)
 alias tabkey.proc.assign (void)
 {
 	@:lastc = mid(${strlen($L) - 1} 1 $L)
-	unless (lastc == [ ]) {
+	unless (lastc == [ ])
+	{
 		@:lastw = word(${#L - 1} $L)
+
+		/* Deal with the removal of variables correctly. */
+		if (left(1 $lastw) == [-]) {
+			@:rm = 1
+			@:lastw = mid(1 $strlen($lastw) $lastw)
+		}
+
 		@:matches = pattern($lastw% $aliasctl(assign match $lastw))
+
 		if (#matches == 1) {
 			parsekey delete_to_previous_space
-			xtype -l $matches${[ ]}
+			xtype -l ${rm ? [-] : []}$matches${[ ]}
 		} else if (#matches > 1) {
 			parsekey delete_to_previous_space
-			xtype -l $prefix($matches)
+			xtype -l ${rm ? [-] : []}$prefix($matches)
 			tabkey.show_matches $matches
 		}
 	}
@@ -259,9 +268,10 @@ alias tabkey.proc.channel (list)
 
 alias tabkey.proc.command (void)
 {
-	if (strlen($L) == 1) {
+	if (strlen($L) == 1)
+	{
 		parsekey command_completion
-	} else {
+	}{
 		@:matches = getcommands($rest(1 $L)%)
 		if (!matches) {
 			@:matches = aliasctl(alias match $rest(1 $L))
@@ -317,8 +327,8 @@ alias tabkey.proc.generic (list)
 	}
 }
 
-alias tabkey.proc.lmods (void)	{tabkey.array_proc loaded_modules}
-alias tabkey.proc.mods (void)		{tabkey.array_proc modules}
+alias tabkey.proc.lmods (void) {tabkey.array_proc loaded_modules}
+alias tabkey.proc.mods  (void) {tabkey.array_proc modules}
 
 alias tabkey.proc.msg (void)
 {
@@ -382,29 +392,29 @@ alias tabkey.set_proc (type, void)
 	@:lastc = mid(${strlen($L) - 1} 1 $L)
 	unless (lastc == [ ])
 	{
+		@:lastw = word(${#L - 1} $L)
+
 		/* Deal with the removal of variables correctly. */
-		if (left(1 $word(1 $L)) == [-]) {
-			@:rmflag = 1
-			@:word1 = strip(- $word(1 $L))
-		}{
-			@:word1 = word(1 $L)
+		if (left(1 $lastw) == [-]) {
+			@:rm = 1
+			@:lastw = mid(1 $strlen($lastw) $lastw)
 		}
 		
 		if (tolower($type) == [set]) {
-			@:matches = getsets($word1%)
+			@:matches = getsets($lastw%)
 		} else {
 			^local matches
-			for var in ($aliasctl(assign match $type\.$word1)) {
+			for var in ($aliasctl(assign match $type\.$lastw)) {
 				push matches $after(1 . $var)
 			}
 		}
 		
 		if (#matches == 1) {
 			parsekey delete_to_previous_space
-			xtype -l ${rmflag ? [-] : []}$matches${[ ]}
+			xtype -l ${rm ? [-] : []}$matches${[ ]}
 		} else if (#matches > 1) {
 			parsekey delete_to_previous_space
-			xtype -l ${rmflag ? [-] : []}$prefix($matches)
+			xtype -l ${rm ? [-] : []}$prefix($matches)
 			tabkey.show_matches $matches
 		}
 	}

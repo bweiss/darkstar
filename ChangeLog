@@ -3,6 +3,9 @@ DarkStar ChangeLog
 
 2002/06/02
 
+ * [tabkey.dsm 0.6.9] The assign procedure should now handle the removal
+   of variables in the same way that the set procedure does.
+
  * [window.dsm 0.5.1] Windows created with new_hide were not having
    double turned on when STATUS.DOUBLE was true.
 
