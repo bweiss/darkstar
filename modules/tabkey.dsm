@@ -47,6 +47,10 @@ alias tabkey.process_tabkey (void)
 		{
 			switch ($rest(1 $L))
 			{
+				(%)
+				{
+					parsekey command_completion
+				}
 				(channel %)
 				(j %)
 				(join %)
