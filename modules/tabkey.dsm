@@ -430,22 +430,6 @@ alias tabkey.cmd.loadmod (...)
 	@ function_return = tabkey.nofallback($tabkey.method.array(_modules $*));
 };
 
-alias tabkey.cmd.mhelp (...)
-{
-	bless;
-	if (curword == 1)
-	{
-		@ function_return = tabkey.nofallback($tabkey.method.array(_modules $*));
-	}
-	else if (curword == 2)
-	{
-		foreach -$word(1 $L)._help topic {
-			@ push(:topics $tolower($topic));
-		};
-		@ function_return = tabkey.nofallback($topics);
-	};
-};
-
 alias tabkey.cmd.mode (...)
 {
 	bless;

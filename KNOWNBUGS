@@ -1,0 +1,9 @@
+DarkStar Projects, Bugs, and other Errata:
+
+KNOWN ERRATA (eg, bugs, or unresolved requests):
+------------------------------------------------
+<none>
+
+THE CHANGELOG SINCE THE LAST RELEASE:
+-------------------------------------
+* Remove takbkey.cmd.mhelp; /MHELP was removed in a previous commit.
