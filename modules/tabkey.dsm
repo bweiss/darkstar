@@ -1,4 +1,4 @@
-#version 0.3.4
+#version 0.3.5
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -69,7 +69,7 @@
 #   functions should be as simple as possible.
 #
 # NOTE:  The "first argument" description above is no longer true.  The
-#        fucntions argument list is to be treated as a single argument.
+#        functions argument list is to be treated as a single argument.
 #
 
 queue cleanup.tabkey {
@@ -89,6 +89,8 @@ config.add    TABKEY_NICKCOMP_SUFFIX ,
 bind ^I parse_command tabkey.main
 
 alias tabkey.main {
+	@ :oxd = xdebug(extractw)
+	xdebug extractw
 	@ :curword = indextoword($curpos() $L )
 	@ :wordind = wordtoindex($curword $L)
 	if (32 >= (127 & ascii($mid(${curpos() - 1} 1 $L )))) {
@@ -126,10 +128,11 @@ alias tabkey.main {
 		@ TABKEY.LASTWORD = word
 	} elsif (#matches && strlen($word) <= strlen($prefix)) {
 		@ :prefix = 0 > index("$chr($jot(32 1))" $prefix) ? prefix : ["$prefix"]
-		@ :line = mid(0 $wordind $L) ## [$prefix${1 < #matches ? [] : [ ]}]
+		@ :line = mid(0 $wordind $L)
 		parsekey erase_line
-		xtype -l $line
+		xtype -l $line$prefix${1 < #matches ? [] : [ ]}
 	}
+	xdebug $oxd
 }
 
 alias tabkey.addnicktohist (server, nick, void) {
