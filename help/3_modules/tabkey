@@ -14,13 +14,13 @@ Author: Brian Weiss <brian@epicsol.org>
                               to it.
 
 Commands:
-   tabkey addrule <pattern> <procedure> [word list]
+   tabkey addrule <pattern> <procedure> [extra arguments]
      - Adds a new completion rule that calls <procedure> when completing
-       anything that matches <pattern>. The [word list] argument is
-       optional and is used to pass extra words to a completion procedure.
-       It is important to be aware that the word list is evaluated before
-       being processed by the procedure. It is also very important that
-       both the <pattern> and [word list] arguments are quoted.
+       anything that matches <pattern>. The [extra arguments] are usually
+       optional and are given as the arguments to the procedure being
+       executed. It is important to be aware that the word list is evaluated
+       before being processed by the procedure. It is also very important
+       that both the <pattern> and [extra arguments] are quoted.
 
    tabkey clear
      - Clears the msg history. This replaces the old /cleartab alias.
