@@ -6,7 +6,7 @@
  * CONFIG.DSC - Configuration manager for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/25/01 (bmw)
+ * Last modified: 12/21/01 (bmw)
  */
 
 alias conf dset
@@ -91,7 +91,7 @@ alias set_routine (type, variable, value)
 			/*
 			 * If variable name is preceded by a "-" empty its value.
 			 * Otherwise, if a new value is supplied by the user, set
-			 * this to the variables new value and we're done. 
+			 * this to the variable's new value and we're done. 
 			 * If no new value is specified, output the variable's
 			 * current value.
 			 */
@@ -99,6 +99,11 @@ alias set_routine (type, variable, value)
 			{
 				^assign -$var
 				xecho -s -b Value of $toupper($var2) set to <EMPTY>
+
+				if (toupper($type) == [DSET])
+				{
+					hook CONFIG $var2
+				}
 			} \
 			elsif (value != [])
 			{
@@ -109,6 +114,11 @@ alias set_routine (type, variable, value)
 				}{
 					^assign $var $value
 					xecho -s -b Value of $toupper($var2) set to $value
+				}
+
+				if (toupper($type) == [DSET])
+				{
+					hook CONFIG $var2 $value
 				}
 			}{
 				@ setcat($var)

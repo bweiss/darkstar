@@ -6,7 +6,9 @@
  * THEMES.DSC - Theme support for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/22/01 (bmw)
+ * Last modified: 12/21/01 (bmw)
+ *
+ * This script uses serial number 1 for ALL /on hooks.
  */
 
 /*
@@ -23,8 +25,8 @@ alias theme (theme, void)
 	{
 		switch ($theme.change($theme))
 		{
-			(0) {xecho -b Error: Theme not found.}
-			(1) {xecho -b Now using theme: $DS.THEME}
+			(0) {xecho -b Now using theme: $DS.THEME}
+			(*) {xecho -b Error: Theme not found.}
 		}
 	}{
 		if (DS.THEME) xecho -b Current theme: $DS.THEME
@@ -42,16 +44,16 @@ alias theme (theme, void)
 			{
 				switch ($theme.change($getitem(themes ${[$0] - 1})))
 				{
-					(0) {xecho -b Error: Theme not found.}
-					(1) {xecho -b Now using theme: $DS.THEME}
+					(0) {xecho -b Now using theme: $DS.THEME}
+					(*) {xecho -b Error: Theme not found.}
 				}
 			} \
 			elsif (finditem(themes $0) > -1)
 			{
 				switch ($theme.change($0))
 				{
-					(0) {xecho -b Error: Theme not found.}
-					(1) {xecho -b Now using theme: $DS.THEME}
+					(0) {xecho -b Now using theme: $DS.THEME}
+					(*) {xecho -b Error: Theme not found.}
 				}
 			}{
 				xecho -b Error: Invalid theme.
@@ -111,11 +113,30 @@ alias theme.change (theme, void)
 		{
 			//load $file
 			^assign DS.THEME $theme
-			return 1
+			^assign CONFIG.THEME $theme
+			return 0
 		}
 	}
 
-	return 0
+	return 1
+}
+
+
+/*
+ * Change themes on /DSET THEME.
+ */
+on #-hook 1 "CONFIG THEME %"
+{
+	if ([$2] != DS[THEME])
+	{
+		/* If our theme change fails, set THEME back to previous value. */
+		if (theme.change($CONFIG.THEME))
+		{
+			xecho -b Invalid theme.
+			xecho -b Value of THEME set back to $DS.THEME
+			dset THEME $DS.THEME
+		}
+	}
 }
 
 

@@ -6,7 +6,7 @@
  * LOADER.DSC - Module loader for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/20/01 (bmw)
+ * Last modified: 12/21/01 (bmw)
  */
 
 
@@ -429,12 +429,12 @@ if (CONFIG[AUTO_LOAD_MODULES])
 					}
 					xecho -b Auto-Load completed [$strftime(%c)]
 
-					theme $CONFIG.DEFAULT_THEME
+					theme $CONFIG.THEME
 				}
 
 				(N)
 				{
-					theme $CONFIG.DEFAULT_THEME
+					theme $CONFIG.THEME
 				}
 
 				(*)
@@ -450,7 +450,7 @@ if (CONFIG[AUTO_LOAD_MODULES])
 					}
 					xecho -b Load complete [$strftime(%c)]
 
-					theme $CONFIG.DEFAULT_THEME
+					theme $CONFIG.THEME
 				}
 			}
 
@@ -471,7 +471,7 @@ if (CONFIG[AUTO_LOAD_MODULES])
 		}
 		xecho -b Auto-Load completed [$strftime(%c)]
 
-		theme $CONFIG.DEFAULT_THEME
+		theme $CONFIG.THEME
 	}
 	
 	/*

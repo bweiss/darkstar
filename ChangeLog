@@ -1,6 +1,19 @@
 Darkstar ChangeLog
 
 
+12/21/01
+
+ * The config script (config.dsc) will now hook any changes to config (not
+   format) variables to the "hook" /on hook. The arguments it receives are
+   as follows: CONFIG <variable name> <new value>
+
+   This is mostly useful to module writers as they can now have code executed
+   when a specific config variable is modified. If a variable has been
+   removed (/dset -var) then no <new value> argument will be present.
+
+ * The DEFAULT_THEME config variable has been renamed to THEME and will now
+   change the theme if set to a valid theme name. See above.
+
 12/20/01
 
  * Various cleanups in loader.dsc and save.dsc.

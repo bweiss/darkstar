@@ -1,12 +1,12 @@
 README file for Darkstar/EPIC4
 Author: Brian Weiss <brian@epicsol.org>
 
-Last modification: 12/3/01
+Last modification: 12/20/01
 
 
 ABOUT
 
-Darkstar is a modular script written for use with EPIC4, specifically,
+Darkstar is a modular script pack written for use with EPIC4, specifically,
 version 1.1.2 and up. It is intended mostly for advanced users that wish to
 take the time to customize their client. The core script itself is quite
 small and provides everything necessary to load/unload modules, configure
@@ -71,13 +71,7 @@ putting them in a shell startup script. (~/.bash_profile, ~/.profile,
 Nothing else is required to begin using Darkstar. However, I would recommend
 having a look at sample.dsrc in the main directory. This file will be loaded
 by default if DARKSTAR_RC is not set. If you're going to make changes to this
-file, I would recommend moving it out of the Darkstar home directory so that
-it does not get overwritten during upgrades. (If you move this file, you
-must make DARKSTAR_RC point to its new location or it will continue to load
-sample.dsrc).
 
-*NOTE* The save directory should also be somewhere outside of Darkstar's main
-directory to avoid it being overwritten during upgrades.
 
 At this point you can just type /load /path/to/darkstar/darkstar.irc to
 begin using the script. The available modules will be displayed and you
@@ -85,7 +79,7 @@ will be prompted about which ones to load. Just pushing enter will load all
 modules on the Auto-Load list (/dset AUTO_LOAD_MODULES).
 
 If you would like to load Darkstar automatically on client startup, you can
-place the following code in ~/.ircrc ...
+place the following code in ~/.ircrc (or ~/.epicrc if epic4-1.1)
 
   if (epic() && !bitchx())
   {
@@ -94,8 +88,8 @@ place the following code in ~/.ircrc ...
 
 Once the script is loaded you can use /dhelp for further assistance.
 
-That's it! I hope you enjoy my script and please feel free to contact me with
-bug reports, code, or suggestions.
+That's it! I hope you enjoy my script and please feel free to send me any
+feedback you might have.
 
 
 FILES
@@ -122,7 +116,7 @@ themes/*.dst		- Theme files. These change cosmetic aspects of the
 
 
 I would like to briefly thank the following people for contributing in some
-way to this script:
+way to this script pack:
 
 	Jeremy Nelson
 	Colten Edwards
