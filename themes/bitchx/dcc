@@ -1,7 +1,7 @@
 /* $Id$ */
 
 assign FORMAT.DCC_CHAT %K[%G$1%K\(%gdcc%K\)]%n $2-
-assign FORMAT.SEND_DCC_CHAT [$Z] %K[%rdcc%K\(%R$1%K\)]%n $2-
+assign FORMAT.SEND_DCC_CHAT %K[%rdcc%K\(%R$1%K\)]%n $2-
 
 
 /* EOF */
