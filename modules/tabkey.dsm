@@ -1,4 +1,4 @@
-#version 0.1
+#version 0.2
 /*     _             _        _
  *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
  * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
@@ -7,12 +7,12 @@
  * TABKEY.DSM - Tab key module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/20/02 (bmw)
+ * Last modified: 1/21/02 (bmw)
  *
  * This script uses serial number 420 for all /on hooks.
  */
 
-queue cleanup.tabkey
+queue cleanup.newtabkey
 {
 	^on #msg 420 -"*"
 	^on #send_msg 420 -"*"
@@ -20,8 +20,10 @@ queue cleanup.tabkey
 	^on #send_dcc_chat 420 -"*"
 	^on #dcc_connect 420 -"% CHAT *"
 
-	^cleartab
 	^alias -cleartab
+
+	@ delarray(tabkey_rules)
+	@ delarray(tabkey_rinfo)
 
 	^bind ^I toggle_insert_mode
 }
@@ -49,72 +51,99 @@ alias cleartab (void)
 }
 
 
+/*
+ * tabkey.addrule <pattern> <routine> [word list]
+ *
+ * Adds a new completion rule. Both <pattern> and [word list] MUST be double
+ * quoted or things will break.
+ *
+ * Routines that take word lists:         channel, nick
+ * Routines that do NOT take word lists:  command, config, file, format,
+ *                                        lmods, mods, msg
+ *
+ * Example: tabkey.addrule "/foo *" channel "$mychannels()"
+ */
+alias tabkey.addrule (...)
+{
+	@ :pattern = word(0 $*)
+	@ :routine = word(1 $*)
+	@ :list = word(2 $*)
+
+	if (!pattern || !routine)
+	{
+		tabkey.addrule: Not enough arguments
+		return
+	}
+
+	if (match($routine channel nick))
+	{
+		if (!list)
+		{
+			xecho -b tabkey.addrule: Routine [$routine] requires a word list
+			return
+		}
+		@ setitem(tabkey_rules $numitems(tabkey_rules) $pattern)
+		@ setitem(tabkey_rinfo $numitems(tabkey_rinfo) $routine $list)
+	} \
+	elsif (match($routine command config file format lmods mods msg))
+	{
+		@ setitem(tabkey_rules $numitems(tabkey_rules) $pattern)
+		@ setitem(tabkey_rinfo $numitems(tabkey_rinfo) $routine)
+	}{
+		xecho -b tabkey.addrule: Invalid completion routine [$routine]
+	}
+}
+
+alias tabkey.display_rules (void)
+{
+	echo #   Pattern                      Routine    Word List
+	for cnt from 0 to ${numitems(tabkey_rules) - 1}
+	{
+		@ :pattern = getitem(tabkey_rules $cnt)
+		^assign pattern \"$pattern\"
+		@ :routine = word(0 $getitem(tabkey_rinfo $cnt))
+		@ :list = restw(1 $getitem(tabkey_rinfo $cnt))
+		@ :num = cnt + 1
+		echo $[3]num $[28]pattern $[10]routine ${list ? [\"$list\"] : []}
+	}
+}
+
 alias tabkey.process_tabkey (void)
 {
-	if (L)
+	if (!L)
 	{
-		@ :lastw = word(${numwords($L) - 1} $L)
+		/*
+		 * This is the only hardcoded routine. An unfortunate side effect
+		 * of "*" matching nothing.
+		 */
+		@ tabkey.msg_routine()
+	}{
+		@ :item = rmatchitem(tabkey_rules $L)
 
-		if (left(1 $lastw) == [#])
+		if (item > -1)
 		{
-			@ tabkey.channel_routine()
-		} \
-		elsif (index($left(1 $L) $K) > -1)
-		{
-			switch ($rest(1 $L))
+			@ :tmp = getitem(tabkey_rinfo $item)
+			@ :routine = word(0 $tmp)
+			eval ^local list $restw(1 $tmp)
+
+			switch ($tolower($routine))
 			{
-				(%)
-				{
-					parsekey command_completion
-				}
-
-				(channel %) (j %) (join %) (l %) (leave %) (mode %) (part %)
-				{
-					@ tabkey.channel_routine()
-				}			
-
-				(dcc send % %) (exec *) (less %) (load %)
-				{
-					@ tabkey.file_routine()
-				}
-
-				(loadmod *)
-				{
-					@ tabkey.module_routine(modules)
-				}
-
-				(reloadmod *) (save *) (unloadmod *)
-				{
-					@ tabkey.module_routine(loaded_modules)
-				}
-
-				(m % *) (msg % *)
-				{
-					@ tabkey.msg_routine()
-				}
-
-				(config %) (dset %)
-				{
-					@ tabkey.set_routine(CONFIG)
-				}
-
-				(fset %)
-				{
-					@ tabkey.set_routine(FORMAT)
-				}
-
-				(*)
-				{
-					@ tabkey.nick_routine()
+				(channel) {@ tabkey.channel_routine($list)}
+				(command) {parsekey command_completion}
+				(config) {@ tabkey.set_routine(CONFIG)}
+				(file) {@ tabkey.file_routine()}
+				(format) {@ tabkey.set_routine(FORMAT)}
+				(lmods) {@ tabkey.module_routine(loaded_modules)}
+				(mods) {@ tabkey.module_routine(modules)}
+				(msg) {@ tabkey.msg_routine()}
+				(nick) {@ tabkey.nick_routine($list)}
+				(*) {
+					xecho -b Illegal completion routine specified [$routine]
 				}
 			}
-		}{
-			@ tabkey.nick_routine()
 		}
-	}{
-		@ tabkey.msg_routine()
 	}
-}	
+}
 	
 alias tabkey.add_nick (nick, void)
 {
@@ -134,15 +163,22 @@ alias tabkey.add_nick (nick, void)
 	return
 }
 
-alias tabkey.channel_routine (void)
+alias tabkey.channel_routine (list)
 {
 	@ :lastc = mid(${strlen($L) - 1} 1 $L)
 	
-	unless (lastc == [ ])
+	if (lastc == [ ])
 	{
+		if (#list == 1)
+		{
+			@ :space = [ ]
+			parsekey delete_to_previous_space
+			xtype -l $list$space
+		}
+	}{
 		@ :lastw = word(${#L - 1} $L)
 		@ lastw = sar(g/\\/\\\\\/$lastw)
-		@ :findchan = pattern($lastw% $mychannels())
+		@ :findchan = pattern($lastw% $list)
 		
 		if (match($lastw $findchan))
 		{
@@ -153,7 +189,6 @@ alias tabkey.channel_routine (void)
 		if (#findchan == 1)
 		{
 			@ :space = [ ]
-			
 			parsekey delete_to_previous_space
 			xtype -l $findchan$space
 		} \
@@ -283,15 +318,22 @@ alias tabkey.msg_routine (void)
 	return
 }
 
-alias tabkey.nick_routine (void)
+alias tabkey.nick_routine (list)
 {
 	@ :lastc = mid(${strlen($L) - 1} 1 $L)
 	
-	unless (lastc == [ ])
+	if (lastc == [ ])
 	{
+		if (#list == 1)
+		{
+			@ :space = [ ]
+			parsekey delete_to_previous_space
+			xtype -l $list$space
+		}
+	}{
 		@ :lastw = word(${#L - 1} $L)
 		@ lastw = sar(g/\\/\\\\\/$lastw)
-		@ :findnick = pattern($lastw% $remw($: $onchannel()) $:)
+		@ :findnick = pattern($lastw% $list)
 
 		if (match($word(1 $L) $findnick))
 		{
@@ -387,6 +429,7 @@ alias tabkey.set_routine (type, void)
 	return
 }
 
+
 for hook in (msg send_msg)
 { 
 	on #^$hook 420 "*"
@@ -407,6 +450,36 @@ on #^dcc_connect 420 "% CHAT *"
 {
 	@ tabkey.add_nick(=$0)
 }
+
+
+/*
+ * Setup default completion rules.
+ */
+tabkey.addrule "*"                  nick        "$remw($: $onchannel()) $:"
+tabkey.addrule "*#%"                channel     "$mychannels()"
+tabkey.addrule "/%"                 command
+tabkey.addrule "/config %"          config
+tabkey.addrule "/dset %"            config
+tabkey.addrule "/format %"          format
+tabkey.addrule "/fset %"            format
+tabkey.addrule "/loadmod *"         mods
+tabkey.addrule "/reloadmod *"       lmods
+tabkey.addrule "/save *"            lmods
+tabkey.addrule "/unloadmod *"       lmods
+tabkey.addrule "/dcc send % %"      file
+tabkey.addrule "/less *"            file
+tabkey.addrule "/load *"            file
+tabkey.addrule "/exec *"            file
+tabkey.addrule "/msg %"             nick        "$remw($: $onchannel()) $:"
+tabkey.addrule "/m %"               nick        "$remw($: $onchannel()) $:"
+tabkey.addrule "/msg % *"           msg
+tabkey.addrule "/m % *"             msg
+tabkey.addrule "/channel *"         channel     "$mychannels()"
+tabkey.addrule "/join *"            channel     "$mychannels()"
+tabkey.addrule "/j *"               channel     "$mychannels()"
+tabkey.addrule "/leave *"           channel     "$mychannels()"
+tabkey.addrule "/part *"            channel     "$mychannels()"
+tabkey.addrule "/mode %"            channel     "$mychannels()"
 
 
 /* bmw '01 */

@@ -6,7 +6,7 @@
  * FUNCTIONS.DSC - Some useful functions for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/15/02 (bmw)
+ * Last modified: 1/21/02 (bmw)
  *
  * If you have any functions you feel are useful enough to be in this file,
  * feel free to email me.

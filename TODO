@@ -15,11 +15,3 @@
 * Auto-join
 
 * XDCC module (fserve would be better)
-
-* Tabkey completion:
-  <wd> i.e. for ctcp you might have 'a.completion.add(ctcp %[,]c,N %'ping,
-       version,time,utc,userinfo,clientinfo')
-  <wd> will complete the second argument of ctcp using the list of current
-       channels and current known nicknames, which can be comma separated
-  <wd> er, s/second/first
-  <wd> and the second argument based on that list of commands

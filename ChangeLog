@@ -1,6 +1,13 @@
 Darkstar ChangeLog
 
 
+1/21/02
+
+ * [tabkey.dsm] Rewritten to support dynamic completion rules. What this means
+   is that you can now change the behavior of this module without reloading it.
+   Still needs an easy user interface for addition/removal of rules and it
+   definitely needs to be optimized (still a lot of duplicate code).
+
 1/20/02
 
  * Added support for modules versions. If the first line of a module matches
