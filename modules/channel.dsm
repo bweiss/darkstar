@@ -33,44 +33,6 @@ addconfig REMEMBER_TOPICS 5;
 bind ^X switch_channels;
 
 
-alias channel._help (void)
-{
-	echo channel.dsm $modinfo(channel v);
-	echo Copyright (c) 2002, 2003 Brian Weiss;
-	echo Provides a bunch of channel related aliases and enhancements.;
-};
-
-alias channel._help.config (void)
-{
-	echo Config variables \($(K)DSET\):;
-	echo;
-	echo Name: ADDTOPIC_DELIMETER;
-	echo Value: string;
-	echo This is the string that will separate the old topic from the new topic set by /ADDTOPIC.;
-	echo;
-	echo Name: BANTYPE;
-	echo Value: integer representing a $mask() type;
-	echo This controls how the various ban aliases generate a hostmask. See mask(6) in the EPIC help files for details.;
-	echo;
-	echo Name: CHANNEL_WALL_TYPE;
-	echo Value: 1, 2, or 3;
-	echo Controls the method used for sending channel wallops.;
-    echo  1 - Send a single NOTICE to @<channel>;
-	echo  2 - Send separate NOTICEs to all +o users according to MAXTARGETS (005);
-	echo  3 - Send separate NOTICEs to all +o users one at a time;
-	echo Type 3 should only be used when the first two methods fail to work.;
-	echo;
-	echo Name: DEFAULT_KICK_REASON;
-	echo Value: string;
-	echo Used as the reason for a kick whenever the user does not specify one.;
-	echo;
-	echo Name: REMEMBER_TOPICS;
-	echo Value: integer;
-	echo Number of topics to remember for each channel. If the value is 0, no topics will be stored.;
-	echo;
-};
-
-
 alias addtopic (newtopic)
 {
 	if (!newtopic) {
