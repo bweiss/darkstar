@@ -1,10 +1,30 @@
 Darkstar ChangeLog
 
 
+3/4/02
+
+ * HEADS UP: Some important commands have been renamed for clarity. Changes
+   are as follows:
+	loader.dependency -> module.dep
+	loader.load_saved_settings -> module.load_saved_settings
+
+ * The contents of the modinfo array will now be displayed with /DINFO.
+   Info lines can be added via the module.info command and removed with
+   module.rminfo. Please see the comments in loader.dsc for information
+   on how to use these commands.
+
+ * [keepnick.dsm v0.2] Fixed a bug that would cause getnick to be deactivated
+   when your current nick matched CONFIG.KEEPNICK_NICK but CONFIG.KEEPNICK
+   was false. Also added a getnick related module info line.
+
+ * [tabkey.dsm v0.6] Added a completion procedure and rule for themes. Also
+   added a module info line related to completion rules.
+
 3/2/02
 
- * [channel.dsm v0.2.3] CHANNEL_TS didn't include the numerical representation
-   of the day of the month. Oops. The themes have been updated accordingly.
+ * [channel.dsm v0.2.3] CONFIG.CHANNEL_TS didn't include the numerical
+   representation of the day of the month. Oops. The themes have been updated
+   accordingly.
 
 2/28/02
 

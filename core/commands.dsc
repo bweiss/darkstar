@@ -16,12 +16,23 @@ alias dinfo (void)
 	echo $G $divider
 	xecho -b ircII $J \($V\) [$info(i)] - PID: $pid()  PPID: $ppid()
 	xecho -b $info(c)
-	xecho -b Client Uptime: $tdiff2(${time() - F})
+	xecho -b Client Uptime: $tdiff(${time() - F})
 	echo $G $divider
 	xecho -b Darkstar $DS.VERSION \($DS.INTERNAL_VERSION\) [$DS.COMMIT_ID]
 	xecho -b Available modules: $numitems(modules), Loaded modules: $numitems(loaded_modules)
 	xecho -b Current theme: $DS.THEME, Current statusbar: $DS.SBAR
 	echo $G $divider
+
+	if (numitems(modinfo))
+	{
+		for cnt from 0 to ${numitems(modinfo) - 1}
+		{
+			@ :iline = getitem(modinfo $cnt)
+			eval xecho -b [\$word\(0 \$iline\)] $restw(1 $iline)
+		}
+
+		echo $G $divider
+	}
 }
 
 #
@@ -116,7 +127,7 @@ alias sv (whom default "$C", void)
 alias uptime (void)
 {
 	xecho -b ircII $J $uname() - $CLIENT_INFORMATION
-	xecho -b Client Uptime: $tdiff2(${time() - F})
+	xecho -b Client Uptime: $tdiff(${time() - F})
 }
 
 

@@ -79,6 +79,12 @@ alias modlist (void)
 
 alias reloadmod (modules)
 {
+	if (!modules)
+	{
+		xecho -b Usage: /reloadmod <module> [module] ...
+		return
+	}
+
 	for module in ($modules)
 	{
 		unloadmod $module
@@ -150,50 +156,6 @@ alias loader.build_modlist (void)
 }
 
 /*
- * Handle module dependencies. This is meant to be called directly from
- * within modules.
- */
-alias loader.dependency (depmods)
-{
-	@ :module = LOADER.PENDING_MODULE
-
-	if (!depmods)
-	{
-		echo loader.dependency: Not enough arguments \(Module: $module\)
-		return
-	}
-
-	for depmod in ($depmods)
-	{
-		if (finditem(loaded_modules $depmod) < 0)
-		{
-			if (finditem(modules $depmod) > -1)
-			{
-				if (CONFIG[AUTO_LOAD_DEPENDENCIES])
-				{
-					xecho -b Module [$module] depends on [$depmod]. Auto-loading...
-					loadmod $depmod
-				}{
-					^local tmp $"Module [$module] depends on [$depmod] - Load it now? [Yn] "
-					if (tmp == [])
-					{
-						^assign tmp Y
-					}
-
-					switch ($toupper($left(1 $tmp)))
-					{
-						(Y) {loadmod $depmod}
-						(*) {xecho -b Skipping dependency [$depmod]. Module may not work properly.}
-					}
-				}
-			}{
-				xecho -b Warning: Unable to load dependency. Module [$depmod] not found.
-			}
-		}
-	}
-}
-
-/*
  * Loads a module including theme and saved settings. Returns 0 on success,
  * and > 0 on failure.
  */
@@ -256,21 +218,6 @@ alias loader.load_module (module, void)
 }
 
 /*
- * This allows modules to force saved settings to be loaded before the module
- * is finished loading. Very useful for events happening at module load time
- * that depend on certain config settings.
- */
-alias loader.load_saved_settings (void)
-{
-	@ :module = LOADER.PENDING_MODULE
-	@ :save_file = DS[SAVE_DIR] ## [/] ## module ## [.sav]
-	if (fexist($save_file) == 1)
-	{
-		^load $save_file
-	}
-}
-
-/*
  * Unloads a module and cleans up after it. Returns 0 on success,
  * and > 0 on failure.
  */
@@ -324,6 +271,9 @@ alias loader.unload_module (module, void)
 		^assign -DSET.MODULES.$module
 		^assign -FSET.MODULES.$module
 			
+		/* Remove any info lines for this module. */
+		module.rminfo $module
+
 		/* Remove from loaded_modules array. */
 		@ delitem(loaded_modules $item)
 
@@ -382,6 +332,133 @@ alias loader.which_mods (array, args)
 }
 
 
+/*
+ * Commands intended for use by modules but not necessarily limited to that
+ * (loader.unload_mod calls module.rminfo).
+ */
+
+/*
+ * Handle module dependencies. This is meant to be called at module load time.
+ */
+alias module.dep (depmods)
+{
+	@ :module = LOADER.PENDING_MODULE
+
+	if (!module)
+	{
+		echo module.dep: This command must be called at module load time
+		return
+	}
+
+	if (!depmods)
+	{
+		echo module.dep: Not enough arguments \(Module: $module\)
+		return
+	}
+
+	for depmod in ($depmods)
+	{
+		if (finditem(loaded_modules $depmod) < 0)
+		{
+			if (finditem(modules $depmod) > -1)
+			{
+				if (CONFIG[AUTO_LOAD_DEPENDENCIES])
+				{
+					xecho -b Module [$module] depends on [$depmod]. Auto-loading...
+					loadmod $depmod
+				}{
+					^local tmp $"Module [$module] depends on [$depmod] - Load it now? [Yn] "
+					if (tmp == [])
+					{
+						^assign tmp Y
+					}
+
+					switch ($toupper($left(1 $tmp)))
+					{
+						(Y) {loadmod $depmod}
+						(*) {xecho -b Skipping dependency [$depmod]. Module may not work properly.}
+					}
+				}
+			}{
+				xecho -b Warning: Unable to load dependency. Module [$depmod] not found.
+			}
+		}
+	}
+}
+
+/*
+ * Addes a module info line for display with /DINFO. If this is not called
+ * during the loading of a module, the first argument needs to be the name
+ * of the module it belongs to.
+ * 
+ * Warning: Whatever is passed to this will be evaluated when /DINFO is
+ *          executed, but not until then. Please be wary of this.
+ */
+alias module.info (args)
+{
+	if (LOADER[PENDING_MODULE])
+	{
+		@ :module = LOADER.PENDING_MODULE
+		@ :iline = args
+	}{
+		@ :module = word(0 $args)
+		@ :iline = restw(1 $args)
+	}
+
+	if (module && iline)
+	{
+		@ setitem(modinfo $numitems(modinfo) $module $iline)
+	}
+}
+
+/*
+ * This allows modules to force saved settings to be loaded before the module
+ * is finished loading. Very useful for events happening at module load time
+ * that depend on certain config settings.
+ */
+alias module.load_saved_settings (void)
+{
+	@ :module = LOADER.PENDING_MODULE
+	if (module)
+	{
+		@ :save_file = DS[SAVE_DIR] ## [/] ## module ## [.sav]
+		if (fexist($save_file) == 1)
+		{
+			^load $save_file
+		}
+	}
+}
+
+/*
+ * Remove all info lines for a specific module.
+ */
+alias module.rminfo (module)
+{
+	if (!module)
+	{
+		return
+	}
+
+	^local rm
+	for cnt from 0 to ${numitems(modinfo) - 1}
+	{
+		@ :iline = getitem(modinfo $cnt)
+		if (module == word(0 $iline))
+		{
+			@ push(rm $cnt)
+		}
+	}
+
+	for tmp in ($reverse($rm))
+	{
+		@ delitem(modinfo $tmp)
+	}
+}
+
+
+/*
+ * Load some modules at startup, if desired.
+ */
 if (CONFIG[AUTO_LOAD_PROMPT])
 {
 	^local mods,modules

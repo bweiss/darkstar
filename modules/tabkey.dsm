@@ -1,4 +1,4 @@
-#version 0.5.4
+#version 0.6
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key module for Darkstar/EPIC4
@@ -26,8 +26,11 @@ queue cleanup.tabkey
 	^bind ^I toggle_insert_mode
 }
 
+
 config.add TABKEY_NICK_HISTORY 6
 config.add TABKEY_NICKCOMP_SUFFIX ,
+
+module.info Completion rules: $numitems(tabkey_rules)
 
 
 bind ^I parse_command tabkey.process_tabkey
@@ -170,9 +173,40 @@ alias tabkey.process_tabkey (void)
 /*
  * COMPLETION PROCEDURES
  * These will be called by tabkey.process_tabkey when a matching completion
- * rule is found. Where possible, they should use tabkey.complete to do
- * most of the work.
+ * rule is found. In order to be recognized as a valid completion procedure
+ * (in rules) they must be in the tabkey.proc structure. Anything not in this
+ * structure is being called by something that is.
  */
+
+alias tabkey.array_proc (array, void)
+{
+	^local items
+	for cnt from 0 to ${numitems($array) - 1}
+	{
+		@ push(items $getitem($array $cnt))
+	}
+
+	@ :lastc = mid(${strlen($L) - 1} 1 $L)
+	if (lastc == [ ])
+	{
+		@ :matches = items
+	}{
+		@ :lastw = word(${#L - 1} $L)
+		@ :matches = pattern($lastw% $items)
+	}
+
+	if (#matches == 1)
+	{
+		parsekey delete_to_previous_space
+		xtype -l $matches${[ ]}
+	}\
+	else if (#matches > 1)
+	{
+		parsekey delete_to_previous_space
+		xtype -l $prefix($matches)
+		tabkey.show_matches $matches
+	}
+}
 
 alias tabkey.proc.channel (list)
 {
@@ -256,42 +290,12 @@ alias tabkey.proc.file (void)
 
 alias tabkey.proc.lmods (void)
 {
-	tabkey.module_proc loaded_modules
+	tabkey.array_proc loaded_modules
 }
 
 alias tabkey.proc.mods (void)
 {
-	tabkey.module_proc modules
-}
-
-alias tabkey.module_proc (array, void)
-{
-	^local modules
-	for cnt from 0 to ${numitems($array) - 1}
-	{
-		@ push(modules $getitem($array $cnt))
-	}
-
-	@ :lastc = mid(${strlen($L) - 1} 1 $L)
-	if (lastc == [ ])
-	{
-		@ :matches = modules
-	}{
-		@ :lastw = word(${#L - 1} $L)
-		@ :matches = pattern($lastw% $modules)
-	}
-
-	if (#matches == 1)
-	{
-		parsekey delete_to_previous_space
-		xtype -l $matches${[ ]}
-	}\
-	else if (#matches > 1)
-	{
-		parsekey delete_to_previous_space
-		xtype -l $prefix($matches)
-		tabkey.show_matches $matches
-	}
+	tabkey.array_proc modules
 }
 
 alias tabkey.proc.msg (void)
@@ -410,6 +414,11 @@ alias tabkey.set_proc (type, void)
 	}
 }
 
+alias tabkey.proc.theme (void)
+{
+	tabkey.array_proc themes
+}
+
 
 /*
  * Add the nicks of people you are chatting with to the msg history.
@@ -440,6 +449,11 @@ on #^dcc_connect 420 "% CHAT *"
  * DEFAULT COMPLETION RULES
  * I will add a user interface to add/remove these in the near future.
  *
+ * Warning: Currently spaces are ignored here but tabs are not. If you use
+ * tabs for readability your completion procedure will be rejected.
+ */
+
+/*
  * We have to add rule 0 manually because $word() sees "" as a missing
  * argument and fails. This rule is also exempt from tabkey.addrule's
  * duplicate rule check since $matchitem() matches "" and "*".
@@ -459,6 +473,7 @@ tabkey.addrule "/set %"             set
 tabkey.addrule "/loadmod *"         mods
 tabkey.addrule "/reloadmod *"       lmods
 tabkey.addrule "/save *"            lmods
+tabkey.addrule "/theme *"           theme
 tabkey.addrule "/unloadmod *"       lmods
 tabkey.addrule "/dcc send % %"      file
 tabkey.addrule "/less *"            file
