@@ -6,7 +6,7 @@
  * CHANNEL.DSM - Channel related stuff for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/24/01 (bmw)
+ * Last modified: 1/8/02 (bmw)
  *
  * This script uses serial numbers 0 and 424 for all ON hooks.
  */
@@ -23,6 +23,7 @@ queue cleanup.channel
 	
 	^on public -'% % *\\\\\[\${CONFIG[AUTO_RESPONSE_STR]}\\\\\]*'
 	^on public_other -'% % *\\\\\[\${CONFIG[AUTO_RESPONSE_STR]}\\\\\]*'
+	^on send_action -'\\\\\[#* &* +*\\\\\] *'
 
 	for hook in (332 333 367 368 369 action channel_signoff channel_sync join leave mode public public_other send_public topic)
 	{
@@ -86,18 +87,38 @@ alias allop (nicks)
 	}
 }
 
-alias ban (what, void)
+alias ban (targets)
 {
-	if (what && ischanop($N $C))
+	^local bans,mode
+
+	if (!targets)
 	{
-		if (onchannel($what $C))
-		{
-			//mode $C +b $mask($CONFIG.BANTYPE $userhost($what))
-		}{
-			//mode $C +b $what
-		}
-	}{
 		xecho -b Usage: /ban <nick|ban>
+		return
+	}
+
+	for target in ($targets)
+	{
+		if (ischanop($N $C))
+		{
+			if (onchannel($target $C))
+			{
+				push bans $mask($CONFIG.BANTYPE $userhost($target))
+			}{
+				push bans $target
+			}
+		}
+	}
+
+	fe ($bans) b1 b2 b3 b4
+	{
+		^local mode +
+		for ban in ($b1 $b2 $b3 $b4)
+		{
+			if (ban) @ mode = mode ## [b]
+		}
+
+		//mode $C $mode $b1 $b2 $b3 $b4
 	}
 }
 
@@ -125,9 +146,10 @@ alias cmode (mode, ...)
 
 alias cycle (chan default "$C", void)
 {
-	@ :key = key()
-	quote part $chan
-	quote join $chan $key
+	@ :key = key($chan)
+	//part $chan
+	wait
+	//join $chan $key
 }
 
 alias deop (nicks)
@@ -362,7 +384,6 @@ alias setoldtopic (chan default "$C", void)
 alias tban (chan default "$C", void)
 {
 	@ delarray(tban)
-	@ TBAN.CHAN = chan
 
 	^on #^367 424 "% $chan *"
 	{
@@ -371,35 +392,46 @@ alias tban (chan default "$C", void)
 
 	^on #^368 424 "% % $chan"
 	{
-		input "Which ban(s) to remove? (1, 2-5, ...) " if ([$0])
-		{
-			for bannum in ($*)
-			{
-				@ :startban = before(- $bannum)
-				@ :endban = after(- $bannum)
+		^local bans,tmp
+		^local chan $2
 
-				if (startban < endban && startban < numitems(tban) && endban <= numitems(tban))
+		while (!tmp)
+		{
+			^assign tmp $"Which ban(s) to remove? (1, 2-5, ...) "
+			if (tmp == []) break
+		}
+
+		for bannum in ($tmp)
+		{
+			@ :startban = before(- $bannum)
+			@ :endban = after(- $bannum)
+
+			if (startban < endban && startban < numitems(tban) && endban <= numitems(tban))
+			{
+				for cnt from $startban to $endban
 				{
-					for cnt from $startban to $endban
-					{
-						@ :item = cnt - 1
-						@ :ban = getitem(tban $item)
-						//mode $word(1 $ban) -b $word(2 $ban)
-					}
-				}{
-					if ([$0] <= numitems(tban))
-					{
-						@ :item = bannum - 1
-						@ :ban = getitem(tban $item)
-						//mode $word(1 $ban) -b $word(2 $ban)
-					}
+					push bans $word(2 $getitem(tban ${cnt - 1}))
 				}
+			} \
+			elsif (bannum <= numitems(tban))
+			{
+				push bans $word(2 $getitem(tban ${bannum - 1}))
 			}
 		}
 
-		^on #^367 424 -"% $TBAN.CHAN *"
-		^on #^368 424 -"% % $TBAN.CHAN"
-		^assign -TBAN.CHAN
+		fe ($bans) b1 b2 b3 b4
+		{
+			^local mode -
+			for ban in ($b1 $b2 $b3 $b4)
+			{
+				if (ban) @ mode = mode ## [b]
+			}
+
+			//mode $chan $mode $b1 $b2 $b3 $b4
+		}
+
+		^on #^367 424 -"% $chan *"
+		^on #^368 424 -"% % $chan"
 	}
 
 	//mode $chan +b

@@ -6,7 +6,7 @@
  * LOADER.DSC - Module loader for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/1/02 (bmw)
+ * Last modified: 1/2/02 (bmw)
  */
 
 
@@ -146,7 +146,6 @@ alias loader.dependency (module, depmods)
 					loadmod $depmod
 				}{
 					^local tmp
-
 					while (!tmp)
 					{
 						^assign tmp $"$INPUT_PROMPT Module [$module] depends on [$depmod] - Load it now? [Yn] "
@@ -174,8 +173,7 @@ alias loader.dependency (module, depmods)
 alias loader.display_loaded (void)
 {
 	echo #   Module
-	@ :endcnt = numitems(loaded_modules) - 1
-	for cnt from 0 to $endcnt
+	for cnt from 0 to ${numitems(loaded_modules) - 1}
 	{
 		@ :num = cnt + 1
 		echo $[3]num $getitem(loaded_modules $cnt)
@@ -187,8 +185,7 @@ alias loader.display_loaded (void)
 alias loader.display_modlist (void)
 {
 	echo #   Module                     Size (bytes)  Loaded  Auto-Load
-	@ :endcnt = numitems(modules) - 1
-	for cnt from 0 to $endcnt
+	for cnt from 0 to ${numitems(modules) - 1}
 	{
 		@ :num = cnt + 1
 		@ :file = getitem(module_files $cnt)

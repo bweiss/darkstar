@@ -1,6 +1,22 @@
 Darkstar ChangeLog
 
 
+1/8/02
+
+ * Fixed some cleanup issues in both misc.dsm and channel.dsm
+
+ * [channel.dsm] /ban can now take multiple arguments, and both /ban and
+   /tban will send the bans 4 at a time to the server.
+
+ * [misc.dsm] New format variable: WHOIS_IDENTIFIED. The dancer ircd sends
+   a 320 numeric for nicks that are identified with services. Hopefully
+   other ircds don't use a different numeric.
+
+1/4/02
+
+ * [channel.dsm, autocycle.dsm] No longer using /quote to part/join channels.
+   This should stop that referential integrity error from showing.
+
 1/1/02
 
  * Added dependency support to the module loader. The list of a module's
