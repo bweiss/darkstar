@@ -2,6 +2,11 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://darkstar.epicsol.org/UPDATES
 
 
+*** News 2003/10/23 -- nickmgr 0.1 and keepnick no mo'
+	Ahhh... At last we are rid of the cursed keepnick module.
+	To replace it I have written a nick management module that
+	should be a vast improvement. See ds:nickmgr(3) for details.
+
 *** News 2003/09/21 -- misc.dsm 1.0 - New format variable: SIGNOFF
 	There is a new format variable named SIGNOFF that will format the
 	output of signoff messages. This variable will not be used if the

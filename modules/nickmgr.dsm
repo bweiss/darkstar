@@ -58,6 +58,10 @@ alias nick (...) {
 	//nick $*
 }
 
+alias nickscan (void) {
+	nickmgr.scan
+}
+
 
 /****** INTERNAL ALIASES ******/
 

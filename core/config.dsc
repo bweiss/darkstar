@@ -185,7 +185,7 @@ alias config.add_variable (type, ...) {
  * Add all the config and format variables that are part of the core.
  */
 config.add -b AUTO_LOAD_DEPENDENCIES 1
-config.add    AUTO_LOAD_MODULES away channel dcc keepnick misc names nickcomp relay tabkey window
+config.add    AUTO_LOAD_MODULES away channel dcc misc names nickmgr nickcomp relay tabkey window
 config.add -b AUTO_LOAD_PROMPT 1
 config.add -b AUTO_SAVE_ON_UNLOAD 0
 config.add -b LOADMODULE_VERBOSE 0
