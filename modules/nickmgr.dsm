@@ -1,4 +1,4 @@
-# version:0.2.2 loader:pf
+# version:0.2.3 loader:pf
 # $Id$
 #
 # nickmgr.dsm - Nick management module for DarkStar/EPIC4
@@ -96,6 +96,7 @@ alias nickscan (...)
 
 alias nickmgr.add_timer (void)
 {
+	@ timerctl(DELETE nickmgr);
 	timer -ref nickmgr -rep -1 -win -1 $CONFIG.NICKMGR_SCAN_INTERVAL nickmgr.scan;
 };
 

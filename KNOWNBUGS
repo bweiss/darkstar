@@ -19,3 +19,5 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Fix _set so that it sends the correct args to the *_HEADER/*_FOOTER formats
   according to type.
 * Fix /TOPICS so that it numbers the list of topics correctly.
+* Always delete the 'nickmgr' timer in nickmgr.add_timer before creating a
+  new timer.
