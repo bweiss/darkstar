@@ -1,4 +1,4 @@
-#version 0.3.1
+#version 0.4
 /* $Id$ */
 /*
  * oper.dsm - IRC Operator module for DarkStar/EPIC4
@@ -12,23 +12,32 @@
 
 queue cleanup.oper
 {
+	^alias -challenge
 	^alias -operview
 	^alias -operwall
+
 	^on #381 427 -"*"
+	^on 386 -"*"
+	^on #connect 427 -"*"
 	^on #hook 427 -"CONFIG OPERVIEW *"
 	^on #hook 427 -"CONFIG OPERVIEW_HIDDEN *"
 	^on #hook 427 -"CONFIG OPERVIEW_LEVEL *"
 	^on #hook 427 -"CONFIG OPERVIEW_SIZE *"
+	^on #hook 427 -"LOADMOD tabkey"
+	^on #timer 427 -"*"
 	^on wallop -"*"
 	^on #window_create 427 -"*"
 	^on #window_kill 427 -"*"
 	^on #window_kill 427 -"operview"
+
 	oper.operview.destroy
 }
 
 
 /****** CONFIG/FORMAT VARIABLES ******/
 
+config.add -b AUTO_CHALLENGE 0
+config.add    CHALLENGE_RSA_RESPOND
 config.add    OPER_UMODES wzsky
 config.add -b OPERVIEW 0
 config.add -b OPERVIEW_HIDDEN 0
@@ -48,6 +57,114 @@ module.load_saved_settings
 
 
 /****** USER ALIASES ******/
+
+/*
+ * /CHALLENGE -add <server> <nick> <key>
+ * /CHALLENGE -del <server>
+ * /CHALLENGE -list
+ * /CHALLENGE [nick]
+ */
+alias challenge (...)
+{
+	switch ($0)
+	{
+		(-a) (-add)
+		{
+			@ :servname = [$1]
+			@ :nick     = [$2]
+			@ :key      = [$3]
+
+			if (!key)
+			{
+				xecho -b Usage: /CHALLENGE -add <server> <nick> <key>
+				return
+			}
+
+			if ((:item = matchitem(oper.challenge $servname *)) > -1)
+			{
+				^local ask $'There is already an entry for $servname. Overwrite? '
+				if (ask == [y])
+				{
+					@ setitem(oper.challenge $item $servname $nick $key)
+					xecho -b Challenge added for $servname
+					oper.write_clist
+				}
+			}{
+				@ setitem(oper.challenge $numitems(oper.challenge) $servname $nick $key)
+				xecho -b Challenge added for $servname
+				oper.write_clist
+			}
+
+		}
+
+		(-d) (-del) (-delete)
+		{
+			@ :servname = [$1]
+			if ((:item = matchitem(oper.challenge $servname *)) > -1)
+			{
+				@ delitem(oper.challenge $item)
+				xecho -b Deleted $servname from challenge list
+				oper.write_clist
+			}{
+				xecho -b Server $servname is not on the challenge list
+			}
+		}
+
+		(-l) (-list)
+		{
+			if (numitems(oper.challenge))
+			{
+				xecho -b Challenge list:
+				echo Server                     Nick         Key
+				for cnt from 1 to $numitems(oper.challenge)
+				{
+					@ :tmp  = getitem(oper.challenge ${cnt-1})
+					@ :serv = word(0 $tmp)
+					@ :nick = word(1 $tmp)
+					@ :key  = word(2 $tmp)
+					echo $[26]serv $[12]nick $key
+				}
+			}{
+				xecho -b There are no entries in the challenge list
+			}
+		}
+
+		(*)
+		{
+			@ :nick = [$0]
+
+			if (fexist($CONFIG.CHALLENGE_RSA_RESPOND) == -1)
+			{
+				xecho -b -s Invalid rsa respond path. Aborting challenge.
+				return
+			}
+
+			if ((:item = matchitem(oper.challenge $servername() *)) > -1)
+			{
+				stack push on 386
+				^on ^386 "*"
+				{
+					@ :item = matchitem(oper.challenge $0 *)
+					@ :tmp = getitem(oper.challenge $item)
+					@ :key = word(2 $tmp)
+					@ :resp = pipe($CONFIG.CHALLENGE_RSA_RESPOND $key $1)
+					if (resp) {
+						quote challenge +$resp
+					} else {
+						xecho -b -s No response returned. Challenge for $servername() failed.
+					}
+					stack pop on 386
+				}
+
+				quote challenge $0
+			}{
+				xecho -b -s No entry for $servername() in the challenge list
+				xecho -b -s You can add entries with: /CHALLENGE -add <server> <nick> <key>
+				xecho -b -s For a manual challenge/response use /QUOTE CHALLENGE
+			}
+		}
+	}
+}
 
 alias operview (...)
 {
@@ -69,6 +186,49 @@ alias operwall (text)
 
 
 /****** INTERNAL ALIASES ******/
+
+alias oper.add_tabcomp (void)
+{
+	^alias tabkey.cmd.challenge (...)
+	{
+		bless
+		if (curword == 1)
+		{
+			@ :tmp = [-ADD -DELETE -LIST]
+			push tmp $tabkey.method.nick($*)
+			@ function_return = pattern("$word*" $tmp)
+		}\
+		else if (curword == 2)
+		{
+			^local servernames
+			if (match($word(1 $L) -a -add))
+			{
+				for serv in ($serverrefs())
+				{
+					if (serv > -1 && (:servname = servername($serv)) != [<none>]) {
+						push servernames $servname
+					}
+				}
+			}\
+			else if (match($word(1 $L) -d -del -delete))
+			{
+				for cnt from 1 to $numitems(oper.challenge) {
+					push servernames $word(0 $getitem(oper.challenge ${cnt-1}))
+				}
+			}{
+				/* Disable completion */
+				@ :servernames = [ ]
+			}
+			@ function_return = servernames
+		}\
+		else if (curword == 4)
+		{
+			@ function_return = tabkey.method.file($*)
+		}{
+			@ function_return = tabkey.method.nick($*)
+		}
+	}
+}
 
 alias oper.operview.create (void)
 {
@@ -149,12 +309,62 @@ alias oper.operview.destroy (void)
 	}
 }
 
+alias oper.read_clist (file default "$DS.USER_DIR/challenge.sav", void)
+{
+	if (fexist($file) == 1)
+	{
+		@ delarray(oper.challenge)
+		@ :fd = open($file R)
+		while (!eof($fd))
+		{
+			if ((:line = read($fd))) {
+				@ setitem(oper.challenge $numitems(oper.challenge) $line)
+			}
+		}
+		@ close($fd)
+	}
+}
+
+alias oper.write_clist (file default "$DS.USER_DIR/challenge.sav", void)
+{
+	@ unlink($file)
+
+	if ((:fd = open($file W)) == -1)
+	{
+		echo Error: oper.write_clist: Unable to write to $file
+		return
+	}
+
+	for cnt from 1 to $numitems(oper.challenge)
+	{
+		@ :item = cnt - 1
+		@ write($fd $getitem(oper.challenge $item))
+	}
+
+	@ close($fd)
+}
+
 
 /****** ON HOOKS ******/
 
 on #^381 427 "*"
 {
 	//mode $servernick() $CONFIG.OPER_UMODES
+}
+
+on #-connect 427 "*"
+{
+	if (CONFIG.AUTO_CHALLENGE)
+	{
+		@ :servname = [$2]
+		@ :item = matchitem(oper.challenge $servname *)
+		if (item > -1)
+		{
+			@ :nick = word(1 $getitem(oper.challenge $item))
+			xecho -b Sending challenge for $nick to $servname
+			xeval -s $servernum() -- challenge $nick
+		}
+	}
 }
 
 on #-hook 427 "CONFIG OPERVIEW *"
@@ -221,6 +431,32 @@ on #-hook 427 "CONFIG OPERVIEW_SIZE *"
 	}
 }
 
+on #-hook 427 "LOADMOD tabkey"
+{
+	oper.add_tabcomp
+}
+
+on #-timer 427 "*"
+{
+	if (CONFIG.AUTO_CHALLENGE)
+	{
+		for serv in ($serverrefs())
+		{
+			@ :servname = servername($serv)
+			@ :item = matchitem(oper.challenge $servname *)
+			if (serv > -1 && item > -1)
+			{
+				if (!pass(oO $usermode($serv)))
+				{
+					@ :nick = word(1 $getitem(oper.challenge $item))
+					xecho -b Sending challenge for $nick to $servername($serv)
+					xeval -s $serv -- challenge $nick
+				}
+			}
+		}
+	}
+}
+
 on ^wallop "*"
 {
 	if (FORMAT.WALLOP) {
@@ -248,9 +484,15 @@ on #-window_kill 427 "operview"
 
 /****** STARTUP ******/
 
+if (isloaded(tabkey)) {
+	oper.add_tabcomp
+}
+
 if (CONFIG.OPERVIEW) {
 	oper.operview.create
 }
+
+oper.read_clist
 
 
 /* EOF */
