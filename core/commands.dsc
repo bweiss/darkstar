@@ -106,7 +106,7 @@ alias sv (whom default "$C", void)
 alias uptime (void)
 {
 	xecho -b ircII $J $uname() - $CLIENT_INFORMATION
-	xecho -b Client Uptime: $tdiff(${time() - F})
+	xecho -b Client Uptime: $tdiff2(${time() - F})
 }
 
 

@@ -1,6 +1,13 @@
 Darkstar ChangeLog
 
 
+1/13/02
+
+ * HEADS UP: Major changes to the way config and format variables are added
+   by modules. All of the .def files (along with def/) have been removed in
+   favor of the modules adding the variables themselves via /config.add and
+   /format.add. See the included modules for examples.
+
 1/11/02
 
  * [autocycle.dsm] Had a misnamed local variable that was causing auto-cycle

@@ -8,7 +8,7 @@
  * Author: shade <shade@chemlab.org> - 1999
  *         Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/16/01 (bmw)
+ * Last modified: 1/13/02 (bmw)
  *
  * Most of this was taken from the nick completion module that shade wrote
  * for my BitchX/EPIC4 script called playdough. He deserves most of the
@@ -19,6 +19,12 @@ queue cleanup.nickcomp
 {
 	^on input -"%: *"
 }
+
+config.add -b NICK_COMPLETION 1
+config.add    NICK_COMPLETION_CHAR :
+
+format.add NICK_COMPLETION $1: $2-
+
 
 alias nickcomp.getnick
 {

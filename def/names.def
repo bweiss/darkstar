@@ -1,4 +1,0 @@
-format NAMES_FOOTER 
-format NAMES_HEADER $G Users on $1: \(total/$2 - ops/$3 normal/$4\)
-format NAMES_OP %c@%n
-format NAMES_VOICE %m+%n

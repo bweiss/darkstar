@@ -1,5 +1,7 @@
 * DOCUMENTATION
 
+* status.dsc and themes.dsc are very similar and should probably be combined.
+
 * [misc.dsm] Fix /wall
 
 * Relay module (/relm, /reln, etc)

@@ -6,7 +6,7 @@
  * LOADER.DSC - Module loader for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/9/02 (bmw)
+ * Last modified: 1/13/02 (bmw)
  */
 
 
@@ -106,11 +106,13 @@ alias loader.build_modlist (void)
 	return
 }
 
-alias loader.dependency (module, depmods)
+alias loader.dependency (depmods)
 {
-	if (!module || !depmods)
+	@ :module = LOADER.PENDING_MODULE
+
+	if (!depmods)
 	{
-		echo loader.dependency(): Not enough arguments.
+		echo loader.dependency: Not enough arguments \(Module: $module\)
 		return
 	}
 
@@ -139,8 +141,6 @@ alias loader.dependency (module, depmods)
 			}
 		}
 	}
-
-	return
 }
 
 alias loader.display_loaded (void)
@@ -177,21 +177,21 @@ alias loader.display_modlist (void)
 
 alias loader.load_module (module, void)
 {
-	/* Make sure there are modules available */
 	if (!numitems(modules))
 	{
+		/* No modules found. */
 		return 1
 	}
 
-	/* Remove the extension if necessary */
+	/* Remove the extension if necessary. */
 	if (before(-1 . $module))
 	{
 		@ module = before(-1 . $module)
 	}
 
-	/* Make sure module isn't already loaded */
 	if (finditem(loaded_modules $module) > -1)
 	{
+		/* Module already loaded. */
 		return 2
 	}
 
@@ -200,119 +200,58 @@ alias loader.load_module (module, void)
 	if (item > -1)
 	{
 		@ :file = getitem(module_files $item)
-		@ :dir = before(-1 / $before(-1 / $file))
-		^local defaults_file $dir/def/$module\.def
 		^local save_file $DS.SAVE_DIR/$module\.sav
+		@ :theme_file = getitem(theme_files $finditem(themes $DS.THEME)) ## module
 
-		if (fexist($defaults_file) == 1)
-		{
-			/* Read default settings and setup the needed variables
-			   for the modular dset/fset */
-			@ :fd = open($defaults_file R)
-			
-			while (!eof($fd))
-			{
-				@ :line = read($fd)
-				@ :type = word(0 $line)
-				@ :variable = word(1 $line)
-				@ :value = restw(2 $line)
+		/* Load the actual module. */
+		^assign LOADER.PENDING_MODULE $module
+		load $file
+		^assign -LOADER.PENDING_MODULE
 
-				switch ($type)
-				{
-					(dep)
-					{
-						@ loader.dependency($module $restw(1 $line))
-					}
-
-					(dset)
-					(config)
-					{
-						if (word(1 $line) == [bool])
-						{
-							@ variable = word(2 $line)
-							@ value = restw(3 $line)
-
-							^assign DSET.BOOL.$variable 1
-						}
-
-						if (aliasctl(assign get DSET.CONFIG.$variable))
-						{
-							xecho -b loader.load_module(): Duplicate config variable: $variable
-						}{
-							@ push(DSET.MODULES.$module $variable)
-							^assign DSET.CONFIG.$variable 1
-							^assign CONFIG.$variable $value
-						}
-					}
-
-					(fset)
-					(format)
-					{
-						if (aliasctl(assign get FSET.FORMAT.$variable))
-						{
-							xecho -b loader.load_module(): Duplicate format variable: $variable
-						}{
-							@ push(FSET.MODULES.$module $variable)
-							^assign FSET.FORMAT.$variable 1
-							^assign FORMAT.$variable $value
-						}
-					}
-
-					(*) { # Do nothing. }
-				}
-			}
-		}
-			
-		@ close($fd)
-					
-		/* Load saved settings */
+		/* Load the save file. */
 		if (fexist($save_file) == 1)
 		{
 			load $save_file
 		}
 
-		/* Load the bugger */
-		load $file
-		@ setitem(loaded_modules $numitems(loaded_modules) $module)
-
-		/* Load theme file for this module */
-		@ :t_file = getitem(theme_files $finditem(themes $DS.THEME)) ## module
-		if (fexist($t_file) == 1)
+		/* Load the theme file for this module. */
+		if (fexist($theme_file) == 1)
 		{
-			load $t_file
+			load $theme_file
 		}
 
+		/* Add module to loaded_modules array and exit. */
+		@ setitem(loaded_modules $numitems(loaded_modules) $module)
 		return 0
 	}
 
-	/* No such module */
+	/* No such module. */
 	return 3
 }
 
 
 alias loader.unload_module (module, void)
 {
-	/* Make sure we have modules loaded */
 	if (!numitems(loaded_modules))
 	{
+		/* No modules are loaded. */
 		return 1
 	}
 
-	/* Remove the extension if necessary */
+	/* Remove the extension if necessary. */
 	if (before(-1 . $module))
 	{
 		@ module = before(-1 . $module)
 	}
 
 	@ :item = finditem(loaded_modules $module)
-
 	if (item > -1)
 	{
-		/* Execute cleanup queue for module */
+		/* Execute cleanup queue for module. */
 		queue -do cleanup.$module
 
 		/* Get rid of any global aliases/variables obviously
-		   related to this module */
+		   related to this module. */
 		for alias in ($aliasctl(alias match $module\.))
 		{
 			^alias -$alias
@@ -323,7 +262,7 @@ alias loader.unload_module (module, void)
 			^assign -$var
 		}
 
-		/* Remove all config and format variables */
+		/* Remove all config and format variables. */
 		for var in ($DSET.MODULES[$module])
 		{
 			^assign -CONFIG.$var
@@ -340,13 +279,12 @@ alias loader.unload_module (module, void)
 		^assign -DSET.MODULES.$module
 		^assign -FSET.MODULES.$module
 			
-		/* Remove from loaded_modules array */
+		/* Remove from loaded_modules array and exit. */
 		@ delitem(loaded_modules $item)
-
 		return 0
 	}
 
-	/* Module is not loaded */
+	/* Module is not loaded. */
 	return 2
 }
 
@@ -396,7 +334,7 @@ if (CONFIG[AUTO_LOAD_PROMPT])
 {
 	^local mods,modules
 
-	/* Keep things quiet while we list available modules */
+	/* Keep things quiet while we list available modules. */
 	for hook in (250 251 252 254 255 265 266)
 	{
 		^on ^$hook ^"*"
@@ -405,10 +343,10 @@ if (CONFIG[AUTO_LOAD_PROMPT])
 	^stack push set SUPPRESS_SERVER_MOTD
 	^set SUPPRESS_SERVER_MOTD ON
 
-	/* Prompt user */
+	/* Prompt user. */
 	modlist
 	^assign mods $"Modules to load? ([A]uto / [N]one / 1 2-4 ...) [A] "
-	if (mods == []) ^assign mods A
+	if (mods == []) {^assign mods A}
 
 	switch ($toupper($mods))
 	{
@@ -417,7 +355,7 @@ if (CONFIG[AUTO_LOAD_PROMPT])
 		(*) {@ modules = loader.which_mods(modules $mods)}
 	}
 	
-	/* Cleanup after ourselves */
+	/* Cleanup after ourselves. */
 	wait -cmd for hook in (250 251 252 254 255 265 266)
 	{
 		^on ^$hook -"*"
@@ -425,7 +363,7 @@ if (CONFIG[AUTO_LOAD_PROMPT])
 
 	^stack pop set SUPPRESS_SERVER_MOTD
 
-	/* Load the modules */
+	/* Load the modules. */
 	if (modules)
 	{
 		loadmod $modules

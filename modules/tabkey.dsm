@@ -6,7 +6,7 @@
  * TABKEY.DSM - Tab key module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/28/01 (bmw)
+ * Last modified: 1/13/02 (bmw)
  *
  * This script uses serial number 420 for all ON hooks.
  */
@@ -24,6 +24,9 @@ queue cleanup.tabkey
 
 	^bind ^I toggle_insert_mode
 }
+
+config.add TABKEY_NICK_HISTORY 6
+config.add TABKEY_NICKCOMP_SUFFIX :
 
 
 bind ^I parse_command tabkey.process_tabkey

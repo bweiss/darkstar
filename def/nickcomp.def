@@ -1,4 +1,0 @@
-config bool NICK_COMPLETION 1
-config      NICK_COMPLETION_CHAR :
-
-format      NICK_COMPLETION $1: $2-

@@ -6,7 +6,7 @@
  * OPER.DSM - IRC Operator module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/31/01 (bmw)
+ * Last modified: 1/13/02 (bmw)
  *
  * This script uses serial number 427 for all ON hooks.
  */
@@ -16,6 +16,9 @@ queue cleanup.oper
 	^alias -operwall
 	^on #381 427 -"*"
 }
+
+config.add OPER_UMODES wzsky
+
 
 alias operwall (text)
 {

@@ -1,8 +1,0 @@
-config bool AUTO_AWAY 1
-config      AUTO_AWAY_TIME 1200
-config bool AUTO_UNSET_AWAY 0
-config bool AWAY_LOG 1
-config      AWAY_LOGFILE ~/.darkstar/away.log
-config bool PUBLIC_AWAY 0
-config      PUBLIC_AWAY_CHANNELS 
-config bool SEND_AWAY_NOTICE 1

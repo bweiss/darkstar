@@ -6,7 +6,7 @@
  * AWAY.DSM - Away module for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/22/01 (bmw)
+ * Last modified: 1/13/02 (bmw)
  *
  * This script uses serial number 421 for all ON hooks.
  */
@@ -28,6 +28,16 @@ queue cleanup.away
 
 	@ delarray(sent_away)
 }
+
+
+config.add -b AUTO_AWAY 1
+config.add    AUTO_AWAY_TIME 1200
+config.add -b AUTO_UNSET_AWAY 0
+config.add -b AWAY_LOG 1
+config.add    AWAY_LOGFILE ~/.darkstar/away.log
+config.add -b PUBLIC_AWAY 0
+config.add    PUBLIC_AWAY_CHANNELS
+config.add -b SEND_AWAY_NOTICE 1
 
 
 /*

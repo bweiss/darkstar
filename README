@@ -1,28 +1,27 @@
 README file for Darkstar/EPIC4
 Author: Brian Weiss <brian@epicsol.org>
 
-Last modified: 12/25/01
+Last modified: 1/13/02
 
 
 ABOUT
 
 Darkstar is a modular script pack written for use with EPIC4, specifically,
 version 1.1.2 and up. It is intended mostly for advanced users that wish to
-take the time to customize their client. A great deal of effort has been put
-into making the core scripts as small and fast as possible. They provide
-everything necessary to load/unload modules, configure settings, save
-settings, change statbars, manage themes, and browse the help files. All
-other features come in the form of modules that can be loaded or unloaded
-at any time. This gives Darkstar great flexibility. It can literally become
-anything you want it to. The end goal is to provide a set of core scripts
-that make it easy for other scripters to customize their clients by writing
-their own modules. Even so, it should be quite usable for less advanced
-people.
+take the time to customize their client, but should remain quite usable for
+less advanced users. What makes this script pack special is its modularity.
+Included are a set of core scripts which provide everything necessary to
+load/unload modules, configure settings, save settings, change statbars,
+manage themes, and browse the help files. All other features come in the
+form of modules that can be loaded or unloaded at any time. Not only does
+this mean you only load the features you want, but more importantly, it
+allows scripters to add their own features with ease.
 
 Currently, only the basic user commands provided by the core scripts have
 been documented. I do have plans to write more in-depth documentation at a
 later time, but for now, if you are a scripter and are interested in writing
 your own modules, themes, or status bars, please feel free to contact me.
+As for users, the following should get you started.
 
 
 WHERE TO GET DARKSTAR AND EPIC4
@@ -119,11 +118,6 @@ FILES
 
   core/*.dsc		- Scripts that make up the core of Darkstar
 			  These are all required.
-
-  def/*.def		- These files define what variables are seen by
-			  /dset and /fset as well as their default values.
-			  I do not recommend editing these files as it may
-			  cause things not to work. You have been warned.
 
   help/*		- The Darkstar help files.
 

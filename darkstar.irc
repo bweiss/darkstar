@@ -46,26 +46,22 @@ if (!epic() || V < 20011203)
 	}
 }
 
-
 /*
  * Make sure we're clean
  */
 dump all
 
-do
+for array in ($getarrays())
 {
-	for array in ($getarrays())
-	{
-		@ delarray($array)
-	}
+	@ delarray($array)
 }
 
 
 /*
  * Important global variables
  */
-assign DS.VERSION 0.1.3
-assign DS.INTERNAL_VERSION 20011228
+assign DS.VERSION 0.1.4
+assign DS.INTERNAL_VERSION 20020111
 
 
 /*
@@ -92,7 +88,6 @@ if (getenv(DARKSTAR_RC))
 	^assign DS.RC ~/.dsrc
 }
 
-eval assign DS.DEF_DIR $DS.HOME/def
 eval assign DS.HELP_DIR $DS.HOME/help
 eval assign DS.MODULE_DIR $DS.HOME/modules $DS.USER_DIR/modules
 eval assign DS.STATUS_DIR $DS.HOME/status $DS.USER_DIR/status
@@ -103,7 +98,6 @@ if (fexist($DS.USER_DIR) == -1)
 {
 	xecho -b Creating user directory: $DS.USER_DIR
 	@ mkdir($DS.USER_DIR)
-	@ mkdir($DS.USER_DIR/def)
 	@ mkdir($DS.USER_DIR/modules)
 	@ mkdir($DS.USER_DIR/status)
 	@ mkdir($DS.USER_DIR/themes)
@@ -133,69 +127,7 @@ if (winnam(1) == [ircII])
 
 
 /*
- * Grab the default settings for the core scripts
- */
-do
-{
-	^local file $DS.DEF_DIR/core.def
-
-	if (fexist($file) != -1)
-	{
-		@ :fd = open($file R)
-	
-		while (!eof($fd))
-		{
-			@ :line = read($fd)
-			@ :type = word(0 $line)
-			@ :variable = word(1 $line)
-			@ :value = restw(2 $line)
-                                    		
-			switch ($type)
-			{
-				(dset)
-				(config)
-				{
-					if (word(1 $line) == [bool])
-					{
-						@ variable = word(2 $line)
-						@ value = restw(3 $line)
-					
-						^assign DSET.BOOL.$variable 1
-					}
-				
-					@ push(DSET.MODULES.CORE $variable)
-					^assign DSET.CONFIG.$variable 1
-					^assign CONFIG.$variable $value
-				}
-
-				(fset)
-				(format)
-				{
-					@ push(FSET.MODULES.CORE $variable)
-					^assign FSET.FORMAT.$variable 1
-					^assign FORMAT.$variable $value
-				}
-			}
-		}
-	
-		@ close($fd)
-	}{
-		xecho -b ERROR: $file not found.
-	}
-}
-
-
-/*
- * Load saved core settings.
- */
-if (fexist($DS.SAVE_DIR/core.sav) == 1)
-{
-	load $DS.SAVE_DIR/core.sav
-}
-
-
-/*
- * Load the rest of the core scripts.
+ * Load the core scripts.
  */
 eval load $DS.HOME/core/functions.dsc
 eval load $DS.HOME/core/commands.dsc
@@ -203,6 +135,27 @@ eval load $DS.HOME/core/config.dsc
 eval load $DS.HOME/core/help.dsc
 eval load $DS.HOME/core/save.dsc
 eval load $DS.HOME/core/status.dsc
+
+/* Default settings for the core scripts. */
+assign LOADER.PENDING_MODULE core
+
+config.add -b AUTO_LOAD_DEPENDENCIES 1
+config.add    AUTO_LOAD_MODULES away channel keepnick misc names nickcomp tabkey window
+config.add -b AUTO_LOAD_PROMPT 1
+config.add    THEME epic4
+config.add -b VERBOSE_SAVE 0
+
+format.add SET $G Current value of $1 is $2-
+format.add SET_NOVALUE $G No value for $1 has been set
+
+assign -LOADER.PENDING_MODULE
+
+/* Load saved core settings. */
+if (fexist($DS.SAVE_DIR/core.sav) == 1)
+{
+	load $DS.SAVE_DIR/core.sav
+}
+
 eval load $DS.HOME/core/themes.dsc
 eval load $DS.HOME/core/loader.dsc
 
@@ -217,7 +170,7 @@ if (fexist($DS.RC) == 1)
 
 
 /*
- * Check to make sure DS.HOME is set properly.
+ * Warn if DS.HOME is not set properly.
  */
 if (fexist($DS.HOME/darkstar.irc) == -1)
 {

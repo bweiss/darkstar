@@ -6,7 +6,7 @@
  * CONFIG.DSC - Configuration manager for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/29/01 (bmw)
+ * Last modified: 1/13/02 (bmw)
  */
 
 alias conf dset
@@ -156,6 +156,66 @@ alias config.setcat (var, void)
 	}
 
 	return
+}
+
+
+alias config.add
+{
+	^local variable,value
+	@ :module = LOADER.PENDING_MODULE
+
+	if (![$0])
+	{
+		xecho -b config.add: Not enough arguments \(Module: $module\)
+		return
+	}
+
+	if (pattern($0* -boolean))
+	{
+		^assign variable $1
+		^assign value $2-
+		^assign DSET.BOOL.$var 1
+	}{
+		^assign variable $0
+		^assign value $1-
+	}
+
+echo module: $module
+echo variable: $variable
+echo value: $value
+
+	if (DSET[CONFIG][$variable])
+	{
+		xecho -b loader.addconfig: Duplicate config variable: $variable \(Module: $module\)
+	}{
+		@ push(DSET.MODULES.$module $variable)
+		^assign DSET.CONFIG.$variable 1
+		^assign CONFIG.$variable $value
+	}
+}
+
+alias format.add (variable, value)
+{
+	@ module = LOADER.PENDING_MODULE
+
+	if (!variable)
+	{
+		xecho -b loader.addformat: Not enough arguments \(Module: $module\)
+		return
+	}
+
+echo module: $module
+echo variable: $variable
+echo value: $value
+
+	if (FSET[FORMAT][$variable])
+	{
+		xecho -b format.add: Duplicate format variable: $variable \(Module: $module\)
+	}{
+		@ push(FSET.MODULES.$module $variable)
+		^assign FSET.FORMAT.$variable 1
+		^assign FORMAT.$variable $value
+	}
 }
 
 

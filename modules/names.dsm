@@ -6,7 +6,7 @@
  * NAMES.DSM - Module to display who's on a channel for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 12/23/01 (bmw)
+ * Last modified: 1/13/02 (bmw)
  */
 
 queue cleanup.names
@@ -16,6 +16,13 @@ queue cleanup.names
 		^alias -$alias
 	}
 }
+
+
+format.add NAMES_FOOTER
+format.add NAMES_HEADER $G Users on $1: \(total/$2 - ops/$3 normal/$4\)
+format.add NAMES_OP %c@%n
+format.add NAMES_VOICE %m+%n
+
 
 alias names scan
 alias sc scan
