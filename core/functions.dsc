@@ -49,20 +49,22 @@ alias bool2num (arg, void)
 {
 	switch ($toupper($arg))
 	{
-		(OFF) {return 0}
-		(ON)  {return 1}
-		(*)   {return $arg}
+		(0) (OFF) { @ :ret = 0; }
+		(1) (ON)  { @ :ret = 1; }
+		(*)       { @ :ret = arg; }
 	}
+	@ function_return = ret
 }
 
 alias bool2word (arg, void)      
 {
 	switch ($arg)
 	{
-		(0) {return OFF}
-		(1) {return ON}
-		(*) {return $arg}
+		(0) (OFF) { @ :ret = [OFF]; }
+		(1) (ON)  { @ :ret = [ON]; }
+		(*)       { @ :ret = arg; }
 	}
+	@ function_return = ret
 }
 
 /*

@@ -21,13 +21,8 @@ queue cleanup.oper
 	^on #464 427 -"*"
 	^on #connect 427 -"*"
 	^on #hook 427 -"CONFIG OPERVIEW *"
-	^on #hook 427 -"CONFIG OPERVIEW_HIDDEN *"
-	^on #hook 427 -"CONFIG OPERVIEW_LEVEL *"
-	^on #hook 427 -"CONFIG OPERVIEW_SIZE *"
 	^on #hook 427 -"LOADMOD tabkey"
 	^on #timer 427 -"*"
-	^on #window_create 427 -"*"
-	^on #window_kill 427 -"*"
 	^on #window_kill 427 -"operview"
 
 	oper.operview.destroy
@@ -44,9 +39,7 @@ addconfig -b OPER_AUTO_CHALLENGE 0
 addconfig    OPER_RSA_RESPOND_TOOL
 addconfig    OPER_UMODES wzsky
 addconfig -b OPERVIEW 0
-addconfig -b OPERVIEW_HIDDEN 0
-addconfig    OPERVIEW_LEVEL opnotes,snotes,wallops
-addconfig    OPERVIEW_SIZE 5
+addconfig    OPERVIEW_ARGS level opnotes,snotes,wallops size 5 double off fixed on skip on hide last
 
 
 /****** USER ALIASES ******/
@@ -361,10 +354,8 @@ alias oper.challenge.list (void)
 
 alias oper.operview.create (void)
 {
-	if (winnum(operview) == -1)
-	{
-		window new name operview number 427
-		oper.operview.fix
+	if (winnum(operview) == -1) {
+		window new name operview number 427 $CONFIG.OPERVIEW_ARGS
 	}
 }
 
@@ -372,57 +363,6 @@ alias oper.operview.destroy (void)
 {
 	if (winnum(operview) != -1) {
 		window operview kill
-	}
-}
-
-alias oper.operview.fix (void)
-{
-	if (winnum(operview) == -1) {
-		return
-	}
-
-	window operview level $CONFIG.OPERVIEW_LEVEL
-
-	if (CONFIG.OPERVIEW_HIDDEN)
-	{
-		window operview hide
-	}{
-		/*
-		 * Make sure that the operview window is visible but
-		 * never becomes the active window.
-		 */
-		if (!winvisible(operview)) {
-			window show operview
-		}
-
-		if (winnam() == [operview])
-		{
-			^local visible
-			for wref in ($winrefs())
-			{
-				if (winvisible($wref)) {
-					push visible $wref
-				}
-			}
-
-			if (#visible == 1)
-			{
-				window previous
-				window show operview
-				window last
-			}{
-				for wref in ($visible)
-				{
-					if (!match($winnam($wref) operview msgs))
-					{
-						window refnum $wref
-						break
-					}
-				}
-			}
-		}
-
-		window operview double off fixed on skip on size $CONFIG.OPERVIEW_SIZE
 	}
 }
 
@@ -466,61 +406,6 @@ on #-hook 427 "CONFIG OPERVIEW *"
 	}
 }
 
-on #-hook 427 "CONFIG OPERVIEW_HIDDEN *"
-{
-	oper.operview.fix
-}
-
-on #-hook 427 "CONFIG OPERVIEW_LEVEL *"
-{
-	@ :bad = :good = []
-	@ :levels = [ACTIONS CRAP CTCP DCC MSGS NOTES NOTICES OPNOTES PUBLIC SNOTES USERLOG1 USERLOG2 USERLOG3 USERLOG4 WALLOPS WALLS]
-	for lvl in ($split(, $CONFIG.OPERVIEW_LEVEL))
-	{
-		if (findw($lvl $levels) > -1) {
-			push good $lvl
-		} else {
-			push bad $lvl
-		}
-	}
-
-	if (bad)
-	{
-		for lvl in ($bad) {
-			xecho -b Unknown level: $toupper($lvl)
-		}
-		xecho -b Valid levels: $levels
-		if (good) {
-			@ :newlevels = unsplit(, $good)
-		} else {
-			@ :newlevels = [$2-]
-		}
-		^assign CONFIG.OPERVIEW_LEVEL $toupper($newlevels)
-		xecho -b Value of OPERVIEW_LEVEL set to $CONFIG.OPERVIEW_LEVEL
-	}{
-		^assign CONFIG.OPERVIEW_LEVEL $toupper($CONFIG.OPERVIEW_LEVEL)
-	}
-
-	if (CONFIG.OPERVIEW) {
-		window operview level $CONFIG.OPERVIEW_LEVEL
-	}
-}
-
-on #-hook 427 "CONFIG OPERVIEW_SIZE *"
-{
-	@ :size = CONFIG.OPERVIEW_SIZE
-	@ :max_size = word(1 $geom()) - 4
-	if (!isnumber($size b10) || size < 1 || size > max_size)
-	{
-		xecho -b Value must be an integer greater than 0 and no larger than $max_size
-		^assign CONFIG.OPERVIEW_SIZE $2
-		xecho -b Value of OPERVIEW_SIZE set to $CONFIG.OPERVIEW_SIZE
-	}
-	if (CONFIG.OPERVIEW && !CONFIG.OPERVIEW_HIDDEN) {
-		window operview size $CONFIG.OPERVIEW_SIZE
-	}
-}
-
 on #-hook 427 "LOADMOD tabkey"
 {
 	oper.add_tabcomp
@@ -558,16 +443,6 @@ on #-timer 427 "*"
 			}
 		}
 	}
-}
-
-on #-window_create 427 "*"
-{
-	oper.operview.fix
-}
-
-on #-window_kill 427 "*"
-{
-	oper.operview.fix
 }
 
 on #-window_kill 427 "operview"

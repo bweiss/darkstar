@@ -21,9 +21,6 @@ queue cleanup.window
 	}
 
 	^on #hook 426 -"CONFIG MSG_WINDOW *"
-	^on #hook 426 -"CONFIG MSG_WINDOW_HIDDEN *"
-	^on #hook 426 -"CONFIG MSG_WINDOW_LEVEL *"
-	^on #hook 426 -"CONFIG MSG_WINDOW_SIZE *"
 	^on #join 426 -'\$servernick() *'
 	^on #leave 426 -'\$servernick() *'
 	^on #msg 426 -"*"
@@ -55,9 +52,7 @@ addconfig -b BIND_ON_JOIN 0
 addconfig -b JOIN_NEW_WINDOW 0
 addconfig    JOIN_NEW_WINDOW_ARGS hide_others
 addconfig -b MSG_WINDOW 0
-addconfig -b MSG_WINDOW_HIDDEN 0
-addconfig    MSG_WINDOW_LEVEL MSGS
-addconfig    MSG_WINDOW_SIZE 5
+addconfig    MSG_WINDOW_ARGS level msgs size 5 double off fixed on skip on hide last
 addconfig -b PART_KILL_WINDOW 0
 addconfig -b UNBIND_ON_PART 0
 
@@ -149,10 +144,8 @@ alias window.last.scroll (direction, void)
 
 alias window.msgwin.create (void)
 {
-	if (winnum(msgs) == -1)
-	{
-		window new name msgs number 426
-		window.msgwin.fix
+	if (winnum(msgs) == -1) {
+		window new name msgs number 426 $CONFIG.MSG_WINDOW_ARGS
 	}
 }
 
@@ -160,56 +153,6 @@ alias window.msgwin.destroy (void)
 {
 	if (winnum(msgs) != -1) {
 		window msgs kill
-	}
-}
-
-alias window.msgwin.fix (void)
-{
-	if (winnum(msgs) == -1) {
-		return
-	}
-
-	window msgs level $CONFIG.MSG_WINDOW_LEVEL
-
-	if (CONFIG.MSG_WINDOW_HIDDEN)
-	{
-		window msgs hide
-	}{
-		/*
-		 * Make sure that the msg window is visible but inactive.
-		 */
-		if (!winvisible(msgs)) {
-			window show msgs
-		}
-
-		if (winnam() == [msgs])
-		{
-			^local visible
-			for wref in ($winrefs())
-			{
-				if (winvisible($wref)) {
-					push visible $wref
-				}
-			}
-
-			if (#visible == 1)
-			{
-				window previous
-				window show msgs
-				window last
-			}{
-				for wref in ($visible)
-				{
-					if (!match($winnam($wref) msgs operview))
-					{
-						window refnum $wref
-						break
-					}
-				}
-			}
-		}
-
-		window msgs double off fixed on skip on size $CONFIG.MSG_WINDOW_SIZE
 	}
 }
 
@@ -225,61 +168,6 @@ on #-hook 426 "CONFIG MSG_WINDOW *"
 	}
 }
 
-on #-hook 426 "CONFIG MSG_WINDOW_HIDDEN *"
-{
-	window.msgwin.fix
-}
-		
-on #-hook 426 "CONFIG MSG_WINDOW_LEVEL *"
-{
-	@ :bad = :good = []
-	@ :levels = [ACTIONS CRAP CTCP DCC MSGS NOTES NOTICES OPNOTES PUBLIC SNOTES USERLOG1 USERLOG2 USERLOG3 USERLOG4 WALLOPS WALLS]
-	for lvl in ($split(, $CONFIG.MSG_WINDOW_LEVEL))
-	{
-		if (findw($lvl $levels) > -1) {
-			push good $lvl
-		} else {
-			push bad $lvl
-		}
-	}
-
-	if (bad)
-	{
-		for lvl in ($bad) {
-			xecho -b Unknown level: $toupper($lvl)
-		}
-		xecho -b Valid levels: $levels
-		if (good) {
-			@ :newlevels = unsplit(, $good)
-		} else {
-			@ :newlevels = [$2-]
-		}
-		^assign CONFIG.MSG_WINDOW_LEVEL $toupper($newlevels)
-		xecho -b Value of MSG_WINDOW_LEVEL set to $CONFIG.MSG_WINDOW_LEVEL
-	}{
-		^assign CONFIG.MSG_WINDOW_LEVEL $toupper($CONFIG.MSG_WINDOW_LEVEL)
-	}
-
-	if (CONFIG.MSG_WINDOW) {
-		window msgs level $CONFIG.MSG_WINDOW_LEVEL
-	}
-}
-
-on #-hook 426 "CONFIG MSG_WINDOW_SIZE *"
-{
-	@ :size = CONFIG.MSG_WINDOW_SIZE
-	@ :max_size = word(1 $geom()) - 4
-	if (!isnumber($size b10) || size < 1 || size > max_size)
-	{
-		xecho -b Value must be an integer greater than 0 and no larger than $max_size
-		^assign CONFIG.MSG_WINDOW_SIZE $2
-		xecho -b Value of MSG_WINDOW_SIZE set to $CONFIG.MSG_WINDOW_SIZE
-	}
-	if (CONFIG.MSG_WINDOW && !CONFIG.MSG_WINDOW_HIDDEN) {
-		window msgs size $CONFIG.MSG_WINDOW_SIZE
-	}
-}
-
 on #-join 426 '$servernick() *'
 {
 	@ :curwin = winnum()
@@ -290,7 +178,6 @@ on #-join 426 '$servernick() *'
 			window bind $1
 		}
 		window $CONFIG.JOIN_NEW_WINDOW_ARGS
-		window.msgwin.fix
 	}
 }
 
@@ -333,16 +220,17 @@ on #-msg 426 "*"
 	}
 }
 
+/*
+ * Add/Remove window shortcut aliases.
+ */
 on #-window_create 426 "*"
 {
 	^alias $0 window swap $0
-	window.msgwin.fix
 }
 
 on #-window_kill 426 "*"
 {
 	^alias -$0
-	window.msgwin.fix
 }
 
 on #-window_kill 426 "msgs"
