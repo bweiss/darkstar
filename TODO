@@ -15,3 +15,9 @@
 * Auto-join
 
 * XDCC module (fserve would be better)
+
+* tabkey.dsm:
+[17:26] .whitefang[thall@epicsol.org] a<tab>
+[17:27] .whitefang[thall@epicsol.org] it shows the matches, thats finbe.
+[17:27] .whitefang[thall@epicsol.org] but if you press it again, it should
+         star cycling through

@@ -60,7 +60,7 @@ config.add    AUTO_CREATE_WINDOW_ARGS double on hide
 config.add    AUTO_CREATE_WINDOWS 10
 config.add -b AUTO_UNBIND_ON_PART 0
 config.add -b MSG_WINDOW 0
-config.add    MSG_WINDOW_ARGS size 5 level dcc,msgs,opnotes,wallops last
+config.add    MSG_WINDOW_ARGS size 5 level msgs,opnotes,wallops last
 
 /* Force the loading of saved settings early so the two /if statements
    below will work. */
