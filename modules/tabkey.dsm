@@ -1,4 +1,4 @@
-#version 0.6.7
+#version 0.6.8
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key module for DarkStar/EPIC4
@@ -214,6 +214,23 @@ alias tabkey.array_proc (array, void)
 	}
 }
 
+alias tabkey.proc.assign (void)
+{
+	@:lastc = mid(${strlen($L) - 1} 1 $L)
+	unless (lastc == [ ]) {
+		@:lastw = word(${#L - 1} $L)
+		@:matches = pattern($lastw% $aliasctl(assign match $lastw))
+		if (#matches == 1) {
+			parsekey delete_to_previous_space
+			xtype -l $matches${[ ]}
+		} else if (#matches > 1) {
+			parsekey delete_to_previous_space
+			xtype -l $prefix($matches)
+			tabkey.show_matches $matches
+		}
+	}
+}
+
 alias tabkey.proc.channel (list)
 {
 	if (!list) {
@@ -271,6 +288,27 @@ alias tabkey.proc.file (void)
 			@:lastc = mid(${strlen($matches) - 1} 1 $matches)
 			parsekey delete_to_previous_space
 			xtype -l $matches${lastc == [/] ? [] : [ ]}
+		} else if (#matches > 1) {
+			parsekey delete_to_previous_space
+			xtype -l $prefix($matches)
+			tabkey.show_matches $matches
+		}
+	}
+}
+
+alias tabkey.proc.generic (list)
+{
+	if (!list) {
+		return
+	}
+
+	@:lastc = mid(${strlen($L) - 1} 1 $L)
+	unless (lastc == [ ]) {
+		@:lastw = word(${#L - 1} $L)
+		@:matches = pattern($lastw% $list)
+		if (#matches == 1) {
+			parsekey delete_to_previous_space
+			xtype -l $matches${[ ]}
 		} else if (#matches > 1) {
 			parsekey delete_to_previous_space
 			xtype -l $prefix($matches)
@@ -462,6 +500,11 @@ tabkey.addrule "/part *"            channel
 tabkey.addrule "/mode %"            channel
 tabkey.addrule "/m #%"              channel
 tabkey.addrule "/msg #%"            channel
+tabkey.addrule "/assign %"          assign
+tabkey.addrule "/push %"            assign
+tabkey.addrule "/pop %"             assign
+tabkey.addrule "/shift %"           assign
+tabkey.addrule "/unshift %"         assign
 
 
 /* EOF */

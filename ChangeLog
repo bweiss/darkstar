@@ -3,6 +3,11 @@ DarkStar ChangeLog
 
 2002/06/02
 
+ * [tabkey.dsm 0.6.8] Added two new completion procedures called
+   tabkey.proc.assign and tabkey.proc.generic. Several new rules were
+   also added for /assign, /push, /pop, /shift, and /unshift to
+   complete their first argument.
+
  * The bitchx theme was using $padleft() in the SET and SET_NOVALUE
    formats. It now uses $pad() instead.
 
