@@ -1,5 +1,5 @@
 Synopsis:
-   $bool_to_onoff(1|0)
+   $bool2word(1|0)
 
 Description:
    Converts 1/0 to ON/OFF.
@@ -9,5 +9,5 @@
    unchanged if they are neither "0" nor "1".
 
 See Also:
-   ds:bool_to_num(2)
+   ds:bool2num(2)
 

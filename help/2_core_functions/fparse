@@ -1,0 +1,15 @@
+Synopsis:
+   $fparse(<var> <text>)
+   $fparse2(<var> <text>)
+
+Description:
+   This function formats <text> according to the value of the format variable
+   specified as <var>. The $fparse2() function is identical except that it
+   does not pass <text> through $cparse() so no color codes will be expanded.
+
+Returns:
+   <text> after being formatted according to the specified format variable.
+
+See Also:
+   fset(1)
+

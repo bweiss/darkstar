@@ -13,6 +13,10 @@
 Credits:
    This function was written by Ben Winslow <rain@bluecherry.net>.
 
+Other Notes:
+   It should be mentioned that this function is pure evil and should NOT
+   be used under any circumstances. ;-)
+
 See Also:
    cparse(6)
 

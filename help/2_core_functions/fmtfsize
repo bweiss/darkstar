@@ -14,6 +14,9 @@
    $fmtfsize(12345)                          returns "12.06kb"
    $fmtfsize(123456789)                      returns "117.74mb"
 
+Credits:
+   This function was written by wd for the 'mail' script included with EPIC4.
+
 See Also:
    fsize(6)
 

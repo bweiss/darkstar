@@ -1,0 +1,24 @@
+Synopsis:
+   $getitems(<array> <offset> <items> ...)
+
+Description:
+   This allows you to retrieve the values of a list of item numbers and/or
+   ranges of item numbers (e.g. "3-7") from an array. The value of the
+   <offset> argument will be added to each item number before its value is
+   retrieved. This allows the real item numbers to be mapped to any range
+   of numbers. All non-numeric words in the item list will also be returned.
+
+Returns:
+   The values of all specified item numbers in <array> after having <offset>
+   added to them. All non-numeric words are returned as-is.
+
+Examples:
+   @ setitem(foo 0 one)
+   @ setitem(foo 1 two)
+   @ setitem(foo 2 three)
+   @ bar = getitems(foo -1 1-3 four)
+   # $bar is now "one two three four"
+
+See Also:
+   Arrays(7);  getitem(6);  setitem(6);  delitem(6);
+
