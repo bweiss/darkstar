@@ -3,6 +3,9 @@ Darkstar ChangeLog
 
 [10/17/01]
 
+ * [channel.dsm] Added the join/leave aliases from 2.8script. These may be
+   removed later depending on upcoming changes to the internal /join command.
+
  * [away.dsm] Removed the "MsgLog Started/Stopped" timestamps as well as the
    "12:00" timestamp. This is because we now timestamp each individual message
    with both the date and time. The purpose for this change is to better

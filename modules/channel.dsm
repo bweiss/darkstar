@@ -6,14 +6,14 @@
  * CHANNEL.DSM - Channel related stuff for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 10/14/01 (bmw)
+ * Last modified: 10/17/01 (bmw)
  *
  * This script uses serial number 424 for all ON hooks.
  */
 
 queue cleanup.channel
 {
-	for alias in (alldeop alldop allop ban bankick banlist bans bk cmode cycle deop dop devoice dvoice i invite j k kb key kick kickban l lk massmode mdeop mdop mdevoice mdvoice mop mvoice oldtopic op partall setoldtopic t tban tempban unban unkey untopic voice wall wall2)
+	for alias in (alldeop alldop allop ban bankick banlist bans bk cmode cycle deop dop devoice dvoice i invite j join k kb key kick kickban l leave lk massmode mdeop mdop mdevoice mdvoice mop mvoice oldtopic op part partall setoldtopic t tban tempban unban unkey untopic voice wall wall2)
 	{
 		^alias -$alias
 	}
@@ -42,6 +42,7 @@ alias kb kickban
 alias l leave
 alias mdop mdeop
 alias mdvoice mdevoice
+alias part leave
 alias t topic
 
 
@@ -159,6 +160,27 @@ alias invite (nick, channel default "$C", void)
 	}
 }
 
+/*
+ * Taken from 2.8script distributed with EPIC.
+ */
+alias join
+{
+	switch ($*)
+	{
+		(*,*)
+		{
+			join $before(, $*)
+			join $after(, $*)
+		}
+
+		(#*) (&*) (0) (-*) (!*) {//join $*}
+
+		() {//join -i}
+
+		(*) {//join #$*}
+	}
+}
+
 alias key (key, void)
 {
 	if (key)
@@ -192,9 +214,25 @@ alias kickban (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 	}
 }
 
-alias leave (channel)
+/*
+ * Taken from 2.8script distributed with EPIC.
+ */
+alias leave
 {
-	//part $channel
+	switch ($0)
+	{
+		(*,*)
+		{
+			leave $before(, $0) $1-
+			leave $after(, $0) $1-
+		}
+
+		(#*) (&*) (0) (-*) (!*) {//leave $*}
+
+		() (\*) {//leave * $1-}
+
+		(*) {//leave #$*}
+	}
 }
 
 /* 
