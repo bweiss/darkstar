@@ -4,7 +4,7 @@ DarkStar 0.3
 *** News 2002/10/06 -- New, non-recursive /LESS
 	The /LESS file pager has been rewritten so that it uses iteration
 	instead of recursion and should now be safe to use within other
-	aliases, as the client willl now wait for the entire file to
+	aliases, as the client will now wait for the entire file to
 	finish outputting before moving on to the next task.
 
 *** News 2002/10/03 -- window.dsm 0.7 - Hidden msg window now supported

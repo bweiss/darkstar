@@ -1,4 +1,4 @@
-#version 0.2.6
+#version 0.2.7
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -343,14 +343,14 @@ alias tabkey.cmd.unshift   { return $tabkey.method.variables(assign); }
 
 alias tabkey.cmd.window {
 	bless
-	@ :windowcmds        = [ADD BACK BALANCE BEEP_ALWAYS BIND CHANNEL CLEAR CREATE DELETE DESCRIBE DISCON DOUBLE ECHO FIXED FLUSH GOTO GROW HIDE HIDE_OTHERS HOLD_INTERVAL HOLD_MODE KILL KILL_OTHERS KILLSWAP LAST LASTLOG LASTLOG_LEVEL LEVEL LIST LOG LOGFILE MOVE NAME NEW NEW_HIDE NEXT NOSERV NOTIFIED NOTIFY NOTIFY_LEVEL NUMBER POP PREVIOUS PROMPT PUSH QUERY REFNUM REFNUM_OR_SWAP REFRESH REMOVE SCRATCH SCROLL SCROLLBACK SERVER SHOW SHOW_ALL SHRINK SIZE SKIP STACK STATUS_FORMAT STATUS_FORMAT1 STATUS_FORMAT2 STATUS_SPECIAL SWAP UNBIND]
+	@ :windowcmds        = [ADD BACK BALANCE BEEP_ALWAYS BIND CHANNEL CLEAR CREATE DELETE DESCRIBE DISCON DOUBLE ECHO FIXED FLUSH GOTO GROW HIDE HIDE_OTHERS HOLD_INTERVAL HOLD_MODE KILL KILL_OTHERS KILLSWAP LAST LASTLOG LASTLOG_LEVEL LEVEL LIST LOG LOGFILE MOVE NAME NEW NEW_HIDE NEXT NOSERV NOTIFIED NOTIFY NOTIFY_LEVEL NUMBER POP PREVIOUS PROMPT PUSH QUERY REFNUM REFNUM_OR_SWAP REFRESH REMOVE SCRATCH SCROLL SCROLLBACK SEARCH_BACK SEARCH_FORWARD SERVER SHOW SHOW_ALL SHRINK SIZE SKIP STACK STATUS_FORMAT STATUS_FORMAT1 STATUS_FORMAT2 STATUS_SPECIAL SWAP UNBIND]
 	if (curword == 1) {
 		@ :cmd = [WINDOW]
 	} else {
 		@ :cmd = word(${curword - 1} $L)
 	}
 	switch ($toupper($cmd)) {
-		(ADD) (QUERY) (REMOVE) {
+		(ADD) (QUERY) (REMOVE) (SEARCH_BACK) (SEARCH_FORWARD) {
 			@ :list = tabkey.method.nickchan($*)
 		}
 		(BEEP_ALWAYS) (DOUBLE) (FIXED) (HOLD_MODE) (LOG) (SCRATCH) (SCROLL) (SKIP) {
@@ -468,6 +468,7 @@ alias tabkey.method.variables (type, void) {
 	if (!type) {
 		return
 	}
+	@ :type = toupper($type)
 	if (curword == 1) {
 		if (left(1 $word) == [-]) {
 			@ :rm = 1
@@ -475,14 +476,19 @@ alias tabkey.method.variables (type, void) {
 		} else {
 			@ :foo = word
 		}
-		switch ($toupper($type)) {
+		switch ($type) {
 			(ALIAS) (ASSIGN) {
 				@ :matches = aliasctl($type match $foo)
 			}
 			(CONFIG) (FORMAT) {
+				if (type == [CONFIG]) {
+					@ :struct = [DSET]
+				} else {
+					@ :struct = [FSET]
+				}
 				@ :matches = []
-				for var in ($aliasctl(assign match $type\.$foo)) {
-					push matches $after(1 . $var)
+				for var in ($aliasctl(assign match $struct\.$type\.$foo)) {
+					push matches $after(-1 . $var)
 				}
 			}
 			(SET) {
@@ -498,10 +504,13 @@ alias tabkey.method.variables (type, void) {
 			@ :ret = [ ]
 		}
 	} else if (curword == 2 && word == [] && (left(1 $word(${curword - 1} $L)) != [-])) {
-		if (toupper($type) == [CONFIG] || toupper($type) == [FORMAT]) {
-			eval xtype -l \$$type\.$word(${curword - 1} $L)
-		} else {
-			eval xtype -l \$$word(${curword - 1} $L)
+		switch ($type) {
+			(CONFIG) (FORMAT) {
+				eval xtype -l \$$type\.$word(${curword - 1} $L)
+			}
+			(*) {
+				eval xtype -l \$$word(${curword - 1} $L)
+			}
 		}
 		@ :ret = [ ]
 	}
