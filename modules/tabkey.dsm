@@ -1,4 +1,4 @@
-#version 0.3
+#version 0.3.1
 /*     _             _        _
  *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
  * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
@@ -352,30 +352,30 @@ alias tabkey.set_proc (type, void)
 			@ :word1 = word(1 $L)
 		}
 		
-		@ :matches = aliasctl(assign match $type\.$word1)
-		^local new_matches
-		for var in ($matches)
+		@ :findvar = aliasctl(assign match $type\.$word1)
+		^local matches
+		for var in ($findvar)
 		{
-			@ push(new_matches $after(1 . $var))
+			@ push(matches $after(1 . $var))
 		}
 		
-		if (#new_matches == 1)
+		if (#matches == 1)
 		{
 			^assign -TABKEY.SHOWMATCHES
 			parsekey delete_to_previous_space
-			xtype -l ${rmflag ? [-] : []}$new_matches${[ ]}
+			xtype -l ${rmflag ? [-] : []}$matches${[ ]}
 		}\
-		else if (#new_matches > 1)
+		else if (#matches > 1)
 		{
 			beep
 			@ TABKEY.SHOWMATCHES++
 			parsekey delete_to_previous_space
-			xtype -l ${rmflag ? [-] : []}$prefix($newvars)
+			xtype -l ${rmflag ? [-] : []}$prefix($matches)
 
 			if (TABKEY[SHOWMATCHES] > 1)
 			{
 				xecho -b Matches:
-				for var in ($newvars)
+				for var in ($matches)
 				{
 					echo $var
 				}
