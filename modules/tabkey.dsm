@@ -1,4 +1,4 @@
-#version 0.6
+#version 0.6.1
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key module for Darkstar/EPIC4
@@ -125,6 +125,22 @@ alias tabkey.display_rules (void)
 		@ :list = restw(1 $getitem(tabkey_rinfo $cnt))
 		@ :num = cnt + 1
 		echo $[3]num $[26]pattern $[12]proc ${list ? list : []}
+	}
+}
+
+/*
+ * tabkey.rmrule <pattern>
+ *
+ * Removes a rule that matches <pattern>. Just like everywhere else, the
+ * pattern should be encased in double quotes.
+ */
+alias tabkey.rmrule (...)
+{
+	@ :item = matchitem(tabkey_rules $*)
+	if (item > 0)
+	{
+		@ delitem(tabkey_rules $item)
+		@ delitem(tabkey_rinfo $item)
 	}
 }
 

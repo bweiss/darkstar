@@ -1,12 +1,17 @@
 Darkstar ChangeLog
 
 
+3/6/02
+
+ * [tabkey.dsm v0.6.1] Added tabkey.rmrule so that other modules can remove
+   rules from within their cleanup queues.
+
 3/4/02
 
  * The /PURGE command now purges both alias and assign structures.
 
- * HEADS UP: Some important commands have been renamed for clarity. Changes
-   are as follows:
+ * HEADS UP: Some important commands for module writers have been renamed 
+   for clarity. Changes are as follows:
 	loader.dependency -> module.dep
 	loader.load_saved_settings -> module.load_saved_settings
 
