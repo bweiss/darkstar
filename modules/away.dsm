@@ -190,7 +190,7 @@ alias away.process_incoming (type, nick, msg)
 	if (CONFIG[AWAY_LOG])
 	{
 		@ :fd = open($CONFIG.AWAY_LOGFILE w)
-		@ write($fd [$strftime(%x %X)] $type [$nick!$userhost($nick)] $msg)
+		@ write($fd [$strftime(%x %X)] $type [$nick!$userhost()] $msg)
 		@ close($fd)
 
 		@ AWAY.NEWMSGS++
