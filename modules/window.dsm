@@ -258,11 +258,15 @@ on #-raw_irc 426 "% NICK *"
 
 on #-raw_irc 426 '% PRIVMSG $servernick() *'
 {
-	@ :nick  = before(1 ! $0)
-	@ :uhost = after(1 ! $0)
+	/* Ignore CTCPs (they are sent as PRIVMSGs) */
+	if (index( $3-) == -1)
+	{
+		@ :nick  = before(1 ! $0)
+		@ :uhost = after(1 ! $0)
 
-	window.auto_query_update $servernum() $nick $uhost
-	window.auto_query_window $servernum() $nick
+		window.auto_query_update $servernum() $nick $uhost
+		window.auto_query_window $servernum() $nick
+	}
 }
 
 on #-send_msg 426 "*"
