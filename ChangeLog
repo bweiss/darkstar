@@ -1,6 +1,13 @@
 Darkstar ChangeLog
 
 
+[10/16/01]
+
+ * [nickcomp.dsm] Now strips off trailing "-1" that $cparse() adds. This is
+   mostly because mIRC doesn't understand ^C-1 so users actually see the
+   "-1" at the end of your text.
+
+
 !! RELEASE: 0.0.11 (10/15/01) !!
 
 

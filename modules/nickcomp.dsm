@@ -8,11 +8,11 @@
  * Author: shade <shade@chemlab.org> - 1999
  *         Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 8/27/01 (bmw)
+ * Last modified: 10/16/01 (bmw)
  *
  * Most of this was taken from the nick completion module that shade wrote
  * for my BitchX/EPIC4 script called playdough. He deserves most of the
- * credit. Please send bug reports to me, do not bother shade.
+ * credit. Please send bug reports to me, not shade.
  */
 
 queue cleanup.nickcomp
@@ -34,7 +34,7 @@ on ^input "%: *"
 	if (CONFIG[NICK_COMPLETION])
 	{
 		@ :complete = nickcomp.getnick($before($CONFIG.NICK_COMPLETION_CHAR $*))
-		sendline ${complete ? fparse(NICK_COMPLETION $complete $1-) : [$*]}
+		sendline ${complete ? tr(/-1//$fparse(NICK_COMPLETION $complete $1-)) : [$*]}
 	}
 }
 
