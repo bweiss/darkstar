@@ -31,9 +31,7 @@ alias set_routine (type, variable, value)
 	
 	if (!variable)
 	{
-		@ :fsets = aliasctl(assign match $struct1\.$struct2\.)
-
-		for var in ($fsets)
+		for var in ($aliasctl(assign match $struct1\.$struct2\.))
 		{
 			@ :var = after(1 . $var)
 			@ setcat($var)
@@ -64,8 +62,14 @@ alias set_routine (type, variable, value)
 			} \
 			elsif (value != [])
 			{
-				^assign $var $value
-				xecho -s -b Value of $toupper($var2) set to $value
+				if (struct2 == [CONFIG] && aliasctl(assign get DSET.LIT.$var2))
+				{
+					^assign $var $booltonum($value)
+					xecho -s -b Value of $toupper($var2) set to $value
+				}{
+					^assign $var $value
+					xecho -s -b Value of $toupper($var2) set to $toupper($numtobool($value))
+				}
 			} \
 			elsif (value == [])
 			{
@@ -102,7 +106,12 @@ alias setcat (var, void)
 	
 	eval if \($var != []\)
 	{
-		xecho -b $fparse(SET $toupper($var2) $($var))
+		if (before(. $var) == [CONFIG] && aliasctl(assign get DSET.LIT.$var2))
+		{
+			xecho -b $fparse(SET $toupper($var2) $($var))
+		}{
+			xecho -b $fparse(SET $toupper($var2) $toupper($numtobool($($var))))
+		}
 	}{
 		xecho -b $fparse(SET_NOVALUE $toupper($var2))
 	}

@@ -2,6 +2,11 @@ Darkstar ChangeLog
 
 [current]
 
+ - [core] Changes to allow the use of ON/OFF and 1/0 with /dset. The defaults
+   files can now take an optional argument to the "config" command: lit
+   This tells the script that that variable has a literal value and should not
+   be converted to/from on/off/1/0. Two new functions: $booltonum() and
+   $numtobool().
  - [tabkey.dsm] Support for /save module completion added.
  - [save.dsc] Now allows you to specify a save directory as well as a list of
    modules. Usage: /save [-d <dir>] [*|module1] [module2] [...]

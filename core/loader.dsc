@@ -75,18 +75,29 @@ alias load_module (module, void)
 					@ :type = word(0 $line)
 					@ :variable = word(1 $line)
 					@ :value = restw(2 $line)
-				
-					if (match(config $type))
+
+					switch ($type)
 					{
-						@ push(DSET.$module $variable)
-						^assign DSET.CONFIG.$variable 1
-						^assign CONFIG.$variable $value
-					} \
-					elsif (match(fset $type))
-					{
-						@ push(FSET.$module $variable)
-						^assign FSET.FORMAT.$variable 1
-						^assign FORMAT.$variable $value
+						(config)
+						{
+							if (word(1 $line) == [lit])
+							{
+								@ variable = word(2 $line)
+								@ value = restw(3 $line)
+								
+								^assign DSET.LIT.$variable 1
+							}
+							
+							@ push(DSET.$module $variable)
+							^assign DSET.CONFIG.$variable 1
+							^assign CONFIG.$variable $value
+						}
+						(fset)
+						{
+							@ push(FSET.$module $variable)
+							^assign FSET.FORMAT.$variable 1
+							^assign FORMAT.$variable $value
+						}
 					}
 				}
 			}
@@ -191,6 +202,7 @@ alias unload_module (module)
 			{
 				^assign -CONFIG.$var
 				^assign -DSET.CONFIG.$var
+				^assign -DSET.LIT.$var
 			}
 			
 			for var in ($FSET\.$module)

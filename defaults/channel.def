@@ -1,10 +1,10 @@
-config AUTO_RESPONSE 0
-config AUTO_RESPONSE_BEEP 0
-config AUTO_RESPONSE_STR 
-config BANTYPE 3
-config DEFAULT_KICK_REASON No soup for you!
-config MAX_NICK_LENGTH 9
-config SHOW_OPVOICE_IN_PUBLICS 0
+config     AUTO_RESPONSE 0
+config     AUTO_RESPONSE_BEEP 0
+config lit AUTO_RESPONSE_STR 
+config lit BANTYPE 3
+config lit DEFAULT_KICK_REASON No soup for you!
+config lit MAX_NICK_LENGTH 9
+config     SHOW_OPVOICE_IN_PUBLICS 0
 fset BANS $[3]1 $[12]5  $strftime($6 %x@%X)  $4
 fset BANS_FOOTER $G Total bans on $3: $2
 fset BANS_HEADER #   SetBy         When               Ban

@@ -9,7 +9,7 @@
 
 alias save (args)
 {
-	^local abort
+	^local abort,modules
 	
 	/* Find our save directory */
 	^local savedir
@@ -18,21 +18,21 @@ alias save (args)
 	{
 		(-d)
 		{
-			@ savedir = $twiddle($word(1 $args))
+			@ savedir = twiddle($word(1 $args))
 			@ args = restw(2 $args)
 		}
 		(*)
 		{
-			@ savedir = CONFIG[SAVE_DIRECTORY]
+			@ savedir = twiddle($CONFIG.SAVE_DIRECTORY)
 		}
 	}
 	
 	/* Find out what modules to save settings for */
-	if (word(0 $args) == [*] ^^ !args)
+	if (!args || word(0 $args) == [*])
 	{
 		/* Save everything! */
 		@ push(modules core)
-		for cnt from 0 to ${$numitems(loaded_modules) - 1}
+		for cnt from 0 to ${numitems(loaded_modules) - 1}
 		{
 			@ push(modules $getitem(loaded_modules $cnt))
 		}
@@ -40,45 +40,21 @@ alias save (args)
 		/* Save only what's specified by user */
 		for module in ($args)
 		{
-			if (finditem(loaded_modules $module) ^^ module == [core])
+			if (finditem(loaded_modules $module) > -1 || module == [core])
 			{
 				@ push(modules $module)
-			}{
-				xecho -b SAVE: ERROR - $module is not loaded.
 			}
 		}
 	}	
 
-	for module in ($modules)
-	{
-		@ save_settings($savedir $module)
-	}
-		
-	/* Find our save directory */
-	^local savedir
-
-	switch ($word(0 $args))
-	{
-		(-d)
-		{
-			@ savedir = $twiddle($word(1 $args))
-			@ args = restw(2 $args)
-		}
-		(*)
-		{
-			@ savedir = CONFIG[SAVE_DIRECTORY]
-		}
-	}
-                                                                                                                                                            
 	/* Create our save directory if it does not already exist */
 	if (fexist($savedir) == -1)
 	{
-		xecho -b No save directory found. Creating $savedir ...
+		xecho -b No save directory found. Creating [$savedir] ...
 		
 		if (mkdir($savedir) > 0)
 		{
-			xecho -b Error creating directory [$savedir]
-			xecho -b Aborting save...
+			xecho -b SAVE: Error creating directory [$savedir]
 
 			^assign abort 1
 		}
@@ -94,11 +70,13 @@ alias save (args)
 		}
 
 		xecho -b Save completed [$strftime(%c)]
+	}{
+		xecho -b SAVE: Aborting...
 	}
 }
 
 
-alias save_settings(savedir, module, void)
+alias save_settings (savedir, module, void)
 {
 	^local savefile $savedir/$module\.sav
 
@@ -143,9 +121,11 @@ alias save_settings(savedir, module, void)
 		}
 	}{
 		xecho -b Error opening savefile [$savefile]
+		return 0
 	}
 
 	@ close($fd)
+	return 1
 }
 
 

@@ -79,6 +79,14 @@ alias get_core_settings (void)
 		{
 			(config)
 			{
+				if (word(1 $line) == [lit])
+				{
+					@ variable = word(2 $line)
+					@ value = restw(3 $line)
+					
+					^assign DSET.LIT.$variable 1
+				}
+				
 				@ push(DSET.CORE $variable)
 				^assign DSET.CONFIG.$variable 1
 				^assign CONFIG.$variable $value

@@ -10,6 +10,16 @@
  * feel free to email me.
  */
 
+alias booltonum (arg, void)
+{
+	switch ($tolower($arg))
+	{
+		(off) {return 0}
+		(on) {return 1}
+		(*) {return $arg}
+	}
+}
+
 alias getstrftime (time, void)
 {
 	@ function_return = strftime($FORMAT.STRFTIME)
@@ -28,6 +38,16 @@ alias is_on (nick, void)
 		return $0
 	}
 	wait for ison $nick
+}
+
+alias numtobool (arg, void)
+{
+	switch ($arg)
+	{
+		(0) {return off}
+		(1) {return on}
+		(*) {return $arg}
+	}
 }
 
 alias padleft (size, char, text)

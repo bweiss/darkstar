@@ -1,2 +1,2 @@
-config KEEPNICK 0
-config KEEPNICK_NICK your_nick
+config     KEEPNICK 0
+config lit KEEPNICK_NICK your_nick
