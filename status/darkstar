@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Created by Brian Weiss <brian@epicsol.org> for Darkstar/EPIC4
+ * Created by Brian Weiss <brian@epicsol.org> for DarkStar/EPIC4
  */
 
 assign STATUS.DOUBLE 1

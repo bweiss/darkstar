@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * BitchX status bar for Darkstar/EPIC4
+ * BitchX status bar for DarkStar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org>
  *
  * This attempts to mimic the BX status bar where possible. It is not
