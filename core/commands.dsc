@@ -37,12 +37,12 @@ alias dinfo (void)
 	/* Display module information. */
 	foreach MODINFO module {
 		for var in ($aliasctl(assign match MODINFO.$module\.)) {
-			@ :modname = tolower($module)
+			@:modname = tolower($module)
 			/* This is pretty nasty but it works. */
 			eval ^local iline \$$var
 			eval xecho -b [\$[12]modname] $iline
 		}
-		@ :pig_in_a_pen = 1
+		@:pig_in_a_pen = 1
 	}
 	if (pig_in_a_pen) {
 		echo $G $divider
@@ -61,7 +61,7 @@ alias dinfo (void)
 alias more less
 alias less (file, void)
 {
-	@ :winnum = winnum()
+	@:winnum = winnum()
 	if (file) {
 		if (fexist($file) == 1) {
 			_less $open($file R) ${winsize() - 1} $winnum
@@ -75,10 +75,10 @@ alias less (file, void)
 
 alias _less (fd, count, winnum default 0, void)
 {
-	@ :line = 0
+	@:line = 0
 
 	while (!eof($fd) && (line++ < count)) {
-		@ :ugh = read($fd)
+		@:ugh = read($fd)
 		if (!eof($fd)) {
 			xecho -w $winnum $ugh
 		}

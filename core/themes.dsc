@@ -22,15 +22,15 @@ alias theme (theme, void)
 	if (!theme) {
 		themes.buildlist
 		themes.display
-		^assign theme $"Which theme would you like to use? "
+		^local theme $"$INPUT_PROMPT\Which theme would you like to use? "
 		if (!theme) {
 			return
 		}
 	}
 
 	if (isnumber($theme) && theme > 0 && theme <= numitems(themes)) {
-		@ :item = theme - 1
-		@ :theme = getitem(themes $item)
+		@:item = theme - 1
+		@:theme = getitem(themes $item)
 	}
 
 	switch ($themes.change($theme)) {
@@ -82,8 +82,9 @@ alias themes.change (theme, void)
 		return 1
 	}
 
-	@ :t_item = finditem(themes $theme)
-	if (t_item > -1) {
+	@:t_item = finditem(themes $theme)
+	if (t_item > -1)
+	{
 		@:dir = getitem(theme_dirs $t_item)
 		@:master_file = dir ## [/main.dst]
 		if (fexist($master_file) == 1) {

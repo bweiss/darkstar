@@ -37,7 +37,7 @@ alias status (args)
 	if (!sbar) {
 		status.buildlist
 		status.display
-		^assign sbar $"Which status bar would you like to use? "
+		^assign sbar $"$INPUT_PROMPT\Which status bar would you like to use? "
 		if (!sbar) {
 			return
 		}
@@ -92,7 +92,7 @@ alias status.buildlist (void)
  */
 alias status.change (sbar, void)
 {
-	@ :file = getitem(status_files $finditem(status $sbar))
+	@:file = getitem(status_files $finditem(status $sbar))
 	if (fexist($file) == 1)
 	{
 		/*
@@ -106,7 +106,7 @@ alias status.change (sbar, void)
 		 * array are exempt from being double.
 		 */
 		for refnum in ($winrefs()) {
-			@ :name = winnam($refnum)
+			@:name = winnam($refnum)
 			if (STATUS.DOUBLE) {
 				unless (matchitem(single_status $name) > -1) {
 					^window $refnum double on
@@ -128,8 +128,8 @@ alias status.display (void)
 {
 	xecho -b Available status bars:
 	for cnt from 0 to ${numitems(status) - 1} {
-		@ :name = getitem(status $cnt)
-		@ :num = cnt + 1
+		@:name = getitem(status $cnt)
+		@:num = cnt + 1
 		echo  $[3]num $name
 	}
 }

@@ -15,22 +15,52 @@ alias loadmod (modules)
 
 	if (!modules) {
 		modlist
-		^local mods $"Modules to load? (1 2-4 ...) "
-		if (mods) {
-			@:modules = loader.which_mods(modules $mods)
+		^local modules $"$INPUT_PROMPT\Modules to load? (1 2-4 ...) "
+		if (modules == []) {
+			return
 		}
-	} else {
-		@:modules = loader.which_mods(modules $modules)
 	}
 
-	for module in ($modules) {
-		switch ($loader.load_module($module)) {
-			(0) {xecho -b Module [$module] has been loaded}
-			(1) {xecho -b Error: No modules found}
-			(2) {xecho -b Error: Module [$module] is already loaded}
-			(3) {xecho -b Error: Module [$module] not found}
-			(*) {xecho -b Error: Unknown}
+	@:modules = loader.which_mods(modules $modules)
+
+	if (!CONFIG.VERBOSE_LOAD) {
+		^local progress
+		@:pass = 0
+		@:fail = 0
+		@:oldprompt = INPUT_PROMPT
+	}
+
+	for module in ($modules)
+	{
+		@:retcode = loader.load_module($module)
+		if (!retcode) {
+			/* Module loaded successfully. */
+			if (CONFIG.VERBOSE_LOAD) {
+				xecho -b Module [$module] has been loaded
+			} else {
+				@:progress = progress ## [.]
+				@:pass++
+				^set input_prompt $oldprompt\Loading modules [$[$#modules]progress] \($module $modinfo($module v)\)
+			}
+		} else {
+			/* Module failed to load. */
+			@:progress = progress ## [x]
+			@:fail++
+			switch ($retcode) {
+				(1) {xecho -b Error: No modules found \($retcode\)}
+				(2) {xecho -b Error: Module [$module] is already \($retcode\)}
+				(3) {xecho -b Error: Module [$module] not found \($retcode\)}
+				(*) {xecho -b Error: Unknown \($retcode\)}
+			}
 		}
+	}
+
+	if (!CONFIG.VERBOSE_LOAD) {
+		@:cnt--
+		^set input_prompt $oldprompt\Loading modules [$[$#modules]progress] \(DONE\)
+		pause 0.6
+		^set INPUT_PROMPT $oldprompt
+		xecho -b LOADMODULE: $pass loaded, $fail failed
 	}
 }
 
@@ -88,21 +118,51 @@ alias unloadmod (modules)
 			@:num = cnt + 1
 			echo $[3]num $getitem(loaded_modules $cnt)
 		}
-		^local mods $"Modules to unload? (1 2-4 ...) "
-		if (mods) {
-			@:modules = loader.which_mods(loaded_modules $mods)
+		^local modules $"$INPUT_PROMPT\Modules to unload? (1 2-4 ...) "
+		if (modules == []) {
+			return
 		}
-	} else {
-		@:modules = loader.which_mods(loaded_modules $modules)
 	}
 
-	for module in ($modules) {
-		switch ($loader.unload_module($module)) {
-			(0) {xecho -b Module [$module] has been unloaded}
-			(1) {xecho -b Error: No modules are currently loaded}
-			(2) {xecho -b Error: Module [$module] is not loaded}
-			(*) {xecho -b Error: Unknown}
+	@:modules = loader.which_mods(loaded_modules $modules)
+
+	if (!CONFIG.VERBOSE_LOAD) {
+		^local progress
+		@:pass = 0
+		@:fail = 0
+		@:oldprompt = INPUT_PROMPT
+	}
+
+	for module in ($modules)
+	{
+		@:retcode = loader.unload_module($module)
+		if (!retcode) {
+			/* Module unloaded successfully. */
+			if (CONFIG.VERBOSE_LOAD) {
+				xecho -b Module [$module] has been unloaded
+			} else {
+				@:progress = progress ## [.]
+				@:pass++
+				^set INPUT_PROMPT $oldprompt\Unloading modules [$[$#modules]progress] \($module $modinfo($module v)\)
+			}
+		} else {
+			/* Module could not be unloaded. */
+			@:progress = progress ## [x]
+			@:fail++
+			switch ($retcode) {
+				(1) {xecho -b Error: No modules are currently loaded \($retcode\)}
+				(2) {xecho -b Error: Module [$module] is not loaded \($retcode\)}
+				(*) {xecho -b Error: Unknown \($retcode\)}
+			}
 		}
+	}
+
+	if (!CONFIG.VERBOSE_LOAD) {
+		@:cnt--
+		^set INPUT_PROMPT $oldprompt\Unloading modules [$[$#modules]progress] \(DONE\)
+		pause 0.6
+		^set INPUT_PROMPT $oldprompt
+		xecho -b UNLOADMODULE: $pass unloaded, $fail failed
 	}
 }
 
@@ -138,7 +198,7 @@ alias module.dep (depmods)
 					xecho -b Module [$module] depends on [$depmod]. Auto-loading...
 					loadmod $depmod
 				}{
-					^local tmp $"Module [$module] depends on [$depmod] - Load it now? [Yn] "
+					^local tmp $"$INPUT_PROMPT\Module [$module] depends on [$depmod] - Load it now? [Yn] "
 					if (tmp == []) {
 						^assign tmp Y
 					}
@@ -176,10 +236,12 @@ alias module.load_saved_settings (void)
 /****** INTERNAL ALIASES ******/
 
 /*
- * Stores available modules in two arrays, one for module names (modules)
- * and one for module filenames (module_files). It also reads a version tag
- * from the first line of the module and stores it in the module_versions
- * array.
+ * This scans the module directories and compiles a list of modules.
+ * Data about each module is stored in the three arrays: modules,
+ * module_files, and module_versions. The module's version is grabbed
+ * from the top line of the file and must be in the form of
+ * "#version <versionstr>". If no version is specified, a single '-' will
+ * be used.
  */
 alias loader.build_modlist (void)
 {
@@ -362,14 +424,14 @@ alias loader.which_mods (array, args)
 						push modules $getitem($array $item)
 					}
 				} else {
-					xecho -b loader.which_mods(): Illegal range specified!
+					xecho -b Error: loader.which_mods\(\): Illegal range specified!
 				}
 			}{
 				if (tmp <= numitems($array)) {
 					@:item = tmp - 1
 					push modules $getitem($array $item)
 				} else {
-					xecho -b loader.which_mods(): Module not found [$tmp]
+					xecho -b Error: loader.which_mods\(\): Module not found [$tmp]
 				}
 			}
 		}{
@@ -399,15 +461,15 @@ if (CONFIG.AUTO_LOAD_PROMPT)
 	^set SUPPRESS_SERVER_MOTD ON
 
 	modlist
-	^local mods $"Modules to load? ([A]uto / [N]one / 1 2-4 ...) [A] "
+	^local mods $"$INPUT_PROMPT\Modules to load? ([A]uto / [N]one / 1 2-4 ...) [A] "
 	if (mods == []) {
 		@:mods = [A]
 	}
 
 	switch ($toupper($mods)) {
 		(N) {#}
-		(A) {@ modules = CONFIG.AUTO_LOAD_MODULES}
-		(*) {@ modules = loader.which_mods(modules $mods)}
+		(A) {@:modules = CONFIG.AUTO_LOAD_MODULES}
+		(*) {@:modules = loader.which_mods(modules $mods)}
 	}
 	
 	/* Cleanup after ourselves. */
