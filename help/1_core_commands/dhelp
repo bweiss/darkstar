@@ -1,0 +1,15 @@
+Synopsis:
+   dhelp [<topic> [<subtopic> ...]]
+
+Description:
+   This is the Darkstar help command. It is used to browse the user
+   documentation for the Darkstar/EPIC4 script pack (which you are currently
+   reading). Advanced topics and programming HOWTOs will not be viewed in
+   this way.
+
+   This command uses EPIC4's internal /HELP command, and as such, has the
+   same features and usage.
+
+See Also:
+   help(1)
+

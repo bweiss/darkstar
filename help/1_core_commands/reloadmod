@@ -1,0 +1,9 @@
+Synopsis:
+   reloadmod <module> [<module>] ...
+
+Description:
+   This command is used to unload and re-load a module.
+
+See Also:
+   ds:loadmod(1);  ds:modlist(1);  ds:unloadmod(1);
+

@@ -1,0 +1,14 @@
+Synopsis:
+   unloadmod [<module> [<module> ...]]
+
+Description:
+   This command is used to unload a module from Darkstar, thus removing
+   anything previously added by the module (hopefully).
+
+   If <module> is not specified the current module list will be displayed
+   and the user will be asked to choose one or more modules to unload,
+   either by name or number.
+
+See Also:
+   ds:loadmod(1);  ds:modlist(1);  ds:reloadmod(1);
+

@@ -1,0 +1,10 @@
+Synopsis:
+   fset set_novalue [<value>]
+
+Description:
+   Controls the appearance of /DSET and /FSET output when the variable in
+   question has no value.
+
+See Also:
+   ds:fset(1) set_novalue
+
