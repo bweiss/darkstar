@@ -1,4 +1,4 @@
-#version 0.1
+#version 0.1.1
 /* $Id$ */
 /*
  * nickmgr.dsm - Nick management module for DarkStar/EPIC4
@@ -119,7 +119,7 @@ alias nickmgr.nickchange (nick, serv default "$servernum()", void) {
 		return
 	}
 	xecho -b Nick Manager changing nick on server $serv to $nick
-	xeval -s $serv -- //nick \$nick
+	xeval -s $serv -- nick \$nick
 }
 
 /*
