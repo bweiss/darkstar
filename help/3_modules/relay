@@ -53,3 +53,6 @@ Author: Brian Weiss <brian@epicsol.org>
    relspo
      - Passes its arguments to /relay with the type "send_public_other"
 
+Other Notes:
+   This module depends on both the channel and misc modules.
+
