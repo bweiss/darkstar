@@ -145,13 +145,13 @@ alias swap (winnum, void)
 	}
 }
 
-alias wb (chan default "$C", void)  {window bind $chan}
-alias wc (void)                     {window new_hide}
-alias wj (chan)                     {window new channel "$chan" hide}
-alias wk (...)                      {window kill}
-alias wl (...)                      {window last}
-alias wn (...)                      {window next}
-alias wp (...)                      {window previous}
+alias wb  (chan default "$C", void) {window bind $chan}
+alias wc  (void)                    {window new_hide}
+alias wj  (...)                     {window new channel "$*" hide}
+alias wk  (...)                     {window kill}
+alias wl  (...)                     {window last}
+alias wn  (...)                     {window next}
+alias wp  (...)                     {window previous}
 alias wub (...)                     {window unbind}
 
 

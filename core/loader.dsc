@@ -58,7 +58,7 @@ alias loadmod (modules)
 	if (!CONFIG.VERBOSE_LOAD) {
 		@:cnt--
 		^set input_prompt $oldprompt\Loading modules [$[$#modules]progress] \(DONE\)
-		pause 0.6
+		pause 0.5
 		^set INPUT_PROMPT $oldprompt
 		xecho -b LOADMODULE: $pass loaded, $fail failed
 	}
@@ -104,10 +104,8 @@ alias reloadmod (modules)
 		return
 	}
 
-	for module in ($modules) {
-		unloadmod $module
-		loadmod $module
-	}
+	unloadmod $modules
+	loadmod $modules
 }
 
 alias unloadmod (modules)

@@ -46,26 +46,10 @@ format.add NAMES_VOICE %m+%n$[9]1
 
 alias names scan
 alias sc scan
-
-alias scan (chan, void)
-{
-	names.main $chan
-}
-
-alias scann (chan default "$C", void)
-{
-	names.main $chan n
-}
-
-alias scano (chan default "$C", void)
-{
-	names.main $chan o
-}
-
-alias scanv (chan default "$C", void)
-{
-	names.main $chan v
-}
+alias scan  (chan default "$C", void) {names.main $chan}
+alias scann (chan default "$C", void) {names.main $chan n}
+alias scano (chan default "$C", void) {names.main $chan o}
+alias scanv (chan default "$C", void) {names.main $chan v}
 
 
 /****** INTERNAL ALIASES ******/
@@ -172,8 +156,8 @@ alias names.main (chan default "$C", mode default "*", void)
 							push line \$FORMAT.NAMES_MID
 						}
 					} else {
-						@:foo = cnt + 1
-						if (nick[$foo]) {
+						@:next = cnt + 1
+						if (nick[$next]) {
 							push line \$FORMAT.NAMES_MID
 						}
 					}

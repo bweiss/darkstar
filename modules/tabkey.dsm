@@ -337,7 +337,8 @@ alias tabkey.proc.nick (list)
 
 alias tabkey.proc.config (void)	{tabkey.set_proc config}
 alias tabkey.proc.format (void)	{tabkey.set_proc format}
-alias tabkey.proc.set (void)		{tabkey.set_proc set}
+alias tabkey.proc.set    (void) {tabkey.set_proc set}
+
 alias tabkey.set_proc (type, void)
 {
 	@:lastc = mid(${strlen($L) - 1} 1 $L)

@@ -1,4 +1,4 @@
-#version 0.5.2
+#version 0.5.3
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
@@ -560,9 +560,6 @@ alias wall2 (text)
 		return
 	}
 
-#	^notice $sar(g/#/#@/$C) [wall/$C] $text
-#	xecho -l walls -- * > [wall/$C] $text
-
 	for nick in ($filter($N $chops())) {
 		^notice $nick [wall/$C] $text
 	}
@@ -652,9 +649,9 @@ on ?channel_nick "*"
 {
 	if (FORMAT.CHANNEL_NICK) {
 		echo $fparse(CHANNEL_NICK $*)
-		return 1;
+		return 1
 	} else {
-		return 0;
+		return 0
 	}
 }
 

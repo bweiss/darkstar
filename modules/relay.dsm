@@ -48,17 +48,17 @@ alias relay (type, ...)
 
 	switch ($tolower($type))
 	{
-		(c)   (ctcp)			{relay.main CTCP $*}
-		(cr)  (ctcp_reply)		{relay.main CTCP_REPLY $*}
-		(m)   (msg)				{relay.main MSG $*}
-		(n)   (notice)			{relay.main NOTICE $*}
-		(p)   (public)			{relay.main PUBLIC $*}
-		(po)  (public_other)		{relay.main PUBLIC_OTHER $*}
-		(sc)  (send_ctcp)			{relay.main SEND_CTCP $*}
-		(sm)  (send_msg)			{relay.main SEND_MSG $*}
-		(sn)  (send_notice)		{relay.main SEND_NOTICE $*}
-		(sp)  (send_public)		{relay.main SEND_PUBLIC $*}
-		(spo) (send_public_other)	{relay.main SEND_PUBLIC_OTHER $*}
+		(c)   (ctcp)              {relay.main CTCP $*}
+		(cr)  (ctcp_reply)        {relay.main CTCP_REPLY $*}
+		(m)   (msg)               {relay.main MSG $*}
+		(n)   (notice)            {relay.main NOTICE $*}
+		(p)   (public)            {relay.main PUBLIC $*}
+		(po)  (public_other)      {relay.main PUBLIC_OTHER $*}
+		(sc)  (send_ctcp)         {relay.main SEND_CTCP $*}
+		(sm)  (send_msg)          {relay.main SEND_MSG $*}
+		(sn)  (send_notice)       {relay.main SEND_NOTICE $*}
+		(sp)  (send_public)       {relay.main SEND_PUBLIC $*}
+		(spo) (send_public_other) {relay.main SEND_PUBLIC_OTHER $*}
 	}
 }
 
@@ -103,7 +103,7 @@ alias relay.main (type, ...)
 		return
 	}
 
-	@ :array = [relay.] ## tolower($type)
+	@:array = [relay.] ## tolower($type)
 
 	if (!numitems($array)) {
 		xecho -b Error: relay.main: No items found for this type
@@ -122,20 +122,20 @@ alias relay.main (type, ...)
 		}
 		(*) {
 			if ([$0] == []) {
-				@ :inum = numitems($array) - 1
+				@:inum = numitems($array) - 1
 			} else if ([$0] < 0 || [$0] >= numitems($array)) {
 				xecho -b Error: relay.main: Item number out of range
 				return
 			} else {
-				@ :inum = [$0]
+				@:inum = [$0]
 			}
 		}
 	}
 
 	if (![$1]) {
-		@ :target = T
+		@:target = T
 	} else {
-		@ :target = [$1]
+		@:target = [$1]
 	}
 
 	if (CONFIG.RELAY_STRIP_CRAP) {
@@ -165,20 +165,20 @@ alias relay.showitems (array, format, void)
 
 /****** ON HOOKS ******/
 
-on #-ctcp 451 "*"				{relay.additem ctcp $*}
-on #-ctcp_reply 451 "*"			{relay.additem ctcp_reply $*}
-on #-msg 451 "*"				{relay.additem msg $0 $userhost() $1-}
-on #-notice 451 "*"			{relay.additem notice $0 $userhost() $1-}
-on #-public 451 "*"			{relay.additem public $channel.show_ov($0 $1) $1-}
-on #-public_other 451 "*"		{relay.additem public_other $channel.show_ov($0 $1) $1-}
+on #-ctcp 451 "*"               {relay.additem ctcp $*}
+on #-ctcp_reply 451 "*"         {relay.additem ctcp_reply $*}
+on #-msg 451 "*"                {relay.additem msg $0 $userhost() $1-}
+on #-notice 451 "*"             {relay.additem notice $0 $userhost() $1-}
+on #-public 451 "*"             {relay.additem public $channel.show_ov($0 $1) $1-}
+on #-public_other 451 "*"       {relay.additem public_other $channel.show_ov($0 $1) $1-}
 on #-send_ctcp 451 "PRIVMSG *"
 {
 	unless ([$2] != [ACTION]) {
 		relay.additem send_ctcp $*
 	}
 }
-on #-send_msg 451 "*"			{relay.additem send_msg $*}
-on #-send_notice 451 "*"		{relay.additem send_notice $*}
+on #-send_msg 451 "*"           {relay.additem send_msg $*}
+on #-send_notice 451 "*"        {relay.additem send_notice $*}
 on #-send_public 451 "*"
 {
 	if ([$0] == C) {
