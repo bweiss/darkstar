@@ -10,8 +10,9 @@ http://www.got.net/~brian/epic4/
 
 The help files for Darkstar are organized into the following groups:
 
-   Section 1: Darkstar Core Scripts
-   Section 2: Modules
+   Section 1: Core Commands
+   Section 2: Core Functions
+   Section 3: Modules
 
 In order to read a help file its section number must be given. This is true
 except when you are already at the help prompt and in the proper section.

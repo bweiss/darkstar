@@ -1,3 +1,5 @@
+/* $Id$ */
+
 /* Module: names */
 
 assign -FORMAT.NAMES_FOOTER
@@ -7,4 +9,4 @@ assign FORMAT.NAMES_OP @$[9]1
 assign FORMAT.NAMES_VOICE +$[9]1
 
 
-/* bmw '01 */
+/* EOF */

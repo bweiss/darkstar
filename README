@@ -1,11 +1,16 @@
 README file for Darkstar/EPIC4
-Author: Brian Weiss <brian@epicsol.org>
-Last modified: 3/26/2002
+Last updated: 3/29/2002
+
+Darkstar written by Brian Weiss <brian@epicsol.org>
+Copyright (c) 2002 Brian Weiss
+Please see the 'COPYRIGHT' file for licensing information.
+See the bottom of this file for a list of contributors.
 
 
 ABOUT
 
-Darkstar is a modular script pack for EPIC4 that consists of two main parts.
+Darkstar is a modular script pack for EPIC4 aimed at being highly extensible
+and well written. It consists of two main parts.
 
 1. A set of core scripts which provides a module loader, config manager,
 help browser, some generally useful commands and functions, and a way to
@@ -13,14 +18,18 @@ save settings.
 
 2. Various modules that add most of the features everyone is used to,
 including: an away system, advanced tab key completion, improved window
-management, nick completion, and anything else that makes IRC comfortable.
+management, nick completion, and other things to make the client comfortable.
 These modules are completely independent of each other (though dependencies
-are supported) and can be loaded or unloaded at any time.
+are supported) and can be loaded or unloaded at any time. These modules
+are mostly made up of scripts that I was using before this project.
 
-As of 0.2.0 the official state of this project is:
-	Core scripts: Beta, but stable. Still subject to change. End user
-		      commands documented.
-	Modules: Beta, but stable. Still subject to change. No documentation.
+The current state of this project is:
+  Core scripts: Beta, but stable. Still subject to change. End user commands
+		have been documented.
+  Modules: Beta, but stable. Still subject to change. Documented.
+
+Contributors are welcomed! If you would like to get involved with this
+project in any way, please don't hesitate to contact me.
 
 
 WHERE TO GET DARKSTAR AND EPIC4
@@ -59,8 +68,8 @@ NOTE: You do not need to do this if you are using the default locations.
 
   DARKSTAR_RC - Location of the rc file. This is loaded every time darkstar.irc
 		is loaded, including /RELOADs. This should be used for EPIC
-		settings in place of ~/.ircrc. This frees ~/.ircrc up to load
-		darkstar.irc on startup. (default: ~/.dsrc)
+		settings in place of ~/.epicrc. This frees ~/.epicrc up to
+		load darkstar.irc on startup. (default: ~/.dsrc)
 
   DARKSTAR_USER - Location of the "User directory." This just contains
 		  directories where you can put your own modules, status bars,
@@ -84,19 +93,15 @@ putting them in a shell startup script. (~/.bash_profile, ~/.profile,
 Nothing else is required to begin using Darkstar. However, I would recommend
 having a look at sample.dsrc in the main directory.
 
-
-At this point you can just type /load /path/to/darkstar/darkstar.irc to
-begin using the script. The available modules will be displayed and you
-will be prompted about which ones to load. Just pushing enter will load all
-modules on the Auto-Load list (/dset AUTO_LOAD_MODULES).
+At this point you can just type '/load /path/to/darkstar.irc' to begin
+using the script. The available modules will be displayed and you will be
+prompted about which ones to load. Just pushing enter will load all modules
+on the Auto-Load list (/dset AUTO_LOAD_MODULES).
 
 If you would like to load Darkstar automatically on client startup, you can
-place the following code in ~/.ircrc (or ~/.epicrc if using epic4-1.1)
+place the following code in ~/.epicrc
 
-  if (epic() && !bitchx())
-  {
-	^load /path/to/darkstar/darkstar.irc
-  }
+  load /path/to/darkstar.irc
 
 Once the script is loaded you can use /dhelp for further assistance.
 
@@ -130,12 +135,12 @@ FILES
 
   status/*		- Statbar files.
 
-  themes/*.dst		- Theme files. These change cosmetic aspects of the
+  themes/*		- Theme files. These change cosmetic aspects of the
 			  script.
 
 
-I would like to briefly thank the following people for contributing in some
-way to this wonderful project.
+I would like to thank the following people for contributing
+in some way to this project.
 
 	Jeremy Nelson <jnelson@epicsol.org>
 	Colten Edwards <edwards@teknap.com>
@@ -153,7 +158,7 @@ way to this wonderful project.
 
 If you think I forgot your name on this list, please drop me an email.
 
-  - bmw
+  - Brian
 
 
 #EOF

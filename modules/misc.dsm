@@ -1,10 +1,10 @@
-#version 0.1
+#version 0.1.1
 /* $Id$ */
 /*
  * misc.dsm - The 'miscellaneous stuff' module for Darkstar/EPIC4
  *
  * Written by Brian Weiss
- * Copyright © 2002 Brian Weiss
+ * Copyright (c) 2002 Brian Weiss
  * See the 'COPYRIGHT' file for more information.
  *
  * This script uses serial numbers 0 and 424 for /on hooks.
@@ -65,12 +65,6 @@ format.add WHOWAS_NICK %c[**]%n $2 was %c\(%n$3@$4%c\)%n
 format.add UMODE $G Mode change \"$3-\" for user $2 by $1
 
 
-alias disco disconnect
-alias m msg
-alias q query
-alias ww whowas
-
-
 alias chat (nick, void)
 {
 	if (!nick)
@@ -85,14 +79,17 @@ alias chat (nick, void)
 alias colors (void)
 {
 	xecho -b Ctrl-C color codes:
-	echo 0\0 1\1 2\2 3\3 4\4 5\5 6\6 7\7 8\8 9\9 10\10 11\11 12\12 13\13 14\14 15\15 16\16
+	echo 0zero 1one 2two 3three 4four 5five 6six 7seven 8eight 9nine 10ten
+      echo 11eleven 12twelve 13thirteen 14fourteen 15fifteen 16sixteen
 }
+
+alias disco disconnect
 
 alias dns (nicks)
 {
 	if (!nicks)
 	{
-		xecho -b Usage: /dns <nick> [nick2] [nick3] ...
+		xecho -b Usage: /dns <nick> ...
 		return
 	}
 
@@ -111,22 +108,29 @@ alias dns (nicks)
 	}
 }
 
-alias nslookup (address, void)
+alias m msg
+
+alias nslookup
 {
-	if (!address)
+	if (![$*])
 	{
-		xecho -b Usage: /nslookup <address>
+		xecho -b Usage: /nslookup <address> ...
 		return
 	}
 
-	@ :tmp = convert($address)
-	xecho -b $address is ${tmp ? tmp : [unknown]}
+	for addr in ($*)
+	{
+		@ :tmp = convert($addr)
+		xecho -b $addr is ${tmp ? tmp : [unknown]}
+	}
 }
 
 alias pingme (void)
 {
 	//ping $servernick()
 }
+
+alias q query
 
 alias umode (mode)
 {
@@ -138,6 +142,7 @@ alias ver (nick default "$servernick()", void)
 	ctcp $nick version
 }
 
+alias wi whois
 alias whois (args)
 {
 	@ :item = matchitem(away_users $word(0 $args)*)
@@ -149,15 +154,12 @@ alias whois (args)
 	//whois $args
 }
 
-alias wi (nick default "$servernick()", void)
-{
-	whois $nick
-}
-
 alias wii (nick default "$servernick()", void)
 {
 	whois $nick $nick
 }
+
+alias ww whowas
 
 
 /*

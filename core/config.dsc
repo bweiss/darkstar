@@ -3,12 +3,11 @@
  * config.dsc - Configuration interface
  *
  * Written by Brian Weiss
- * Copyright © 2002 Brian Weiss
+ * Copyright (c) 2002 Brian Weiss
  * See the 'COPYRIGHT' file for more information.
  */
 
 
-alias conf dset
 alias config dset
 
 alias dset (...)
@@ -172,12 +171,18 @@ alias config.setcat (var, void)
  */
 alias config.add
 {
-	^local variable,value
-	@ :module = after(-1 / $before(-1 . $word(1 $loadinfo())))
+	/* Determine which module is currently loading. */
+	@ :tmp = word(1 $loadinfo())
+	if (match(*darkstar.irc $tmp))
+	{
+		^local module core
+	}{
+		@ :module = after(-1 / $before(-1 . $word(1 $loadinfo())))
+	}
 
 	if (!module)
 	{
-		xecho -b Error: config.add: must be called at load time
+		xecho -b Error: config.add must be called at load time
 		return
 	}
 
@@ -189,12 +194,12 @@ alias config.add
 
 	if (pattern($0* -boolean))
 	{
-		^assign variable $1
-		^assign value $2-
+		^local variable $1
+		^local value $2-
 		^assign DSET.BOOL.$variable 1
 	}{
-		^assign variable $0
-		^assign value $1-
+		^local variable $0
+		^local value $1-
 	}
 
 	if (DSET[CONFIG][$variable])
@@ -213,11 +218,18 @@ alias config.add
  */
 alias format.add (variable, value)
 {
-	@ :module = after(-1 / $before(-1 . $word(1 $loadinfo())))
+	/* Determine which module is currently loading. */
+	@ :tmp = word(1 $loadinfo())
+	if (match(*darkstar.irc $tmp))
+	{
+		^local module core
+	}{
+		@ :module = after(-1 / $before(-1 . $word(1 $loadinfo())))
+	}
 
 	if (!module)
 	{
-		xecho -b Error: format.add: This command must be called at load time
+		xecho -b Error: format.add must be called at load time
 		return
 	}
 

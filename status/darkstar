@@ -31,17 +31,15 @@ set STATUS_VOICE 36+-1
 set STATUS_WINDOW 56*-1
 
 /*
- * XXX Make sure all our windows except the "msgs" window have double on.
- * This is an ugly ugly hack and I don't like it one bit. If the user has
- * a split window with a name other than "msgs" this will turn double on,
- * which may not be desirable. If anyone can think of a better way to do
- * this I would love to hear about it. -bmw
+ * Turn on the double status for all windows except those exempted by
+ * the single_status array.
  */
 for refnum in ($winrefs())
 {
-	unless (tolower($winnam($refnum)) == [msgs])
+	@ :name = winnam($refnum)
+	unless (matchitem(single_status $name) > -1)
 	{
-        	^window $refnum double on
+		^window $refnum double on
 	}
 }
 

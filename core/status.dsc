@@ -3,7 +3,7 @@
  * status.dsc - Interface to change the status bar
  *
  * Written by Brian Weiss
- * Copyright © 2002 Brian Weiss
+ * Copyright (c) 2002 Brian Weiss
  * See the 'COPYRIGHT' file for more information.
  */
 

@@ -8,6 +8,7 @@
 
 set AUTO_WHOWAS OFF
 set BEEP OFF
+set BEEP_MAX 0
 set CLOCK_24HOUR ON
 set -CONTINUED_LINE
 set DCC_STORE_PATH ~/incoming
@@ -17,9 +18,7 @@ set LOAD_PATH ~/.epic4:/usr/local/share/epic:.
 set NEW_SERVER_LASTLOG_LEVEL NONE
 set NO_FAIL_DISCONNECT ON
 set SCROLLBACK 1024
-
-bind META1-a BEGINNING_OF_LINE
-bind META1-e END_OF_LINE
+set WORD_BREAK ,;
 
 
 /* Debugging stuff */

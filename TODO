@@ -2,6 +2,8 @@
 
 * Improved dependency support. We should keep track of what depends on what
   and take the proper actions on load/unload.
+	- or -
+  Remove dependency support altogether. Is it needed or is it just bloat?
 
 * misc.dsm: Fix /wall
 

@@ -1,3 +1,5 @@
+/* $Id$ */
+
 /* Module: misc */
 
 assign FORMAT.ACTION_USER *> $1 $3-
@@ -27,4 +29,4 @@ assign FORMAT.WHOWAS_NICK $G $2 was $3@$4 \($6-\)
 assign FORMAT.UMODE $G Mode change \"$3-\" for user $2 by $1
 
 
-/* bmw '01 */
+/* EOF */

@@ -3,7 +3,7 @@
  * help.dsc - Help browser
  *
  * Written by Tyler Hall
- * Copyright © 2002 Tyler Hall
+ * Copyright (c) 2002 Tyler Hall
  * See the 'COPYRIGHT' file for more information.
  */
 

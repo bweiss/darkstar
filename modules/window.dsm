@@ -1,10 +1,10 @@
-#version 0.3.1
+#version 0.3.2
 /* $Id$ */
 /*
  * window.dsm - Window module for Darkstar/EPIC4
  *
  * Written by Brian Weiss
- * Copyright © 2002 Brian Weiss
+ * Copyright (c) 2002 Brian Weiss
  * See the 'COPYRIGHT' file for more information.
  *
  * This script uses serial number 426 for all /on hooks.
@@ -53,18 +53,29 @@ queue cleanup.window
 	^bind META2-4 META33_CHARACTER
 	^bind META2-5 META30_CHARACTER
 	^bind META2-6 META31_CHARACTER
+
+	for item in ($getrmatches(single_status msgs))
+	{
+		@ delitem(single_status $item)
+	}
 }
 
 
 config.add    AUTO_BIND_CHANNELS
 config.add -b AUTO_BIND_ON_JOIN 0
-config.add -b AUTO_BIND_ON_WINDOW_JOIN 0
 config.add    AUTO_CREATE_WINDOW_ARGS double on hide
 config.add    AUTO_CREATE_WINDOWS 10
 config.add -b AUTO_UNBIND_ON_PART 0
 config.add -b MSG_WINDOW 0
 config.add    MSG_WINDOW_LEVEL msgs,opnotes,wallops
 config.add    MSG_WINDOW_SIZE 5
+
+/*
+ * Make sure the msg window is exempt from status double being turned on.
+ * This will only work for status files that are aware of this. Currently
+ * both the 'darkstar' and 'feedback' status bars support this.
+ */
+@ setitem(single_status $numitems(single_status) msgs)
 
 
 ^bind ^W META8_CHARACTER
@@ -178,18 +189,12 @@ alias wj (chan)
 {
 	if (!chan)
 	{
-		xecho -b Usage: /wj <channel>
+		xecho -b Usage: /wj <channel> [key]
 		return
 	}
 
 	window new_hide swap last
 	join $chan
-
-	if (CONFIG[AUTO_BIND_ON_WINDOW_JOIN])
-	{
-		window bind $word(0 $chan)
-	}
-
 	if (STATUS[DOUBLE])
 	{
 		window double on

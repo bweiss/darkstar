@@ -1,6 +1,30 @@
 Darkstar ChangeLog
 
 
+3/29/02
+
+ * [window.dsm 0.3.2] Removed the AUTO_BIND_ON_WINDOW_JOIN config variable
+   since it was redundant. The existing AUTO_BIND_ON_JOIN should do the
+   trick. We're also now taking advantage of the single_status array for
+   the msg window.
+
+ * Both the 'darkstar' and 'feedback' status bars now check the array
+   single_status for names of windows that should remain single even
+   if $STATUS.DOUBLE is true. This elliminates the hideous hack that
+   was being used previously to keep the msg window (window.dsm) from
+   getting a double status.
+
+ * Help section 1_Core renamed to 1_core_commands
+
+ * New help section: 2_core_commands (empty)
+
+ * Added help pages for all the included modules. They are located in
+   $DS.HOME/help/3_modules/.
+
+ * The default theme is once again 'darkstar'
+
+ * New theme/statbar: feedback
+
 3/20/02
 
  * [window.dsm 0.3.1] The /WJ alias should now work just like /JOIN.

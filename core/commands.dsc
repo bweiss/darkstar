@@ -3,7 +3,7 @@
  * commands.dsc - Miscellaneous commands
  *
  * Written by Brian Weiss
- * Copyright © 2002 Brian Weiss
+ * Copyright (c) 2002 Brian Weiss
  * See the 'COPYRIGHT' file for more information.
  */
 

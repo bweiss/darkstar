@@ -1,10 +1,10 @@
-#version 0.2.3
+#version 0.2.4
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for Darkstar/EPIC4
  *
  * Written by Brian Weiss
- * Copyright © 2002 Brian Weiss
+ * Copyright (c) 2002 Brian Weiss
  * See the 'COPYRIGHT' file for more information.
  *
  * This script uses serial numbers 0 and 424 for /on hooks.
@@ -62,22 +62,7 @@ format.add TOPIC_CHANGE $G $1 has changed the topic on channel $2 to $3-
 format.add TOPIC_SETBY $G The topic was set by $3 on $strftime($4 %%c)
 
 
-alias alldop alldeop
-alias bans banlist
-alias bk bankick
-alias dop deop
-alias dvoice devoice
-alias i invite
-alias j join
-alias k kick
-alias kb kickban
-alias l leave
-alias mdop mdeop
-alias mdvoice mdevoice
-alias part leave
-alias t topic
-
-
+alias alldop
 alias alldeop (nicks)
 {
 	if (!nicks)
@@ -124,7 +109,7 @@ alias ban (targets)
 
 	if (!targets)
 	{
-		xecho -b Usage: /ban <nick|ban>
+		xecho -b Usage: /ban <nick|hostmask> ...
 		return
 	}
 
@@ -138,18 +123,19 @@ alias ban (targets)
 		}
 	}
 
-	fe ($bans) b1 b2 b3 b4
+	fe ($bans) b1 b2 b3
 	{
 		^local mode +
-		for ban in ($b1 $b2 $b3 $b4)
+		for ban in ($b1 $b2 $b3)
 		{
 			if (ban) @ mode = mode ## [b]
 		}
 
-		//mode $C $mode $b1 $b2 $b3 $b4
+		//mode $C $mode $b1 $b2 $b3
 	}
 }
 
+alias bk
 alias bankick (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
 	if (!nick)
@@ -162,6 +148,7 @@ alias bankick (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 	//kick $C $nick $reason
 }
 
+alias bans
 alias banlist (chan default "$C", void)
 {
 	//mode $chan +b
@@ -186,6 +173,7 @@ alias cycle (chan default "$C", void)
 	//join $chan $key
 }
 
+alias dop deop
 alias deop (nicks)
 {
 	if (!nicks)
@@ -197,6 +185,7 @@ alias deop (nicks)
 	massmode $C - o $nicks
 }
 
+alias dvoice devoice
 alias devoice (nicks)
 {
 	if (!nicks)
@@ -208,6 +197,7 @@ alias devoice (nicks)
 	massmode $C - v $nicks
 }
 
+alias i invite
 alias invite (nick, channel default "$C", void)
 {
 	if (!nick)
@@ -220,8 +210,9 @@ alias invite (nick, channel default "$C", void)
 }
 
 /*
- * Taken from 2.8script distributed with EPIC.
+ * /JOIN taken from 2.8script, distributed with EPIC.
  */
+alias j join
 alias join
 {
 	switch ($*)
@@ -251,6 +242,7 @@ alias key (key, void)
 	//mode $C +k $key
 }
 
+alias k kick
 alias kick (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
 	if (!nick)
@@ -262,6 +254,7 @@ alias kick (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 	//kick $C $nick $reason
 }
 
+alias kb kickban
 alias kickban (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
 	if (!nick)
@@ -275,8 +268,10 @@ alias kickban (nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 }
 
 /*
- * Taken from 2.8script distributed with EPIC.
+ * /LEAVE taken from 2.8script, distributed with EPIC.
  */
+alias part leave
+alias l leave
 alias leave
 {
 	switch ($0)
@@ -340,11 +335,13 @@ alias massmode (chan, action, mode, ...)
 	}
 }
 
+alias mdop
 alias mdeop (chan default "$C", void)
 {
 	massmode $chan - o $remw($servernick() $chops($chan))
 }
 
+alias mdvoice
 alias mdevoice (chan default "$C", void)
 {
 	massmode $chan - v $remw($servernick() $onchannel($chan))
@@ -407,6 +404,8 @@ alias setoldtopic (chan default "$C", void)
 	}
 }
 
+alias t topic
+
 alias tban (chan default "$C", void)
 {
 	@ delarray(tban)
@@ -461,7 +460,7 @@ alias tempban (time, target, void)
 {
 	if (!time || !target)
 	{
-		xecho -b Usage: /tempban <seconds> <nick|ban>
+		xecho -b Usage: /tempban <seconds> <nick|mask>
 		return
 	}
 
@@ -483,9 +482,9 @@ alias unban (bans)
 		return
 	}
 
-	for ban in ($bans)
+	fe ($bans) b1 b2 b3 b4
 	{
-		//mode $C -b $ban
+		//mode $C -bbbb $ban
 	}
 }
 

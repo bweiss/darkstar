@@ -1,7 +1,7 @@
+/* $Id$ */
 /*
  * EPIC4 theme for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
- * Last modified: 1/9/02 (bmw)
  */
 
 status -q epic4
@@ -12,4 +12,4 @@ assign FORMAT.SET $G Current value of $1 is $2-
 assign FORMAT.SET_NOVALUE $G No value for $1 has been set
 
 
-/* bmw '01 */
+/* EOF */

@@ -1,9 +1,0 @@
-Synopsis:
-   sv [<target>]
-
-Description:
-   Sends your client, OS, and Darkstar version to <target>.
-
-See Also:
-   ds:dinfo(1);  ds:uptime(1);
-
