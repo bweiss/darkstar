@@ -2,11 +2,14 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://darkstar.epicsol.org/UPDATES
 
 
-*** News 2003/09/10 -- tabkey.dsm 0.4
-	Lots of changes that most end users won't even notice. :-)
+DarkStar 0.2.10 (20030915)
 
+
+*** News 2003/09/10 -- tabkey.dsm 0.4 - Renamed variable / code cleanup
 	The TABKEY_MAX_NICKHIST config variable has been renamed.
-	It is now called TABKEY_MAX_MSG_HISTORY.
+	It is now called TABKEY_MAX_MSG_HISTORY. I apologize for the
+	change but this new name is a much better representation of
+	its actual purpose.
 
 	All completion methods (except tabkey.method.variable) now use
 	the arguments given to them instead of taking what they need
@@ -16,9 +19,6 @@ The entire file can be found at http://darkstar.epicsol.org/UPDATES
 	Most aliases now use function_return instead of /RETURN in
 	order to avoid potential problems caused by EPIC's auto-append
 	feature.
-
-	Plus some general cleanup throughout the module. See CVS logs
-	for details.
 
 *** News 2003/09/06 -- channel.dsm 0.8 - New alias: /ADDTOPIC
 	There is a new alias called /ADDTOPIC that allows you to add
