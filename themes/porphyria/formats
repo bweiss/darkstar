@@ -27,7 +27,7 @@ assign FORMAT.MSG %K[%n$Z%K]%n %K[%n$1%K\(%n$2%K\)]%n $3-
 assign -FORMAT.NAMES_FOOTER
 assign -FORMAT.NAMES_FOOTER1
 assign -FORMAT.NAMES_FOOTER2
-assign FORMAT.NAMES_HEADER $G Users on $1: %K\(%ntotal%K/%n$#onchannel($1) %K-%n oped%K/%n$#chops($1) voiced%K/%n$#chanvoice($1) normal%K/%n$#nochops($1)%K\)%n
+assign FORMAT.NAMES_HEADER $G Users on $1: %K\(%ntotal%K/%n$2 %K-%n oped%K/%n$3 voiced%K/%n$4 normal%K/%n$5%K\)%n
 assign -FORMAT.NAMES_HEADER1
 assign -FORMAT.NAMES_HEADER2
 assign -FORMAT.NAMES_LEFT

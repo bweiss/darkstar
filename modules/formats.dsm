@@ -164,37 +164,33 @@ alias formats.names.main (chan default "$C", type default "*", void)
 		return
 	}
 
+	for nn in ($channel($chan))
+	{
+		if (nn =~ [@*]) {
+			@ push(:oped $nn)
+		} else if (nn =~ [?+*]) {
+			@ push(:voiced $nn)
+		} else {
+			@ push(:normal $nn)
+		}
+	}
+
 	switch ($type)
 	{
-		(n) {
-			for patt in (.\?* ..*) {
-				@ push(:users $pattern($patt $channel$chan)))
-			}
-		}
-		(o)   { @ :users = pattern(@* $channel($chan)); }
-		(v)   { @ :users = pattern(?+* $channel($chan)); }
+		(n) { @ :users = normal; }
+		(o) { @ :users = oped; }
+		(v) { @ :users = voiced; }
 		(\\*)
 		{
 			if (CONFIG.NAMES_SORT_BY_MODE)
 			{
-				for nn in ($channel($chan))
-				{
-					if (nn =~ [@*]) {
-						@ push(:ops $nn)
-					} else if (nn =~ [?+*]) {
-						@ push(:voiced $nn)
-					} else {
-						@ push(:normal $nn)
-					}
-				}
-				@ :users = ops
+				@ :users = oped
 				if (voiced) { @ push(:users $voiced); }
 				if (normal) { @ push(:users $normal); }
 			}{
 				@ :users = channel($chan)
 			}
 		}
-
 		(*) {
 			echo Error: formats.names.main: Unknown type: $type
 			return
@@ -206,7 +202,7 @@ alias formats.names.main (chan default "$C", type default "*", void)
 		return
 	}
 
-	formats.echo NAMES_HEADER,NAMES_HEADER1,NAMES_HEADER2 $chan
+	formats.echo NAMES_HEADER,NAMES_HEADER1,NAMES_HEADER2 $chan $#onchannel($chan) $#oped $#voiced $#normal
 
 	if (CONFIG.NAMES_COL)
 	{
@@ -271,7 +267,7 @@ alias formats.names.main (chan default "$C", type default "*", void)
 		xecho -- $line
 	}
 
-	formats.echo NAMES_FOOTER,NAMES_FOOTER1,NAMES_FOOTER2 $chan
+	formats.echo NAMES_FOOTER,NAMES_FOOTER1,NAMES_FOOTER2 $chan $#onchannel($chan) $#oped $#voiced $#normal
 }
 
 alias formats.names.parse (...)

@@ -34,7 +34,7 @@ assign FORMAT.MSG [$Z] MSG [$1!$2] $3-
 assign -FORMAT.NAMES_FOOTER
 assign -FORMAT.NAMES_FOOTER1
 assign -FORMAT.NAMES_FOOTER2
-assign FORMAT.NAMES_HEADER $G Users on $1: \(total/$#onchannel($1) - oped/$#chops($1) voiced/$#chanvoice($1) normal/$#nochops($1)\)
+assign FORMAT.NAMES_HEADER $G Users on $1: \(total/$2 - oped/$3 voiced/$4 normal/$5\)
 assign -FORMAT.NAMES_HEADER1
 assign -FORMAT.NAMES_HEADER2
 assign FORMAT.NAMES_LEFT $G 

@@ -34,7 +34,7 @@ assign FORMAT.KICK $G kick%K/%W$3%c: %W$2%n kicked %W$1%K[%n$4-%K]%n
 assign FORMAT.LEAVE $G part%K/%W$2%c: %W$1%K[%n$before(1 @ $3)%c@%n$after(1 @ $3)%K]%n
 assign FORMAT.MODE $G mode%K/%W$2%c: %W$1%K[%n$3-%K]%n
 assign FORMAT.MSG %K\(%W$1%K[%n$before(1 @ $2)%c@%n$after(1 @ $2)%K]\)%n $3-
-assign FORMAT.NAMES_FOOTER %WÀ%nÄ%KÄ%n> +o%K[%W$#chops($1)%K]%n -o%K[%W$#nochops($1)%K]%n total%K[%W$#onchannel($1)%K]%n
+assign FORMAT.NAMES_FOOTER %WÀ%nÄ%KÄ%n> +o%K[%W$3%K]%n +v%K[%W$4%K]%n -o%K[%W$5%K]%n total%K[%W$2%K]%n
 assign -FORMAT.NAMES_FOOTER1
 assign -FORMAT.NAMES_FOOTER2
 assign FORMAT.NAMES_HEADER %WÚ%nÄ%KÄ%nÄÄ%WÄÄ%nÄÄ%KÄ[%nusers%K/%W$left(18 $1)%K]%nÄ%WÄÄ%nÄ%KÄ%nÄÄ%WÄ%n- %KÄ%n-%KÄ Ä%n-%WÄ%nÄ -%KÄ-%nÄÄ%W-Ä%nÄ- %W- %n-  %K-    %n-

@@ -37,7 +37,7 @@ assign FORMAT.MSG %K[%M$1%K\(%m$2%K\)]%n $3-
 assign -FORMAT.NAMES_FOOTER
 assign -FORMAT.NAMES_FOOTER1
 assign -FORMAT.NAMES_FOOTER2
-assign FORMAT.NAMES_HEADER $G %K[%GUsers%K\(%g$1%K:%g$#onchannel($1)%K\)]
+assign FORMAT.NAMES_HEADER $G %K[%GUsers%K\(%g$1%K:%g$2%K\)]
 assign -FORMAT.NAMES_HEADER1
 assign -FORMAT.NAMES_HEADER2
 assign -FORMAT.NAMES_LEFT

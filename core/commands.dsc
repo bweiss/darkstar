@@ -98,8 +98,12 @@ alias _less.output (array_struct, void)
 	@ :arrays = getarrays($array_struct\.*)
 	while (:array = shift(arrays))
 	{
-		for ii from 1 to $numitems($array) {
-			echo $getitem($array ${ii-1})
+		for ii from 1 to $numitems($array)
+		{
+			@ :line = getitem($array ${ii-1})
+			unless (!arrays && ii == numitems($array) && line == []) {
+				echo $line
+			}
 		}
 
 		unless (!arrays)
