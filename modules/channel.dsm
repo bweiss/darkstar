@@ -855,7 +855,7 @@ alias wall (text)
 	switch ($CONFIG.CHANNEL_WALL_TYPE)
 	{
 		(1) {
-			notice @$chan [wall/$chan] $text;
+			^notice @$chan [wall/$chan] $text;
 		}
 		(2) {
 		    @ :maxtargets = serverctl(GET $servernum() 005 MAXTARGETS);
@@ -869,13 +869,13 @@ alias wall (text)
 				for (@ :ii = 1, t[$ii], @ :ii++) {
 					@ push(:targets $t[$ii]);
 				};
-				notice $unsplit(, $targets) [wall/$chan] $text;
+				^notice $unsplit(, $targets) [wall/$chan] $text;
 			};
 		}
 		(3) {
 			# This should never be used on large channels.
 			for nick in ($filter($servernick() $chops())) {
-				notice $nick [wall/$chan] $text;
+				^notice $nick [wall/$chan] $text;
 			};
 		}
 		(*) {
