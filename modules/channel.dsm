@@ -1,4 +1,4 @@
-#version 0.3.2
+#version 0.3.3
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
@@ -851,14 +851,10 @@ on ^public '% % *\\[${CONFIG[AUTO_RESPONSE_STR]}\\]*'
 
 		if (CONFIG[AUTO_RESPONSE_BEEP])
 		{
-			if (BEEP == [OFF])
-			{
-				^set BEEP ON
-				beep
-				^set BEEP OFF
-			}{
-				beep
-			}
+			^stack push set BEEP
+			^set BEEP ON
+			beep
+			^stack pop set BEEP
 		}
 	}{
 		if (FORMAT[PUBLIC])
@@ -879,14 +875,10 @@ on ^public_other '% % *\\[${CONFIG[AUTO_RESPONSE_STR]}\\]*'
 
 		if (CONFIG[AUTO_RESPONSE_BEEP])
 		{
-			if (BEEP == [OFF])
-			{
-				^set BEEP ON
-				beep
-				^set BEEP OFF
-			}{
-				beep
-			}
+			^stack push set BEEP
+			^set BEEP ON
+			beep
+			^stack pop set BEEP
 		}
 	}{
 		if (FORMAT[PUBLIC_OTHER])
