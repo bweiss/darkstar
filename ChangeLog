@@ -3,6 +3,10 @@ Darkstar ChangeLog
 
 12/21/01
 
+ * Format settings (/FSET) are now saved to $DS.USER_DIR/themes/custom.dst.
+   This allows us to choose "custom" as our theme and simulate the
+   pre-theme-support behavior.
+
  * [window.dsm] The msg window (AUTO_CREATE_MSG_WINDOW) now defaults to OFF.
 
  * Various improvements and cleanups in save.dsc, themes.dsc, and status.dsc.
