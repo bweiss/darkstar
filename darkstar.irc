@@ -15,12 +15,12 @@
 /*
  * Warn user if client doesn't meet specifications
  */
-if (!epic() || V < 20011112)
+if (!epic() || V < 20011203)
 {
 	xecho -b
 	xecho -b WARNING!
 	xecho -b
-	xecho -b This script was intended for use with EPIC4-1.0 or higher.
+	xecho -b This script was intended for use with EPIC4-1.1.2 and higher.
 	xecho -b Your client, $J, does not meet this requirement.
 	xecho -b Continue to use this script at your own risk.
 	xecho -b
@@ -65,7 +65,7 @@ do
  * Important global variables
  */
 assign DS.VERSION 0.0.13
-assign DS.INTERNAL_VERSION 20011202
+assign DS.INTERNAL_VERSION 20011203
 
 
 /*

@@ -1,6 +1,9 @@
 Darkstar ChangeLog
 
 
+!! RELEASE: 0.0.13 (12/3/01) !!
+
+
 12/02/01
 
  * The arguments passed to CTCP_REPLY have changed as of EPIC4-1.1 so themes
@@ -8,11 +11,9 @@ Darkstar ChangeLog
 
  * HEADS UP! Modifications were made to the cleanup queues of several modules
    to take advantage of a fix made to /queue in EPIC4-1.1.2. As a result,
-   the user will now be warned if their client is older than 20011112
-   (EPIC4-1.1.1 I believe). This will be updated further as soon as 1.1.2
-   becomes official and the internal_version is changed. The fix made to
-   /queue involves the elimination of the initial evaluation made when the
-   queue is first entered. What this means to module writers is they won't
+   the user will now be warned if their client is older than 12/3/01. The fix
+   made to /queue involves the elimination of the initial evaluation made when
+   the queue is first entered. What this means to module writers is they won't
    have to use so many escapes when removing certain /on hooks.
 
  * Darkstar should now warn the user more properly if their client does not
