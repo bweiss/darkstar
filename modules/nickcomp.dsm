@@ -1,4 +1,4 @@
-# version:1.1 loader:pf
+# version:1.2 loader:pf
 # $Id$
 #
 # nickcomp.dsm - Nick completion module for DarkStar/EPIC4
@@ -20,6 +20,7 @@ queue cleanup.nickcomp
 
 addconfig -b NICK_COMPLETION 1;
 addconfig    NICK_COMPLETION_CHAR :;
+addconfig    NICK_COMPLETION_PATTERNS $$0 $$0% ?$$0 ?$$0%;
 addconfig    NICK_COMPLETION_THRESHOLD 2;
 
 addformat NICK_COMPLETION $$1: $$2-;
@@ -27,7 +28,8 @@ addformat NICK_COMPLETION $$1: $$2-;
 
 alias nickcomp.getnick
 {
-	for patt in ($0 $0% ?$0 ?$0%)
+	eval ^local patterns $CONFIG.NICK_COMPLETION_PATTERNS;
+	for patt in ($patterns)
 	{
 		@:findnick = pattern($patt $onchannel($C));
 		if (#findnick > CONFIG.NICK_COMPLETION_THRESHOLD)

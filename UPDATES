@@ -2,6 +2,11 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://darkstar.epicsol.org/UPDATES
 
 
+*** News 2004/08/10 -- nickcomp.dsm 1.2 - /DSET NICK_COMPLETION_PATTERNS
+	There is a new config variable, named NICK_COMPLETION_PATTERNS, that
+	will allow users to better configure the behavior of nick completion
+	in the nickcomp module.
+
 *** News 2004/07/29 -- formats.dsm 0.3 - Auto-response renamed: Highlight
 	The auto-response feature that highlights publics when they contain
 	certain words has been renamed to "highlight". This means that all

@@ -6,9 +6,9 @@ FOR 0.3 RELEASE:
     no half-ops, no voice) in a specified channel. This is needed because
     $nochops() returns voiced users along with the normal ones.
 
-  * Add support for half-ops. Bleh.
-
   * Update help files and write better module documentation (doc/modules.txt)
+
+  * Add full support for half-ops.
 
   * Add some sort of function to return a list of all the channels that you
     and the specified nick are both joined to. Maybe something like
@@ -16,10 +16,9 @@ FOR 0.3 RELEASE:
 
   * Add /ALLKICK and /ALLBAN aliases.
 
-  * Add auto-response formats for actions.
+  * Add highlight formats for actions.
 
-  * Rename the auto-response feature to something more sensible? Maybe
-    "highlight" or "public highlight".
+  * Fix the topic cache (/SET REMEMBER_TOPICS, /TOPICS, /SETTOPIC)
 
 
 AFTER 0.3 RELEASE:
