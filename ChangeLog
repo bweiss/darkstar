@@ -6,12 +6,9 @@ Darkstar ChangeLog
 
 [10/15/01]
 
- * Some changes to how we keep track of modules, statbars, and themes. I now
-   keep track of names and filenames in separate arrays. This allows us to
-   use $finditem() instead of $matchitem() and thus be far more accurate.
-   Prior to this fix, it would be possible to have issues as a result of
-   having similarly named modules/themes/statbars. These changes should be
-   transparent to just about everyone.
+ * Some changes to how we keep track of modules, statbars, and themes. The
+   name and filenames are now kept in separate arrays. This fixes a potential
+   problem with having similarly named modules/statbars/themes/etc. 
 
  * I am now passing more arguments to the various WHOIS_* format sets
    in misc.dsm. This allows for more customization of whois output via /fset.
