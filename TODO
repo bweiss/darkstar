@@ -8,7 +8,6 @@ WORKS IN PROGRESS:
 PLANNED FOR FUTURE:
 
 * misc.dsm: Fix /wall and hopefully get rid of /wall2
-* Relay module (/relm, /reln, etc)
 * Advanced logging module
 * Channel protection module
 * Auto-join
