@@ -3,6 +3,9 @@ Darkstar ChangeLog
 
 [10/12/01]
 
+ * Fixed a bug in the module loader that was causing /DSET and /FSET variables
+   to not be removed upon unloading of their modules.
+
  * [away.dsm] Some pretty significant changes here. /AWAY and /BACK are now
    simple aliases to //AWAY that just reverse the default behavior from being
    local to global (The "-a" option is passed to //AWAY unless the "-l" option

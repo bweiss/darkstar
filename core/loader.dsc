@@ -290,17 +290,17 @@ alias loader.unload_module (module)
 			}
 
 			/* Remove all config and format variables */
-			for var in ($DSET\.$module)
+			for var in ($DSET[$module])
 			{
 				^assign -CONFIG.$var
 				^assign -DSET.CONFIG.$var
 				^assign -DSET.BOOL.$var
 			}
 			
-			for var in ($FSET\.$module)
+			for var in ($FSET[$module])
 			{
 				^assign -FORMAT.$var
-				^assign -DSET.FORMAT.$var
+				^assign -FSET.FORMAT.$var
 			}
 
 			^assign -DSET.$module
