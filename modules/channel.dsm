@@ -1,4 +1,4 @@
-#version 1.1.2
+#version 1.1.3
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
@@ -711,13 +711,13 @@ alias tempban (time, target, void)
 
 alias tempbk (time, nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
-	if (!target)
+	if (!nick)
 	{
 		xecho -b Usage: /TEMPBK <seconds> <nick> [reason]
 		return
 	}
 
-	tempban $time $target
+	tempban $time $nick
 	if (onchannel($nick $C)) {
 		//kick $C $nick $reason
 	}
@@ -725,7 +725,7 @@ alias tempbk (time, nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 
 alias tempkb (time, nick, reason default "$CONFIG.DEFAULT_KICK_REASON")
 {
-	if (!target)
+	if (!nick)
 	{
 		xecho -b Usage: /TEMPKB <seconds> <nick> [reason]
 		return
