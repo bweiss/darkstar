@@ -63,32 +63,32 @@ alias config.set_routine (type, variable, value)
 		 * No variable specified by user so we display everything.
 		 */
 		for var in ($aliasctl(assign match $struct1\.$struct2\.)) {
-			@ :var = after(1 . $var)
+			@:var = after(1 . $var)
 			@ config.setcat($var)
 		}
 	}{
-		@ :var = strip(- $variable)
-		@ :cur_value = aliasctl(assign get $struct1\.$struct2\.$var)
-		@ :matches = aliasctl(assign match $struct1\.$struct2\.$var)
+		@:var = strip(- $variable)
+		@:cur_value = aliasctl(assign get $struct1\.$struct2\.$var)
+		@:matches = aliasctl(assign match $struct1\.$struct2\.$var)
 		
 		/*
 		 * If the number of matches found is greater than 1, output the
 		 * values for all matching variables. If only 1 match is found,
-		 * we then have to figure out exactly what to do with that varable.
+		 * we then have to figure out exactly what to do with that variable.
 		 */
 		if (#matches > 1 && !cur_value)
 		{
 			xecho -s -b \"$toupper($var)\" is ambiguous
 			for var in ($matches) {
-				@ :var = after(1 . $var)
+				@:var = after(1 . $var)
 				@ config.setcat($var)
 			}
 		}\
 		else if (#matches == 1 || cur_value)
 		{
-			@ :var = after(1 . $word(0 $matches))
-			@ :var2 = after(1 . $var)
-			@ :old_value = aliasctl(assign get $var)
+			@:var = after(1 . $word(0 $matches))
+			@:var2 = after(1 . $var)
+			@:old_value = aliasctl(assign get $var)
 
 			/*
 			 * If variable name is preceded by a "-" empty its value.
@@ -142,11 +142,11 @@ alias config.set_routine (type, variable, value)
 /*
  * This is a modified version of shade's setcat. It handles the actual
  * displaying of config/format variables and their values. It should
- * be called by config.set_routine.
+ * be called by the config.set_routine alias.
  */
 alias config.setcat (var, void)
 {
-	@ :var2 = after(1 . $var)
+	@:var2 = after(1 . $var)
 	eval if \($var != []\)
 	{
 		if (FORMAT.SET) {

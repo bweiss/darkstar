@@ -11,7 +11,7 @@
  */
 alias dinfo (void)
 {
-	@ :divider = repeat(${word(0 $geom()) - 8} -)
+	@:divider = repeat(${word(0 $geom()) - 8} -)
 	echo $G $divider
 
 	/* Display information about the operating system. */
@@ -27,7 +27,7 @@ alias dinfo (void)
 	echo $G $divider
 
 	/* Display information about DarkStar. */
-	xecho -b DarkStar $DS.VERSION \($DS.INTERNAL_VERSION\) [$DS.COMMIT_ID]
+	xecho -b DarkStar $DS.VERSION \($DS.INTERNAL_VERSION\) [$DS.CORE_ID]
 	xecho -b Available modules: $numitems(modules), Loaded modules: $numitems(loaded_modules)
 	xecho -b Current theme: $DS.THEME, Current statusbar: $DS.SBAR
 	echo $G $divider
