@@ -8,7 +8,7 @@ Darkstar ChangeLog
    with both the date and time. The purpose for this change is to better
    support the use of multiple servers within a single EPIC process.
 
- * [away.dsm] Removed the /away alias and just aliased /back to //away.
+ * [away.dsm] Removed the /away and /back aliases.
 
  * [tabkey.dsm] Added support for file completion with /less.
 

@@ -13,7 +13,7 @@
 
 queue cleanup.away
 {
-	for alias in (away back readlog remlog)
+	for alias in (readlog remlog)
 	{
 		^alias -$alias
 	}
@@ -35,13 +35,6 @@ queue cleanup.away
  */
 @ AWAY.LAST_INPUT = time()
 
-
-/*
- * /BACK
- * Just an alias to //away. If a reason is specified, this will actually
- * try to set away, rather than unsetting it.
- */
-alias back //away
 
 /*
  * /READLOG
