@@ -1,4 +1,4 @@
-#version 0.2
+#version 0.2.1
 /*     _             _        _
  *  __| | __ _  _ _ | |__ ___| |_  __ _  _ _
  * / _` |/ _` || '_|| / /(_-<|  _|/ _` || '_|
@@ -63,15 +63,28 @@ alias cleartab (void)
  *
  * Example: tabkey.addrule "/foo *" channel "$mychannels()"
  */
-alias tabkey.addrule (...)
+alias tabkey.addrule
 {
+	/* Use $word() instead of prototypes to remove any unwanted
+	   white-space. */
 	@ :pattern = word(0 $*)
+	^local pattern \"$pattern\"
 	@ :routine = word(1 $*)
 	@ :list = word(2 $*)
 
 	if (!pattern || !routine)
 	{
-		tabkey.addrule: Not enough arguments
+		xecho -b Error: tabkey.addrule: Not enough arguments
+		return
+	}
+
+	/*
+	 * We check for > 0 here instead of > -1 because rule 0 (pattern: "")
+	 * would match rules with patterns like "*", and we don't want that.
+	 */
+	if (matchitem(tabkey_rules $pattern) > 0)
+	{
+		xecho -b Error: tabkey.addrule: Pattern $pattern already exists in current rules
 		return
 	}
 
@@ -79,7 +92,7 @@ alias tabkey.addrule (...)
 	{
 		if (!list)
 		{
-			xecho -b tabkey.addrule: Routine [$routine] requires a word list
+			xecho -b Error: tabkey.addrule: Routine [$routine] requires a word list
 			return
 		}
 		@ setitem(tabkey_rules $numitems(tabkey_rules) $pattern)
@@ -90,7 +103,7 @@ alias tabkey.addrule (...)
 		@ setitem(tabkey_rules $numitems(tabkey_rules) $pattern)
 		@ setitem(tabkey_rinfo $numitems(tabkey_rinfo) $routine)
 	}{
-		xecho -b tabkey.addrule: Invalid completion routine [$routine]
+		xecho -b Error: tabkey.addrule: Invalid completion routine [$routine]
 	}
 }
 
@@ -100,46 +113,36 @@ alias tabkey.display_rules (void)
 	for cnt from 0 to ${numitems(tabkey_rules) - 1}
 	{
 		@ :pattern = getitem(tabkey_rules $cnt)
-		^assign pattern \"$pattern\"
 		@ :routine = word(0 $getitem(tabkey_rinfo $cnt))
 		@ :list = restw(1 $getitem(tabkey_rinfo $cnt))
 		@ :num = cnt + 1
-		echo $[3]num $[28]pattern $[10]routine ${list ? [\"$list\"] : []}
+		echo $[3]num $[28]pattern $[10]routine ${list ? list : []}
 	}
 }
 
 alias tabkey.process_tabkey (void)
 {
-	if (!L)
+	@ :item = rmatchitem(tabkey_rules "$L")
+
+	if (item > -1)
 	{
-		/*
-		 * This is the only hardcoded rule. An unfortunate side effect
-		 * of "*" matching nothing.
-		 */
-		@ tabkey.msg_routine()
-	}{
-		@ :item = rmatchitem(tabkey_rules $L)
+		@ :tmp = getitem(tabkey_rinfo $item)
+		@ :routine = word(0 $tmp)
+		eval ^local list $restw(1 $tmp)
 
-		if (item > -1)
+		switch ($tolower($routine))
 		{
-			@ :tmp = getitem(tabkey_rinfo $item)
-			@ :routine = word(0 $tmp)
-			eval ^local list $restw(1 $tmp)
-
-			switch ($tolower($routine))
-			{
-				(channel) {@ tabkey.channel_routine($list)}
-				(command) {parsekey command_completion}
-				(config) {@ tabkey.set_routine(CONFIG)}
-				(file) {@ tabkey.file_routine()}
-				(format) {@ tabkey.set_routine(FORMAT)}
-				(lmods) {@ tabkey.module_routine(loaded_modules)}
-				(mods) {@ tabkey.module_routine(modules)}
-				(msg) {@ tabkey.msg_routine()}
-				(nick) {@ tabkey.nick_routine($list)}
-				(*) {
-					xecho -b Illegal completion routine specified [$routine]
-				}
+			(channel) {@ tabkey.channel_routine($list)}
+			(command) {parsekey command_completion}
+			(config) {@ tabkey.set_routine(CONFIG)}
+			(file) {@ tabkey.file_routine()}
+			(format) {@ tabkey.set_routine(FORMAT)}
+			(lmods) {@ tabkey.module_routine(loaded_modules)}
+			(mods) {@ tabkey.module_routine(modules)}
+			(msg) {@ tabkey.msg_routine()}
+			(nick) {@ tabkey.nick_routine($list)}
+			(*) {
+				xecho -b Illegal completion routine specified [$routine] \(item: $item\)
 			}
 		}
 	}
@@ -453,8 +456,16 @@ on #^dcc_connect 420 "% CHAT *"
 
 
 /*
- * Setup default completion rules.
+ * DEFAULT COMPLETION RULES
+ * I will add a user interface to add/remove these in the near future.
+ *
+ * We have to add rule 0  manually because $word() sees "" as a missing
+ * argument and fails. This rule is also exempt from tabkey.addrule's
+ * duplicate rule check since $matchitem() matches "" and "*".
  */
+@ setitem(tabkey_rules 0 "")
+@ setitem(tabkey_rinfo 0 msg !DO NOT REMOVE!)
+
 tabkey.addrule "*"                  nick        "$remw($: $onchannel()) $:"
 tabkey.addrule "*#%"                channel     "$mychannels()"
 tabkey.addrule "/%"                 command

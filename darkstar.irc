@@ -22,7 +22,7 @@ if (!epic() || V < 20011203)
 	xecho -b
 	xecho -b This script was intended for use with EPIC4-1.1.2 and higher.
 	xecho -b Your client, $J, does not meet this requirement.
-	xecho -b Continue to use this script at your own risk.
+	xecho -b Continue to use this script pack at your own risk.
 	xecho -b
 	xecho -b If you would like to obtain EPIC4, you can visit one of the
 	xecho -b following sites.
@@ -62,7 +62,7 @@ for array in ($getarrays())
  */
 assign DS.VERSION 0.1.4
 assign DS.INTERNAL_VERSION 20020113
-assign DS.COMMIT_ID 3
+assign DS.COMMIT_ID 4
 
 
 /*
@@ -151,23 +151,13 @@ format.add SET_NOVALUE $G No value for $1 has been set
 
 assign -LOADER.PENDING_MODULE
 
-/* Load saved core settings. */
-if (fexist($DS.SAVE_DIR/core.sav) == 1)
-{
-	load $DS.SAVE_DIR/core.sav
-}
+
+eval ^load $DS.SAVE_DIR/core.sav
 
 eval load $DS.HOME/core/themes.dsc
 eval load $DS.HOME/core/loader.dsc
 
-
-/*
- * Load rcfile if found.
- */
-if (fexist($DS.RC) == 1)
-{
-	load $DS.RC
-}
+eval ^load $DS.RC
 
 
 /*

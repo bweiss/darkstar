@@ -6,7 +6,7 @@
  * LOADER.DSC - Module loader for Darkstar/EPIC4
  * Author: Brian Weiss <brian@epicsol.org> - 2001
  *
- * Last modified: 1/15/02 (bmw)
+ * Last modified: 1/21/02 (bmw)
  */
 
 
@@ -27,6 +27,8 @@ alias loadedmodules (void)
 		@ :modsize = fsize($getitem(module_files $item))
 		echo $[3]num $[25]modname [$[10]modver] [$[-10]modsize]
 	}
+	xecho -b Type '/reloadmod [<module> ...]' to reload a module
+	xecho -b Type '/unloadmod [<module> ...]' to unload a module
 }
 
 alias loadmod (modules)
