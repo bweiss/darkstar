@@ -20,9 +20,19 @@ set STATUS_SERVER 36[37%S36]37
 set STATUS_UMODE 36(37+%#36)37
 set STATUS_WINDOW 56*37
 
+/*
+ * Make sure all our windows (except the msg window) have double on. This is
+ * an ugly ugly hack and I don't like it one bit. If the user has a split
+ * window with a name other than "msgs" this will turn double on, which may
+ * not be desirable. If anyone can think of a better way to do this I would
+ * love to hear about it. -bmw
+ */
 for refnum in ($winrefs())
 {
-        ^window $refnum double on
+	unless (winnam($refnum) == [msgs])
+	{
+        	^window $refnum double on
+	}
 }
 
 alias getchanmode (void)
