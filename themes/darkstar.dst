@@ -41,7 +41,7 @@ fset SEND_CTCP $G Requesting a CTCP $3 from $2: $4-
 fset SEND_DCC_CHAT [$Z] %W.%ndcc%W[%n$1%W]%n $2-
 fset SEND_MSG [$Z] %W.%nmsg%W[%n$1%W]%n $2-
 fset SEND_NOTICE [$Z] %W.%nnotice%c[%n$1%c]%n $2-
-fset WHOIS_AWAY %c[**] %Wa%nway     %c:%n $2-
+fset WHOIS_AWAY %c[**] %Wa%nway     %c:%n $1 - $2-
 fset WHOIS_CHANNELS %c[**] %Wc%nhannels %c:%n $3-
 fset -WHOIS_FOOTER
 fset -WHOIS_HEADER
