@@ -1,3 +1,8 @@
+*** News 2003/05/10 -- New module: memo.dsm
+	This new module provides mechanisms to manipulate a text file
+	of one-line memos from the client's input prompt. See ds:memo(3)
+	for details.
+
 *** News 2003/05/10 -- channel.dsm 0.6.4 - Auto-response notify
 	I have added a new feature called auto-response notify. When
 	enabled, it will echo a notification to the current window

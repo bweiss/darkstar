@@ -1,0 +1,15 @@
+/*
+ * If copied to ~/.epicrc this file will automatically load DarkStar on
+ * client startup. If you install DarkStar to somewhere other than
+ * ~/darkstar be sure to change the /LOAD line below.
+ */
+
+# Uncomment the following line to cause EPIC to dump core whenever it crashes.
+# This is only useful for debugging purposes.
+#xdebug +crash
+
+# In most EPIC builds the default level of window #1 is ALL which is usually
+# undesirable for users that open multiple windows.
+window 1 level none
+
+load ~/darkstar/darkstar.irc

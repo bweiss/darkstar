@@ -1,0 +1,27 @@
+Module: memo
+Author: Brian Weiss <brian@epicsol.org>
+
+Description:
+   Allows you to quickly save/view a list of notes while in the client.
+
+Config Variables:
+   MEMO_FILE               - File to store your memos in. The value of
+                             $DS.USER_DIR will be prepended to this so,
+                             by default, a value of "memo.txt" would save
+                             memos to "~/.darkstar/memo.txt".
+
+Commands:
+   memo
+   memo -delete all
+   memo -delete <#> ...
+   memo <text>
+     - If no arguments are given, all memos will be displayed to the
+       current window.
+     - If passed "-delete all" then you will be prompted to delete the
+       entire memo file.
+     - If passed "-delete <#> ..." then all memo numbers specified will
+       be erased. The memo numbers can be given in any order.
+         * NOTE: The abbreviations -d and -del will work in place of -delete
+     - If passed "<text>" then <text> will be added to the memo file as
+       a new memo.
+
