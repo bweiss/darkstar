@@ -1,4 +1,4 @@
-#version 0.6.4
+#version 0.6.5
 /* $Id$ */
 /*
  * channel.dsm - Channel related module for DarkStar/EPIC4
@@ -509,7 +509,7 @@ alias voice (nicks) {
 
 /*
  * Sends a notice to all +o nicks in the current channel,
- * seven at a time.
+ * seven at a time. This does not work on all servers. See /WALL2.
  */
 alias wall (text) {
 	if (!text) {
@@ -660,20 +660,43 @@ on ^mode "*" {
 }
 
 on ^public "*" {
-	if (FORMAT.PUBLIC) {
+	if (CONFIG.AUTO_RESPONSE && match(*$servernick()* $2-)) {
+		if (FORMAT.PUBLIC_AR) {
+			echo $fparse(PUBLIC_AR $*)
+		}
+		if (CONFIG.AUTO_RESPONSE_BEEP) {
+			^stack push set BEEP
+			^set BEEP ON
+			beep
+			^stack pop set BEEP
+		}
+		if (CONFIG.AUTO_RESPONSE_NOTIFY && winchan($1) != winnum()) {
+			xecho -b -c Auto-response triggered in window #$winchan($1) by $0 \($1\)
+		}
+	} else if (FORMAT.PUBLIC) {
 		echo $fparse(PUBLIC $*)
 	}
 }
 
 on ^public_other "*" {
-	if (FORMAT.PUBLIC_OTHER) {
+	if (CONFIG.AUTO_RESPONSE && match(*$servernick()* $2-)) {
+		if (FORMAT.PUBLIC_OTHER_AR) {
+			echo $fparse(PUBLIC_OTHER_AR $*)
+		}
+		if (CONFIG.AUTO_RESPONSE_BEEP) {
+			^stack push set BEEP
+			^set BEEP ON
+			beep
+			^stack pop set BEEP
+		}
+		if (CONFIG.AUTO_RESPONSE_NOTIFY && winchan($1) != winnum()) {
+			xecho -b -c Auto-response triggered in window #$winchan($1) by $0 \($1\)
+		}
+	} else if (FORMAT.PUBLIC_OTHER) {
 		echo $fparse(PUBLIC_OTHER $*)
 	}
 }
 
-/*
- * Auto-response
- */
 on ^public '% % *\\[$CONFIG.AUTO_RESPONSE_STR\\]*' {
 	if (CONFIG.AUTO_RESPONSE) {
 		if (FORMAT.PUBLIC_AR) {
@@ -688,10 +711,8 @@ on ^public '% % *\\[$CONFIG.AUTO_RESPONSE_STR\\]*' {
 		if (CONFIG.AUTO_RESPONSE_NOTIFY && winchan($1) != winnum()) {
 			xecho -b -c Auto-response triggered in window #$winchan($1) by $0 \($1\)
 		}
-	} else {
-		if (FORMAT.PUBLIC) {
-			echo $fparse(PUBLIC $*)
-		}
+	} else if (FORMAT.PUBLIC) {
+		echo $fparse(PUBLIC $*)
 	}
 }
 
@@ -709,10 +730,8 @@ on ^public_other '% % *\\[$CONFIG.AUTO_RESPONSE_STR\\]*' {
 		if (CONFIG.AUTO_RESPONSE_NOTIFY && winchan($1) != winnum()) {
 			xecho -b -c Auto-response triggered in window #$winchan($1) by $0 \($1\)
 		}
-	} else {
-		if (FORMAT.PUBLIC_OTHER) {
-			echo $fparse(PUBLIC_OTHER $*)
-		}
+	} else if (FORMAT.PUBLIC_OTHER) {
+		echo $fparse(PUBLIC_OTHER $*)
 	}
 }
 
