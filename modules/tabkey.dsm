@@ -1,4 +1,4 @@
-#version 0.3.5
+#version 0.3.6
 /* $Id$ */
 /*
  * tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -129,7 +129,7 @@ alias tabkey.main {
 	} elsif (#matches && strlen($word) <= strlen($prefix)) {
 		@ :prefix = 0 > index("$chr($jot(32 1))" $prefix) ? prefix : ["$prefix"]
 		@ :line = mid(0 $wordind $L)
-		parsekey erase_line
+		parsekey erase_to_beg_of_line
 		xtype -l $line$prefix${1 < #matches ? [] : [ ]}
 	}
 	xdebug $oxd
@@ -441,7 +441,7 @@ alias tabkey.method.commands {
 	return $ret
 }
 
-alias tabkey.method.chan (args) { return $pattern("$args*" $mychannels()); }
+alias tabkey.method.chan (args) { return $pattern("$sar(g/\\/\\\\/$args)*" $mychannels()); }
 
 alias alias.foo alias $*;alias $sar(g/globi/glob/$sar(g/filei/file/$*))
 alias.foo tabkey.method.filei (f0) {
@@ -470,6 +470,7 @@ alias tabkey.method.mask {
 }
 
 alias tabkey.method.nick (args) {
+	@ :args = sar(g/\\/\\\\/$args)
 	if (match("$args*" $chanusers())) {
 		return $pattern("$args*" $chanusers())
 	} else {
@@ -489,7 +490,7 @@ alias tabkey.method.nickchannotify {
 	return $remws(/ $tabkey.method.chan($*) $sort($uniq($tabkey.method.nick($*) $tabkey.method.notify($*))))
 }
 
-alias tabkey.method.notify (args) { return $pattern("$args*" $notify(on)); }
+alias tabkey.method.notify (args) { return $pattern("$sar(g/\\/\\\\/$args)*" $notify(on)); }
 
 alias tabkey.method.variables (type, void) {
 	bless
