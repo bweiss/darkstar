@@ -1,6 +1,9 @@
 Darkstar ChangeLog
 
 
+!! RELEASE: 0.2.0 (20020329) !!
+
+
 3/29/02
 
  * [window.dsm 0.3.2] Removed the AUTO_BIND_ON_WINDOW_JOIN config variable
