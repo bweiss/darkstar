@@ -2,7 +2,16 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://darkstar.epicsol.org/UPDATES
 
 
-DarkStar 0.2.11 (20031031)
+*** News 2003/11/02 -- Goodbye seen.dsm
+	It has been brought to my attention that the seen module, which
+	was never mentioned in this file, isn't really a very important
+	feature and, considering how buggy it is, should not be included
+	in the repository and official tar file. As of this point it will
+	no longer be distributed with the DarkStar core but will be made
+	available in the "Extra Modules" section of the website.
+
+
+DarkStar 0.2.11 (20031101)
 
 
 *** News 2003/10/31 -- misc.dsm 1.1 - ratbox ircd whois_actually support

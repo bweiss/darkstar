@@ -1,7 +1,5 @@
 FOR 0.3 RELEASE:
 
- Core Scripts:
-
   * Write a $numlines() function that will return the number of lines
     that a given string will occupy after final display. This must take
     into account the effects of /SET [CONTINUED_LINE|INDENT].
@@ -29,16 +27,14 @@ FOR 0.3 RELEASE:
 
   * Add 005 handler.
 
-  * Add a DarkStar echo prefix? e.g. "*** DarkStar: Loaded module: foo 1.0"
-
   * $STATUS.DOUBLE and the single_status array are part of a miserable hack
     that needs to go away. Find some other way to do this.
 
   * Add timestamping functionality to the core. This includes a TIMESTAMP
-    config variable, a format variable of the same name, and a $ts function
+    config variable, a format variable of the same name, and a $ts() function
     for use in themes.
 
-  * Rename the bool_to_* functions? $booltoword() and $booltonum()?
+  * Rename the bool_to_* functions. $booltoword() and $booltonum()?
 
   * Change most of the error messages in the core (especially the module
     loader) so that they are less alarming. Messages like "Error: Module
@@ -48,16 +44,21 @@ FOR 0.3 RELEASE:
   * Add some global variables to the core that the module loader will set
     to the name of the module currently being (un)loaded.
 
- Modules:
-
-  * [memo.dsm] Add the ability to group memos.
-
-  * [channel.dsm] The REMEMBER_TOPICS feature should also store the nick
-    of the person that set the topic as well as the timestamp for it.
+  * Considering adding some method for modules to add small help strings for
+    their aliases. Perhaps a special member for each module's assign structure
+    like "<modname>.HELP.<command>[.<linenum>]". The <linenum> member would
+    allow for multiple lines of text.
 
   * [window.dsm] Rename the BIND_ON_JOIN and UNBIND_ON_PART config variables?
 
-  * Write a log management module. It should provide basic log management,
+
+AFTER 0.3 RELEASE:
+
+  * [channel.dsm] Rewrite /WALL so that type 3 attempts to use the 005
+    handler's value for MAXTARGETS or fallback to 4, instead of 7, if that
+    fails.
+
+  * Write a log management module. It should provide basic log management,   
     such as setting up automatic logging for various things (channels, nicks,
     windows, etc.) as well as log rotation features.
 
@@ -68,20 +69,10 @@ FOR 0.3 RELEASE:
 
   * [misc.dsm] Add a server ping command (/SPING).
 
-  * [seen.dsm] The method being used to write the seen db to disk is totally
-    flawed. It would be much better if the user had to specify groups of
-    servers that they wish the seen module to monitor. The db could then
-    be written to disk according to the group names instead of individual
-    server names.
+  * [memo.dsm] Add the ability to group memos.
 
-
-AFTER 0.3 RELEASE:
-
-  * If possible, make all scripts safe for multi-server use.
-
-  * [channel.dsm] Rewrite /WALL so that type 3 attempts to use the 005
-    handler's value for MAXTARGETS or fallback to 4, instead of 7, if that
-    fails.
+  * [channel.dsm] The REMEMBER_TOPICS feature should also store the nick
+    of the person that set the topic as well as the timestamp for it.   
 
 
 OTHER NOTES/IDEAS:
@@ -96,10 +87,7 @@ OTHER NOTES/IDEAS:
 * Figure out a way to allow modules to prevent output from /DSET (and /FSET?)
   from within /ON hooks.
 
-* Is it possible to have /HELP browse both the EPIC and DarkStar help files
-  at the same time? DarkStar could have its own section e.g. "9_DarkStar"
-  so that we won't have to reference the help pages with the current, lame
-  notation: ds:<page>(<section>).
+* Add a DarkStar echo prefix? e.g. "*** DarkStar: Loaded module: foo 1.0"
 
 
 End of file.
