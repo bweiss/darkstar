@@ -10,3 +10,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Fix /MASSMODE
 * Make sure to reset the value of extractw when exiting tabkey.main early.
 * Remove $serverrefs() and replace all calls to it with calls to $myservers().
+* Make sure window.msgwin.show only operates on windows that actually exist.

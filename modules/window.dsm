@@ -1,4 +1,4 @@
-# version:0.10 loader:pf
+# version:0.10.1 loader:pf
 # $Id$
 #
 # window.dsm - Window related module for DarkStar/EPIC4
@@ -272,22 +272,26 @@ alias window.msgwin.show (void)
 	for ii from 1 to $numitems(window.msgwins)
 	{
 		@ :win = getitem(window.msgwins ${ii-1});
-		if (winserv() != winserv($win))
+
+		if (winnum($win) > -1)
 		{
-			if (winvisible($win))
+			if (winserv() != winserv($win))
 			{
-				^window $win fixed off skip off swappable on;
-				^window $win hide;
-				^window $win fixed on skip on swappable off;
-			};
-		}{
-			if (!winvisible($win))
-			{
-				^window $win fixed off skip off swappable on;
-				^window show $win;
-				if (CONFIG.MSG_WINDOW_SIZE) {^window size $CONFIG.MSG_WINDOW_SIZE};
-				^window last;
-				^window $win fixed on skip on swappable off;
+				if (winvisible($win))
+				{
+					^window $win fixed off skip off swappable on;
+					^window $win hide;
+					^window $win fixed on skip on swappable off;
+				};
+			}{
+				if (!winvisible($win))
+				{
+					^window $win fixed off skip off swappable on;
+					^window show $win;
+					if (CONFIG.MSG_WINDOW_SIZE) {^window size $CONFIG.MSG_WINDOW_SIZE};
+					^window last;
+					^window $win fixed on skip on swappable off;
+				};
 			};
 		};
 	};
