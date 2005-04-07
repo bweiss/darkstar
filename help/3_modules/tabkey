@@ -18,7 +18,7 @@ Author: Brian Weiss <brian@epicsol.org>
 Key Bindings:
    ^I   (Tab)                 TABKEY_COMPLETION, TABKEY_COMPLETION_FORWARD,
                               or TABKEY_COMPLETION_BACKWARD
-   ^[^I (Esc-Tab              Same as above.
+   ^[^I (Esc-Tab)             Same as above.
 
 History:
    This module is based on the tabkey.ce script written by CrazyEddy and
