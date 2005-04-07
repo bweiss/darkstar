@@ -32,3 +32,6 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Fix /THEME -SAVE so it writes settings to unset variables with no value.
 * Add all the win* functions from the builtins script included with EPIC5.
 * Add aliases for /ADDSET and /DELSET (EPIC5 only)
+* Add key binding for Esc-Tab in tabkey.dsm that does backward match cycling.
+* Remove Esc-Tab key binding in window.dsm.
+* Remove the TABKEY_CYCLE_MATCHES config variable.

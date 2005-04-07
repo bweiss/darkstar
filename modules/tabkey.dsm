@@ -1,4 +1,4 @@
-# version:0.6.1 loader:pf
+# version:1.0 loader:pf
 # $Id$
 #
 # tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -75,7 +75,8 @@
 
 queue cleanup.tabkey
 {
-	^bind ^I toggle_insert_mode;
+	^bind ^I NOTHING;
+	^bind ^[^I NOTHING;
 	^on #msg 420 -"*";
 	^on #send_msg 420 -"*";
 	^on #dcc_chat 420 -"*";
@@ -84,7 +85,6 @@ queue cleanup.tabkey
 	^on #send_ctcp 420 -"PRIVMSG % DCC CHAT *";
 };
 
-addconfig    TABKEY_CYCLE_MATCHES 1;
 addconfig    TABKEY_MAX_MSG_HISTORY 6;
 addconfig    TABKEY_NICKCOMP_SUFFIX ,;
 
@@ -96,6 +96,9 @@ addconfig    TABKEY_NICKCOMP_SUFFIX ,;
 @ bindctl(function TABKEY_COMPLETION create "tabkey.main");
 @ bindctl(function TABKEY_COMPLETION_FORWARD create "tabkey.main 1");
 @ bindctl(function TABKEY_COMPLETION_BACKWARD create "tabkey.main -1");
+
+bind ^I TABKEY_COMPLETION_FORWARD;
+bind ^[^I TABKEY_COMPLETION_BACKWARD;
 
 #
 # tabkey.main [-1|0|1]
@@ -797,35 +800,6 @@ on #^send_ctcp 420 "PRIVMSG % DCC CHAT *"
 {
 	for serv in ($myservers(0)) {
 		tabkey.msg_handler $serv =$1;
-	};
-};
-
-on #-hook 420 "CONFIG TABKEY_CYCLE_MATCHES *"
-{
-	@ :curval = CONFIG.TABKEY_CYCLE_MATCHES;
-	@ :oldval = [$2];
-
-	if (curval != [] && (!isnumber(b10 $curval) || curval < 0 || curval > 2))
-	{
-		xecho -b Value must be either 0, 1, or 2;
-		defer dset TABKEY_CYCLE_MATCHES $oldval;
-	}{
-		switch ($CONFIG.TABKEY_CYCLE_MATCHES)
-		{
-			() (0) {^bind ^I TABKEY_COMPLETION};
-			(1)    {^bind ^I TABKEY_COMPLETION_FORWARD};
-			(2)    {^bind ^I TABKEY_COMPLETION_BACKWARD};
-		};
-	};
-};
-
-defer
-{
-	switch ($CONFIG.TABKEY_CYCLE_MATCHES)
-	{
-		() (0) {^bind ^I TABKEY_COMPLETION};
-		(1)    {^bind ^I TABKEY_COMPLETION_FORWARD};
-		(2)    {^bind ^I TABKEY_COMPLETION_BACKWARD};
 	};
 };
 

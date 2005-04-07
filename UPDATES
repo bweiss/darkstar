@@ -2,6 +2,14 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://www.epicsol.org/darkstar/UPDATES
 
 
+*** News 2005/04/07 -- tabkey.dsm 1.0 - Esc-Tab key binding
+	A key binding for Esc-Tab (^[^I) has been added to the
+	tabkey module that, when pressed, will attempt completion
+	of the current input line with backward match cycling enabled.
+	Due to this change, the Esc-Tab key binding has been removed
+	from the window module and the TABKEY_CYCLE_MATCHES config
+	variable has been removed.
+
 *** News 2005/03/29 -- No more /SET REVERSE_STATUS_LINE in themes
 	The REVERSE_STATUS_LINE set has been removed from all themes
 	and is no longer written to themes saved with /THEME -SAVE.

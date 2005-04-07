@@ -1,4 +1,4 @@
-# version:0.10.3 loader:pf
+# version:0.10.4 loader:pf
 # $Id$
 #
 # window.dsm - Window related module for DarkStar/EPIC4
@@ -39,7 +39,7 @@ queue cleanup.window
 	for char in ($jot(0 9)) {
 		^bind ^[$char nothing;
 	};
-	for keyb in (^[^I ^[[1~ ^[[4~ ^[^[[5~ ^[^[[6~) {
+	for keyb in (^[[1~ ^[[4~ ^[^[[5~ ^[^[[6~) {
 		^bind $keyb nothing;
 	};
 	^bind -symbolic key_f12 nothing;
@@ -74,7 +74,6 @@ addconfig -b UNBIND_ON_PART 0;
 
 ^bind ^R next_window;
 
-^bind ^[^I parse_command window next;
 ^bind ^[1 parse_command window swap 1;
 ^bind ^[2 parse_command window swap 2;
 ^bind ^[3 parse_command window swap 3;

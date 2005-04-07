@@ -9,13 +9,6 @@ Author: Brian Weiss <brian@epicsol.org>
    track of private msgs and DCC CHAT connections for easy replies.
 
 Config Variables:
-   TABKEY_CYCLE_MATCHES     - This enables or disables match cycling
-                              whenever the Tab key is pressed a second
-                              time with no change on the input line.
-                              There are three possible values:
-                                 0 (or <EMPTY>) - No match cycling
-                                 1 - Forward match cycling
-                                 2 - Backward match cycling
    TABKEY_MAX_MSG_HISTORY   - Max number of nicks to store in the msg
                               history for /MSG completion.
    TABKEY_NICKCOMP_SUFFIX   - If completing a nickname, and the nick is the
@@ -23,9 +16,9 @@ Author: Brian Weiss <brian@epicsol.org>
                               to it.
 
 Key Bindings:
-   ^I (Tab)                   TABKEY_COMPLETION, TABKEY_COMPLETION_FORWARD,
-                              or TABKEY_COMPLETION_BACKWARD (depends on
-                              the value of TABKEY_CYCLE_MATCHES).
+   ^I   (Tab)                 TABKEY_COMPLETION, TABKEY_COMPLETION_FORWARD,
+                              or TABKEY_COMPLETION_BACKWARD
+   ^[^I (Esc-Tab              Same as above.
 
 History:
    This module is based on the tabkey.ce script written by CrazyEddy and
