@@ -35,3 +35,5 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Add key binding for Esc-Tab in tabkey.dsm that does backward match cycling.
 * Remove Esc-Tab key binding in window.dsm.
 * Remove the TABKEY_CYCLE_MATCHES config variable.
+* Add global variable named LEVELS containing all valid window levels.
+* Use new LEVELS variable in tabkey.cmd.ignore and tabkey.cmd.window.

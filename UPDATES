@@ -2,6 +2,14 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://www.epicsol.org/darkstar/UPDATES
 
 
+*** News 2005/04/08 -- New global variable: LEVELS
+	There is a new global variable named LEVELS that will always
+	contain a list of the valid window levels. This will hold
+	a different value depending on whether EPIC4 or EPIC5 is
+	being used. Note: EPIC5 is NOT officially supported yet.
+	Currently only minor changes are being made to support it
+	since I know people will use it even if I tell them not to.
+
 *** News 2005/04/07 -- tabkey.dsm 1.0 - Esc-Tab key binding
 	A key binding for Esc-Tab (^[^I) has been added to the
 	tabkey module that, when pressed, will attempt completion

@@ -6,7 +6,7 @@
 #  \__,_| \__,_||_|   |_|\_\|___/ \__| \__,_||_|
 #
 #  DarkStar - A modular script pack for the EPIC4 IRC client.
-#  Copyright (c) 2002-2004 Brian Weiss <brian@epicsol.org>
+#  Copyright (c) 2002-2005 Brian Weiss <brian@epicsol.org>
 #
 #  Designed for use with EPIC4-2.0 and up.
 #  See the 'README' file for general information.
@@ -76,7 +76,7 @@ for array in ($getarrays()) {
 # This will be incremented every time a change takes place in
 # the core scripts (this file and any *.dsc files in $DS.HOME/core/).
 #
-@ DS.CORE_ID = 132;
+@ DS.CORE_ID = 133;
 
 xecho -b -c Loading DarkStar $DS.VERSION;
 
@@ -125,9 +125,9 @@ if (fexist($DS.USER_DIR) == -1)
 	echo;
 	echo Welcome to the DarkStar/EPIC4 script pack!;
 	echo;
-	echo Copyright (c) 2002-2004 Brian Weiss <brian@epicsol.org>;
+	echo Copyright (c) 2002-2005 Brian Weiss <brian@epicsol.org>;
 	echo See the 'COPYRIGHT' file for details.;
-	echo Official Website: http://www.epicsol.org/darkstar/;
+	echo Official Website: http://darkstar.epicsol.org/;
 	echo;
 	echo If you have not looked at the README yet, you should do so now.;
 	echo It is also a good idea to have a look through the various help files;

@@ -1,4 +1,4 @@
-# version:1.0 loader:pf
+# version:1.0.1 loader:pf
 # $Id$
 #
 # tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -424,7 +424,7 @@ alias tabkey.cmd.ignore (...)
 	if (curword == 1) {
 		@ :retval = tabkey.method.mask($*);
 	} else if (curword > 1) {
-		@ :retval = pattern("$0*" ALL CRAP CTCPS INVITES JOINS MSGS NICKS NONE NOTES NOTICES PARTS PUBLIC TOPICS WALLS WALLOPS);
+		@ :retval = pattern("$0*" $LEVELS);
 	};
 	@ function_return = tabkey.nofallback($retval);
 };
@@ -605,7 +605,7 @@ alias tabkey.cmd.window (...)
 				@ :word_a = before(-1 , $word);
 				@ :word_b = after(-1 , $word);
 			};
-			@ :list = [ACTIONS CRAP CTCP DCC MSGS NOTES NOTICES OPNOTES PUBLIC SNOTES USERLOG1 USERLOG2 USERLOG3 USERLOG4 WALLOPS WALLS];
+			@ :list = LEVELS;
 		}
 		(LOGFILE) {
 			@ :list = tabkey.method.file($*);

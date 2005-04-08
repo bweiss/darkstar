@@ -2,7 +2,7 @@ README file for DarkStar/EPIC4
 $Id$
 
 DarkStar written and maintained by Brian Weiss <brian@epicsol.org>
-Copyright (c) 2002-2004 Brian Weiss
+Copyright (c) 2002-2005 Brian Weiss
 Please see the 'COPYRIGHT' file for licensing information.
 See the bottom of this file for a list of contributors.
 
@@ -36,7 +36,7 @@ WHERE TO GET DARKSTAR AND EPIC4
 There is now an official DarkStar website. You can find it at one of
 the following locations.
 
-  http://www.epicsol.org/darkstar/
+  http://darkstar.epicsol.org/
   http://darkstar.nuthouse.org/  (Mirror site provided by keerf - Thanks!)
 
 Recent versions of both DarkStar and EPIC4 can also be found at the
