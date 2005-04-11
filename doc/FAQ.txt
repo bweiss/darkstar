@@ -92,11 +92,13 @@ A: This can be accomplished by adding a small piece of code to the
    PUBLIC* (and optionally SEND_PUBLIC*) format variables wherever you
    want the '@' or '+' to be displayed.
 
-   ${ischanop($1 $2) ? [@] : ischanvoice($1 $2) == 1 ? [+] : [ ]}
+   ${ischanop($1 $2) ? [@] : ischanvoice($1 $2) > 0 ? [+] : [ ]}
+     or
+   ${ischanop($1 $2) ? [@] : ischanvoice($1 $2) > 0 ? [+] : []}
 
    e.g.
    *** Current value of PUBLIC is <$1> $3-
-   /FSET PUBLIC <${ischanop($1 $2) ? [@] : ischanvoice($1 $2) == 1 ? [+] : [ ]}$1> $3-
+   /FSET PUBLIC <${ischanop($1 $2) ? [@] : ischanvoice($1 $2) > 0 ? [+] : [ ]}$1> $3-
 
    If you do this, you will probably want to create your own custom theme
    for it so that any changes you make are not overwritten the next time

@@ -1,4 +1,4 @@
-# version:0.10.5 loader:pf
+# version:0.10.6 loader:pf
 # $Id$
 #
 # window.dsm - Window related module for DarkStar/EPIC4
@@ -177,7 +177,7 @@ alias window.auto_query_update (serv, nick, uhost, void)
 
 alias window.auto_query_window (serv, nick, uhost, void)
 {
-	if (!serv || !nick)
+	if (!nick)
 		return;
 
 	if (CONFIG.AUTO_QUERY_WINDOW && querywin($nick $serv) == -1 &&
