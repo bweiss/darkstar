@@ -1,4 +1,4 @@
-# version:0.10.4 loader:pf
+# version:0.10.5 loader:pf
 # $Id$
 #
 # window.dsm - Window related module for DarkStar/EPIC4
@@ -19,6 +19,7 @@ queue cleanup.window
 
 	^on #connect 426 -"*";
 	^on #disconnect 426 -"*";
+	^on #hook 426 -"CONFIG AUTO_CREATE_WINDOWS *"
 	^on #hook 426 -"CONFIG MSG_WINDOW *";
 	^on #hook 426 -"CONFIG MSG_WINDOW_LEVEL *";
 	^on #hook 426 -"CONFIG MSG_WINDOW_NUMBER *";
@@ -317,6 +318,18 @@ on #-disconnect 426 "*"
 	};
 };
 
+on #-hook 426 "CONFIG AUTO_CREATE_WINDOWS *"
+{
+	@ :curval = CONFIG.AUTO_CREATE_WINDOWS;
+	@ :oldval = [$2];                    
+
+	if (curval != [] && (!isnumber(b10 $curval) || curval < 0))
+	{
+		xecho -b Value must be an integer greater than or equal to 0;
+		defer dset AUTO_CREATE_WINDOWS $oldval;                        
+	};
+};
+
 on #-hook 426 "CONFIG MSG_WINDOW *"
 {
 	if (CONFIG.MSG_WINDOW)
@@ -559,7 +572,7 @@ if (fexist($DS.SAVE_DIR/window) == 1) {
 	^load $DS.SAVE_DIR/window;
 };
 
-if (CONFIG.AUTO_CREATE_WINDOWS)
+if (isnumber(b10 $CONFIG.AUTO_CREATE_WINDOWS))
 {
 	for ii from 1 to $CONFIG.AUTO_CREATE_WINDOWS
 	{

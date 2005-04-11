@@ -37,3 +37,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Remove the TABKEY_CYCLE_MATCHES config variable.
 * Add global variable named LEVELS containing all valid window levels.
 * Use new LEVELS variable in tabkey.cmd.ignore and tabkey.cmd.window.
+* Add hook to ensure AUTO_CREATE_WINDOWS can only be set to an integer value.
