@@ -8,26 +8,26 @@ Author: Brian Weiss <brian@epicsol.org>
    even multi-server safe.
 
 Config Variables:
-   NICK_MANAGER                      - Boolean. Enables/disables the
-                                       nick manager.
-   NICK_MANAGER_AUTO_ADD_NICKS       - Boolean. If true, the /NICK command
-                                       will add nicks to the nicklist.
-   NICK_MANAGER_IGNORE_NETSPLITS     - Boolean. If true, the nick manager
-                                       will ignore signoffs that appear to
-                                       be the result of a netsplit.
-   NICK_MANAGER_IGNORE_TIMEOUT       - Time in seconds that a nick should
-                                       be ignored because of a netsplit.
-                                       (Default: 900)
-   NICK_MANAGER_NICKLIST             - Your list of desired nicknames with
-                                       the highest priority nicks first.
-   NICK_MANAGER_SCAN_INTERVAL        - Time in seconds between each nick
-                                       scan. Remember, the nick scan has to
-                                       check every nick in the nicklist for
-                                       every active server connection.
-                                       Because of this I have imposed a
-                                       minimum interval of 10 seconds,
-                                       though a much higher setting is
-                                       recommended. (Default: 60)
+   NICKMGR                        - Boolean. Enables/disables the
+                                    nick manager.
+   NICKMGR_AUTO_ADD_NICKS         - Boolean. If true, the /NICK command
+                                    will add nicks to the nicklist.
+   NICKMGR_IGNORE_NETSPLITS       - Boolean. If true, the nick manager
+                                    will ignore signoffs that appear to
+                                    be the result of a netsplit.
+   NICKMGR_IGNORE_TIMEOUT         - Time in seconds that a nick should
+                                    be ignored because of a netsplit.
+                                    (Default: 900)
+   NICKMGR_NICKLIST               - Your list of desired nicknames with
+                                    the highest priority nicks first.
+   NICKMGR_SCAN_INTERVAL          - Time in seconds between each nick
+                                    scan. Remember, the nick scan has to
+                                    check every nick in the nicklist for
+                                    every active server connection.
+                                    Because of this I have imposed a
+                                    minimum interval of 10 seconds,
+                                    though a much higher setting is
+                                    recommended. (Default: 60)
 
 Commands:
    nick <nickname>
@@ -42,5 +42,5 @@ Author: Brian Weiss <brian@epicsol.org>
    nickscan
      - Performs a scan for available nicks on all active server connections.
        This will also be run automatically every so often according to the
-       value of NICK_MANAGER_SCAN_INTERVAL.
+       value of NICKMGR_SCAN_INTERVAL.
 
