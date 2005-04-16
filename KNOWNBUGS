@@ -40,3 +40,5 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Add hook to ensure AUTO_CREATE_WINDOWS can only be set to an integer value.
 * Fix a bug in the auto-query code which caused it to bomb out when the
   server refnum was 0.
+* Check for the existence of $uh() before attempting to use it in
+  $tabkey.method.mask().

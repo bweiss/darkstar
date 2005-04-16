@@ -1,4 +1,4 @@
-# version:1.0.1 loader:pf
+# version:1.0.2 loader:pf
 # $Id$
 #
 # tabkey.dsm - Tab key completion module for DarkStar/EPIC4
@@ -687,7 +687,7 @@ stack pop alias alias.foo;
 alias tabkey.method.mask (...)
 {
 	@ :uhost = userhost($0);
-	if (uhost == [<UNKNOWN>@<UNKNOWN>]) {
+	if (uhost == [<UNKNOWN>@<UNKNOWN>] && aliasctl(alias exists uh)) {
 		@ :uhost = uh($0);
 	};
 	@ function_return = uhost == [<UNKNOWN>@<UNKNOWN>] ? [] : mask(3 $uhost);
