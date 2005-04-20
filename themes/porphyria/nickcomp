@@ -1,0 +1,7 @@
+# $Id$
+# porphyria theme for DarkStar/EPIC4
+# Author: Daniel S <shattah@EFNET>
+# Module: nickcomp
+
+assign FORMAT.NICK_COMPLETION $1: $2-
+

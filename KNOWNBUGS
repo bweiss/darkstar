@@ -44,3 +44,6 @@ THE CHANGELOG SINCE THE LAST RELEASE:
   $tabkey.method.mask().
 * Add server* functions from the latest round of updates to BlackJac's
   builtins script from EPIC5.
+* Add format variables for the KNOCK feature present on EFNet servers.
+* Add KNOCK formats for the astral, feedback, and epic4 themes.
+* Add nickcomp theme files for all themes.

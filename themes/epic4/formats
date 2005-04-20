@@ -28,6 +28,10 @@ assign FORMAT.DCC_CHAT =$1= $2-
 assign FORMAT.INVITE $G $1 \($3\) invites you to channel $2
 assign FORMAT.JOIN $G $1 \($3\) has joined $2
 assign FORMAT.KICK $G ${[$1] == servernick() ? [You have] : [$1 has]} been kicked off channel $3 by $2 \($4-\)
+assign FORMAT.KNOCK $G $2 : $3-
+assign FORMAT.KNOCK_CHANNEL_OPEN $G $2 :$3-
+assign FORMAT.KNOCK_DELIVERED $G $2 :$3-
+assign FORMAT.KNOCK_LIMIT_EXCEEDED $G $2 :$3-
 assign FORMAT.LEAVE $G $1 \($3\) has left $2
 assign FORMAT.MODE $G Mode change \"$3-\" on channel $2 by $1
 assign FORMAT.MSG *$1* $3-

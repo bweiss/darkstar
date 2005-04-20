@@ -1,0 +1,10 @@
+# $Id$
+# Clone of the LiCe theme named "echoes" for DarkStar/EPIC4
+# Author: Brian Weiss <brian@epicsol.org>
+# Module: nickcomp
+#
+# This mimics the echoes theme for LiCe. I wrote this as a personal
+# favor for keerf in an attempt to get him to use DarkStar ;-)
+
+assign FORMAT.NICK_COMPLETION $1: $2-
+

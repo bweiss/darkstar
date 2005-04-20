@@ -1,0 +1,11 @@
+# $Id$
+# ScrollZ theme for DarkStar/EPIC4
+# Authors: Joshua Hamor <silicon@ircpimps.fuckedyourmom.com>
+#          Brian Weiss <brian@epicsol.org>
+# Module: nickcomp
+#
+# This attempts to mimic ScrollZ where possible. It's not perfect
+# but it comes pretty close.
+
+assign FORMAT.NICK_COMPLETION $1: $2-
+

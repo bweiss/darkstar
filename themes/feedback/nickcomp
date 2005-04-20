@@ -1,0 +1,10 @@
+# $Id$
+# Feedback theme for DarkStar/EPIC4
+# Author: Brian Weiss <brian@epicsol.org> - 2001
+# Module: nickcomp
+#
+# This is a cross between the astral and epic4 themes. It is intended to
+# be just like astral but without the colors or upper ASCII characters.
+
+assign FORMAT.NICK_COMPLETION $1: $2-
+

@@ -1,0 +1,7 @@
+# $Id$
+# EPIC4 theme for DarkStar/EPIC4                                 
+# Author: Brian Weiss <brian@epicsol.org>
+# Module: nickcomp
+
+assign FORMAT.NICK_COMPLETION $1: $2-
+

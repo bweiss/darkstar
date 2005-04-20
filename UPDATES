@@ -2,6 +2,11 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://www.epicsol.org/darkstar/UPDATES
 
 
+*** News 2005/04/20 -- formats.dsm 0.5 - KNOCK formats
+	Formats for the KNOCK feature present on EFNet servers has
+	finally been added. The format variables are: KNOCK,
+	KNOCK_CHANNEL_OPEN, KNOCK_DELIVERED, and KNOCK_LIMIT_EXCEEDED.
+
 *** News 2005/04/08 -- New global variable: LEVELS
 	There is a new global variable named LEVELS that will always
 	contain a list of the valid window levels. This will hold
