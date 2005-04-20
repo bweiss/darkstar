@@ -365,8 +365,48 @@ alias winchannels (win default "$winnum()", void)
 #
 # These were originally builtin functions but were removed in EPIC5.
 #
+
+# Only load these functions with EPIC5.
+if (info(i) >= 1000) {
+
 alias lastserver (void) {
 	return $serverctl(last_server);
+};
+
+alias servergroup (refnum default "$serverctl(from_server)", void) {
+	if (:group = serverctl(get $refnum group)) {
+		return $group;
+	};
+	return <default>;
+};
+
+alias servername (refnum default "$serverctl(from_server)", void) {
+	if (:name = serverctl(get $refnum itsname)) {
+		return $name;
+	};
+	return <none>;
+};
+
+alias servernick (refnum default "$serverctl(from_server)", void) {
+	return $serverctl(get $refnum nickname);
+};
+
+alias servernum (refnum default "$serverctl(from_server)", void) {
+	if ((:num = serverctl(refnum $refnum)) >= -1) {
+		return $num;
+	};
+	return -1;
+};
+
+alias serverourname (refnum default "$serverctl(from_server)", void) {
+	if (:ourname = serverctl(get $refnum name)) {
+		return $ourname;
+	};
+	return <none>;
+};
+
+alias servertype (refnum default "$serverctl(from_server)", void) {
+	return $serverctl(get $refnum protocol);
 };
 
 alias winbound (winnum default 0, void) {
@@ -435,3 +475,4 @@ alias winvisible (winnum default 0, void) {
 	return -1;
 };
 
+};

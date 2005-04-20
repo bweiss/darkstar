@@ -42,3 +42,5 @@ THE CHANGELOG SINCE THE LAST RELEASE:
   server refnum was 0.
 * Check for the existence of $uh() before attempting to use it in
   $tabkey.method.mask().
+* Add server* functions from the latest round of updates to BlackJac's
+  builtins script from EPIC5.
