@@ -31,6 +31,10 @@ assign FORMAT.DCC_CHAT %K[%G$1%K\(%gdcc%K\)]%n $2-
 assign FORMAT.INVITE %K>%n>%W> $1 Invites You to $2
 assign FORMAT.JOIN $G %C$1 %K[%c$3%K]%n has joined $2
 assign FORMAT.KICK ${[$1] == servernick() ? [%K>%n>%W> You%n have been] : [$G $1 was]} kicked off $3 by %c$2 %K\(%n$4-%K\)%n
+assign FORMAT.KNOCK $G $3 has asked for an invite to $2
+assign FORMAT.KNOCK_CHANNEL_OPEN $G Channel $2 is open
+assign FORMAT.KNOCK_DELIVERED $G Your KNOCK has been delivered to $2
+assign FORMAT.KNOCK_LIMIT_EXCEEDED $G Too many KNOCKs for $2
 assign FORMAT.LEAVE $G $1 %K[%n$3%K]%n has left $2 %K[%n$4-%K]%n
 assign FORMAT.MODE $G mode%K/%c$2 %K[%W$3-%K]%n by %W$1%n
 assign FORMAT.MSG %K[%M$1%K\(%m$2%K\)]%n $3-

@@ -29,9 +29,13 @@ assign FORMAT.CHANNEL_TS $G Channel %C$2%n created on $strftime($3 %%a %%b %%d %
 assign FORMAT.CTCP $G %CCTCP $3%n from %c$1%n %W\(%p$before(@ $userhost())%W\@%p$after(@ $userhost())%W)%n
 assign FORMAT.CTCP_REPLY $G %CCTCP $3%n reply from %c$1%n: $4-
 assign FORMAT.DCC_CHAT %W=%R$1%W=%n $2-
-assign FORMAT.INVITE $G %c$1 %W\(%p$before(@ $3)%W@%p$after(@ $3)\)%n invites you to channel %C$2%n
+assign FORMAT.INVITE $G %c$1%n %W\(%p$before(@ $3)%W@%p$after(@ $3)\)%n invites you to channel %C$2%n
 assign FORMAT.JOIN $G %c$1%n %W\(%p$before(@ $3)%W\@%p$after(@ $3)%W\)%n has joined channel %C$2%n
 assign FORMAT.KICK $G ${[$1] == servernick() ? [%cYou%n have] : [%c$1%n has]} been %Wkicked%n from channel %C$3%n by %c$2%n \($4-\)
+assign FORMAT.KNOCK $G %c$before(1 ! $3)%n %W\(%p$sar(/@/%W@%p/$after(1 ! $3))\)%n has asked for an invite to %C$2%n
+assign FORMAT.KNOCK_CHANNEL_OPEN $G Channel $2 is open
+assign FORMAT.KNOCK_DELIVERED $G Your KNOCK has been delivered to $2
+assign FORMAT.KNOCK_LIMIT_EXCEEDED $G Too many KNOCKs for $2
 assign FORMAT.LEAVE $G %c$1%n has left channel %C$2%n
 assign FORMAT.MODE $G %WMode change%n \"$3-\" on channel %C$2%n by %c$1%n
 assign FORMAT.MSG *%c$1%n* $3-  %W\(%p$before(@ $2)%W@%p$after(@ $2)%W\)%n [%K$Z%n]

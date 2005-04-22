@@ -47,3 +47,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Add format variables for the KNOCK feature present on EFNet servers.
 * Add KNOCK formats for the astral, feedback, and epic4 themes.
 * Add nickcomp theme files for all themes.
+* Add KNOCK formats for the bitchx, echoes, porphyria, and scrollz themes.

@@ -31,6 +31,10 @@ assign FORMAT.DCC_CHAT $G chat%K/%W$1%c:%n $2- %K[%W$Z%K]%n
 assign FORMAT.INVITE $G invite%K/%W$1%c:%n $2-
 assign FORMAT.JOIN $G join%K/%W$2%c: %W$1%K[%n$before(1 @ $3)%c@%n$after(1 @ $3)%K]%n
 assign FORMAT.KICK $G kick%K/%W$3%c: %W$2%n kicked %W$1%K[%n$4-%K]%n
+assign FORMAT.KNOCK $G %W$before(1 ! $3)%K[%n$sar(/@/%c@%n/$after(1 ! $3))%K]%n has asked for an invite to %W$2%n
+assign FORMAT.KNOCK_CHANNEL_OPEN $G Channel $2 is open
+assign FORMAT.KNOCK_DELIVERED $G Your KNOCK has been delivered to $2
+assign FORMAT.KNOCK_LIMIT_EXCEEDED $G Too many KNOCKs for $2
 assign FORMAT.LEAVE $G part%K/%W$2%c: %W$1%K[%n$before(1 @ $3)%c@%n$after(1 @ $3)%K]%n
 assign FORMAT.MODE $G mode%K/%W$2%c: %W$1%K[%n$3-%K]%n
 assign FORMAT.MSG %K\(%W$1%K[%n$before(1 @ $2)%c@%n$after(1 @ $2)%K]\)%n $3-
