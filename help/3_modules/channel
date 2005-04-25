@@ -52,6 +52,7 @@ Author: Brian Weiss <brian@epicsol.org>
 
    cmode <modes>
      - Sets <modes> on the current channel.
+       * Aliases: c
 
    cycle [channel]
      - Parts then re-joins [channel] or the current channel if none is

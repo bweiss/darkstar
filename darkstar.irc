@@ -19,7 +19,7 @@ if (word(2 $loadinfo()) != [pf])
 	return;
 };
 
-if (!epic() || V < 20040219)
+if (!epic() || V < 20040219 || info(i) >= 1000)
 {
 	echo;
 	echo WARNING!;
@@ -69,14 +69,14 @@ for array in ($getarrays()) {
 #
 # Important global variables
 #
-@ DS.VERSION = [0.3];
-@ DS.INTERNAL_VERSION = [20040814];
+@ DS.VERSION = [0.3.1];
+@ DS.INTERNAL_VERSION = [20050425];
 
 #
 # This will be incremented every time a change takes place in
 # the core scripts (this file and any *.dsc files in $DS.HOME/core/).
 #
-@ DS.CORE_ID = 134;
+@ DS.CORE_ID = 135;
 
 xecho -b -c Loading DarkStar $DS.VERSION;
 

@@ -13,9 +13,9 @@ TODO:
 
   * Add /ALLKICK and /ALLBAN aliases.
 
-  * Add support for "paste mode" either as a module or as part of the core.
-
-  * Add support for a topic bar.
+  * Add /PASTE and possibly some sort of "paste mode" where all input would
+    be sent to the current target regardless of it being prefixed by the
+    value of /SET CMDCHARS.
 
   * Write a log management module. It should provide basic log management,
     such as setting up automatic logging for various things (channels, nicks,
@@ -37,7 +37,7 @@ TODO:
     615 fudd : is using modes +ix +
     616 fudd : real hostname nuthouse.org 216.254.103.18
 
-  * Add support for a random kick msg file like what BX has.
+  * Add support for a random kick msg file.
 
   * Rewrite the /JOIN and /LEAVE aliases so that they use the CHANTYPES
     parameter from the 005 numeric to determine the allowed channel prefixes.
@@ -46,14 +46,7 @@ TODO:
 
   * Incorporate howl's new /HELP script to prepare for the migration to EPIC5.
 
-  * Display a diff of the old and new topic whenever someone changes it.
-    <_-^^-_> it would be nice if, when someone changes  thetopic, it showed
-             a diff between the old one and new one
-
-  * Add event handlers to format the channel knocking stuff.
-    *** #darkstar/epic cl!clogic@marooned.us : has asked for an invite.
-    -:- #darkstar/epic  Channel is open.
-    -:- #darkstar/epic  Your KNOCK has been delivered.
+  * Incorporate BlackJac's history script to prepare for EPIC5.
 
   * Write a more flexible version of STATUS_NOTIFY (%F).
 

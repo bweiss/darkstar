@@ -1,8 +1,8 @@
-# version:1.2.4 loader:pf
+# version:1.2.5 loader:pf
 # $Id$
 #
 # channel.dsm - Channel related module for DarkStar/EPIC4
-# Copyright (c) 2002-2004 Brian Weiss (except where noted)
+# Copyright (c) 2002-2005 Brian Weiss (except where noted)
 # See the 'COPYRIGHT' file for more information.
 #
 # This script uses serial number 423 for /ON hooks.
@@ -12,7 +12,7 @@ queue cleanup.channel
 {
 	^bind ^X nothing;
 
-	for alias in (addtopic alldeop alldop allop ban bankick banlist bans bk cmode cycle deop dop devoice dvoice et etopic i invite j join k kb key kick kickban l leave lk massmode mdeop mdop mdevoice mdvoice mme mop msay mvoice op part partall settopic t tban tedit tempban tempbk tempkb topics tt ttopic unban unkey untopic voice wall) {
+	for alias in (addtopic alldeop alldop allop ban bankick banlist bans bk c cmode cycle deop dop devoice dvoice et etopic i invite j join k kb key kick kickban l leave lk massmode mdeop mdop mdevoice mdvoice mme mop msay mvoice op part partall settopic t tban tedit tempban tempbk tempkb topics tt ttopic unban unkey untopic voice wall) {
 		^alias -$alias;
 	};
 
@@ -200,6 +200,8 @@ alias banlist (chan default "$C", void)
 {
 	//mode $chan +b;
 };
+
+alias c (...) {cmode $*};
 
 alias cmode (mode, ...)
 {

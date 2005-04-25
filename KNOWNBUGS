@@ -48,3 +48,5 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Add KNOCK formats for the astral, feedback, and epic4 themes.
 * Add nickcomp theme files for all themes.
 * Add KNOCK formats for the bitchx, echoes, porphyria, and scrollz themes.
+* Display client version warning for EPIC5 users.
+* Add /C command as an alias to /CMODE.
