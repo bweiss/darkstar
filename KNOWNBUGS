@@ -8,45 +8,5 @@ KNOWN ERRATA (eg, bugs, or unresolved requests):
 
 THE CHANGELOG SINCE THE LAST RELEASE:
 -------------------------------------
-* Display number of voiced users on all statbars that show user totals.
-* Move highlight code into formats.do_highlight alias.
-* Add support for highlighting in actions, public and private.
-* Add relay module to the default auto-load list.
-* Fix bug in /LESS (rb pwnt).
-* Make $tabkey.method.chan() attempt completion with #/& prefix if first
-  attempt fails.
-* Fix a small mistake in the TOPIC_CHANGE format in the bitchx theme. rb daed.
-* Fix _set so that it sends the correct args to the *_HEADER/*_FOOTER formats
-  according to type.
-* Fix /TOPICS so that it numbers the list of topics correctly.
-* Always delete the 'nickmgr' timer in nickmgr.add_timer before creating a
-  new timer.
-* Add support for backward match cycling in the tabkey module.
-* Remove "set REVERSE_STATUS_LINE" from all themes and add '^O' to the
-  beginning of all STATUS_FORMAT* sets.
-* Do not write the value of REVERSE_STATUS_LINE when saving themes.
-* Change the SEND_PUBLIC format in the epic4 theme to show the target.
-* Fix the /LEAVE alias for EPIC5 (It now uses //PART).
-* Don't set the NAMES_SORT_BY_MODE config variable within themes.
-* Change the default value of AUTO_CREATE_WINDOWS to 0.
-* Fix /THEME -SAVE so it writes settings to unset variables with no value.
-* Add all the win* functions from the builtins script included with EPIC5.
-* Add aliases for /ADDSET and /DELSET (EPIC5 only)
-* Add key binding for Esc-Tab in tabkey.dsm that does backward match cycling.
-* Remove Esc-Tab key binding in window.dsm.
-* Remove the TABKEY_CYCLE_MATCHES config variable.
-* Add global variable named LEVELS containing all valid window levels.
-* Use new LEVELS variable in tabkey.cmd.ignore and tabkey.cmd.window.
-* Add hook to ensure AUTO_CREATE_WINDOWS can only be set to an integer value.
-* Fix a bug in the auto-query code which caused it to bomb out when the
-  server refnum was 0.
-* Check for the existence of $uh() before attempting to use it in
-  $tabkey.method.mask().
-* Add server* functions from the latest round of updates to BlackJac's
-  builtins script from EPIC5.
-* Add format variables for the KNOCK feature present on EFNet servers.
-* Add KNOCK formats for the astral, feedback, and epic4 themes.
-* Add nickcomp theme files for all themes.
-* Add KNOCK formats for the bitchx, echoes, porphyria, and scrollz themes.
-* Display client version warning for EPIC5 users.
-* Add /C command as an alias to /CMODE.
+* Fix a bug where the TOPIC_UNSET format would be used instead of
+  TOPIC_CHANGE when a topic was set to "0".

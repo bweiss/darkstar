@@ -1,4 +1,4 @@
-# version:0.5 loader:pf
+# version:0.5.1 loader:pf
 # $Id$
 #
 # formats.dsm - Standard formatting hooks and variables for DarkStar/EPIC4
@@ -642,7 +642,7 @@ on ^send_public "*"
 
 on ^topic "*"
 {
-	if (![$2]) {
+	if (!strlen($2)) {
 		formats.echo TOPIC_UNSET $1 $0;
 	} else {
 		formats.echo TOPIC_CHANGE $1 $0 $2-;
