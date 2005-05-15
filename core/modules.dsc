@@ -40,6 +40,21 @@ alias autoload (args)
 		{
 			(-a) {@ :action = [add]};
 			(-d) {@ :action = [delete]};
+			(\\*) {
+				if (action == [add]) {
+					for ii from 1 to $numitems(_modules) {
+						@ push(:foo $getitem(_modules ${ii-1}));
+					};
+					for bar in ($foo) {
+						if (findw($bar $modlist) == -1) {
+							@ push(:modlist $bar);
+						};
+					};
+				} else if (action == [delete]) {
+					dset -AUTO_LOAD_MODULES;
+					@ :modlist = [];
+				};
+			};
 			(*) {
 				if (action == [add] && findw($arg $modlist) == -1) {
 					@ push(:modlist $arg);
@@ -75,7 +90,7 @@ alias loadmod (modules)
 	if (modules == [*])
 	{
 		@ :modules = [];
-		for ii from 1 to numitems(_modules) {
+		for ii from 1 to $numitems(_modules) {
 			@ push(:modules $getitem(_modules ${ii-1}));
 		};
 	}{
@@ -161,7 +176,7 @@ alias modlist (void)
 	# Attempt to purge the auto-load list of modules that don't exist.
 	for mod in ($CONFIG.AUTO_LOAD_MODULES)
 	{
-		if (finditem(_modules $mod) < 0)
+		if (mod != [*] && finditem(_modules $mod) < 0)
 		{
 			^local ask $'Remove unknown module "$mod" from the auto-load list? ';
 			if (ask == [y])

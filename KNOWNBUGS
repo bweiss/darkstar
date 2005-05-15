@@ -10,3 +10,5 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 -------------------------------------
 * Fix a bug where the TOPIC_UNSET format would be used instead of
   TOPIC_CHANGE when a topic was set to "0".
+* Fix a bug in /LOADMOD that was preventing "/LOADMOD *" from working.
+* Make /AUTOLOAD deal with being passed "*" in its list of modules.

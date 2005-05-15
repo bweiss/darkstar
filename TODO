@@ -1,5 +1,7 @@
 TODO:
 
+  * [window.dsm] Dynamic key bindings for swapping windows.
+
   * Multi-server operview.
 
   * Make NAMES formatting in formats.dsm use /ON NAMES instead of hooking
