@@ -67,7 +67,7 @@ assign FORMAT.SEND_NOTICE %G<%n-%g$1%n-%G>%n $2-
 assign FORMAT.SEND_PUBLIC %c<$2>%n $3-
 assign FORMAT.SEND_PUBLIC_OTHER %c<$1%n:%C$2>%n $3-
 assign FORMAT.SEND_WALL $G Sent wallmsg on $1 to $remw($servernick() $chops($1))
-assign FORMAT.SERVER_NOTICE %W-%G$servername()%W-%n $3-
+assign FORMAT.SERVER_NOTICE %W-%G$servername()%W-%n $1-
 assign FORMAT.SIGNOFF $G Signoff: %c$1%n \($2-%n\)
 assign FORMAT.TOPIC $G Topic for $1: $2-
 assign FORMAT.TOPIC_CHANGE $G $2 has set the topic on channel $1 to $3-

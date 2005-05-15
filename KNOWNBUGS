@@ -12,3 +12,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
   TOPIC_CHANGE when a topic was set to "0".
 * Fix a bug in /LOADMOD that was preventing "/LOADMOD *" from working.
 * Make /AUTOLOAD deal with being passed "*" in its list of modules.
+* Fix SERVER_NOTICE format in the bitchx, echoes, and scrollz themes.
