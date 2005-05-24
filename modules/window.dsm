@@ -1,4 +1,4 @@
-# version:0.10.6 loader:pf
+# version:0.10.7 loader:pf
 # $Id$
 #
 # window.dsm - Window related module for DarkStar/EPIC4
@@ -94,7 +94,11 @@ addconfig -b UNBIND_ON_PART 0;
 ^bind ^[^[[5~ parse_command window.last.scroll backward;
 ^bind ^[^[[6~ parse_command window.last.scroll forward;
 
-^bind -symbolic key_f12 parse_command window last clear last;
+if (getenv(TERM) == [vt100]) {
+	^bind ^[[24~ parse_command window last clear last;
+} else {
+	^bind -symbolic key_f12 parse_command window last clear last;
+};
 
 
 #
@@ -111,7 +115,6 @@ for wref in ($winrefs())
 		@ setitem($array $numitems($array) $wref $nick $uhost);
 	};
 };
-
 
 alias q (...)
 {
