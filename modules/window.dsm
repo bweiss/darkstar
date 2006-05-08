@@ -1,4 +1,4 @@
-# version:0.10.7 loader:pf
+# version:0.10.8 loader:pf
 # $Id$
 #
 # window.dsm - Window related module for DarkStar/EPIC4
@@ -394,6 +394,13 @@ on #-hook 426 "CONFIG MSG_WINDOW_SIZE *"
 	{
 		xecho -b Value must be an integer greater than or equal to 0;
 		defer dset MSG_WINDOW_SIZE $oldval;
+	}{
+		# Change the size of any existing msg windows.
+		for ii from 1 to $numitems(window.msgwins)
+		{
+			@ :msgwin = getitem(window.msgwins ${ii-1});
+			window $msgwin size $CONFIG.MSG_WINDOW_SIZE;
+		};
 	};
 };
 
