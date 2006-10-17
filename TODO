@@ -1,5 +1,8 @@
 TODO:
 
+  * [channel.dsm] Add shortcut aliases to kickban with specific bantypes -
+    /kbu (kickbanUSER), /kbd (kickbanDOMAIN), etc.
+
   * [window.dsm] Dynamic key bindings for swapping windows.
 
   * Multi-server operview.

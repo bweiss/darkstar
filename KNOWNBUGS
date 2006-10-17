@@ -16,3 +16,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Add tabkey msg history entry for "no server" (-1) on DCC CHAT.
 * Fix F12 key binding (clear msgwin) on vt100 terminals.
 * Changing the value of /DSET MSG_WINDOW_SIZE now resizes existing msg windows.
+* Fixed tabkey module to work with EPIC5 dword change.
