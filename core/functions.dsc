@@ -361,9 +361,9 @@ alias winchannels (win default "$winnum()", void)
 
 #
 # The following functions were all pulled from the 'builtins' script
-# written by David B. Kratter and distributed with EPIC5.
+# that is included with EPIC5.
 #
-# These were originally builtin functions but were removed in EPIC5.
+# Copyright (c) 2006 BlackJac@EFNet
 #
 
 # Only load these functions with EPIC5.
@@ -371,6 +371,25 @@ if (info(i) >= 1000) {
 
 alias lastserver (void) {
 	return $serverctl(last_server);
+};
+
+alias myservers (arg, void) {
+	fe ($serverctl(omatch *)) mm {
+		if (serverctl(get $mm connected)) {
+			push :servers $mm;
+		};
+	};
+	fe ($servers) nn {
+		push function_return ${@arg ? nn : servername($nn)};
+	};
+};
+
+alias notifywindows (void) {
+	fe ($windowctl(refnums)) nn {
+		if (windowctl(get $nn notified)) {
+			push function_return $nn;
+		};
+	};
 };
 
 alias servergroup (refnum default "$serverctl(from_server)", void) {
@@ -409,6 +428,10 @@ alias servertype (refnum default "$serverctl(from_server)", void) {
 	return $serverctl(get $refnum protocol);
 };
 
+alias servports (refnum default "$serverctl(from_server)", void) {
+	return $serverctl(get $refnum port) $serverctl(get $refnum localport);
+};
+
 alias winbound (winnum default 0, void) {
 	return $windowctl(get $windowctl(refnum $winnum) bind_channel);
 };
@@ -424,6 +447,13 @@ alias winlevel (winnum default 0, void) {
 	return $windowctl(get $windowctl(refnum $winnum) window_level);
 };
   
+alias winline (linenum, winnum default 0, void) {
+	if ((:line = windowctl(get $windowctl(get refnum $winnum) line $linenum)) >= -1) {
+		return $line;
+	};
+	return -1;
+};
+
 alias winnam (winnum default 0, void) {
 	return $windowctl(get $windowctl(refnum $winnum) name);
 };
@@ -459,6 +489,10 @@ alias winserv (winnum default 0, void) {
 		return $serv;
 	};
 	return -1;
+};
+
+alias winsize (winnum default 0, void) {
+	return $windowctl(get $windowctl(refnum $winnum) display_size);
 };
 
 alias winstatsize (winnum default 0, void) {

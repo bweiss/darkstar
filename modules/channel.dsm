@@ -463,6 +463,7 @@ alias massmode (chan, action, mode, args)
 	for cnt from 1 to $maxmodes {
 		@ push(:tmp mode.$cnt);
 	};
+
 	fe ($args) $tmp
 	{
 		@ :nicks = [];

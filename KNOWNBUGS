@@ -17,3 +17,5 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Fix F12 key binding (clear msgwin) on vt100 terminals.
 * Changing the value of /DSET MSG_WINDOW_SIZE now resizes existing msg windows.
 * Fixed tabkey module to work with EPIC5 dword change.
+* Added new functions from builtins script: myservers, notifywindows,
+  servports, winline, winsize.
