@@ -1,15 +1,15 @@
-README file for DarkStar/EPIC4
+README file for DarkStar/EPIC5
 $Id$
 
 DarkStar written and maintained by Brian Weiss <brian@epicsol.org>
-Copyright (c) 2002-2005 Brian Weiss
+Copyright (c) 2002-2007 Brian Weiss
 Please see the 'COPYRIGHT' file for licensing information.
 See the bottom of this file for a list of contributors.
 
 
 ABOUT
 
-DarkStar is a modular script pack for the EPIC4 IRC client. It is highly
+DarkStar is a modular script pack for the EPIC5 IRC client. It is highly
 extensible and includes theme support, advanced tab completion, and a whole
 bunch of other goodies. The modular design offers many benefits (and a few
 drawbacks) and allows for a very high level of customization. It is ideal
@@ -27,11 +27,11 @@ browse through the help files (located in the help/ directory) by typing
 
 REQUIREMENTS
 
-The only requirement is EPIC4-2.0 or higher. This script pack will NOT
-work correctly with EPIC4-1.x or older versions. You have been warned.
+The only requirement is EPIC5-0.3 or higher. This script pack will NOT
+work correctly with EPIC4 or older clients. You have been warned.
 
 
-WHERE TO GET DARKSTAR AND EPIC4
+WHERE TO GET DARKSTAR AND EPIC5
 
 There is now an official DarkStar website. You can find it at one of
 the following locations.
@@ -39,11 +39,11 @@ the following locations.
   http://darkstar.epicsol.org/
   http://darkstar.nuthouse.org/  (Mirror site provided by keerf - Thanks!)
 
-Recent versions of both DarkStar and EPIC4 can also be found at the
+Recent versions of both DarkStar and EPIC5 can also be found at the
 following URLs:
 
   http://www.epicsol.org/
-  http://www.got.net/~brian/epic4/
+  http://www.got.net/~brian/epic5/
 
 A snapshot of my current tree (as well as EPIC) is also available via CVS:
 
@@ -52,12 +52,12 @@ A snapshot of my current tree (as well as EPIC) is also available via CVS:
   (Password is "anoncvs")
   cvs co darkstar
 
-  (Or to checkout the latest EPIC4 tree...)
-  cvs co epic4
+  (Or to checkout the latest EPIC5 tree...)
+  cvs co epic5
 
 Once you have done a checkout you can just do the following to update it.
 
-  cd darkstar/     (or epic4/)
+  cd darkstar/     (or epic5/)
   cvs update -dP
 
 
@@ -93,11 +93,11 @@ The way you set these variables depends on the shell that you are using.
 
 (sh, bash, zsh, etc)
 
-  export DARKSTAR_USERDIR=~/.epic4/darkstar
+  export DARKSTAR_USERDIR=~/.epic5/darkstar
 
 (*csh)
 
-  setenv DARKSTAR_USERDIR ~/.epic4/darkstar
+  setenv DARKSTAR_USERDIR ~/.epic5/darkstar
 
 If you don't want to create these variables every time you login,
 I recommend putting them in a shell startup script.

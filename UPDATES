@@ -2,6 +2,10 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://www.epicsol.org/darkstar/UPDATES
 
 
+*** News 2007/03/24 -- Officially moving to EPIC5
+	I'm finally making the move to EPIC5 as the base for DarkStar.
+	There is still much to be done but this just makes it official.
+
 *** News 2005/04/20 -- formats.dsm 0.5 - KNOCK formats
 	Formats for the KNOCK feature present on EFNet servers has
 	finally been added. The format variables are: KNOCK,

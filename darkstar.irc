@@ -5,8 +5,8 @@
 # | (_| || (_| || |   |   < \__ \| |_ | (_| || |
 #  \__,_| \__,_||_|   |_|\_\|___/ \__| \__,_||_|
 #
-#  DarkStar - A modular script pack for the EPIC4 IRC client.
-#  Copyright (c) 2002-2005 Brian Weiss <brian@epicsol.org>
+#  DarkStar - A modular script pack for the EPIC5 IRC client.
+#  Copyright (c) 2002-2007 Brian Weiss <brian@epicsol.org>
 #
 #  Designed for use with EPIC4-2.0 and up.
 #  See the 'README' file for general information.
@@ -19,12 +19,12 @@ if (word(2 $loadinfo()) != [pf])
 	return;
 };
 
-if (!epic() || V < 20040219 || info(i) >= 1000)
+if (!epic() || V < 20061111)
 {
 	echo;
 	echo WARNING!;
 	echo;
-	echo This script pack is for use with EPIC4, version 2.0 and up.;
+	echo This script pack is for use with EPIC5-0.3 and up.;
 	echo Your client, $J, does not meet this requirement.;
 	echo Continue at your own risk.;
 	echo;
@@ -69,14 +69,14 @@ for array in ($getarrays()) {
 #
 # Important global variables
 #
-@ DS.VERSION = [0.3.1];
-@ DS.INTERNAL_VERSION = [20050425];
+@ DS.VERSION = [0.4.0];
+@ DS.INTERNAL_VERSION = [20070324];
 
 #
 # This will be incremented every time a change takes place in
 # the core scripts (this file and any *.dsc files in $DS.HOME/core/).
 #
-@ DS.CORE_ID = 137;
+@ DS.CORE_ID = 138;
 
 xecho -b -c Loading DarkStar $DS.VERSION;
 
@@ -123,9 +123,9 @@ if (fexist($DS.USER_DIR) == -1)
 	# This could be a first time user, so we'll display
 	# some extra information for them.
 	echo;
-	echo Welcome to the DarkStar/EPIC4 script pack!;
+	echo Welcome to the DarkStar/EPIC5 script pack!;
 	echo;
-	echo Copyright (c) 2002-2005 Brian Weiss <brian@epicsol.org>;
+	echo Copyright (c) 2002-2007 Brian Weiss <brian@epicsol.org>;
 	echo See the 'COPYRIGHT' file for details.;
 	echo Official Website: http://darkstar.epicsol.org/;
 	echo;

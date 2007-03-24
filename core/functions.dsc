@@ -180,14 +180,14 @@ alias getitems (array, offset, list)
 alias getdsets (args default "*")
 {
 	for patt in ($args) {
-		@ push(function_return $pattern("$patt" $sar(g/_DSET.//$aliasctl(assign match _DSET.))));
+		@ push(function_return $pattern($patt $sar(g/_DSET.//$aliasctl(assign match _DSET.))));
 	};
 };
 
 alias getfsets (args default "*")
 {
 	for patt in ($args) {
-		@ push(function_return $pattern("$patt" $sar(g/_FSET.//$aliasctl(assign match _FSET.))));
+		@ push(function_return $pattern($patt $sar(g/_FSET.//$aliasctl(assign match _FSET.))));
 	};
 };
 
@@ -221,7 +221,7 @@ alias loadedmods (args default "*")
 		@ push(:tmp $getitem(_loaded_modules ${ii-1}));
 	};
 	for patt in ($args) {
-		@ push(function_return $pattern("$patt" $tmp));
+		@ push(function_return $pattern($patt $tmp));
 	};
 };
 
@@ -259,7 +259,7 @@ alias mods (args default "*")
 		@ push(:tmp $getitem(_modules ${ii-1}));
 	};
 	for patt in ($args) {
-		@ push(function_return $pattern("$patt" $tmp)):
+		@ push(function_return $pattern($patt $tmp)):
 	};
 };
 

@@ -1,7 +1,7 @@
-# version:0.6.1 loader:pf
+# version:0.6.2 loader:pf
 # $Id$
 #
-# oper.dsm - IRC Operator module for DarkStar/EPIC4
+# oper.dsm - IRC Operator module for DarkStar/EPIC5
 # Copyright (c) 2002, 2003 Brian Weiss
 # See the 'COPYRIGHT' file for more information.
 #
@@ -145,7 +145,7 @@ alias oper.add_tabcomp (void)
 		{
 			@ :tmp = [-ADD -DELETE -LIST];
 			push tmp $tabkey.method.nick($*);
-			@ :matches = pattern("$0*" $tmp);
+			@ :matches = pattern($0* $tmp);
 			@ function_return = matches ? matches : [ ];
 		}
 		else if (curword == 2)
@@ -172,7 +172,7 @@ alias oper.add_tabcomp (void)
 				@ :servernames = [ ];
 			};
 
-			@ :matches = pattern("$0*" $servernames);
+			@ :matches = pattern($0* $servernames);
 			@ function_return = matches ? matches : [ ];
 		}
 		else if (curword == 4)

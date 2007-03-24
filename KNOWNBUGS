@@ -19,3 +19,5 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Fixed tabkey module to work with EPIC5 dword change.
 * Added new functions from builtins script: myservers, notifywindows,
   servports, winline, winsize.
+* Fixed $getdsets(), $getfsets(), $loadedmods() and $mods() with EPIC5.
+* tabkey.dsm now works without /xdebug dword in EPIC5.

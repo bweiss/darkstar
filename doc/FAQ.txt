@@ -8,7 +8,7 @@ organized version. For now, this will have to do.
 
 Q: Why does everything go to the first window instead of the current window?
 
-A: By default, EPIC4 sets the first window's level to ALL causing everything
+A: By default, EPIC sets the first window's level to ALL causing everything
    that doesn't specifically belong to another window to be sent there.
 
    What you want to do is set the first window's level to NONE from one
