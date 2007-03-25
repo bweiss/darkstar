@@ -1,4 +1,4 @@
-# version:0.5.1 loader:pf
+# version:0.6 loader:pf
 # $Id$
 #
 # formats.dsm - Standard formatting hooks and variables for DarkStar/EPIC5
@@ -14,7 +14,7 @@ queue cleanup.formats
 		^alias -$alias;
 	};
 
-	for hook in (301 307 308 $jot(310 315) $jot(317 320) 332 333 335 338 353 366 367 368 369 378 action channel_nick channel_signoff channel_sync ctcp ctcp_reply dcc_chat invite join kick leave mode msg nickname notice public public_other send_action send_dcc_chat send_msg send_notice send_public server_notice signoff topic wallop) {
+	for hook in (301 307 308 $jot(310 315) $jot(317 320) 332 333 335 338 353 366 367 368 369 378 action channel_nick channel_signoff channel_sync ctcp ctcp_reply dcc_chat invite join kick mode msg nickname notice part public public_other send_action send_dcc_chat send_msg send_notice send_public server_notice signoff topic wallop) {
 		^on $hook -"*";
 	};
 	^on action -'% \$servernick() *';
@@ -538,7 +538,6 @@ on ^dcc_chat     "*" {formats.echo DCC_CHAT $*};
 on ^invite       "*" {formats.echo INVITE $*};
 on ^join         "*" {formats.echo JOIN $*};
 on ^kick         "*" {formats.echo KICK $*};
-on ^leave        "*" {formats.echo LEAVE $*};
 on ^mode         "*" {formats.echo MODE $*};
 
 on ^mode '\$servernick() \$servernick() *' {formats.echo UMODE $*};
@@ -598,11 +597,11 @@ on ^notice "*"
 		formats.echo NOTICE $0 $userhost() $1-;
 	};
 };
-		
+
+on ^part         "*" {formats.echo PART $*};		
 on ^public       "*" {formats.do_highlight PUBLIC $winchan($1) $*};
 on ^public_other "*" {formats.do_highlight PUBLIC_OTHER $winchan($1) $*};
-
-on ^send_action "*" {formats.echo SEND_ACTION_USER $servernick() $*};
+on ^send_action  "*" {formats.echo SEND_ACTION_USER $servernick() $*};
 
 on ^send_action '\\\\[#% &% +% !%\\\\] *'
 {

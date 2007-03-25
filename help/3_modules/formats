@@ -59,7 +59,6 @@ Author: Brian Weiss <brian@epicsol.org>
    KNOCK_CHANNEL_OPEN        - Channel is open response to a KNOCK request.
    KNOCK_DELIVERED           - KNOCK request has been delivered.
    KNOCK_LIMIT_EXCEEDED      - Too many KNOCK requests for channel.
-   LEAVE                     - Channel parts.
    MODE                      - Channel mode changes.
    MSG                       - Private messages.
    NAMES_FOOTER[1|2]         - Footers for /NAMES output.
@@ -72,6 +71,7 @@ Author: Brian Weiss <brian@epicsol.org>
    NAMES_RIGHT               - String to be appended to the end of each line.
    NAMES_VOICE               - Formatting for users that are voiced.
    NOTICE                    - Notices.
+   PART                      - Channel parts.
    PUBLIC                    - Publics in a current channel.
    PUBLIC_HL                 - Publics in a current channel that trigger
                                a highlight.

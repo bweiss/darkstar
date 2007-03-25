@@ -2,6 +2,11 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://www.epicsol.org/darkstar/UPDATES
 
 
+*** News 2007/03/25 -- formats.dsm 0.6 - LEAVE is now PART
+	The LEAVE format variable has been renamed to PART in order
+	to be consistent with the EPIC5 PART hook. All themes will
+	need to be updated to reflect this change.
+
 *** News 2007/03/24 -- Officially moving to EPIC5
 	I'm finally making the move to EPIC5 as the base for DarkStar.
 	There is still much to be done but this just makes it official.

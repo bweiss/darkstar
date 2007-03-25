@@ -35,7 +35,6 @@ assign FORMAT.KNOCK $G $3 has asked for an invite to $2
 assign FORMAT.KNOCK_CHANNEL_OPEN $G Channel $2 is open
 assign FORMAT.KNOCK_DELIVERED $G Your KNOCK has been delivered to $2
 assign FORMAT.KNOCK_LIMIT_EXCEEDED $G Too many KNOCKs for $2
-assign FORMAT.LEAVE $G $1 %K[%n$3%K]%n has left $2 %K[%n$4-%K]%n
 assign FORMAT.MODE $G mode%K/%c$2 %K[%W$3-%K]%n by %W$1%n
 assign FORMAT.MSG %K[%M$1%K\(%m$2%K\)]%n $3-
 assign -FORMAT.NAMES_FOOTER
@@ -52,6 +51,7 @@ assign -FORMAT.NAMES_RIGHT
 assign FORMAT.NAMES_VOICE %K[%M+%B$[10]1%K]
 assign FORMAT.NICKNAME $G %W$1%n is now known as %c$2%n
 assign FORMAT.NOTICE %K-%M$1%K\(%m$2%K\)-%n $3-
+assign FORMAT.PART $G $1 %K[%n$3%K]%n has left $2 %K[%n$4-%K]%n
 assign FORMAT.PUBLIC %B<%n$1%B>%n $3-
 assign FORMAT.PUBLIC_HL %B<%Y$1%B>%n $3-
 assign FORMAT.PUBLIC_OTHER %b<%n$1%K:%n$2%b>%n $3-

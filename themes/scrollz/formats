@@ -36,7 +36,6 @@ assign FORMAT.KNOCK $G %c$before(1 ! $3)%n %W\(%p$sar(/@/%W@%p/$after(1 ! $3))\)
 assign FORMAT.KNOCK_CHANNEL_OPEN $G Channel $2 is open
 assign FORMAT.KNOCK_DELIVERED $G Your KNOCK has been delivered to $2
 assign FORMAT.KNOCK_LIMIT_EXCEEDED $G Too many KNOCKs for $2
-assign FORMAT.LEAVE $G %c$1%n has left channel %C$2%n
 assign FORMAT.MODE $G %WMode change%n \"$3-\" on channel %C$2%n by %c$1%n
 assign FORMAT.MSG *%c$1%n* $3-  %W\(%p$before(@ $2)%W@%p$after(@ $2)%W\)%n [%K$Z%n]
 assign -FORMAT.NAMES_FOOTER
@@ -53,6 +52,7 @@ assign -FORMAT.NAMES_RIGHT
 assign FORMAT.NAMES_VOICE %M+%m$1
 assign FORMAT.NICKNAME $G %c$1%n is now known as %c$2%n
 assign FORMAT.NOTICE %W-%G$1%W-%n $3-
+assign FORMAT.PART $G %c$1%n has left channel %C$2%n
 assign FORMAT.PUBLIC %c<%n$1%c>%n $3-
 assign FORMAT.PUBLIC_HL %c<%n$1%c>%n $3-
 assign FORMAT.PUBLIC_OTHER %c<%n$1:%C$2%c>%n $3-
