@@ -7,8 +7,6 @@
 #
 #  DarkStar - A modular script pack for the EPIC5 IRC client.
 #  Copyright (c) 2002-2007 Brian Weiss <brian@epicsol.org>
-#
-#  Designed for use with EPIC4-2.0 and up.
 #  See the 'README' file for general information.
 #  See the 'COPYRIGHT' file for licensing information.
 #
@@ -28,18 +26,18 @@ if (!epic() || V < 20061111)
 	echo Your client, $J, does not meet this requirement.;
 	echo Continue at your own risk.;
 	echo;
-	echo If you would like to obtain EPIC4, you can visit one of the;
+	echo If you would like to obtain EPIC5, you can visit one of the;
 	echo following sites.;
 	echo;
 	echo Official EPIC Homepage:     http://www.epicsol.org/;
 	echo Official EPIC FTP site:     ftp://ftp.epicsol.org/;
 	echo;
-	echo Current versions of DarkStar and EPIC4 can also be found;
+	echo Current versions of DarkStar and EPIC5 can also be found;
 	echo at the following URLs.;
 	echo;
 	echo http://darkstar.epicsol.org/;
 	echo http://darkstar.nuthouse.org/;
-	echo http://www.got.net/~brian/epic4/;
+	echo http://www.got.net/~brian/epic5/;
 	echo;
 
 	^local pause $'Press `a` to abort load, `q` to quit, or any other key to continue.';
@@ -76,7 +74,7 @@ for array in ($getarrays()) {
 # This will be incremented every time a change takes place in
 # the core scripts (this file and any *.dsc files in $DS.HOME/core/).
 #
-@ DS.CORE_ID = 138;
+@ DS.CORE_ID = 139;
 
 xecho -b -c Loading DarkStar $DS.VERSION;
 
@@ -109,9 +107,6 @@ set DISPLAY_PC_CHARACTERS 4;
 set FLOATING_POINT_MATH ON;
 set HIGH_BIT_ESCAPE 0;
 
-# Enable the new math parser.
-xdebug +NEW_MATH;
-
 #
 # Check for a "user directory" and create it if necessary.
 #
@@ -131,9 +126,7 @@ if (fexist($DS.USER_DIR) == -1)
 	echo;
 	echo If you have not looked at the README yet, you should do so now.;
 	echo It is also a good idea to have a look through the various help files;
-	echo after everything has finished loading. To browse the help for the;
-	echo DarkStar core scripts, type /DHELP. To browse the help for a specific;
-	echo module, use /MHELP.;
+	echo by typing /DHELP after everything has finished loading.;
 	echo;
 	echo That's it! I hope you enjoy these scripts, a lot of effort has;
 	echo gone into them, and please feel free to contact me if you have any;

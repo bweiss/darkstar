@@ -1,4 +1,4 @@
-# version:1.0.5 loader:pf
+# version:1.1 loader:pf
 # $Id$
 #
 # tabkey.dsm - Tab key completion module for DarkStar/EPIC5
@@ -111,9 +111,8 @@ bind ^[^I TABKEY_COMPLETION_BACKWARD;
 #
 alias tabkey.main (cycle, void)
 {
-	@ :xd_newmath = xdebug(new_math);
 	@ :xd_extractw = xdebug(extractw);
-	xdebug new_math extractw;
+	xdebug extractw;
 	@ :curpos = curpos();
 	@ :curword = indextoword($curpos $L);
 	@ :wordind = wordtoindex($curword $L);
@@ -147,7 +146,7 @@ alias tabkey.main (cycle, void)
 		@ TABKEY.INDEX += cycle;
 		@ TABKEY.LAST_LINE = L;
 		@ TABKEY.LAST_CYCLE_DIRECTION = cycle;
-		xdebug $xd_newmath $xd_extractw;
+		xdebug $xd_extractw;
 		return;
 	};
 
@@ -191,7 +190,7 @@ alias tabkey.main (cycle, void)
 		};
 	};
 
-	xdebug $xd_newmath $xd_extractw;
+	xdebug $xd_extractw;
 };
 
 alias tabkey.cmd (...)
