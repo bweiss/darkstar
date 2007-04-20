@@ -22,7 +22,7 @@ to work nicely out-of-the-box.
 Anyone looking to write their own modules, themes, and status bars should
 first read doc/modules.txt and then contact me for help. Everyone else should
 browse through the help files (located in the help/ directory) by typing
-/DHELP at the EPIC4 input prompt, after DarkStar has finished loading.
+/DHELP at the EPIC input prompt, after DarkStar has finished loading.
 
 
 REQUIREMENTS
