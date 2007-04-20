@@ -139,7 +139,7 @@ addformat PUBLIC <%G$1%n> $3-
  * load time. Example directly below.
  */
 if (fexist($DS.SAVE_DIR/sample) == 1) {
-	^load $DS.SAEV_DIR/sample
+	^load $DS.SAVE_DIR/sample
 }
 
 /*
