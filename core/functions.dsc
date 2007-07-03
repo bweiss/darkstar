@@ -191,6 +191,17 @@ alias getfsets (args default "*")
 	};
 };
 
+alias igmask (pattern, void) {
+	return $ignorectl(pattern $pattern);
+};
+
+alias igtype (pattern, void) {
+	fe ($ignorectl(get $ignorectl(refnum $pattern) levels)) ii {
+		push function_return ${ii =~ [+*] ? [^B$rest(1 $ii)^B] : sar(#/##$sar(#^#DONT-#$ii))};
+	};
+};
+
+
 #
 # Determines whether someone is currently online. It returns the
 # person's nick if they are online, or nothing if not.
@@ -288,6 +299,14 @@ alias pipe
 	return $retval;
 };
 #hop '97
+
+alias rigmask (pattern, void) {
+	return $ignorectl(rpattern $pattern);
+};
+
+alias rigtype (...) {
+	return $ignorectl(with_type $*);
+};
 
 alias tld
 {
