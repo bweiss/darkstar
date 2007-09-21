@@ -9,3 +9,5 @@ KNOWN ERRATA (eg, bugs, or unresolved requests):
 THE CHANGELOG SINCE THE LAST RELEASE:
 -------------------------------------
 * Added 4 new core functions: $igmask(), $igtype(), $rigmask() and $rigtype().
+* Added scripted versions of the old xform functions: encode, decode,
+  urlencode, urldecode, b64encode, b64decode, sedcrypt, sha256.

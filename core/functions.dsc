@@ -385,9 +385,6 @@ alias winchannels (win default "$winnum()", void)
 # Copyright (c) 2006 BlackJac@EFNet
 #
 
-# Only load these functions with EPIC5.
-if (info(i) >= 1000) {
-
 alias lastserver (void) {
 	return $serverctl(last_server);
 };
@@ -528,4 +525,29 @@ alias winvisible (winnum default 0, void) {
 	return -1;
 };
 
+# Old xform functions.
+alias encode {return $xform(+ENC $*)};
+alias decode {return $xform(-ENC $*)};
+
+alias urlencode {return $xform(+URL $*)};
+alias urldecode {return $xform(-URL $*)};
+
+alias b64encode {return $xform(+B64 $*)};
+alias b64decode {return $xform(-B64 $*)};
+
+alias sedcrypt (encode, who, ...) {
+	if (!(:val = encryptparm(who))) {
+		return;
+	};
+
+	@ :key = word(1 $val);
+	if (encode == 1) {
+		return $xform(+SED $key $who $*);
+	} elsif (encode == 0) {
+		return $xform(-SED $key $who $*);
+	} else {
+		return;
+	};
 };
+
+alias sha256 {return $xform(+SHA256 $*)};
