@@ -11,3 +11,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Added 4 new core functions: $igmask(), $igtype(), $rigmask() and $rigtype().
 * Added scripted versions of the old xform functions: encode, decode,
   urlencode, urldecode, b64encode, b64decode, sedcrypt, sha256.
+* Fix for using $match() with a quoted pattern in tabkey.dsm and formats.dsm.

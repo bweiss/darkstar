@@ -1,4 +1,4 @@
-# version:0.6 loader:pf
+# version:0.6.1 loader:pf
 # $Id$
 #
 # formats.dsm - Standard formatting hooks and variables for DarkStar/EPIC5
@@ -166,21 +166,24 @@ alias formats.do_highlight (type, win, ...)
 	if (CONFIG.HIGHLIGHT && !match($1 $CONFIG.HIGHLIGHT_IGNORE_CHANNELS) &&
 	    !match($0 $CONFIG.HIGHLIGHT_IGNORE_NICKS))
 	{
-		if (match("*\\[$servernick() $CONFIG.HIGHLIGHT_LIST\\]*" $2-))
+		xdebug dword
 		{
-			formats.echo $type\_HL $*;
-			if (CONFIG.HIGHLIGHT_BEEP)
+			if (match("*\\[$servernick() $CONFIG.HIGHLIGHT_LIST\\]*" $2-))
 			{
-				^stack push set BEEP;
-				^set BEEP ON;
-				beep;
-				^stack pop set BEEP;
-			};
-			if (CONFIG.HIGHLIGHT_NOTIFY && winvisible($win) < 1) {
-				xecho -b -c Highlight triggered in window #$win by $0 \($1\);
-			};
+				formats.echo $type\_HL $*;
+				if (CONFIG.HIGHLIGHT_BEEP)
+				{
+					^stack push set BEEP;
+					^set BEEP ON;
+					beep;
+					^stack pop set BEEP;
+				};
+				if (CONFIG.HIGHLIGHT_NOTIFY && winvisible($win) < 1) {
+					xecho -b -c Highlight triggered in window #$win by $0 \($1\);
+				};
 
-			return;
+				return;
+			};
 		};
 	};
 
