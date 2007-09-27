@@ -1,4 +1,4 @@
-# version:1.1.1 loader:pf
+# version:1.1.2 loader:pf
 # $Id$
 #
 # tabkey.dsm - Tab key completion module for DarkStar/EPIC5
@@ -254,7 +254,7 @@ alias tabkey.default (...)
 			@ function_return = matches ? matches : tabkey.method.nickchan($*);
 		};
 	} else {
-		@ function_return = tabkey.method.nickchan($*);
+		@ function_return = tabkey.method.nickchannotify($*);
 	};
 };
 
@@ -695,14 +695,12 @@ alias tabkey.method.mask (...)
 alias tabkey.method.nick (...)
 {
 	@ :args = sar(g/\\/\\\\/$*);
-	xdebug dword {
-		if (match("$args*" $chanusers())) {
-			@ function_return = pattern($args* $chanusers());
-		} else {
-			@ :chanusers = mychannels();
-			repeat $#chanusers @ push(chanusers $chanusers($shift(chanusers)));
-			@ function_return = pattern($args* $sort($uniq($chanusers)));
-		};
+	if (match($args* $chanusers())) {
+		@ function_return = pattern($args* $chanusers());
+	} else {
+		@ :chanusers = mychannels();
+		repeat $#chanusers @ push(chanusers $chanusers($shift(chanusers)));
+		@ function_return = pattern($args* $sort($uniq($chanusers)));
 	};
 };
 
