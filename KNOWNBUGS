@@ -14,3 +14,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Fix for using $match() with a quoted pattern in tabkey.dsm and formats.dsm.
 * Reverted previous change to tabkey.dsm involving $match() and /xdebug dword
 * Change tabkey.default to call $tabkey.method.nickchannotify().
+* Fix for $tabkey.method.notify().
