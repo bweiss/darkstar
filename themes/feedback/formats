@@ -36,7 +36,7 @@ assign FORMAT.KNOCK_CHANNEL_OPEN $G Channel $2 is open
 assign FORMAT.KNOCK_DELIVERED $G Your KNOCK has been delivered to $2
 assign FORMAT.KNOCK_LIMIT_EXCEEDED $G Too many KNOCKs for $2
 assign FORMAT.MODE $G Mode change \"$3-\" on channel $2 by $1
-assign FORMAT.MSG [$Z] MSG [$1!$2] $3-
+assign FORMAT.MSG -%W$1%n\(%W$2%n\) $3-
 assign -FORMAT.NAMES_FOOTER
 assign -FORMAT.NAMES_FOOTER1
 assign -FORMAT.NAMES_FOOTER2
@@ -50,7 +50,7 @@ assign FORMAT.NAMES_OP @$[9]1
 assign -FORMAT.NAMES_RIGHT
 assign FORMAT.NAMES_VOICE +$[9]1
 assign FORMAT.NICKNAME $G $1 is now known as $2
-assign FORMAT.NOTICE [$Z] NOTICE [$1!$2] $3-
+assign FORMAT.NOTICE .%W$1%n: $3-
 assign FORMAT.PART $G $1 \($3\) has left $2 at $Z
 assign FORMAT.PUBLIC <$1> $3-
 assign FORMAT.PUBLIC_HL <$1> $3-
@@ -61,8 +61,8 @@ assign FORMAT.SEND_ACTION_CHANNEL_OTHER * -> $2: $1 $3-
 assign FORMAT.SEND_ACTION_USER * -> $2: $1 $3-
 assign FORMAT.SEND_CTCP $G Requesting a CTCP $3 from $2: $4-
 assign FORMAT.SEND_DCC_CHAT [$Z] SEND_DCC $1> $2-
-assign FORMAT.SEND_MSG [$Z] SEND_MSG $1> $2-
-assign FORMAT.SEND_NOTICE [$Z] SEND_NOTICE $1> $2-
+assign FORMAT.SEND_MSG -msg\(%W$1%n\) $2-
+assign FORMAT.SEND_NOTICE -ntc\(%W$1%n\) $2-
 assign FORMAT.SEND_PUBLIC <$2> $3-
 assign FORMAT.SEND_PUBLIC_OTHER <$1:$2> $3-
 assign FORMAT.SEND_WALL [$Z] SEND_WALL $1> $2-

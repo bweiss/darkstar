@@ -15,3 +15,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Reverted previous change to tabkey.dsm involving $match() and /xdebug dword
 * Change tabkey.default to call $tabkey.method.nickchannotify().
 * Fix for $tabkey.method.notify().
+* Changed msg/notice formats in feedback theme.
