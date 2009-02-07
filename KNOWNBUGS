@@ -16,3 +16,5 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Change tabkey.default to call $tabkey.method.nickchannotify().
 * Fix for $tabkey.method.notify().
 * Changed msg/notice formats in feedback theme.
+* Added BlackJac's history script to core scripts.
+* Removed /DHELP command.

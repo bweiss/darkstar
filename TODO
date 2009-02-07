@@ -51,8 +51,6 @@ TODO:
 
   * Incorporate howl's new /HELP script to prepare for the migration to EPIC5.
 
-  * Incorporate BlackJac's history script to prepare for EPIC5.
-
   * Write a more flexible version of STATUS_NOTIFY (%F).
 
 

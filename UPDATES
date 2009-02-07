@@ -2,6 +2,18 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://www.epicsol.org/darkstar/UPDATES
 
 
+*** News 2009/02/07 -- BlackJac's history script added to core
+	The history script written by BlackJac and distributed with
+	the EPIC5 source code is now included in the DarkStar core
+	scripts and will always be loaded.
+
+*** News 2009/02/07 -- HELP/DHELP removed (for now)
+	For the time being, neither the /HELP nor /DHELP commands will
+	be available. The EPIC help files are now best viewed on the
+	the EPIC Help Wiki (http://help.epicsol.org/) and I will probably
+	write a new /DHELP command that will be intended for new users
+	at some future date.
+
 *** News 2007/09/21 -- xform functions for latest EPIC5
 	The latest release of EPIC5 (0.3.5) has removed the following
 	functions as they are now included in the builtins script:
