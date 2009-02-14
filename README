@@ -2,7 +2,7 @@ README file for DarkStar/EPIC5
 $Id$
 
 DarkStar written and maintained by Brian Weiss <brian@epicsol.org>
-Copyright (c) 2002-2007 Brian Weiss
+Copyright (c) 2002, 2009 Brian Weiss
 Please see the 'COPYRIGHT' file for licensing information.
 See the bottom of this file for a list of contributors.
 
@@ -10,7 +10,7 @@ See the bottom of this file for a list of contributors.
 ABOUT
 
 DarkStar is a modular script pack for the EPIC5 IRC client. It is highly
-extensible and includes theme support, advanced tab completion, and a whole
+extensible and includes theme support, advanced tab completion and a whole
 bunch of other goodies. The modular design offers many benefits (and a few
 drawbacks) and allows for a very high level of customization. It is ideal
 for scripters that wish to create their own script packs or just want the

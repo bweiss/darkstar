@@ -7,7 +7,7 @@
 
 addconfig    AUTO_LOAD_MODULES away channel dcc formats misc nickmgr nickcomp relay tabkey theme window;
 addconfig -b SAVE_ON_UNLOAD 0;
-addconfig -b LOAD_PROMPT 1;
+addconfig -b LOAD_PROMPT 0;
 
 addformat MODLIST_FOOTER -------------------------------------------------------;
 addformat MODLIST_FOOTER1 $$G Available modules: $$numitems(_modules), Loaded modules: $$numitems(_loaded_modules);

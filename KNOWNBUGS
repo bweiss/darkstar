@@ -17,4 +17,6 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Fix for $tabkey.method.notify().
 * Changed msg/notice formats in feedback theme.
 * Added BlackJac's history script to core scripts.
-* Removed /DHELP command.
+* Removed help.dsc
+* Removed memo module
+* Changed default of /SET LOAD_PROMPT to OFF.
