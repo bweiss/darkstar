@@ -40,7 +40,7 @@ alias dhelp (void)
 	echo D'oh! The new help system has not been implemented.;
 	echo If you would like to browse the old help files, they can be;
 	echo found in the help directory located in the main DarkStar directory.; 
-}
+};
 
 #
 # Displays miscellaneous information about the operating system,
