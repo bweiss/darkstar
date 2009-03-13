@@ -27,7 +27,7 @@ A: First you may want to edit the list of modules that will be loaded
    automatically. You can do this by typing '/DSET AUTO_LOAD_MODULES'.
    When this is to your liking, type the following commands.
 
-   /DSET AUTO_LOAD_PROMPT OFF
+   /DSET LOAD_PROMPT OFF
    /SAVE
 
 --
@@ -38,21 +38,6 @@ A: This depends heavily on the amount of customization you do. If you have
    your own modules, themes, statbars, etc. then you need to be more
    concerned with changes to what I distribute. In this situation I strongly
    urge that you review the UPDATES file for details on what's new.
-
-   If you don't write any of your own scripts for DarkStar then you don't
-   need to worry so much. One cool thing is that you don't always need to
-   reload everything. If you know that the changes lie only in a specific
-   module, you can reload just that module (/RELOADMOD). Same thing applies
-   to themes (just set your theme again with /THEME) and status bars (/STATUS).
-   The only time you need to reload the entire system (/RELOAD) is when there
-   have been changes to the core scripts (darkstar.irc and everything in the
-   core directory). When this is the case, the value of DS.CORE_ID
-   (darkstar.irc) will be incremented. This number being higher does not
-   necessarily mean that a full reload is required in order to make use of
-   changes in other things, it just means that something in the core scripts
-   has changed. The only way to know for sure is to check the UPDATES file.
-   If you don't want to worry about it at all, just always use /RELOAD and
-   you'll be fine.
 
 --
 
@@ -80,8 +65,10 @@ Q: How can I set a default status bar?
 A: The status bar is chosen by your theme. If you want to change the status
    bar that your theme uses, I would recommend creating a new theme based
    on your current theme which uses the different statbar. This way you won't
-   lose your changes during upgrades. You can follow the directions in
-   the answer of the following question to create a theme.
+   lose your changes during upgrades. To save a custom theme, simply edit
+   the desired format variables with /FSET and when you're finished type
+   "/THEME -save <name>" where <name> is the name of your theme. If no
+   name is specified a default of "custom" will be used.
 
 --
 
@@ -102,8 +89,7 @@ A: This can be accomplished by adding a small piece of code to the
 
    If you do this, you will probably want to create your own custom theme
    for it so that any changes you make are not overwritten the next time
-   you update DarkStar. See the above question about creating your own theme
-   for help with this.
+   you update DarkStar.
 
 --
 
@@ -116,12 +102,13 @@ A: There are currently two ways to add a timestamp to output. The easiest,
 
    If you want to add a timestamp only to specific output, you should
    add $ts() to any /FSET variables that you want to be timestamped and
-   then type /DSET TIMESTAMP ON.
+   then type /DSET TIMESTAMP ON. Again, it may be good to create a custom
+   theme after modifying your formats.
 
 --
 
 Q: How can I save my /SET variables? The /SAVE command doesn't seem to
-   write these settings.
+   save these settings.
 
 A: I have tried to keep the DarkStar stuff pretty separate from EPIC itself
    so these settings are not saved with the /SAVE command. The best way

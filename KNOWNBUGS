@@ -8,15 +8,4 @@ KNOWN ERRATA (eg, bugs, or unresolved requests):
 
 THE CHANGELOG SINCE THE LAST RELEASE:
 -------------------------------------
-* Added 4 new core functions: $igmask(), $igtype(), $rigmask() and $rigtype().
-* Added scripted versions of the old xform functions: encode, decode,
-  urlencode, urldecode, b64encode, b64decode, sedcrypt, sha256.
-* Fix for using $match() with a quoted pattern in tabkey.dsm and formats.dsm.
-* Reverted previous change to tabkey.dsm involving $match() and /xdebug dword
-* Change tabkey.default to call $tabkey.method.nickchannotify().
-* Fix for $tabkey.method.notify().
-* Changed msg/notice formats in feedback theme.
-* Added BlackJac's history script to core scripts.
-* Removed help.dsc
-* Removed memo module
-* Changed default of /SET LOAD_PROMPT to OFF.
+* Added /INSPECTARRAY to debug module.

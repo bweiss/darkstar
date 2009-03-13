@@ -1,18 +1,48 @@
-# version:0.2 loader:pf
+# version:0.3 loader:pf
 # $Id$
 #
 # debug.dsm - Debugging module for DarkStar/EPIC5
-# Copyright (c) 2002, 2003 Brian Weiss
+# Copyright (c) 2002, 2009 Brian Weiss
 # See the 'COPYRIGHT' file for more information.
+#
+# This script uses serial number 429 for all ON hooks.
 #
 
 queue cleanup.debug
 {
+	^alias -inspectarray;
+	^alias -tabkey.cmd.inspectarray;
 	^bind -symbolic key_f10 NOTHING;
+	on #hook 429 -"LOADMOD tabkey";
 };
 
 bind -symbolic key_f10 PARSE_COMMAND debug.toggle;
 	
+alias inspectarray (array, void)
+{
+	if (!array) {
+		xecho -b Usage: /INSPECTARRAY <array>;
+		return;
+	};
+
+	echo Array Item# Index# Contents;
+	for ii from 0 to ${numitems($array) - 1} {
+		echo $array $ii $itemtoindex($array $ii) $getitem($array $ii);
+	};
+};
+
+alias debug.add_tabkey (void)
+{
+    ^alias tabkey.cmd.inspectarray (...)
+    {
+		for arr in ($getarrays()) {
+			@ setitem(tabkey.inspectarray $numitems(tabkey.inspectarray) $arr);
+		};
+        @ function_return = tabkey.method.array(tabkey.inspectarray $*);
+		@ delarray(tabkey.inspectarray);
+    };
+};
+
 alias debug.toggle (void)
 {
 	if (DEBUG) {
@@ -22,3 +52,12 @@ alias debug.toggle (void)
 	};
 };
 
+on #-hook 429 "LOADMOD tabkey"
+{
+	debug.add_tabkey;
+};
+
+if (isloaded(tabkey))
+{
+	debug.add_tabkey;
+};
