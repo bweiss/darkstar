@@ -11,24 +11,21 @@ ABOUT
 
 DarkStar is a modular script pack for the EPIC5 IRC client. It is highly
 extensible and includes theme support, advanced tab completion and a whole
-bunch of other goodies. The modular design offers many benefits (and a few
-drawbacks) and allows for a very high level of customization. It is ideal
-for scripters that wish to create their own script packs or just want the
-power and convenience of being able to write scripts as modules that can
-be added or removed at any time. Although tailored for power users these
-scripts should still be quite usable by those people that just want things
-to work nicely out-of-the-box.
-
-Anyone looking to write their own modules, themes, and status bars should
-first read doc/modules.txt and then contact me for help. Everyone else should
-browse through the help files (located in the help/ directory) by typing
-/DHELP at the EPIC input prompt, after DarkStar has finished loading.
+bunch of other goodies. The modular design offers many benefits and allows
+for a very high level of customization. It is ideal for scripters that wish
+to create their own script packs or just want the power and convenience of
+being able to write scripts as modules that can be added or removed at any
+time. Although tailored for power users these scripts should still be quite
+usable by those people that just want things to work nicely out-of-the-box.
 
 
 REQUIREMENTS
 
 The only requirement is EPIC5-0.3 or higher. This script pack will NOT
 work correctly with EPIC4 or older clients. You have been warned.
+
+EPIC5-1.0 was released in December of 2008 and is the recommended version
+to run with this script pack.
 
 
 WHERE TO GET DARKSTAR AND EPIC5
@@ -37,7 +34,7 @@ There is now an official DarkStar website. You can find it at one of
 the following locations.
 
   http://darkstar.epicsol.org/
-  http://darkstar.nuthouse.org/  (Mirror site provided by keerf - Thanks!)
+  http://darkstar.prbh.org/
 
 Recent versions of both DarkStar and EPIC5 can also be found at the
 following URLs:
@@ -52,7 +49,7 @@ A snapshot of my current tree (as well as EPIC) is also available via CVS:
   (Password is "anoncvs")
   cvs co darkstar
 
-  (Or to checkout the latest EPIC5 tree...)
+  (or to checkout the latest EPIC5 tree...)
   cvs co epic5
 
 Once you have done a checkout you can just do the following to update it.
@@ -65,8 +62,7 @@ GETTING STARTED
 
 If you're the impatient type, it should be safe to just go ahead and
 load darkstar.irc now. It should automatically detect its location and
-set things up accordingly. Once loaded, you can use /DHELP to browse the
-basic documentation.
+set things up accordingly.
 
 There are a few things that get set at load time that you may want to
 change. This can be accomplished by setting the following environment
@@ -104,19 +100,18 @@ I recommend putting them in a shell startup script.
 (~/.bash_profile, ~/.profile, ~/.zshrc, ~/.cshrc, etc.)
 
 Nothing else is required to begin using DarkStar. However, I recommend
-having a look at sample.dsrc in the main directory.
+having a look at sample.epicrc in the main directory.
 
-At this point you can just type "/LOAD /path/to/darkstar.irc" to begin
-using the scripts. The available modules will be displayed and you will
-be prompted to choose which ones to load. Just pushing enter will load
-all modules on the default Auto-Load list (/DSET AUTO_LOAD_MODULES).
+At this point you can just type "/LOAD /path/to/darkstar.irc" from the EPIC
+input prompt to begin using the scripts. A number of modules will be
+loaded by default (changed via /DSET AUTO_LOAD_MODULES) and you should
+be prompted to choose a theme. After that you may want to browse some of
+the files located in the help/ directory within the main DarkStar directory.
 
 If you would like to load DarkStar automatically on client startup,
 you can place the following code in ~/.epicrc
 
   load /path/to/darkstar.irc
-
-Once the script is loaded you can use /DHELP for further assistance.
 
 That's it! I hope you find these scripts as useful as I do, and please
 feel free to send me any feedback you might have.
@@ -130,11 +125,10 @@ FILES
   UPDATES             - Contains information about important changes.
   darkstar.irc        - The startup script. This is the file that you
                         /LOAD to begin using DarkStar.
-  sample.dsrc         - Sample DarkStar RC file (~/.dsrc)
   sample.epicrc       - Sample EPIC RC file (~/.epicrc)
   core/*.dsc          - The scripts that make up the DarkStar core.
   doc/*               - Any documentation that is not browsed via /DHELP
-  help/*              - Help files for the core scripts (/DHELP)
+  help/*              - Help files for the core scripts and included modules
   modules/*.dsm       - The modules that provide most of the features
                       - All of these are completely optional and are
                         independent of each other.
@@ -161,7 +155,7 @@ in some way to this project.
 
 If you think I forgot your name on this list, please drop me an email.
 
-  Brian
+-Brian (fudd @ efnet)
 
 
 End of file.
