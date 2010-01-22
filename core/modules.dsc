@@ -5,7 +5,7 @@
 # See the 'COPYRIGHT' file for more information.
 #
 
-addconfig    AUTO_LOAD_MODULES away channel dcc formats misc nickmgr nickcomp relay tabkey theme window;
+addconfig    AUTO_LOAD_MODULES away channel dcc formats misc newnick nickmgr nickcomp relay tabkey theme window;
 addconfig -b SAVE_ON_UNLOAD 0;
 addconfig -b LOAD_PROMPT 0;
 
