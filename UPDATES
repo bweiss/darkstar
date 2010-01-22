@@ -2,6 +2,9 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://www.epicsol.org/darkstar/UPDATES
 
 
+*** News 2010/01/22 -- Added /FREE and /HOLD to window module
+	These are shortcuts to /WINDOW HOLD_MODE [ON|OFF]
+
 *** News 2010/01/22 -- Added /DSET TABKEY_MSGHIST_SENT_ONLY to tabkey module
 	If true, this will only add nicks to the msg history for outbound
 	private msgs and DCC requests.

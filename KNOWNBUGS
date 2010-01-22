@@ -9,5 +9,6 @@ KNOWN ERRATA (eg, bugs, or unresolved requests):
 THE CHANGELOG SINCE THE LAST RELEASE:
 -------------------------------------
 * Added /INSPECTARRAY to debug module.
-* Added BlackJac's newnick script from EPIC5.
+* Added BlackJac's newnick script from EPIC5 (requested by Kanan)
 * Added /DSET TABKEY_MSGHIST_SENT_ONLY to tabkey module (requested by Kanan)
+* Added /FREE and /HOLD aliases to window module (requested by Kanan)
