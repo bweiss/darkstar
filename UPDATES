@@ -2,6 +2,10 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://www.epicsol.org/darkstar/UPDATES
 
 
+*** News 2010/01/22 -- Added /DSET TABKEY_MSGHIST_SENT_ONLY to tabkey module
+	If true, this will only add nicks to the msg history for outbound
+	private msgs and DCC requests.
+
 *** News 2010/01/22 -- Added BlackJac's newnick script from EPIC5
 	This simulates the automatic nickname-mangling feature of EPIC4.
 	This includes several new /SET vars:
