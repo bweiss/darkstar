@@ -2,7 +2,7 @@
 # $Id$
 # functions.dsc - Miscellaneous functions
 # Copyright (c) 2002-2005 Brian Weiss
-# Copyright (c) 2005 David B. Kratter
+# Copyright (c) 2005 EPIC Software Labs
 # See the 'COPYRIGHT' file for more information.
 #
 

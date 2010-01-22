@@ -2,6 +2,14 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://www.epicsol.org/darkstar/UPDATES
 
 
+*** News 2010/01/22 -- Added BlackJac's newnick script from EPIC5
+	This simulates the automatic nickname-mangling feature of EPIC4.
+	This includes several new /SET vars:
+		set auto_new_nick [on|off|toggle]
+		set auto_new_nick_char [<character>]
+		set auto_new_nick_length [<positive integer>]
+		set auto_new_nick_list [<string>]
+
 *** News 2009/02/14 -- Removed memo module
 	The memo module has been removed because uh... well, it's
 	just stupid and probably never used by anyone. So yeah.

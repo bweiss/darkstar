@@ -9,3 +9,4 @@ KNOWN ERRATA (eg, bugs, or unresolved requests):
 THE CHANGELOG SINCE THE LAST RELEASE:
 -------------------------------------
 * Added /INSPECTARRAY to debug module.
+* Added BlackJac's newnick script from EPIC5.
