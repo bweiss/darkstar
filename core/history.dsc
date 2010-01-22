@@ -1,8 +1,4 @@
-if (word(2 $loadinfo()) != 'pf') {
-	load -pf $word(1 $loadinfo());
-	return;
-};
-
+# $Id$
 #	Copyright (c) 2007 BlackJac@EFNet
 #
 #	Version: 1.2.2007.09.28.1
@@ -96,9 +92,7 @@ if (word(2 $loadinfo()) != 'pf') {
 #			Sets the size of the history buffer. Setting it to 0
 #			purges the history buffer and disables command history.
 
-package history;
-
-load addset;
+#package history;
 
 alias history (index, void) {
 	xecho -b -c Command History:;
