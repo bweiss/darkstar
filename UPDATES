@@ -2,6 +2,11 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://www.epicsol.org/darkstar/UPDATES
 
 
+*** News 2010/01/26 -- Added /DSET AWAY_LOG_ALWAYS to away module
+	If true, logging will occur regardless of whether you are set as
+	away on the server. This may be temporary until I can add more
+	generic logging support.
+	
 *** News 2010/01/26 -- Added /RE alias to misc module
 	Sends a response to the last person that send you a private message.
 

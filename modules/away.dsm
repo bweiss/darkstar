@@ -1,4 +1,4 @@
-# version:1.6.2 loader:pf
+# version:1.7 loader:pf
 # $Id$
 #
 # away.dsm - Away module for DarkStar/EPIC5
@@ -28,6 +28,7 @@ addconfig -b AUTO_AWAY 1;
 addconfig    AUTO_AWAY_TIME 1200;
 addconfig -b AUTO_UNSET_AWAY 0;
 addconfig -b AWAY_LOG 1;
+addconfig -b AWAY_LOG_ALWAYS 0;
 addconfig    AWAY_LOGFILE $DS.USER_DIR/away.log;
 addconfig    AWAY_LOG_LEVEL MSGS NOTICES;
 addconfig -b PUBLIC_AWAY 0;
@@ -186,31 +187,28 @@ on #-input 421 "*"
 on #-msg 421 "*"
 {
 	@ :serv = servernum();
-	if (isaway($serv))
+	if (CONFIG.SEND_AWAY_NOTICE && isaway($serv) && finditem(away.sent_notice.$serv $0) < 0)
 	{
-		if (CONFIG.SEND_AWAY_NOTICE && finditem(away.sent_notice.$serv $0) < 0)
-		{
-			@ setitem(away.sent_notice.$serv $numitems(away.sent_notice.$serv) $0);
-			xeval -s $serv {
-				notice $0 I am currently away \($serverctl(GET $serv AWAY)\) [Gone since: $strftime($AWAY.TIME[$encode($serv)] %c)] [Log/${CONFIG.AWAY_LOG ? [ON] : [OFF]}];
-			};
+		@ setitem(away.sent_notice.$serv $numitems(away.sent_notice.$serv) $0);
+		xeval -s $serv {
+			notice $0 I am currently away \($serverctl(GET $serv AWAY)\) [Gone since: $strftime($AWAY.TIME[$encode($serv)] %c)] [Log/${CONFIG.AWAY_LOG ? [ON] : [OFF]}];
 		};
-		if (CONFIG.AWAY_LOG && match(MSGS $CONFIG.AWAY_LOG_LEVEL))
+	};
+	if (CONFIG.AWAY_LOG && (isaway($serv) || CONFIG.AWAY_LOG_ALWAYS) && match(MSGS $CONFIG.AWAY_LOG_LEVEL))
+	{
+		if ((:fd = open($CONFIG.AWAY_LOGFILE W)) > -1)
 		{
-			if ((:fd = open($CONFIG.AWAY_LOGFILE W)) > -1)
-			{
-				@ write($fd [$strftime(%x %X)] MSG <$0!$userhost()> $1-);
-				@ close($fd);
-			};
-			@ AWAY.NEWMSGS++;
+			@ write($fd [$strftime(%x %X)] MSG <$0!$userhost()> $1-);
+			@ close($fd);
 		};
+		@ AWAY.NEWMSGS++;
 	};
 };
 
 on #-notice 421 "*"
 {
 	@ :serv = servernum();
-	if (isaway($serv) && CONFIG.AWAY_LOG && match(NOTICES $CONFIG.AWAY_LOG_LEVEL))
+	if (CONFIG.AWAY_LOG && (isaway($serv) || CONFIG.AWAY_LOG_ALWAYS) && match(NOTICES $CONFIG.AWAY_LOG_LEVEL))
 	{
 		if ((:fd = open($CONFIG.AWAY_LOGFILE W)) > -1)
 		{
@@ -226,7 +224,7 @@ for hook in (public public_other)
 	^on #-$hook 421 '% % *\$servernick()*'
 	{
 		@ :serv = servernum();
-		if (isaway($serv) && CONFIG.AWAY_LOG && match(PUBLICS $CONFIG.AWAY_LOG_LEVEL))
+		if (CONFIG.AWAY_LOG && (isaway($serv) || CONFIG.AWAY_LOG_ALWAYS) && match(PUBLICS $CONFIG.AWAY_LOG_LEVEL))
 		{
 			if ((:fd = open($CONFIG.AWAY_LOGFILE W)) > -1)
 			{

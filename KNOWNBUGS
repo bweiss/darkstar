@@ -13,3 +13,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Added /DSET TABKEY_MSGHIST_SENT_ONLY to tabkey module (requested by Kanan)
 * Added /FREE and /HOLD aliases to window module (requested by Kanan)
 * Added /RE alias to misc module (requested by Kanan)
+* Added /DSET AWAY_LOG_ALWAYS (boolean) to away module (requested by Kanan)
