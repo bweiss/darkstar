@@ -74,7 +74,7 @@ for array in ($getarrays()) {
 # This will be incremented every time a change takes place in
 # the core scripts (this file and any *.dsc files in $DS.HOME/core/).
 #
-@ DS.CORE_ID = 144;
+@ DS.CORE_ID = 145;
 
 xecho -b -c Loading DarkStar $DS.VERSION;
 
@@ -160,10 +160,6 @@ if (fexist($DS.SAVE_DIR/core) == 1) {
 	^load $DS.SAVE_DIR/core;
 };
 
-if (fexist($DS.RC_FILE) == 1) {
-	^load $DS.RC_FILE;
-};
-
 #
 # Attempt to load some modules. See core/modules.dsc
 #
@@ -223,3 +219,6 @@ if (CONFIG.DOUBLE_STATUS)
 	_window_double_all on;
 };
 
+if (fexist($DS.RC_FILE) == 1) {
+        ^load $DS.RC_FILE;
+};

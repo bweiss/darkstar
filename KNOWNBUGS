@@ -14,3 +14,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Added /FREE and /HOLD aliases to window module (requested by Kanan)
 * Added /RE alias to misc module (requested by Kanan)
 * Added /DSET AWAY_LOG_ALWAYS (boolean) to away module (requested by Kanan)
+* Attempt to load dsrc file after modules load instead of before
