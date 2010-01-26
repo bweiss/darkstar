@@ -1,4 +1,4 @@
-# version:1.2.2 loader:pf
+# version:1.3 loader:pf
 # $Id$
 #
 # misc.dsm - The 'miscellaneous stuff' module for DarkStar/EPIC5
@@ -12,7 +12,7 @@ queue cleanup.misc
 {
 	^bind ^W next_window;
 
-	for alias in (dns disco m nslookup ping tig umode ver whois wi wii ww) {
+	for alias in (dns disco m nslookup ping re tig umode ver whois wi wii ww) {
 		^alias -$alias;
 	};
 
@@ -71,6 +71,15 @@ alias nslookup
 alias ping (target default "$servernick()", void)
 {
 	//ping $target;
+};
+
+alias re (...)
+{
+	if ([$,]) {
+		//msg $, $*;
+	} else {
+		xecho -b You have not received any private messages!;
+	};
 };
 
 alias tig (void)
