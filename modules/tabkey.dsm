@@ -1,8 +1,8 @@
-# version:1.2 loader:pf
+# version:1.2.1 loader:pf
 # $Id$
 #
 # tabkey.dsm - Tab key completion module for DarkStar/EPIC5
-# Copyright (c) 2002-2010 EPIC Software Labs
+# Copyright (c) 2002-2011 EPIC Software Labs
 # See the 'COPYRIGHT' file for more information.
 #
 # This script is based on the tabkey.ce script written by CrazyEddy and
@@ -573,6 +573,16 @@ alias tabkey.cmd.unloadmod (...)
 alias tabkey.cmd.unshift (...)
 {
 	@ function_return = tabkey.nofallback($tabkey.method.variable(assign));
+};
+
+alias tabkey.cmd.whois (...)
+{
+	@ function_return = tabkey.nofallback($tabkey.method.nick($*));
+};
+
+alias tabkey.cmd.wi (...)
+{
+	@ function_return = tabkey.nofallback($tabkey.method.nick($*));
 };
 
 alias tabkey.cmd.window (...)

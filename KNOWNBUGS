@@ -15,3 +15,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Added /RE alias to misc module (requested by Kanan)
 * Added /DSET AWAY_LOG_ALWAYS (boolean) to away module (requested by Kanan)
 * Attempt to load dsrc file after modules load instead of before
+* Fix tab comp for /WHOIS - call $tabkey.method.nick() only
