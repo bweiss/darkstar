@@ -16,3 +16,10 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Added /DSET AWAY_LOG_ALWAYS (boolean) to away module (requested by Kanan)
 * Attempt to load dsrc file after modules load instead of before
 * Fix tab comp for /WHOIS - call $tabkey.method.nick() only
+* Removed the calls to $tabkey.method.chan() in the nickchan and
+  nickchannotify methods. Instead we do our own channel matching in those
+  methods to avoid the # and & prefixes being added automatically. This
+  fixes a bug where mixed lists of channels and nicks were being returned
+  to tabkey.main and causing the call to $prefix() to return no results.
+  (Discovered by CrazyEddy)
+* Moved msg handler out of tabkey.default and into tabkey.main.

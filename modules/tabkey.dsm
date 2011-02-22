@@ -1,4 +1,4 @@
-# version:1.2.1 loader:pf
+# version:1.2.2 loader:pf
 # $Id$
 #
 # tabkey.dsm - Tab key completion module for DarkStar/EPIC5
@@ -8,6 +8,7 @@
 # This script is based on the tabkey.ce script written by CrazyEddy and
 # distributed with the EPIC4 IRC client. The original design and all
 # of the really important code are his so he deserves most of the credit.
+# If not for his genius none of this would be possible. :-)
 #
 # This version is being extended and maintained by Brian Weiss.
 # Please send all bug reports, questions, and comments to brian@epicsol.org.
@@ -160,9 +161,12 @@ alias tabkey.main (cycle, void)
 
 	if (!index($cmdchars $L)) {
 		wait for @ :matches = tabkey.cmd($word);
+	} elsif (L == []) {
+		wait for @ :matches = tabkey.cmd.msg($*);
 	} else {
 		wait for @ :matches = tabkey.default($word);
 	};
+
 	@ :prefix = prefix($matches);
 
 	if (#matches == 1 && matches != [ ])
@@ -245,14 +249,12 @@ alias tabkey.cmd (...)
 alias tabkey.default (...)
 {
 	bless;
-	if (L == []) {
-		@ function_return = tabkey.cmd.msg($*);
-	} else if (curword == 0) {
+	if (curword == 0) {
 		@ :matches = tabkey.method.nick($*);
 		if (#matches == 1) {
 			@ function_return = matches ## CONFIG.TABKEY_NICKCOMP_SUFFIX;
 		} else {
-			@ function_return = matches ? matches : tabkey.method.nickchan($*);
+			@ function_return = matches ? matches : tabkey.method.nickchannotify($*);
 		};
 	} else {
 		@ function_return = tabkey.method.nickchannotify($*);
@@ -717,12 +719,14 @@ alias tabkey.method.nick (...)
 
 alias tabkey.method.nickchan (...)
 {
-	@ function_return = remws(/ $tabkey.method.chan($*) $tabkey.method.nick($*));
+	@ :chans = pattern($sar(g/\\/\\\\/$*)* $mychannels());
+	@ function_return = remws(/ $chans $tabkey.method.nick($*));
 };
 
 alias tabkey.method.nickchannotify (...)
 {
-	@ function_return = remws(/ $tabkey.method.chan($*) $sort($uniq($tabkey.method.nick($*) $tabkey.method.notify($*))));
+	@ :chans = pattern($sar(g/\\/\\\\/$*)* $mychannels());
+	@ function_return = remws(/ $chans $sort($uniq($tabkey.method.nick($*) $tabkey.method.notify($*))));
 };
 
 alias tabkey.method.notify (...)
