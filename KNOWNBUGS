@@ -23,3 +23,7 @@ THE CHANGELOG SINCE THE LAST RELEASE:
   to tabkey.main and causing the call to $prefix() to return no results.
   (Discovered by CrazyEddy)
 * Moved msg handler out of tabkey.default and into tabkey.main.
+* Defer call to formats.echo in send_msg hook in formats.dsm. This fixes a
+  bug with the auto_query_window feature in window.dsm in which the sent msg
+  would display in the current window before the new query window was
+  created.

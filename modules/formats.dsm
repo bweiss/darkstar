@@ -1,4 +1,4 @@
-# version:0.6.1 loader:pf
+# version:0.6.2 loader:pf
 # $Id$
 #
 # formats.dsm - Standard formatting hooks and variables for DarkStar/EPIC5
@@ -623,7 +623,7 @@ on ^send_ctcp "PRIVMSG *"
 };
 
 on ^send_dcc_chat "*" {formats.echo SEND_DCC_CHAT $*};
-on ^send_msg      "*" {formats.echo SEND_MSG $*};
+on ^send_msg      "*" {defer formats.echo SEND_MSG $*};
 on ^send_notice   "*" {formats.echo SEND_NOTICE $*};
 on ^server_notice "*" {formats.echo SERVER_NOTICE $2-};
 
