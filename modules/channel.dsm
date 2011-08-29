@@ -1,4 +1,4 @@
-# version:1.2.5 loader:pf
+# version:1.2.6 loader:pf
 # $Id$
 #
 # channel.dsm - Channel related module for DarkStar/EPIC5
@@ -673,11 +673,12 @@ alias tban (chan default "$C", void)
 
 		@ :maxmodes = serverctl(GET $servernum() 005 MODES);
 		@ :maxmodes = maxmodes ? maxmodes : 4;
+
 		for ii from 1 to $maxmodes {
 			@ push(:tmp mode.$ii);
 		};
-		fe ($bans) $tmp
-		{
+		fe ($bans) $tmp {
+			@:masks = [];
 			for (@:cnt = 1, mode[$cnt], @:cnt++) {
 				eval push :masks \$mode[$cnt];
 			};
