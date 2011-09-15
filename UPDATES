@@ -2,7 +2,7 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://www.epicsol.org/darkstar/UPDATES
 
 
-*** News 2011/09/15 -- Added /WSB and /WSF aliases
+*** News 2011/09/15 -- Added /WSB (/?) and /WSF aliases
 	Shortcuts to /WINDOW SEARCH_{BACK|FORWARD} commands.
 
 *** News 2010/01/26 -- Added /DSET AWAY_LOG_ALWAYS to away module

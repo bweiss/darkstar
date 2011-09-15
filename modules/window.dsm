@@ -24,6 +24,7 @@ queue cleanup.window
 	^on #hook 426 -"CONFIG MSG_WINDOW_LEVEL *";
 	^on #hook 426 -"CONFIG MSG_WINDOW_NUMBER *";
 	^on #hook 426 -"CONFIG MSG_WINDOW_SIZE *";
+	^on input -"/\\?*"
 	^on #join 426 -'\$servernick() *';
 	^on #leave 426 -'\$servernick() *';
 	^on #raw_irc 426 -"% NICK *";
@@ -407,6 +408,12 @@ on #-hook 426 "CONFIG MSG_WINDOW_SIZE *"
 			window $msgwin size $CONFIG.MSG_WINDOW_SIZE;
 		};
 	};
+};
+
+on ^input "/\\?*"
+{
+	@ :str = after(? $*);
+	window search_back $str;
 };
 
 on #-join 426 '\$servernick() *'
