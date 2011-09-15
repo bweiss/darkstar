@@ -1,4 +1,4 @@
-# version:1.0 loader:pf
+# version:1.1 loader:pf
 # $Id$
 #
 # window.dsm - Window related module for DarkStar/EPIC5
@@ -10,7 +10,7 @@
 
 queue cleanup.window
 {
-	for alias in (free hold q query swap wb wc wj wk wl wn wp wq wub) {
+	for alias in (free hold q query swap wb wc wj wk wl wn wp wq wsb wsf wub) {
 		^alias -$alias;
 	};
 	for wref in ($winrefs()) {
@@ -155,6 +155,8 @@ alias wn  (...)                      {window next};
 alias wns (...)                      {window new_hide swap last server $*};
 alias wp  (...)                      {window previous};
 alias wq  (...)                      {window new_hide swap last query $nick};
+alias wsb (...)                      {window search_back $*};
+alias wsf (...)                      {window search_forward $*};
 alias wub (...)                      {window unbind};
 
 
