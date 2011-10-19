@@ -10,28 +10,33 @@ development and I make no guarantees about any of this being consistent
 between versions.
 
 What is a DarkStar module? Well, in its simplest form, it's just like any
-other script that you might /LOAD, but it contains a special block of code
-which I call a "cleanup queue" (using /QUEUE). This cleanup queue is
-responsible for removing certain pieces of code when the module is unloaded.
-This is due to the fact that the module loader has no way to reliably keep
-track of everything the module adds, so certain things must be specified
-for removal by the module itself. I hope to remedy this as soon as it
-becomes possible to do so. For now, this is something we're stuck with.
+other script that you might /LOAD but follows certain conventions in order
+to take advantage of features provided by the DarkStar core. One of the most
+important conventions these modules follow is the use of what I am calling
+a cleanup queue. A cleanup queue is a special block of code that gets passed
+to the /QUEUE command that will be executed whenever your module is unloaded
+from the system. This cleanup queue is responsible for removing certain
+pieces of code when the module is unloaded. This is needed because of the
+fact that the module loader has no way to reliably keep track of everything
+the module adds, so certain things must be specified for removal by the
+module itself. I hope to remedy this as soon as it becomes possible to do
+so. For now, this is something we're stuck with.
 
 Technically, the only thing required to make a script available as a
 DarkStar module is to place it in one of the module directories with
-a ".dsm" extension. Of course, the module won't unload properly and
-could cause all sorts of problems if the user ever tries to do so.
-Including a cleanup queue and keeping it up-to-date is pretty important
-and I strongly urge all module authors to take the time to do this..
+a ".dsm" extension. Of course, the module won't unload properly but that's
+all that needs to happen in order for your script to show up in the list
+of modules.
 
 Nothing else needs to be done in order for a script to become a DarkStar
 module. However, there are a variety of features provided by the core
-scripts that module authors may want to take advantage of. I will go into
-detail about some of these, as well as the cleanup queue, in the comments
-of the example module below.
+scripts that module authors may want to take advantage of. There are also
+a number of conventions you can follow that will make your code easier to
+manage as well as ensuring that it plays nice with any other modules that
+other people may write. I will go into detail about some of these, as well
+as the cleanup queue, in the comments of the example module below.
 
-Limitations:
+Limitations on modules:
 
   - The module's name can only contain characters that are valid as
     /ASSIGN variable names. This is because much of the data about the
@@ -44,47 +49,60 @@ Limitations:
     modlist.
 
 
+*** IMPORTANT NOTE ABOUT PF LOADER ***
+
+Current versions of DarkStar utilize the PF loader (pre-formatted) for
+all core scripts and modules. This has many implications for your scripts
+so only enable the PF loader if you know what this is. This can be enabled
+by putting "loader:pf" at the top of your module (see below).
+
+The example module below was written using the std loader. For examples
+of modules using the PF loader see the modules directory.
+
+See also: http://help.epicsol.org/doku.php?id=pf_loader
+
+
 --- START OF FILE: sample.dsm ---
 # version:0.1.3 loader:std
-/*
- * The above line is called a module header and is read by the module loader
- * (/LOAD sees it as a comment) when it scans for modules. This header gives
- * the loader information about the module. Currently only two header tags
- * are supported: version and loader. The 'version' tag, as its name implies,
- * gives the loader a version string to be displayed in the modlist. The
- * 'loader' tag allows module authors to specify whether they would like to
- * use EPIC's standard loader (std) or the new pre-formatted loader (pf).
- * See epic4/doc/pf-loader for details about this wonderful /LOAD option.
- * NOTE: As of DarkStar 0.3 all core scripts and modules use the PF loader.
- */
+#
+# The above line is called a module header and is read by the module loader
+# (/LOAD sees it as a comment) when it scans for modules. This header gives
+# the loader information about the module. Currently only two header tags
+# are supported: version and loader. The 'version' tag, as its name implies,
+# gives the loader a version string to be displayed in the modlist. The
+# 'loader' tag allows module authors to specify whether they would like to
+# use EPIC's standard loader (std) or the new pre-formatted loader (pf).
+# See epic4/doc/pf-loader for details about this wonderful /LOAD option.
+# NOTE: As of DarkStar 0.3 all core scripts and modules use the PF loader.
+#
 
-/*
- * sample.dsm - Example module for DarkStar/EPIC4
- *
- * Standard header comment, you can put whatever you like here. To make
- * things easy on other module authors, I like to include a line like the
- * one below whenever I have /ON hooks.
- *
- * This script uses serial numbers 0 and 123 for all /ON hooks.
- */
+#
+# sample.dsm - Example module for DarkStar/EPIC4
+#
+# Standard header comment, you can put whatever you like here. To make
+# things easy on other module authors, I like to include a line like the
+# one below whenever I have /ON hooks.
+#
+# This script uses serial numbers 0 and 123 for all /ON hooks.
+#
 
-/****** CLEANUP QUEUE ******/
+#### CLEANUP QUEUE ####
 
-/*
- * The most important part, the cleanup queue. This removes anything
- * that the module adds that is not automatically removed by the module
- * loader. This means all /ON hooks and any alias, assign, or array
- * not in a structure named after the module (i.e. Anything not obviously
- * associated with that module). It is also important to note that there
- * is one evaluation being performed on the body of this queue, so there
- * are times you will have to escape certain characters like '$'. An example
- * of this is shown here in the public hook. The name of this queue must
- * be in the form of "cleanup.<modulename>" and must match the exact module
- * name (if the module is named "foo2", the cleanup queue must be
- * named "cleanup.foo2"). Also note that all /ALIAS, /ASSIGN, and /ON
- * commands include the silent mode (^) to prevent them from outputting
- * anything when the cleanup queue is executed.
- */
+#
+# The most important part, the cleanup queue. This removes anything
+# that the module adds that is not automatically removed by the module
+# loader. This means all /ON hooks and any alias, assign, or array
+# not in a structure named after the module (i.e. Anything not obviously
+# associated with that module). It is also important to note that there
+# is one evaluation being performed on the body of this queue, so there
+# are times you will have to escape certain characters like '$'. An example
+# of this is shown here in the public hook. The name of this queue must
+# be in the form of "cleanup.<modulename>" and must match the exact module
+# name (if the module is named "foo2", the cleanup queue must be
+# named "cleanup.foo2"). Also note that all /ALIAS, /ASSIGN, and /ON
+# commands include the silent mode (^) to prevent them from outputting
+# anything when the cleanup queue is executed.
+#
 queue cleanup.sample
 {
 	^alias -foo
@@ -97,87 +115,85 @@ queue cleanup.sample
 }
 
 
-/****** CONFIG/FORMAT VARIABLES ******/
+#### CONFIG/FORMAT VARIABLES ####
 
-/*
- * The /ADDCONFIG and /ADDFORMAT commands (provided by core/set.dsc) add
- * config and format variables whose values can be changed via /DSET and
- * /FSET. The '-b' option passed to /ADDCONFIG creates a boolean variable.
- * Please see the comments in set.dsc for the complete usage of these
- * commands. These variables are removed automatically when the module
- * that added them is unloaded.
- *
- * IMPORTANT! The actual values of these variables will reside in the
- * CONFIG structure and should be accessed (and sometimes directly changed)
- * from there. See examples later in this file.
- */
+#
+# The /ADDCONFIG and /ADDFORMAT commands (provided by core/set.dsc) add
+# config and format variables whose values can be changed via /DSET and
+# /FSET. The '-b' option passed to /ADDCONFIG creates a boolean variable.
+# Please see the comments in set.dsc for the complete usage of these
+# commands. These variables are removed automatically when the module
+# that added them is unloaded.
+#
+# IMPORTANT! The actual values of these variables will reside in the
+# CONFIG structure and should be accessed (and sometimes directly changed)
+# from there. See examples later in this file.
+#
 addconfig -b FOO 1
 addconfig    SAMPLE_TRIGGER !foo
 addconfig -b SAMPLE_WINDOW 1
 
-/*
- * Format variables should be used with $fparse() and $fparse2() (the only
- * difference is that fparse2 doesn't pass the string through $cparse() for
- * color coding) and are generally used to format the output resulting from
- * certain events. This allows for easy configuration as well as theme
- * support.
- *
- * The numeric expandos ($0, $1, $2, etc.) will be expanded to the arguments
- * passed to the fparse functions. Note that the first argument ($0) will
- * be the name of the format variable so the useful parameters generally
- * begin at $1.
- *
- * See the public hook for the call to $fparse() in this example.
- */
+#
+# Format variables should be used with $fparse() and $fparse2() (the only
+# difference is that fparse2 doesn't pass the string through $cparse() for
+# color coding) and are generally used to format the output resulting from
+# certain events. This allows for easy configuration as well as theme
+# support.
+#
+# The numeric expandos ($0, $1, $2, etc.) will be expanded to the arguments
+# passed to the fparse functions. Note that the first argument ($0) will
+# be the name of the format variable so the useful parameters generally
+# begin at $1.
+#
+# See the public hook for the call to $fparse() in this example.
+#
 addformat PUBLIC <%G$1%n> $3-
 
 
-/****** INIT ******/
-
-/*
- * Force the loading of saved settings early so we can use them at
- * load time. Example directly below.
- */
+#
+# Force the loading of saved settings early so we can use them at
+# load time. Example directly below.
+#
 if (fexist($DS.SAVE_DIR/sample) == 1) {
 	^load $DS.SAVE_DIR/sample
 }
 
-/*
- * Create a split window named "sample" at load time. This window
- * can also be created or killed whenever $CONFIG.SAMPLE_WINDOW is
- * changed via /DSET by creating an /ON hook that catches config
- * changes. You can find an example of this below the public hook
- * in this sample module.
- *
- * It is also smart to have the cleanup queue kill this window,
- * if it exists when the module is unloaded. Another example of this
- * can be found in modules/window.dsm.
- */
+#
+# Create a split window named "sample" at load time. This window
+# can also be created or killed whenever $CONFIG.SAMPLE_WINDOW is
+# changed via /DSET by creating an /ON hook that catches config
+# changes. You can find an example of this below the public hook
+# in this sample module.
+#
+# It is also smart to have the cleanup queue kill this window,
+# if it exists when the module is unloaded. Another example of this
+# can be found in modules/window.dsm.
+#
 if (CONFIG.SAMPLE_WINDOW)
 {
 	window new name sample hide
 }
 
 
-/****** USER ALIASES ******/
+#### COMMANDS EXPOSED TO THE USER ####
 
-/*
- * There is no way for the module loader to be sure what this alias belongs
- * to, so it must be removed in the cleanup queue.
- */
+#
+# There is no way for the module loader to be sure what this alias belongs
+# to, so it must be removed in the cleanup queue.
+#
 alias foo (void)
 {
 	echo foobar!
 }
 
 
-/****** INTERNAL ALIASES ******/
+#### INTERNAL ALIASES ####
 
-/*
- * This will automatically be removed by the module loader, as it is
- * in a structure named after the module. It need not be removed in
- * the cleanup queue.
- */
+#
+# This will automatically be removed by the module loader because it is
+# in a structure named after the module. It does NOT need to be removed
+# in the cleanup queue.
+#
 alias sample.speak (target defalt "$C", void)
 {
 	if (target) {
@@ -186,50 +202,56 @@ alias sample.speak (target defalt "$C", void)
 }
 
 
-/****** ON HOOKS ******/
+#### ON HOOKS ####
 
-/*
- * All /ON hooks must be removed in the cleanup queue or Bad Things (tm)
- * will most certainly happen.
- *
- * Notice that the values of all config and format variables are
- * stored and accessed in the CONFIG and FORMAT /ASSIGN structures.
- */
+#
+# All /ON hooks must be removed in the cleanup queue or Bad Things (tm)
+# will most certainly happen.
+#
+# Notice that the values of all config and format variables are
+# stored and accessed in the CONFIG and FORMAT /ASSIGN structures.
+#
+
 on ^public '% % $CONFIG.SAMPLE_TRIGGER *'
 {
-	/*
-	 * It is usually desirable to check for a value in format
-	 * variables before passing them along to $fparse().
-	 */
+	#
+	# It is usually desirable to check for a value in format
+	# variables before passing them along to $fparse(). This way
+	# the user can suppress output by unsetting or emptying the variable
+	# with /FSET -<var>
+	#
 	if (FORMAT.PUBLIC) {
 		echo $fparse(PUBLIC $*)
 	}
 
 	if (CONFIG.FOO && finditem(foobar $0) == -1) {
-		/*
-		 * As with aliases and assign variables, any arrays not
-		 * obviously associated with this module must be removed
-		 * by the cleanup queue. (e.g. an array named sample.foo
-		 * would be removed automatically by the module loader)
-		 */
+		#
+		# Cleanup!
+		# As with aliases and assign variables, any arrays not
+		# obviously associated with this module must be removed
+		# by the cleanup queue. (e.g. an array named sample.foo
+		# would be removed automatically by the module loader)
+		#
 		@ setitem(foobar $numitems(foobar) $0)
 		sample.speak $0
 	}
 }
 
-/*
- * This hook kills or creates the "sample" window whenever the user
- * changes the value of $CONFIG.SAMPLE_WINDOW with /DSET. Since the
- * new value of the variable is already stored in the CONFIG structure
- * after it is set, the previous value is passed to this hook after the
- * variable name in order to allow the module to reset it to the previous
- * value. See the hook at the bottom of modules/names.dsm for an example
- * of this.
- *
- * These hooks should always have a non-zero serial number since there is
- * no need to suppress any default output/action. See Serial_Numbers(7) in
- * the EPIC help files for more information on the use of serial numbers.
- */
+#
+# Hooking /DSET config changes.
+#
+# This hook kills or creates the "sample" window whenever the user
+# changes the value of $CONFIG.SAMPLE_WINDOW with /DSET. Since the
+# new value of the variable is already stored in the CONFIG structure
+# after it is set, the previous value is passed to this hook after the
+# variable name in order to allow the module to reset it to the previous
+# value. See the hook at the bottom of modules/names.dsm for an example
+# of this.
+#
+# These hooks should always have a non-zero serial number since there is
+# no need to suppress any default output/action. See Serial_Numbers(7) in
+# the EPIC help files for more information on the use of serial numbers.
+#
 on #-hook 123 "CONFIG SAMPLE_WINDOW *"
 {
 	if (CONFIG.SAMPLE_WINDOW) {
@@ -246,12 +268,7 @@ That should give you a pretty good taste of what makes up a module. At this
 point you may want to have a closer look at the various modules that are
 included in the script pack. Other areas of interest would be commands.dsc
 and functions.dsc in the core/ directory. And if you feel brave, have a
-peak at set.dsc and modules.dsc ;). Please feel free to email me if you
-have a question about something not covered here, or especially if you have
-a suggestion for how something can be improved. That's all for now,
-happy scripting!
+peak at set.dsc and modules.dsc ;). Please feel free to email me (or better
+yet drop by #epic on efnet) if you have a question about something not
+covered here. That's all for now, happy scripting!
 
-  Brian Weiss <brian at epicsol.org>
-
-
-End of file.

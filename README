@@ -2,21 +2,20 @@ README file for DarkStar/EPIC5
 $Id$
 
 DarkStar written and maintained by Brian Weiss <brian@epicsol.org>
-Copyright (c) 2002, 2009 Brian Weiss
+Copyright (c) 2002, 2011 Brian Weiss
 Please see the 'COPYRIGHT' file for licensing information.
 See the bottom of this file for a list of contributors.
 
 
 ABOUT
 
-DarkStar is a modular script pack for the EPIC5 IRC client. It is highly
-extensible and includes theme support, advanced tab completion and a whole
-bunch of other goodies. The modular design offers many benefits and allows
-for a very high level of customization. It is ideal for scripters that wish
-to create their own script packs or just want the power and convenience of
-being able to write scripts as modules that can be added or removed at any
-time. Although tailored for power users these scripts should still be quite
-usable by those people that just want things to work nicely out-of-the-box.
+DarkStar is a modular script pack and scripting framework for the EPIC5
+IRC client. It is highly extensible and includes a module loading system,
+theme support, advanced tab completion, nick management and more. The
+modular design offers many benefits and allows for a very high level of
+customization. While it has been designed with power users and other
+scripters in mind, it still provides a nice environment for all types
+of users right out of the box.
 
 
 REQUIREMENTS
@@ -24,8 +23,8 @@ REQUIREMENTS
 The only requirement is EPIC5-0.3 or higher. This script pack will NOT
 work correctly with EPIC4 or older clients. You have been warned.
 
-EPIC5-1.0 was released in December of 2008 and is the recommended version
-to run with this script pack.
+EPIC5-1.1.2 is the latest version of EPIC5 at this time. It is recommended
+that all users run this version.
 
 
 WHERE TO GET DARKSTAR AND EPIC5
@@ -40,7 +39,7 @@ Recent versions of both DarkStar and EPIC5 can also be found at the
 following URLs:
 
   http://www.epicsol.org/
-  http://www.got.net/~brian/epic5/
+  http://www.epicsol.org/~brian/
 
 A snapshot of my current tree (as well as EPIC) is also available via CVS:
 
