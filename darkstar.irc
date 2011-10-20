@@ -36,8 +36,7 @@ if (!epic() || V < 20061111)
 	echo at the following URLs.;
 	echo;
 	echo http://darkstar.epicsol.org/;
-	echo http://darkstar.nuthouse.org/;
-	echo http://www.got.net/~brian/epic5/;
+	echo http://www.epicsol.org/~brian/;
 	echo;
 
 	^local pause $'Press `a` to abort load, `q` to quit, or any other key to continue.';
@@ -67,14 +66,14 @@ for array in ($getarrays()) {
 #
 # Important global variables
 #
-@ DS.VERSION = [0.4.1];
-@ DS.INTERNAL_VERSION = [20090214];
+@ DS.VERSION = [0.4.2];
+@ DS.INTERNAL_VERSION = [20111019];
 
 #
 # This will be incremented every time a change takes place in
 # the core scripts (this file and any *.dsc files in $DS.HOME/core/).
 #
-@ DS.CORE_ID = 145;
+@ DS.CORE_ID = 146;
 
 xecho -b -c Loading DarkStar $DS.VERSION;
 
@@ -120,7 +119,7 @@ if (fexist($DS.USER_DIR) == -1)
 	echo;
 	echo Welcome to the DarkStar/EPIC5 script pack!;
 	echo;
-	echo Copyright (c) 2002-2009 Brian Weiss <brian@epicsol.org>;
+	echo Copyright (c) 2002-2011 Brian Weiss <brian@epicsol.org>;
 	echo See the 'COPYRIGHT' file for details.;
 	echo Official Website: http://darkstar.epicsol.org/;
 	echo;

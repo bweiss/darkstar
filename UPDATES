@@ -2,6 +2,9 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://www.epicsol.org/darkstar/UPDATES
 
 
+DarkStar 0.4.2 (20111019)
+
+
 *** News 2011/09/15 -- Added /WSB (/?) and /WSF aliases
 	Shortcuts to /WINDOW SEARCH_{BACK|FORWARD} commands.
 
@@ -27,6 +30,10 @@ The entire file can be found at http://www.epicsol.org/darkstar/UPDATES
 		set auto_new_nick_char [<character>]
 		set auto_new_nick_length [<positive integer>]
 		set auto_new_nick_list [<string>]
+
+
+DarkStar 0.4.1 (20090214)
+
 
 *** News 2009/02/14 -- Removed memo module
 	The memo module has been removed because uh... well, it's
