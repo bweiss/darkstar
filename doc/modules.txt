@@ -1,40 +1,36 @@
 Guide to the DarkStar module loading system.
 $Id$
 
-This intends to document the DarkStar module loading system as well as
-explain methods for writing high quality modules. It is geared towards
-people with some experience in ircII-EPIC scripting that are looking to
-write their own modules or are just interested in understanding the
-DarkStar core scripts. Note: This script pack is still under heavy
-development and I make no guarantees about any of this being consistent
-between versions.
+This document attempts to explain what makes up a DarkStar module and how
+to write your own. It is geared towards people that already have some
+experience in ircII-EPIC scripting.
 
 What is a DarkStar module? Well, in its simplest form, it's just like any
-other script that you might /LOAD but follows certain conventions in order
-to take advantage of features provided by the DarkStar core. One of the most
-important conventions these modules follow is the use of what I am calling
-a cleanup queue. A cleanup queue is a special block of code that gets passed
-to the /QUEUE command that will be executed whenever your module is unloaded
-from the system. This cleanup queue is responsible for removing certain
-pieces of code when the module is unloaded. This is needed because of the
-fact that the module loader has no way to reliably keep track of everything
-the module adds, so certain things must be specified for removal by the
-module itself. I hope to remedy this as soon as it becomes possible to do
-so. For now, this is something we're stuck with.
+other EPIC script that you might /LOAD except that it follows certain
+conventions in order to take advantage of features provided by the
+DarkStar core.
 
-Technically, the only thing required to make a script available as a
-DarkStar module is to place it in one of the module directories with
-a ".dsm" extension. Of course, the module won't unload properly but that's
-all that needs to happen in order for your script to show up in the list
-of modules.
+The only thing required to make your script available as a module is to
+name it with a .dsm extension and place it in one of the module directories
+(either $DS.HOME/modules/ or $DS.USER_DIR/modules). That said, there are a
+number of things I strongly urge module writers to take advantage of.
 
-Nothing else needs to be done in order for a script to become a DarkStar
-module. However, there are a variety of features provided by the core
-scripts that module authors may want to take advantage of. There are also
-a number of conventions you can follow that will make your code easier to
-manage as well as ensuring that it plays nice with any other modules that
-other people may write. I will go into detail about some of these, as well
-as the cleanup queue, in the comments of the example module below.
+A good module should include the following...
+
+  - A header line containing the module's version and the loader
+    to be used (std vs. pf).
+
+  - A cleanup queue to remove anything not automatically unloaded
+    by the module loading system. See below.
+
+  - Config/format variables (/DSET and /FSET vars)
+
+  - Internal aliases, assigns, arrays, etc. should all be placed
+    within structures named after the module. So if your module is
+    named "foo" then you should name aliases/assign/etc. like foo.bar,
+    foo.baz, foo.qux, ... These will automatically be removed by the
+    module system when your module is unloaded, so you don't have to
+    worry about them in the cleanup queue.
 
 Limitations on modules:
 
@@ -48,6 +44,13 @@ Limitations on modules:
     will result in an error and the module will not be present in the
     modlist.
 
+One more thing about cleanup queues... For the most part, if you follow
+what I said above and name your variables within structures named after
+the module, you will only need to place user-exposed aliases or other
+global variables in your cleanup queues. The one exception to this is
+/ON hooks. All /ON hooks must be removed in the cleanup queue or they
+will NOT be unloaded when your module is.
+
 
 *** IMPORTANT NOTE ABOUT PF LOADER ***
 
@@ -56,23 +59,27 @@ all core scripts and modules. This has many implications for your scripts
 so only enable the PF loader if you know what this is. This can be enabled
 by putting "loader:pf" at the top of your module (see below).
 
-The example module below was written using the std loader. For examples
-of modules using the PF loader see the modules directory.
-
 See also: http://help.epicsol.org/doku.php?id=pf_loader
 
+
+Below is a very basic sample module with comments explaining the various
+parts. If you want more real-world examples, please see the modules that
+were included in this script pack.
+
+Note: The following sample script was designed to be loaded with the
+standard loader.
 
 --- START OF FILE: sample.dsm ---
 # version:0.1.3 loader:std
 #
 # The above line is called a module header and is read by the module loader
-# (/LOAD sees it as a comment) when it scans for modules. This header gives
-# the loader information about the module. Currently only two header tags
-# are supported: version and loader. The 'version' tag, as its name implies,
-# gives the loader a version string to be displayed in the modlist. The
-# 'loader' tag allows module authors to specify whether they would like to
-# use EPIC's standard loader (std) or the new pre-formatted loader (pf).
-# See epic4/doc/pf-loader for details about this wonderful /LOAD option.
+# when it scans for modules. This header gives the loader information about
+# the module. Currently only two header tags are supported: 'version' and
+# 'loader'. The 'version' tag, as its name implies, gives the mod system a
+# version string to be displayed in the modlist. The 'loader' tag allows
+# module authors to specify whether they would like to use EPIC's standard
+# loader (std) or the new pre-formatted loader (pf). See epic4/doc/pf-loader
+# for details
 # NOTE: As of DarkStar 0.3 all core scripts and modules use the PF loader.
 #
 
