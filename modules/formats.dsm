@@ -1,4 +1,4 @@
-# version:0.6.2 loader:pf
+# version:0.6.3 loader:pf
 # $Id$
 #
 # formats.dsm - Standard formatting hooks and variables for DarkStar/EPIC5
@@ -136,6 +136,7 @@ addformat WHOIS_NAME;
 addformat WHOIS_NICK $$G $$2 is $$3@$$4 \\\($$6-\\\);
 addformat WHOIS_OPER $$G $$2 is being SYN flooded \\\(IRC Operator\\\);
 addformat WHOIS_REALHOST $$G $$2 $$3 : $$4-;
+addformat WHOIS_SECURE $$G $$2 :is using a secure connection;
 addformat WHOIS_SERVER $$G on irc via server $$1 \\\($$4-\\\);
 addformat WHOIS_SIGNON;
 addformat WHOWAS_NAME;
@@ -501,6 +502,9 @@ on ^action "*"
 		formats.do_highlight ACTION_CHANNEL_OTHER $winchan($1) $*;
 	};
 };
+
+# ratbox WHOIS SSL
+on ^671 "*" {formats.echo WHOIS_SECURE $*};
 
 on ^710 "*" {formats.echo KNOCK $*};
 on ^711 "*" {formats.echo KNOCK_DELIVERED $*};

@@ -102,6 +102,7 @@ assign -FORMAT.WHOIS_NAME
 assign FORMAT.WHOIS_NICK $G $2 is $3@$4 \($6-\)
 assign FORMAT.WHOIS_OPER $G $2 is being SYN flooded \(IRC Operator\)
 assign FORMAT.WHOIS_REALHOST $G $2 $3 : $4-
+assign FORMAT.WHOIS_SECURE $G $2 :is using a secure connection
 assign FORMAT.WHOIS_SERVER $G on irc via server $1 \($4-\)
 assign -FORMAT.WHOIS_SIGNON
 assign -FORMAT.WHOWAS_NAME

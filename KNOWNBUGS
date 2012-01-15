@@ -29,3 +29,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
   created.
 * Fix /TBAN when removing more than 4 bans.
 * Added /WSB (alias: /?) and /WSF cmds for /WINDOW SEARCH_{BACK|FORWARD}
+* Added /FSET WHOIS_SECURE (671 numeric)

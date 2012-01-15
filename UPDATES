@@ -2,6 +2,9 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://www.epicsol.org/darkstar/UPDATES
 
 
+*** News 2012/01/15 -- formats.dsm - Added /FSET WHOIS_SECURE (Numeric 671)
+
+
 DarkStar 0.4.2 (20111019)
 
 

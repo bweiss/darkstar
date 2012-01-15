@@ -105,6 +105,7 @@ assign FORMAT.WHOIS_NAME $G IRCNAME    : $6-
 assign FORMAT.WHOIS_NICK $G $2 \($3@$4\)
 assign FORMAT.WHOIS_OPER $G OPERATOR   : $2 is an IRC Operator
 assign FORMAT.WHOIS_REALHOST $G REALHOST   : $3
+assign FORMAT.WHOIS_SECURE $G SECURE     : is using a secure connection
 assign FORMAT.WHOIS_SERVER $G SERVER     : $3 \($4-\)
 assign FORMAT.WHOIS_SIGNON $G SIGNON     : $strftime($4 %%a %%b %%d %%T %%Z %%Y)
 assign FORMAT.WHOWAS_NAME $G IRCNAME    : $6-
