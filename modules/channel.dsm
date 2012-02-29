@@ -1,8 +1,8 @@
-# version:1.2.6 loader:pf
+# version:1.3 loader:pf
 # $Id$
 #
 # channel.dsm - Channel related module for DarkStar/EPIC5
-# Copyright (c) 2002-2005 Brian Weiss (except where noted)
+# Copyright (c) 2002-2012 Brian Weiss (except where noted)
 # See the 'COPYRIGHT' file for more information.
 #
 # This script uses serial number 423 for /ON hooks.
@@ -17,17 +17,21 @@ queue cleanup.channel
 	};
 
 	^on #332 423 -"*";
+	^on #kick 423 -'\$servernick() *';
 	^on #topic 423 -"*";
+	^on #hook 423 -"CONFIG AUTO_REJOIN_DELAY *";
 	^on #hook 423 -"CONFIG CHANNEL_WALL_TYPE *";
 	^on #hook 423 -"CONFIG REMEMBER_TOPICS *";
 };
 
 
-addconfig ADDTOPIC_DELIMETER |;
-addconfig BANTYPE 3;
-addconfig CHANNEL_WALL_TYPE 1;
-addconfig DEFAULT_KICK_REASON No soup for you!;
-addconfig REMEMBER_TOPICS 5;
+addconfig    ADDTOPIC_DELIMETER |;
+addconfig -b AUTO_REJOIN 1;
+addconfig    AUTO_REJOIN_DELAY 5;
+addconfig    BANTYPE 3;
+addconfig    CHANNEL_WALL_TYPE 1;
+addconfig    DEFAULT_KICK_REASON No soup for you!;
+addconfig    REMEMBER_TOPICS 5;
 
 
 bind ^X switch_channels;
@@ -856,6 +860,19 @@ alias wall (text)
 	echo $fparse(SEND_WALL $chan $text);
 };
 
+#
+# Attempt to rejoin a channel in its original window.
+# This is used for auto-rejoin-on-kick (/DSET AUTO_REJOIN)
+#
+alias channel.rejoin (win, chan, key)
+{
+	@ :chanstr = key == "*" ? "$chan" : "$chan $key";
+	if (win > -1 && winnum($win) > -1) {
+		window $win channel "$chanstr";
+	} else {
+		window channel "$chanstr";
+	};
+};
 
 #
 # Maintains the arrays containing channel topics. This is called by
@@ -885,9 +902,34 @@ on #-332 423 "*"
 	channel.topic $servernum($0) $1-;
 };
 
+on #-kick 423 '\$servernick() *'
+{
+	if (CONFIG.AUTO_REJOIN) {
+		xecho -b Attempting to re-join $2 after $CONFIG.AUTO_REJOIN_DELAY second${CONFIG.AUTO_REJOIN_DELAY == 1 ? "" : "s"};
+		timer $CONFIG.AUTO_REJOIN_DELAY channel.rejoin $winchan($2) $2 $key($2);
+	};
+};
+
 on #-topic 423 "*"
 {
 	channel.topic $servernum() $1-;
+};
+
+#
+# Restrict the value of the AUTO_REJOIN_DELAY config variable to an integer
+# that is greater than or equal to zero.
+#
+on #-hook 423 "CONFIG AUTO_REJOIN_DELAY *"
+{
+	if (!isnumber(b10 $CONFIG.AUTO_REJOIN_DELAY) || CONFIG.AUTO_REJOIN_DELAY < 0)
+	{
+		xecho -b Value must be an integer greater than or equal to zero;
+		if (CONFIG.AUTO_REJOIN_DELAY == []) {
+			defer dset AUTO_REJOIN_DELAY 0;
+		} else {
+			defer dset AUTO_REJOIN_DELAY $2;
+		};
+	};
 };
 
 #

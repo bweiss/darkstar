@@ -2,6 +2,10 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://www.epicsol.org/darkstar/UPDATES
 
 
+*** News 2012/02/29 -- channel.dsm - Added auto-rejoin
+	Added auto-rejoin-on-kick. This includes two new config variables:
+	AUTO_REJOIN and AUTO_REJOIN_DELAY
+
 *** News 2012/01/15 -- formats.dsm - Added /FSET WHOIS_SECURE (Numeric 671)
 
 
