@@ -1,4 +1,4 @@
-# version:1.1 loader:pf
+# version:1.1.1 loader:pf
 # $Id$
 #
 # window.dsm - Window related module for DarkStar/EPIC5
@@ -155,11 +155,22 @@ alias wl  (...)                      {window last};
 alias wn  (...)                      {window next};
 alias wns (...)                      {window new_hide swap last server $*};
 alias wp  (...)                      {window previous};
-alias wq  (...)                      {window new_hide swap last query $nick};
 alias wsb (...)                      {window search_back $*};
 alias wsf (...)                      {window search_forward $*};
 alias wub (...)                      {window unbind};
 
+alias wq (targ, void)
+{
+	if (!targ)
+		return;
+
+	@ :qq = querywin($targ $servernum());
+	if (qq > -1) {
+		window swap $qq;
+	}{
+		window new_hide swap last query $targ;
+	};
+};
 
 alias window.auto_query_update (serv, nick, uhost, void)
 {
