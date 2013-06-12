@@ -1,4 +1,4 @@
-# version:0.6.3 loader:pf
+# version:0.6.4 loader:pf
 # $Id$
 #
 # formats.dsm - Standard formatting hooks and variables for DarkStar/EPIC5
@@ -627,7 +627,15 @@ on ^send_ctcp "PRIVMSG *"
 };
 
 on ^send_dcc_chat "*" {formats.echo SEND_DCC_CHAT $*};
-on ^send_msg      "*" {defer {formats.echo SEND_MSG $*}};
+on ^send_msg      "*" {
+	# Only defer if auto-query is on, otherwise outbound msgs will always
+	# go to the current window despite window levels.
+	if (CONFIG.AUTO_QUERY_WINDOW) {
+		defer {formats.echo SEND_MSG $*};
+	} else {
+		formats.echo SEND_MSG $*;
+	};
+};
 on ^send_notice   "*" {formats.echo SEND_NOTICE $*};
 on ^server_notice "*" {formats.echo SERVER_NOTICE $2-};
 
