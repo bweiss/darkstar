@@ -23,7 +23,7 @@ set -CONTINUED_LINE
 set DCC_STORE_PATH ~/incoming
 set INDENT ON   
 set LASTLOG 1024
-set LOAD_PATH ~/.epic4:/usr/local/share/epic:.
+set LOAD_PATH ~/.irc:~/.epic5:/usr/local/share/epic:.
 set MANGLE_LOGFILES ALL
 set NEW_SERVER_LASTLOG_LEVEL NONE
 set NO_FAIL_DISCONNECT ON
