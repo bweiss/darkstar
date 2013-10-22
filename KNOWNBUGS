@@ -32,3 +32,4 @@ THE CHANGELOG SINCE THE LAST RELEASE:
 * Added /FSET WHOIS_SECURE (671 numeric)
 * Added auto-rejoin-on-kick (/DSET AUTO_REJOIN)
 * Fix /wq and have it check for existing queries before creating a new win.
+* Fixed missing day value in CHANNEL_TS formats (reported by avj)

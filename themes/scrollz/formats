@@ -25,7 +25,7 @@ assign -FORMAT.BANS_HEADER2
 assign -FORMAT.CHANNEL_NICK
 assign FORMAT.CHANNEL_SIGNOFF $G Signoff: %c$2%n \($3-%n\)
 assign FORMAT.CHANNEL_SYNC $G Join to %C$1%n is now synched \($2 seconds\)
-assign FORMAT.CHANNEL_TS $G Channel %C$2%n created on $strftime($3 %%a %%b %%d %%T %%Y)
+assign FORMAT.CHANNEL_TS $G Channel %C$2%n created on $strftime($3 %%a %%b %%d %%T %%Z %%Y)
 assign FORMAT.CTCP $G %CCTCP $3%n from %c$1%n %W\(%p$before(@ $userhost())%W\@%p$after(@ $userhost())%W)%n
 assign FORMAT.CTCP_REPLY $G %CCTCP $3%n reply from %c$1%n: $4-
 assign FORMAT.DCC_CHAT %W=%R$1%W=%n $2-

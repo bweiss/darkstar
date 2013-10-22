@@ -24,7 +24,7 @@ assign -FORMAT.BANS_HEADER2
 assign FORMAT.CHANNEL_NICK $G nick%K/%W$1%c: %W$2%n is now known as %W$3%n
 assign FORMAT.CHANNEL_SIGNOFF $G quit%K/%W$1%c: %W$2%K[%n$3-%K]%n
 assign -FORMAT.CHANNEL_SYNC
-assign FORMAT.CHANNEL_TS $G Channel $2 created at $strftime($3 %%a %%b %%d %%T %%Y)
+assign FORMAT.CHANNEL_TS $G Channel $2 created at $strftime($3 %%a %%b %%d %%T %%Z %%Y)
 assign FORMAT.CTCP $G ctcp%K/%W$tolower($3)%c: %K[%W$4-%K]%n to %W$2%n from %W$1%K[%n$before(1 @ $userhost())%c@%n$after(1 @ $userhost())%K]%n
 assign FORMAT.CTCP_REPLY $G ctcp%K/%W$tolower($3)%c:%n reply from %W$1%K[%n$4-%K]%n
 assign FORMAT.DCC_CHAT $G chat%K/%W$1%c:%n $2- %K[%W$Z%K]%n
