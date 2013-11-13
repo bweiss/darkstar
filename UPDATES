@@ -2,6 +2,10 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://www.epicsol.org/darkstar/UPDATES
 
 
+*** News 2013/11/12 -- tabkey.dms - Added /DSET TABKEY_COMPLETE_TOLOWER
+	If enabled, this will downcase the match results for commands and
+	variables. Thank you to zlonix for contributing this.
+
 *** News 2012/02/29 -- channel.dsm - Added auto-rejoin
 	Added auto-rejoin-on-kick. This includes two new config variables:
 	AUTO_REJOIN and AUTO_REJOIN_DELAY
