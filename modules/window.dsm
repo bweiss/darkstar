@@ -1,4 +1,4 @@
-# version:1.1.1 loader:pf
+# version:1.2 loader:pf
 # $Id$
 #
 # window.dsm - Window related module for DarkStar/EPIC5
@@ -20,6 +20,7 @@ queue cleanup.window
 	^on #connect 426 -"*";
 	^on #disconnect 426 -"*";
 	^on #hook 426 -"CONFIG AUTO_CREATE_WINDOWS *"
+	^on #hook 426 -"CONFIG AUTO_QUERY_WINDOW_NUMBER *";
 	^on #hook 426 -"CONFIG MSG_WINDOW *";
 	^on #hook 426 -"CONFIG MSG_WINDOW_LEVEL *";
 	^on #hook 426 -"CONFIG MSG_WINDOW_NUMBER *";
@@ -60,6 +61,7 @@ addconfig    AUTO_CREATE_WINDOWS 0;
 addconfig -b AUTO_QUERY_UPDATE 1;
 addconfig -b AUTO_QUERY_WINDOW 0;
 addconfig    AUTO_QUERY_WINDOW_ARGS double off fixed on hide swap last;
+addconfig    AUTO_QUERY_WINDOW_NUMBER 0;
 addconfig -b BIND_ON_JOIN 0;
 addconfig -b JOIN_NEW_WINDOW 0;
 addconfig    JOIN_NEW_WINDOW_ARGS hide_others;
@@ -204,7 +206,15 @@ alias window.auto_query_window (serv, nick, uhost, void)
 	    !ignorectl(RPATTERN $nick!$uhost))
 	{
 		xecho -b -w 0 Creating new window for query with $nick;
-		^window new server $serv query $nick $CONFIG.AUTO_QUERY_WINDOW_ARGS;
+		if (CONFIG.AUTO_QUERY_WINDOW_NUMBER > 0) {
+			@ :wnum = CONFIG.AUTO_QUERY_WINDOW_NUMBER;
+			while (windowctl(REFNUM $wnum)) {
+				@ :wnum++;
+			};
+			^window new server $serv number $wnum query $nick $CONFIG.AUTO_QUERY_WINDOW_ARGS;
+		} else {
+			^window new server $serv query $nick $CONFIG.AUTO_QUERY_WINDOW_ARGS;
+		};
 	};
 };
 
@@ -295,28 +305,30 @@ alias window.msgwin.purge (void)
 #
 alias window.msgwin.show (void)
 {
-	for ii from 1 to $numitems(window.msgwins)
+	if (CONFIG.MSG_WINDOW)
 	{
-		@ :win = getitem(window.msgwins ${ii-1});
-
-		if (winnum($win) > -1)
+		for ii from 1 to $numitems(window.msgwins)
 		{
-			if (winserv() != winserv($win))
+			@ :win = getitem(window.msgwins ${ii-1});
+			if (winnum($win) > -1)
 			{
-				if (winvisible($win))
+				if (winserv() != winserv($win))
 				{
-					^window $win fixed off skip off swappable on;
-					^window $win hide;
-					^window $win fixed on skip on swappable off;
-				};
-			}{
-				if (!winvisible($win))
-				{
-					^window $win fixed off skip off swappable on;
-					^window show $win;
-					if (CONFIG.MSG_WINDOW_SIZE) {^window size $CONFIG.MSG_WINDOW_SIZE};
-					^window last;
-					^window $win fixed on skip on swappable off;
+					if (winvisible($win))
+					{
+						^window $win fixed off skip off swappable on;
+						^window $win hide;
+						^window $win fixed on skip on swappable off;
+					};
+				} else {
+					if (!winvisible($win))
+					{
+						^window $win fixed off skip off swappable on;
+						^window show $win;
+						if (CONFIG.MSG_WINDOW_SIZE) {^window size $CONFIG.MSG_WINDOW_SIZE};
+						^window last;
+						^window $win fixed on skip on swappable off;
+					};
 				};
 			};
 		};
@@ -347,6 +359,18 @@ on #-hook 426 "CONFIG AUTO_CREATE_WINDOWS *"
 	{
 		xecho -b Value must be an integer greater than or equal to 0;
 		defer dset AUTO_CREATE_WINDOWS $oldval;                        
+	};
+};
+
+on #-hook 426 "CONFIG AUTO_QUERY_WINDOW_NUMBER *"
+{
+	@ :curval = CONFIG.AUTO_QUERY_WINDOW_NUMBER;
+	@ :oldval = [$2];
+
+	if (curval != [] && (!isnumber(b10 $curval) || curval < 0))
+	{
+		xecho -b Value must be an integer greater than or equal to 0;
+		defer dset AUTO_QUERY_WINDOW_NUMBER $oldval;
 	};
 };
 
@@ -571,18 +595,22 @@ on #-window_command 426 "*"
 		# Kill any unneeded msg windows on /WINDOW NOSERV.
 		1cmd 1 window.msgwin.purge;
 	}
-	else
+	elsif (toupper($2) == [NUMBER])
 	{
-		# Make sure the proper msg window is showing.
-		1cmd 1 window.msgwin.show;
+		# Fix window swap shortcut alias on refnum change
+		^alias -$0;
+		^alias $1 (void) \{window refnum_or_swap $1\};
 	};
+
+	# Make sure the proper msg window is showing.
+	1cmd 1 window.msgwin.show;
 };
 
 
 #
 # Dynamic window swap aliases.
 #
-on #-window_create 426 "*"
+on #window_create 426 "*"
 {
 	^alias $0 (void) \{window refnum_or_swap $0\};
 

@@ -2,7 +2,11 @@ This file contains all notable changes since the last major release.
 The entire file can be found at http://www.epicsol.org/darkstar/UPDATES
 
 
-*** News 2013/11/12 -- tabkey.dms - Added /DSET TABKEY_COMPLETE_TOLOWER
+*** News 2014/02/14 -- window.dsm - Added /DSET AUTO_QUERY_WINDOW_NUMBER
+	If set to a number greater than 0 will start all new auto-query windows
+	at that number or higher.
+
+*** News 2013/11/12 -- tabkey.dsm - Added /DSET TABKEY_COMPLETE_TOLOWER
 	If enabled, this will downcase the match results for commands and
 	variables. Thank you to zlonix for contributing this.
 
