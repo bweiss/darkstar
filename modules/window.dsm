@@ -610,7 +610,7 @@ on #-window_command 426 "*"
 #
 # Dynamic window swap aliases.
 #
-on #window_create 426 "*"
+on #-window_create 426 "*"
 {
 	^alias $0 (void) \{window refnum_or_swap $0\};
 
